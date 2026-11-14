@@ -135,6 +135,59 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` は **1,682 のビューポート** を走査し、各サンプルで `heroContentHeight(layout) ≤ scene` を検証します。
 
+### 🌍 第二の層 — サイズではなく環境
+
+ウィンドウの高さは、使える高さではありません。iPhone ではアドレスバーと
+ホームインジケータが一部を奪い、ズーム時は `visualViewport` が `innerHeight`
+より小さくなります。そこで、純粋で React に依存しない層を別に置いています
+(`src/components/menu/adaptive/environment.ts`)。
+
+```ts
+type Environment = {
+  dpr: number;            // [1, 4] に丸める
+  landscape: boolean;
+  coarse: boolean;        // マウスではなく指
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+間違えやすい四点と、実際に採った対処:
+
+1. **`env()` は `getComputedStyle` からは読めません。** `env(safe-area-inset-*)`
+   を*使用している*要素がなければ、計算済みパディングは意味を持ちません。最初の
+   版は**四つ**のプローブ要素（辺ごとに一つ）を作り、リサイズのたびに四回の
+   強制レイアウトを起こしていました。いまは**一つ**の要素に四つのパディング、
+   そして `finally` で必ず削除します。
+2. **`pointer: coarse` は `resize` なしで変わり得ます。** ハイブリッド端末は
+   マウスと指を常に切り替えます。フックは `resize` だけでなく**両方**の
+   メディアクエリを購読します。
+3. **インセット `0` は正当な値です。** 他の数値フィールド用の `sane()` は
+   下限が 1 で、これを流用すると「ノッチなし」が「1px のノッチ」になります。
+4. **インセットは使える高さから引き、シーンからは引きません。**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)` で、`planFits` も
+   `occupiesExactly` もここを通るため、両者が食い違うことはありません。
+
+`tests/environment.test.ts` は `saneDpr`（`NaN`・`−1`・`7` を含む）、
+`parseInset`、`verticalInset`、`isHandheld` を、`tests/use-environment.test.ts`
+は偽の `window` と `document`（jsdom なし）を作って、**例外を投げる**
+`matchMedia` と **body のない** document まで覆います。
+
+### ⚠️ 既知の限界 — 隠さず記録する
+
+**844×600** では、インセットなしのウィンドウで hero は 222px、インセット 10px
+で **268px**。小さいウィンドウのほうが hero は 46px 高くなります。原因は、
+全体の高さが離散的なしきい値で配分され、小さなインセットが合計を一つのしきい
+値の向こうへ押し出してエコノミーが変わることです。
+
+これは**実在する、小さな、以前からある**欠陥です。`scene` を最大化する八つの
+エコノミーの探索を試しましたが、**失敗**します。1920×1080 でティッカーと背の
+高い行を落としてしまい、それはプレイヤーが見るものそのものです。撤回しました。
+代わりに `tests/layout-inset.test.ts` が**測定値をそのまま**検証します
+(222 → 268, +46)。直した人はテストを壊すので更新を迫られ、それまでは少なく
+とも記録として残ります。隣には成り立つ不変条件があります。*一つの*エコノミー
+の中で `scene + reserve === usableHeight`（252 通りを検証）。
+
 #### 欠けていた 4 つ目のイベント
 
 ユーザーはこの 2 枚を **全画面キーを押して** 作りました。アプリは `resize` と `orientationchange` を購読していました。Firefox は全画面切替でどちらも発火しません。古い Safari は `webkitfullscreenchange` だけです。だからウィンドウの高さが変わり、ヒーローは古い計画を保ち、チップは次のリサイズまで切れたままでした。
