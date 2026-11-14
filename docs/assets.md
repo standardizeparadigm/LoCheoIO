@@ -16,7 +16,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `architecture.svg` | Sơ đồ kiến trúc + luồng dữ liệu, có xung chạy trên đường nối (v1.1.8) | README ×10 (mục kiến trúc) |
 | `release-tiers.svg` | 3 tầng MAJOR/UPDATE/PATCH + thời gian biểu 10 bản (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
-| `test-matrix.svg` | 815 tests / 76 file chia theo nhóm + 9 cổng (v1.1.8) | README ×10 (mục what's new 1.1.8) |
+| `test-matrix.svg` | 821 tests / 77 file chia theo nhóm + 9 cổng (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `divider.svg` | Dải sparkle ngăn cách section | README ×10 |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
