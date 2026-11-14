@@ -135,6 +135,59 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts`는 **1,682개 뷰포트**를 훑고 각 샘플에서 `heroContentHeight(layout) ≤ scene`을 확인합니다.
 
+### 🌍 두 번째 층 — 크기가 아니라 환경
+
+창 높이는 곧 쓸 수 있는 높이가 아닙니다. iPhone에서는 주소창과 홈 인디케이터가
+일부를 차지하고, 확대하면 `visualViewport`가 `innerHeight`보다 작아집니다.
+그래서 순수하고 React에 의존하지 않는 층을 따로 두었습니다
+(`src/components/menu/adaptive/environment.ts`).
+
+```ts
+type Environment = {
+  dpr: number;            // [1, 4]로 제한
+  landscape: boolean;
+  coarse: boolean;        // 마우스가 아니라 손가락
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+틀리기 쉬운 네 가지와, 대신 택한 처리:
+
+1. **`env()`는 `getComputedStyle`로 읽을 수 없습니다.** `env(safe-area-inset-*)`를
+   *사용하는* 요소가 있어야 계산된 패딩이 의미를 갖습니다. 첫 판은 **네 개**의
+   프로브 요소(변마다 하나)를 만들어 리사이즈마다 네 번의 강제 레이아웃을
+   일으켰습니다. 지금은 **하나**의 요소에 네 개의 패딩, 그리고 `finally`에서
+   반드시 제거합니다.
+2. **`pointer: coarse`는 `resize` 없이도 바뀝니다.** 하이브리드 기기는 마우스와
+   손가락을 계속 오갑니다. 훅은 `resize`뿐 아니라 **두** 미디어 쿼리를 모두
+   구독합니다.
+3. **인셋 `0`은 정당한 값입니다.** 다른 숫자 필드용 `sane()`은 하한이 1이라,
+   이것을 인셋에 쓰면 「노치 없음」이 「1px 노치」가 됩니다.
+4. **인셋은 쓸 수 있는 높이에서 빼고, 장면에서는 빼지 않습니다.**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`이며 `planFits`와
+   `occupiesExactly`가 모두 이 경로를 지나므로 둘이 어긋날 수 없습니다.
+
+`tests/environment.test.ts`는 `saneDpr`(`NaN`·`−1`·`7` 포함), `parseInset`,
+`verticalInset`, `isHandheld`를, `tests/use-environment.test.ts`는 가짜
+`window`와 `document`(jsdom 없이)를 만들어 **예외를 던지는** `matchMedia`와
+**body가 없는** 문서까지 덮습니다.
+
+### ⚠️ 알려진 한계 — 숨기지 않고 기록합니다
+
+**844×600**에서 인셋이 없는 창은 hero에 222px를 주고, 인셋 10px를 더하면
+**268px**를 줍니다. 더 작은 창이 hero는 46px 더 높아집니다. 원인은 전체 높이가
+이산적인 임계값으로 나뉘고, 작은 인셋이 합계를 임계값 너머로 밀어 경제档을
+바꾸기 때문입니다.
+
+이것은 **실재하고, 작고, 이전부터 있던** 결함입니다. `scene`을 최대화하는 여덟
+경제 탐색을 시도했지만 **실패**합니다. 1920×1080에서 티커와 높은 행을 잘라내는데,
+그것이 바로 플레이어가 보는 것입니다. 되돌렸습니다. 대신
+`tests/layout-inset.test.ts`가 **측정값 그대로**(222 → 268, +46)를 통과하는
+테스트로 단언합니다. 고친 사람은 테스트를 깨뜨려 갱신을 강제받고, 그전까지는
+적어도 기록으로 남습니다. 옆에는 실제로 성립하는 불변식이 있습니다. *하나의*
+경제 안에서 `scene + reserve === usableHeight`(252가지 조합 검증).
+
 #### 빠져 있던 네 번째 이벤트
 
 사용자는 이 두 장을 **전체 화면 키를 눌러** 만들었습니다. 앱은 `resize`와 `orientationchange`를 듣고 있었습니다. Firefox는 전체 화면 전환에서 둘 다 발생시키지 않습니다. 구형 Safari는 `webkitfullscreenchange`만 발생시킵니다. 그래서 창 높이가 바뀌었고, 히어로는 옛 계획을 유지했고, 칩은 다음 리사이즈까지 잘린 채였습니다.
