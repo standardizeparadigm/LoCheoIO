@@ -95,15 +95,24 @@ describe("the column fits the window, exactly", () => {
   it("the landscape phone (844×390) fits exactly — it used to scroll", () => {
     const vp = { width: 844, height: 390 };
     const plan = planMenuLayout(vp);
-    // Every economy fires: 26px rows, no ticker, no footer, wordmark-only
-    // hero. The chrome needs 244, the hero gets the other 146, and the two add
-    // up to exactly 390 — nothing left to scroll.
+    /*
+     * Every economy fires: 26px rows, compact chrome, no ticker, no footer,
+     * wordmark-only hero. The chrome needs 216, the hero gets the other 174, and
+     * the two add up to exactly 390 — nothing left to scroll.
+     *
+     * Round 7 added the compact economy, so these numbers moved from
+     * 244 / 146 to 216 / 174: the same total, 28px transferred from the corner
+     * panels to the wordmark. The landscape phone is where that matters most —
+     * 146px was 4px short of the 150px wordmark it has to seat, so the top of
+     * `LỌ` was clipped at every landscape phone.
+     */
     expect(plan.tight).toBe(true);
+    expect(plan.compact).toBe(true);
     expect(plan.minimal).toBe(true);
     expect(plan.ticker).toBe(false);
     expect(plan.footer).toBe(false);
-    expect(plan.scene).toBe(146);
-    expect(plan.reserve).toBe(244);
+    expect(plan.reserve).toBe(216);
+    expect(plan.scene).toBe(174);
     expect(plan.scene + plan.reserve).toBe(390);
     expect(planFits(plan, vp)).toBe(true);
   });
