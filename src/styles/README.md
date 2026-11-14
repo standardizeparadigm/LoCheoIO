@@ -11,6 +11,7 @@ a file here and is pulled in with an `@import` at the top.
 | --- | --- |
 | `fonts.css` | The `@font-face` declarations and the font files they point at |
 | `wordmark.css` | The `LỌ / CHÉO` lockup: gold fill, hard shadow, descender room |
+| `animations.css` | All 28 `@keyframes` (v1.1.8). The *rules* that use them stay in `index.css` next to their selectors; only the named animations moved, because a name does not care where it is defined |
 
 ## Why the wordmark got its own file
 
@@ -24,6 +25,23 @@ The one rule that matters most, repeated here because it has been violated
 twice: **nothing may be painted behind the letters.** A gradient cannot follow a
 glyph outline, so a gradient behind a word is always a box. Light has to come
 from a `text-shadow`, which has no edges.
+
+## Why the keyframes are separate from the rules
+
+An animation is referenced by **name**, so  works from
+anywhere in the cascade. That makes them the one kind of rule in `index.css`
+that could be collected without touching a single selector — and collecting
+them turned out to answer a question nothing else could: are any names
+duplicated?
+
+Twenty-eight blocks scattered across 1,049 lines, some under a `v1.1.6`
+banner 400 lines below the rule that used them, cannot be checked by eye. After
+the move, one line answers it:
+
+```console
+$ grep "^@keyframes" src/styles/animations.css | sort | uniq -d
+$                                     # no output: 28 names, no collisions
+```
 
 ## Adding a file
 
