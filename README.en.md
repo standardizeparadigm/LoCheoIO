@@ -504,7 +504,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
 | `vitest run` | **935 tests / 87 files** | ✅ |
-| `smoke-ssr` | menu, 6 settings sections, changelog, 9 modals | ✅ |
+| `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 306 keys | ✅ |
 | `check-assets` | 20 SVGs, references checked both ways | ✅ |
