@@ -4,7 +4,7 @@
 
 1. **Scope lock** — liệt kê tính năng/bugfix; cái nào "giữ nguyên" thì ghi rõ là giữ.
 2. **Code + tests** — tính năng lõi (pure logic) phải có unit test; `npm run check` xanh liên tục.
-3. **i18n** — key mới thêm đồng thời vào **7 locale** cùng commit; parity test ép đồng bộ (1.1.8: **306 khoá** × 7 locale).
+3. **i18n** — key mới thêm đồng thời vào **7 locale** cùng commit; parity test ép đồng bộ (1.1.8: **327 khoá** × 7 locale).
 4. **Version bump đa điểm** — `package.json` + lock · `src/version.ts` · `index.html` (`<meta name="version">`) · `scripts/play-linux.sh` · `scripts/play-mac.command` · `scripts/play-windows.bat` (giữ CRLF+BOM!) · `assets/banner.svg` · `assets/settings-sections.svg` (aria-label + tiêu đề) · README ×10 (badge + tree + releases row + what's-new) · `docs/` · `.github` nếu cần. **Grep `1\.1\.[0-7]` sau khi bump** — v1.1.7 tìm ra 6 file còn sót, v1.1.8 phải quét cả 10 README, `docs/` và 19 SVG.
 5. **CHANGELOG.md** — mục `[x.y.z] — date` (Keep a Changelog), newest-first; link `[x.y.z]: …/releases/tag/vx.y.z` cuối file.
 6. **Release notes** — `docs/releases/vx.y.z.md`: ngày, tác giả, TL;DR, Highlights, Added/Fixed (kèm **nguyên nhân gốc**), Changed, verification matrix, migration notes.

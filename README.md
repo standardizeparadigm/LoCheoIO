@@ -639,7 +639,7 @@ Mỗi thay đổi phải qua **năm cổng** trước khi vào `main` — chạy
 ```console
 $ npm run check        # typecheck + toàn bộ test
 $ npm run check:readme # 10 README đồng bộ phiên bản + liên kết release
-$ npm run check:i18n   # 7 locale × 306 khoá, không thiếu không thừa
+$ npm run check:i18n   # 7 locale × 327 khoá, không thiếu không thừa
 $ npm run check:assets # 20 SVG — không file mồ côi, không tham chiếu hỏng
 $ npm run smoke        # SSR smoke: mọi menu/modal render được
 ```
@@ -650,7 +650,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `vitest run` | **966 test / 94 file** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
-| `check-i18n` | 7 locale × 306 khoá | ✅ |
+| `check-i18n` | 7 locale × 327 khoá | ✅ |
 | `check-assets` | 20 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 

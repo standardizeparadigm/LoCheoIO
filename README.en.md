@@ -495,7 +495,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 ```console
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
-$ npm run check:i18n   # 7 locales × 306 keys, nothing missing or extra
+$ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
 $ npm run check:assets # 20 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
@@ -506,7 +506,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `vitest run` | **966 tests / 94 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
-| `check-i18n` | 7 locales × 306 keys | ✅ |
+| `check-i18n` | 7 locales × 327 keys | ✅ |
 | `check-assets` | 20 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 
