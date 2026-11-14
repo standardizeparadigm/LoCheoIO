@@ -109,7 +109,7 @@ phần dư ở hai đầu bằng nhau, chứ không đẩy ai ra ngoài tầm v�
 
 ## Kiểm chứng
 
-- `tests/menu-layout.test.ts` — 30+ ca, quét 300→1600px theo bước 7px trên 10
+- `tests/menu-layout.test.ts` — 34 ca, quét 300→1600px theo bước 7px trên 10
   bề rộng, khẳng định `scene + reserve === height` ở từng tổ hợp.
 - `tests/menu-no-scroll.test.ts` — 26 ca trên 15 viewport thật, cộng quét
   300→2000px theo bước 5px.

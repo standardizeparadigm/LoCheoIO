@@ -164,7 +164,8 @@ sai.
 Đã thử sửa bằng cách liệt kê 8 economy và lấy cái cho `scene` lớn nhất — hàm
 **đơn điệu** theo thiết kế. Nhưng nó cũng tối đa `scene` *ở mọi nơi*, nên ở
 1920×1080 nó cắt ticker và hàng cao để nhường chỗ cho hero: 12 test hiện có đỏ.
-Đã hoàn nguyên. Sửa đúng cần hai mục tiêu (đặt sàn trước, tối đa sau), tức là
+(«12» là số ca của `tests/menu-adaptive.test.ts` **lúc thử nghiệm đó**; file nay
+có 15 và mọi ca đều xanh.) Đã hoàn nguyên. Sửa đúng cần hai mục tiêu (đặt sàn trước, tối đa sau), tức là
 thiết kế lại bố cục — không phải một bản vá.
 
 `tests/layout-inset.test.ts` khẳng định **con số đo được** (222 → 268, +46) như

@@ -14,7 +14,7 @@
  * generated, so this test cannot pass by agreeing with a stale copy.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = join(__dirname, "..");
@@ -62,6 +62,54 @@ describe("the round-six test table", () => {
     const wrong = docRows()
       .filter((r) => r.file in counts && counts[r.file] !== r.cases)
       .map((r) => `${r.file}: doc says ${r.cases}, suite has ${counts[r.file]}`);
+    expect(wrong).toEqual([]);
+  });
+});
+
+/*
+ * The same claim in another shape. `src/components/menu/layout/README.md` says
+ *
+ *     - `tests/menu-layout.test.ts` — 30+ ca, quét 300→1600px theo bước 7px
+ *
+ * "30+" is true of 34, which is why it survived: a lower bound cannot be wrong,
+ * only uninformative. The exact number is now stated and checked, because a
+ * reader comparing it with the release notes — which said 32 — should get the
+ * same answer from both.
+ */
+describe("per-file case counts stated in prose", () => {
+  const SHAPES = [
+    /`tests\/([\w.-]+\.test\.ts)`[^\n]{0,20}?—\s*(\d+) ca/g,
+    /`tests\/([\w.-]+\.test\.ts)`\s*\((\d+) (?:test|ca)\)/g,
+  ];
+
+  it("match the suite", () => {
+    if (!existsSync(COUNTS)) return;
+    const counts = JSON.parse(readFileSync(COUNTS, "utf8")) as Record<string, number>;
+    const wrong: string[] = [];
+
+    const scan = (dir: string) => {
+      for (const entry of readdirSync(dir)) {
+        if (["node_modules", ".git", "dist", "assets"].includes(entry)) continue;
+        const p = join(dir, entry);
+        if (statSync(p).isDirectory()) {
+          scan(p);
+          continue;
+        }
+        if (!p.endsWith(".md")) continue;
+        /* Release notes for past versions are a record, not a claim. */
+        const body = readFileSync(p, "utf8");
+        for (const re of SHAPES) {
+          for (const m of body.matchAll(re)) {
+            const file = m[1];
+            if (!(file in counts)) continue;
+            if (Number(m[2]) !== counts[file]) {
+              wrong.push(`${p.replace(ROOT + "/", "")}: ${file} says ${m[2]}, suite has ${counts[file]}`);
+            }
+          }
+        }
+      }
+    };
+    scan(ROOT);
     expect(wrong).toEqual([]);
   });
 });
