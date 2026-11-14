@@ -135,6 +135,59 @@ Uma decisão que depende de *dois eixos* não se escreve como media query de um 
 
 `tests/menu-adaptive.test.ts` varre **1.682 viewports** e exige `heroContentHeight(layout) ≤ scene` em cada amostra.
 
+### 🌍 A segunda camada: ambiente, não apenas tamanho
+
+A altura da janela não é a altura utilizável. Num iPhone a barra de endereço e o
+indicador de início comem parte dela; ao ampliar, `visualViewport` é menor que
+`innerHeight`. Por isso há uma camada à parte, pura e sem React
+(`src/components/menu/adaptive/environment.ts`):
+
+```ts
+type Environment = {
+  dpr: number;            // limitado a [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // um dedo, não um rato
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+Quatro coisas fáceis de errar, e o que foi feito no lugar:
+
+1. **`env()` não se lê por `getComputedStyle`.** É preciso um elemento que *use*
+   `env(safe-area-inset-*)` para que o padding calculado signifique algo. A
+   primeira versão criava **quatro** sondas (uma por borda) — quatro layouts
+   forçados a cada resize. Agora é **uma** sonda com quatro paddings, removida
+   num bloco `finally` para que uma exceção não a deixe solta.
+2. **`pointer: coarse` pode mudar sem nenhum `resize`.** Um portátil híbrido
+   alterna rato e dedo o tempo todo. O hook escuta **as duas** media queries, não
+   só `resize`.
+3. **O inset `0` é legítimo.** O auxiliar `sane()` dos outros campos numéricos tem
+   piso 1 — reutilizá-lo no inset transforma «sem notch» em «notch de 1px».
+4. **O inset é subtraído da altura utilizável, nunca da cena.**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`, e tanto `planFits` como
+   `occupiesExactly` passam por ali, então não podem discordar.
+
+`tests/environment.test.ts` cobre `saneDpr` (incluindo `NaN`, `−1`, `7`),
+`parseInset`, `verticalInset` e `isHandheld`; `tests/use-environment.test.ts`
+constrói objetos `window` e `document` falsos (sem jsdom), cobrindo também um
+`matchMedia` que **lança** e um documento **sem body**.
+
+### ⚠️ Uma limitação conhecida — registada, não escondida
+
+Em **844×600**, uma janela sem inset dá ao hero 222px; com inset de 10px dá
+**268px**. Uma janela menor recebe um hero 46px mais alto. A causa é a altura
+total ser repartida por limites discretos, e um inset pequeno empurrar a soma
+para lá de um deles, mudando a economia.
+
+É um defeito **real, pequeno e pré-existente**. Tentou-se uma busca de oito
+economias maximizando `scene` — **falha**: a 1920×1080 retira o ticker e as linhas
+altas, ou seja, exatamente o que o jogador vê. Foi revertida. Em vez disso,
+`tests/layout-inset.test.ts` **afirma os números medidos** (222 → 268, +46) como
+um teste a passar: quem o corrigir quebra o teste e terá de o atualizar, e até lá
+fica pelo menos registado. Ao lado está a invariante que se mantém: dentro de
+*uma* economia, `scene + reserve === usableHeight` (252 combinações verificadas).
+
 #### O quarto evento que faltava
 
 O usuário produziu essas duas capturas **apertando a tecla de tela cheia**. O app escutava `resize` e `orientationchange`. O Firefox não dispara nenhum dos dois ao alternar tela cheia; o Safari antigo dispara só `webkitfullscreenchange`. Então a janela mudou de altura, o hero manteve o plano antigo, e o chip continuou cortado.
