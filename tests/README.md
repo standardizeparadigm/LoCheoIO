@@ -55,6 +55,7 @@
 | `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
 | `menu-about.test.ts` | modal About — mọi mục có key i18n thật, thứ tự ổn định | pure + i18n |
+| `menu-about-sections.test.ts` | **dữ liệu** của modal About — ba mục đúng thứ tự, rule ở mọi mục trừ mục đầu, mỗi mục có ít nhất một đoạn, mọi key tồn tại | pure + i18n |
 | `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
 | `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
 | `panel-slack.test.ts` | khoảng thở của panel — reserve ≥ nội dung ở mọi economy đã biết | pure |
