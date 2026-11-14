@@ -120,6 +120,6 @@
   <!-- vệt sáng chạy qua nửa đã sửa -->
   <rect x="640" y="252" width="470" height="3" fill="url(#lfGlow)"/>
 
-  <text x="60" y="290" font-family="system-ui,sans-serif" font-size="9" fill="#7d9d94">src/components/menu/layout/metrics.ts · fit.ts — 32 test khoá phép cộng</text>
+  <text x="60" y="290" font-family="system-ui,sans-serif" font-size="9" fill="#7d9d94">src/components/menu/layout/metrics.ts · fit.ts — 30 test khoá phép cộng</text>
   <text x="640" y="290" font-family="system-ui,sans-serif" font-size="9" fill="#7d9d94">src/components/menu/MenuChrome.tsx — chrome ra khỏi flex flow</text>
 </svg>
