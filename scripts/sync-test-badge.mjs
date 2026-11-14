@@ -25,7 +25,7 @@
  *   node scripts/sync-test-badge.mjs            # rewrite
  *   node scripts/sync-test-badge.mjs --verify   # report only, exit 1 if stale
  */
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
 const TESTS_DIR = "tests";
@@ -59,6 +59,7 @@ const badge = `tests-${total}%20%C2%B7%20${files}%20files`;
 const pattern = /badge\/tests-\d+%20%C2%B7%20\d+%20files/g;
 
 let changed = 0;
+let svgChanged = false;
 const stale = [];
 for (const file of READMES) {
   const body = readFileSync(file, "utf8");
@@ -72,6 +73,40 @@ for (const file of READMES) {
     } else {
       writeFileSync(file, next);
     }
+  }
+}
+
+/*
+ * `assets/test-matrix.svg` states the same two numbers, six times, and is
+ * embedded in all ten READMEs. It was the *last* place still saying "308 test
+ * trên 36 file" — a three-times-wrong image under a correct badge, which is
+ * worse than a wrong badge because an image reads as authoritative and cannot
+ * be diffed by a reader.
+ *
+ * There are six shapes in the file (aria-label, English strip, the big numeral,
+ * the gate row, the distribution heading, and the footer), so the rewrite is
+ * done as targeted replacements rather than one regex.
+ */
+const SVG = "assets/test-matrix.svg";
+if (existsSync(SVG)) {
+  const before = readFileSync(SVG, "utf8");
+  let after = before;
+  // Digits are matched with a class rather than the previous value, so this
+  // works no matter how far the file has drifted.
+  after = after.replace(/\d+ test trên \d+ file/g, `${total} test trên ${files} file`);
+  after = after.replace(/\d+ tests · \d+ files/g, `${total} tests · ${files} files`);
+  after = after.replace(/(letter-spacing="2">)\d+(<\/text>)/g, `$1${total}$2`);
+  after = after.replace(/\d+ \/ \d+ · \d+ files/g, `${total} / ${total} · ${files} files`);
+  after = after.replace(/WHERE THE \d+ TESTS LIVE/g, `WHERE THE ${total} TESTS LIVE`);
+  after = after.replace(/tests\/ · \d+ files/g, `tests/ · ${files} files`);
+  after = after.replace(/phân bố \d+ test/g, `phân bố ${total} test`);
+  if (after !== before) {
+    if (process.argv.includes("--verify")) {
+      console.error(`${SVG} is stale — run npm run sync:badge`);
+      process.exit(1);
+    }
+    writeFileSync(SVG, after);
+    svgChanged = true;
   }
 }
 
