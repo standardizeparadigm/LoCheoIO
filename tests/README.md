@@ -43,6 +43,7 @@
 | `catalogue-counts.test.ts` | ba con số **9 · 14 · 16** mà mười tài liệu in ra — đếm trực tiếp từ `MODE_LIST`, `KINDS`, `ACHIEVEMENTS`, và khẳng định id là duy nhất để một bản trùng không làm số đếm sai | pure |
 | `key-count-docs.test.ts` | **327 key** — số trong bảng i18n; kiểm cả bảy locale cùng độ dài, và cấm 306/307 như một **tuyên bố hiện tại** trong hai hướng dẫn, trong khi vẫn giữ dòng so sánh lịch sử của release doc | fs + i18n |
 | `readme-tree.test.ts` | cây thư mục trong `README.md` — không node nào (trừ `tests/`) được ghi số file của suite; và script sync vẫn còn bộ lọc `TREE` áp cạnh các bộ lọc khác | fs |
+| `svg-counts.test.ts` | số trong **mọi** SVG — `308 tests / 36 files` từng nằm trong `test-matrix.svg` dưới một badge đúng, và không ai diff được một tấm ảnh; quét cả 20 file tìm ba dạng tuyên bố (test/file/khoá) | fs |
 | `menu-decor.test.ts` | 14 món trang trí hero — số lượng, toạ độ trong khung, không chồng lên chữ, id duy nhất, hai dải trên/dưới | pure |
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
