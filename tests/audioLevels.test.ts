@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { MASTER_GAIN, MUSIC_BUS_BASE, masterGain, musicBusGain, sfxPeak, unit } from "../src/game/audioLevels";
+import {
+  FLOOR_GAIN,
+  MASTER_GAIN,
+  MUSIC_BUS_BASE,
+  masterGain,
+  musicBusGain,
+  rampPeak,
+  sfxPeak,
+  unit,
+} from "../src/game/audioLevels";
 
 describe("audio gain math (v1.1.6)", () => {
   it("unit() clamps and rejects garbage", () => {
@@ -83,6 +92,61 @@ describe("the base gain is clamped, not merely floored", () => {
         expect(out, `sfxPeak(${base}, ${vol}) out of range`).toBeGreaterThanOrEqual(0);
         expect(out).toBeLessThanOrEqual(1);
       }
+    }
+  });
+});
+
+/**
+ * `rampPeak` exists because of a Web Audio rule that is easy to miss:
+ * `exponentialRampToValueAtTime` throws `RangeError` unless the target is
+ * strictly positive. `sfxPeak` correctly returns `0` at volume 0 — the bug was
+ * passing that to the ramp, so a player at the SFX slider's minimum got an
+ * exception on every sound instead of silence.
+ */
+describe("rampPeak", () => {
+  it("is never zero or negative, which is the whole point", () => {
+    for (const vol of [0, 0.001, 0.5, 1]) {
+      const p = rampPeak(0.22, vol);
+      expect(p, `vol=${vol}`).toBeGreaterThan(0);
+      expect(Number.isFinite(p)).toBe(true);
+    }
+  });
+
+  it("floors a zero base gain too", () => {
+    // `sfxPeak(0, 1)` is 0; the ramp still needs a positive number.
+    expect(rampPeak(0, 1)).toBe(FLOOR_GAIN);
+  });
+
+  it("floors every non-finite combination", () => {
+    for (const base of [NaN, Infinity, -Infinity, -5]) {
+      for (const vol of [NaN, Infinity, -Infinity, -1, 0]) {
+        const p = rampPeak(base, vol);
+        expect(p, `rampPeak(${base}, ${vol})`).toBeGreaterThan(0);
+        expect(Number.isFinite(p)).toBe(true);
+      }
+    }
+  });
+
+  it("does not change a normal peak", () => {
+    // The fix must be invisible above the floor, or every existing sound is
+    // quieter than it was tuned to be.
+    expect(rampPeak(0.22, 1)).toBeCloseTo(0.22, 10);
+    expect(rampPeak(0.5, 0.5)).toBeCloseTo(0.25, 10);
+  });
+
+  it("leaves the shape of the envelope alone at half volume", () => {
+    // The ratio between the attack peak and the decay floor is what makes the
+    // sound a click rather than a pop; the floor must not move it.
+    const half = rampPeak(0.22, 0.5);
+    expect(half / FLOOR_GAIN).toBeGreaterThan(100);
+  });
+
+  it("is monotonic in volume above the floor", () => {
+    let prev = rampPeak(0.22, 0);
+    for (const vol of [0.01, 0.1, 0.5, 0.9, 1]) {
+      const p = rampPeak(0.22, vol);
+      expect(p, `vol=${vol}`).toBeGreaterThanOrEqual(prev);
+      prev = p;
     }
   });
 });
