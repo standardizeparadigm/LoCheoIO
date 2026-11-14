@@ -75,6 +75,7 @@
 | `docs-numbers.test.ts` | mười README và doc release trích số file/số test — đọc `tests/` và đối chiếu | fs |
 | `numeric-guards-doc.test.ts` | hướng dẫn về chặn số phải khớp các hàm chặn thật | fs |
 | `storage-doc.test.ts` | tài liệu storage khớp schema thật trong `storage.ts` | fs |
+| `storage-keys-doc.test.ts` | `storage-keys.md` mở đầu bằng "**toàn bộ** key", nên nó được kiểm **hai chiều** với `STORAGE_KEYS`: key nào trong mã cũng phải có trong bảng, và key nào trong bảng cũng phải còn được ghi | fs |
 | `modes-balance-doc.test.ts` | bảng cân bằng trong docs khớp hệ số trong `modes/*.ts` | fs |
 | `changelog-dates.test.ts` | ba nguồn ngày phải đồng ý — `entries/*.ts`, `docs/releases/v*.md`, và heading `CHANGELOG.md`; cộng anchor trỏ đúng | fs |
 | `release-timeline-doc.test.ts` | dòng cadence trong `v1.1.8.md` khớp entry, và nhịp **có hình dạng của thật** (1–5 ngày, có hotfix, ≤ 2 cuối tuần) | fs |
