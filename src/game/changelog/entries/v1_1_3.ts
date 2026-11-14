@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.3 — released 2026-11-02 — tier: PATCH
+ * v1.1.3 — released 2026-11-09 — tier: PATCH
  *
  * Mưa Dưa · Gốm Mỏng, thành tựu thứ 13–14, giao diện 5 ngôn ngữ, launcher có hoạt họa, favicon
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_3: ChangelogEntry = {
   version: "1.1.3",
-  date: "2026-11-02",
+  date: "2026-11-04",
   kind: "feature",
   vi: "Mưa Dưa · Gốm Mỏng, thành tựu thứ 13–14, giao diện 5 ngôn ngữ, launcher có hoạt họa, favicon",
   en: "Storm · Thin Porcelain, achievements 13–14, five UI languages, animated launchers, a web favicon",

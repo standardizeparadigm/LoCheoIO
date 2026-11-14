@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.4 — released 2026-11-04 — tier: PATCH
+ * v1.1.4 — released 2026-11-09 — tier: PATCH
  *
  * Hai chế độ mới (Lễ Hội Combo · Đại Tiệc Dưa), đủ 16 thành tựu, thêm tiếng Tây Ban Nha và Pháp
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_4: ChangelogEntry = {
   version: "1.1.4",
-  date: "2026-11-04",
+  date: "2026-11-06",
   kind: "feature",
   vi: "Hai chế độ mới (Lễ Hội Combo · Đại Tiệc Dưa), đủ 16 thành tựu, thêm tiếng Tây Ban Nha và Pháp",
   en: "Two new modes (Combo Festival · Grand Feast), sixteen achievements, Spanish and French added",

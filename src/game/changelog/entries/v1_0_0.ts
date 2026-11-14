@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.0.0 — released 2026-10-24 — tier: MAJOR
+ * v1.0.0 — released 2026-10-26 — tier: MAJOR
  *
  * Bản đầu tiên — Lọ Chéo: Hũ Dưa Đại Chiến
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_0_0: ChangelogEntry = {
   version: "1.0.0",
-  date: "2026-10-24",
+  date: "2026-10-26",
   kind: "feature",
   vi: "Bản đầu tiên — Lọ Chéo: Hũ Dưa Đại Chiến",
   en: "The first release — Lọ Chéo: Pickle Jar War",

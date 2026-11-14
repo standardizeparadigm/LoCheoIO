@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.0 — released 2026-10-27 — tier: MINOR
+ * v1.1.0 — released 2026-10-30 — tier: MINOR
  *
  * Ba chế độ chơi, nguyên liệu mới, thành tựu đầu tiên, menu aurora, font tự host, README 3 ngôn ngữ
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_0: ChangelogEntry = {
   version: "1.1.0",
-  date: "2026-10-27",
+  date: "2026-10-29",
   kind: "feature",
   vi: "Ba chế độ chơi, nguyên liệu mới, thành tựu đầu tiên, menu aurora, font tự host, README 3 ngôn ngữ",
   en: "Three game modes, new ingredients, the first achievements, an aurora menu, self-hosted fonts, READMEs in three languages",

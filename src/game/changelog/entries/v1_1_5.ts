@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.5 — released 2026-11-06 — tier: PATCH
+ * v1.1.5 — released 2026-11-09 — tier: PATCH
  *
  * Menu góc GAME/INFO, chế độ chọn riêng, lưu & chơi tiếp ván dở, cài đặt ngay trong game
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_5: ChangelogEntry = {
   version: "1.1.5",
-  date: "2026-11-06",
+  date: "2026-11-09",
   kind: "feature",
   vi: "Menu góc GAME/INFO, chế độ chọn riêng, lưu & chơi tiếp ván dở, cài đặt ngay trong game",
   en: "Corner GAME/INFO panels, a dedicated mode picker, save & resume, in-game settings",

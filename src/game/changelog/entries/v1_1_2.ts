@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.2 — released 2026-10-31 — tier: PATCH
+ * v1.1.2 — released 2026-11-06 — tier: PATCH
  *
  * Đua 60 Giây · Mùa Vàng, combo 12+ bốc lửa, launcher nhấn-đúp cho 3 hệ điều hành, README 10 ngôn ngữ
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_2: ChangelogEntry = {
   version: "1.1.2",
-  date: "2026-10-31",
+  date: "2026-11-02",
   kind: "feature",
   vi: "Đua 60 Giây · Mùa Vàng, combo 12+ bốc lửa, launcher nhấn-đúp cho 3 hệ điều hành, README 10 ngôn ngữ",
   en: "60-Second Rush · Gold Rush, flaming 12+ combos, double-click launchers for three OSes, READMEs in ten languages",
