@@ -87,7 +87,7 @@
 | `mode-math.test.ts` | toán của chế độ — time limit, combo window, jar bonus, không chia cho 0 | pure |
 | `mode-multiplier.test.ts` | chín hệ số nhân khớp bảng công bố trong docs | pure |
 | `storage-normalise.test.ts` | chuẩn hoá bản ghi — làm tròn, cắt tên, kẹp ngày, không NaN | `memStorage()` |
-| `input-release.test.ts` | nhả phím/phím dính — không kẹt hướng sau khi thả ngoài cửa sổ hoặc đổi tab | fake DOM |
+| `input-release.test.ts` | lỗi "hũ tự đi" — `releaseAllInput()` phải xoá **cả bảy** trường, và phải được gọi từ cả `blur` lẫn `visibilitychange`; đọc mã nguồn nên không cần DOM | fs |
 
 ## Thêm test mới
 
