@@ -58,6 +58,16 @@
 | `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
 | `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
 | `panel-slack.test.ts` | khoảng thở của panel — reserve ≥ nội dung ở mọi economy đã biết | pure |
+| `a11y-claims.test.ts` | hướng dẫn trợ năng nói về mã nguồn, nên mã nguồn được kiểm — mọi khẳng định trong `docs/design/a11y.md` phải có thật | fs |
+| `focus-trap.test.ts` | `useFocusTrap` — Tab/Shift+Tab quấn vòng, Esc đóng, focus trả về nơi xuất phát | fake DOM |
+| `keyboard-guide.test.ts` | bảng điều khiển trong README khớp phím thật trong mã nguồn | fs |
+| `i18n-interpolate.test.ts` | `{param}` — thiếu tham số, tham số thừa, dấu ngoặc lồng, chuỗi rỗng | pure |
+| `i18n-prototype.test.ts` | key trùng tên thành viên `Object.prototype` (`toString`, `constructor`) không được lọt ra ngoài | pure |
+| `language-meta-prototype.test.ts` | cùng lớp lỗi ấy ở `languageMeta` — tra cứu không dùng `in` | pure |
+| `glossary.test.ts` | bảng thuật ngữ kỹ thuật phải gọi tên thứ có thật trong mã nguồn | fs |
+| `barrels.test.ts` | mỗi thư mục có barrel, và barrel không xuất thứ không tồn tại | fs |
+| `barrel-contract.test.ts` | sáu barrel không ai import vẫn phải đúng hợp đồng, để lần import đầu tiên không nổ | fs |
+| `folder-readmes.test.ts` | mỗi thư mục dưới `src/` có README phải mô tả **mọi** file trong đó | fs |
 
 ## Thêm test mới
 
