@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.3 — released 2026-11-04 — tier: PATCH
+ * v1.1.3 — released 2026-11-09 — tier: PATCH
  *
  * Mưa Dưa · Gốm Mỏng, thành tựu thứ 13–14, giao diện 5 ngôn ngữ, launcher có hoạt họa, favicon
  *

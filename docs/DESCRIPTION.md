@@ -37,7 +37,7 @@
 | `package.json` → `description` | npm registry / GitHub detected description |
 | GitHub repo → About (ô mô tả góc phải trên trang repo) | hiển thị dưới tên repo & trên tìm kiếm |
 | `README.md` + 9 bản dịch | khối "Về dự án / About / 关于项目 / …" |
-| `docs/releases/v1.1.7.md` → mục "Mô tả dự án" | phần mô tả đính kèm release notes (mới nhất) |
+| `docs/releases/v1.1.8.md` → mục "Mô tả dự án" | phần mô tả đính kèm release notes (mới nhất) |
 
 ## Ghi chú sử dụng cho GitHub About
 

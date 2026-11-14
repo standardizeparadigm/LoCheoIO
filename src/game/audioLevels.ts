@@ -19,14 +19,48 @@ export function unit(v: unknown, fallback = 1): number {
   return typeof v === "number" && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : fallback;
 }
 
+/**
+ * Smallest gain that can be passed to `exponentialRampToValueAtTime`.
+ *
+ * The Web Audio spec rejects `0` there with a `RangeError` — which is exactly
+ * what `sfxPeak` returns at volume 0, so a player who dragged the SFX slider to
+ * zero got an exception on every sound instead of silence.
+ *
+ * `0.0001` is the conventional floor: it is inaudible (-80 dB) and it is what
+ * the engine already ramps *to* when a sound decays, so nothing about the
+ * envelope shape changes.
+ */
+export const FLOOR_GAIN = 0.0001;
+
+/** A peak safe to hand to an exponential ramp: never zero, never non-finite. */
+export function rampPeak(baseGain: number, volume: number): number {
+  return Math.max(FLOOR_GAIN, sfxPeak(baseGain, volume));
+}
+
 /** Final music bus gain: 0 when the gate is off, else base × volume. */
 export function musicBusGain(enabled: boolean, volume: number): number {
   return enabled ? MUSIC_BUS_BASE * unit(volume, 1) : 0;
 }
 
-/** Final SFX peak for one sound: base gain × SFX volume (0..1). */
+/**
+ * Final SFX peak for one sound: base gain × SFX volume (0..1).
+ *
+ * ROUND 6: the base gain is clamped to 0..1, not merely floored at zero.
+ *
+ * `Math.max(0, Infinity)` is Infinity, so `sfxPeak(Infinity, 1)` returned
+ * Infinity and went straight into `GainNode.gain.value`. WebAudio does not
+ * reject that — it clips to full scale and, on some implementations, latches
+ * the node into a state that later ramps cannot recover, which presents as
+ * "the sound effects stopped working after one loud frame" and is not
+ * reproducible without the exact value.
+ *
+ * Clamping at 1 is also the correct *audio* answer: a peak above unity is
+ * digital clipping by definition, so there is nothing to preserve above it.
+ * `volume` was already going through `unit()`, which clamps — the base gain
+ * simply never got the same treatment.
+ */
 export function sfxPeak(baseGain: number, volume: number): number {
-  return Math.max(0, baseGain) * unit(volume, 1);
+  return unit(baseGain, 0) * unit(volume, 1);
 }
 
 /** Master gain for the muted flag. */

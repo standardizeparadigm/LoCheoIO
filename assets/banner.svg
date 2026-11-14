@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-label="Lọ Chéo — Hũ Dưa Đại Chiến">
   <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="bn-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0e3a35"/>
       <stop offset="0.5" stop-color="#092723"/>
@@ -98,7 +106,7 @@
     font-size="34" letter-spacing="14" fill="#e63b2e"
     stroke="#061a1a" stroke-width="7" stroke-linejoin="round" paint-order="stroke">HŨ DƯA ĐẠI CHIẾN</text>
   <text x="336" y="268" font-family="'Courier New',monospace" font-weight="700"
-    font-size="17" letter-spacing="6" fill="#b6e07a">ARCADE MUỐI DƯA · OFFLINE-FIRST · V1.1.7</text>
+    font-size="17" letter-spacing="6" fill="#b6e07a">ARCADE MUỐI DƯA · OFFLINE-FIRST · V1.1.8</text>
   <text x="336" y="312" font-family="'Courier New',monospace"
     font-size="14" letter-spacing="3" fill="#fdf3e0" fill-opacity="0.55">CÀI ĐẶT 6 MỤC · 4 PRESET · 7 NGÔN NGỮ · 9 CHẾ ĐỘ · 16 THÀNH TỰU</text>
 </svg>

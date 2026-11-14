@@ -21,6 +21,26 @@ interface Props {
 
 const R = 58;
 
+/**
+ * Release every input the engine is holding — one definition, both callers.
+ *
+ * `InputState` has seven fields: four directions, a boolean `joy`, and the
+ * analogue coordinates `jx`/`jy`. The window `blur` handler cleared five of
+ * them and `visibilitychange` cleared none, so:
+ *
+ *   · a pointer or gamepad mid-drag when focus left left `jx`/`jy` at their
+ *     last value, and the jar kept drifting with no key down;
+ *   · hiding the tab paused the run but left the movement flags set, so
+ *     resuming resumed *moving* — the classic "the character walks by itself
+ *     after alt-tab" bug.
+ *
+ * Written as a module function rather than a closure inside either effect
+ * because the two effects are separate and used to hold separate opinions.
+ */
+function releaseAllInput(game: LoCheoGame): void {
+  game.setInput({ left: false, right: false, up: false, down: false, joy: false, jx: 0, jy: 0 });
+}
+
 export default function GameCanvas({
   best,
   touchMode,
@@ -68,9 +88,35 @@ export default function GameCanvas({
     const rect = wrap.getBoundingClientRect();
     game.resize(rect.width, rect.height);
 
+    /**
+     * Release every input the engine is holding.
+     *
+     * ROUND 6: this used to be two incomplete hands.
+     *
+     * `blur` cleared `left/right/up/down/joy` but not `jx/jy` — the analogue
+     * stick coordinates — so a gamepad or pointer that was mid-drag when the
+     * window lost focus left the jar drifting. And `visibilitychange` did not
+     * release anything at all: it paused the run when the tab was hidden, so
+     * the player came back to a paused game, pressed resume, and the jar moved
+     * on its own because the key was still down in the engine's state.
+     *
+     * One function, called from both places, so the two cannot disagree about
+     * what "released" means.
+     */
+    const releaseAll = () => releaseAllInput(game);
+
     const onVis = () => {
-      if (!cb.current.autoPauseOnBlur) return;
-      if (document.hidden && game.phase === "playing") cb.current.onPauseKey();
+      if (!document.hidden) return;
+      /*
+       * Always release, even when auto-pause is off.
+       *
+       * The pause is a *preference*; the key release is not. A player who
+       * turned auto-pause off still does not want the jar to keep moving
+       * while they are on another tab, and the engine keeps simulating input
+       * for as long as the flag is true.
+       */
+      releaseAll();
+      if (cb.current.autoPauseOnBlur && game.phase === "playing") cb.current.onPauseKey();
     };
     document.addEventListener("visibilitychange", onVis);
 
@@ -111,7 +157,34 @@ export default function GameCanvas({
           break;
       }
     };
+    /**
+     * True when the keystroke belongs to a text field the player is typing in.
+     *
+     * ROUND 6: typing a name on the game-over screen fired the game's global
+     * shortcuts. Every handler here is on `window`, and `keydown` on a text
+     * input still bubbles — so entering "MINH" muted the game on the `M`,
+     * "PHÚC" paused it on the `P`, and any name with an `R` restarted the run
+     * underneath the form.
+     *
+     * The check is on the *target*, not on `document.activeElement`, because
+     * `activeElement` reflects focus at the time the handler runs rather than
+     * where the keystroke was aimed, and the two differ when a handler has
+     * already moved focus.
+     */
+    const isTyping = (e: KeyboardEvent): boolean => {
+      const el = e.target as HTMLElement | null;
+      if (!el) return false;
+      const tag = el.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
+    };
+
     const down = (e: KeyboardEvent) => {
+      /*
+       * Movement and the global shortcuts are suppressed while typing; the
+       * key is not even recorded, so releasing it later is a no-op rather
+       * than an unbalanced set(false).
+       */
+      if (isTyping(e)) return;
       if (
         ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space", "KeyW", "KeyA", "KeyS", "KeyD"].includes(e.code)
       ) {
@@ -139,7 +212,7 @@ export default function GameCanvas({
       }
     };
     const up = (e: KeyboardEvent) => set(e.code, false);
-    const blur = () => gameRef.current?.setInput({ left: false, right: false, up: false, down: false, joy: false });
+    const blur = () => gameRef.current && releaseAllInput(gameRef.current);
     window.addEventListener("keydown", down, { passive: false });
     window.addEventListener("keyup", up);
     window.addEventListener("blur", blur);

@@ -37,6 +37,11 @@ export interface WeightOptions {
   deco?: boolean;
 }
 
+/** `[0, 1]`, with the bounds inclusive so `random() === 1` is a legal roll. */
+function clampUnit(v: number): number {
+  return v <= 0 ? 0 : v >= 1 ? 1 : v;
+}
+
 /** Relative weight of one item kind under the given options. */
 export function itemWeight(def: WeightedItem, opts: WeightOptions): number {
   const { level, mode = {}, deco = false } = opts;
@@ -62,7 +67,22 @@ export function weightedPick(
   const weights = kinds.map((k) => itemWeight(DEFS[k], opts));
   const total = weights.reduce((a, b) => a + b, 0);
   if (!(total > 0)) return kinds[0] ?? "ca";
-  let r = random() * total;
+  /*
+   * `random()` is `Math.random` in production and an injected sequence in tests.
+   * Neither contract says it returns a number in `[0, 1)`:
+   *
+   *   · a test helper that returns `1` worked by accident — `r` ends up equal to
+   *     `total`, the loop subtracts every weight and falls through to the
+   *     "float drift" branch below, which was written for exactly that case;
+   *   · `NaN` does **not** fall through: `r -= w` stays `NaN`, `NaN <= 0` is
+   *     false, and the drift branch returns the last kind with weight — so a
+   *     broken RNG silently spawns the rarest item instead of the commonest.
+   *
+   * A non-finite roll is not a value to reason about. Treat it as 0: pick the
+   * first kind with weight, same as the lowest possible roll.
+   */
+  const roll = random();
+  let r = (Number.isFinite(roll) ? clampUnit(roll) : 0) * total;
   for (let i = 0; i < kinds.length; i++) {
     r -= weights[i];
     if (r <= 0) return kinds[i];

@@ -15,8 +15,26 @@ import {
  * cannot quietly re-introduce the fog.
  */
 const root = resolve(__dirname, "..");
-/** index.css with comments stripped — the rules below are asserted on code. */
-const css = readFileSync(resolve(root, "src/index.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+/**
+ * Every stylesheet the app loads, comments stripped.
+ *
+ * v1.1.8 moved 28 `@keyframes` out of `index.css` into `styles/animations.css`.
+ * Reading only `index.css` would have made this file pass on a stylesheet that
+ * no longer contains the rules it thinks it is checking — a test that reads the
+ * wrong file is worse than no test, because it reports green.
+ *
+ * The list is explicit rather than a glob: a new stylesheet should require
+ * adding a line here, which is the moment someone reads this comment.
+ */
+const css = [
+  "src/index.css",
+  "src/styles/fonts.css",
+  "src/styles/wordmark.css",
+  "src/styles/animations.css",
+]
+  .map((f) => readFileSync(resolve(root, f), "utf8"))
+  .join("\n")
+  .replace(/\/\*[\s\S]*?\*\//g, "");
 
 /** Grab a CSS rule body by selector, e.g. rule(".nebula-a") -> "…{…}". */
 function rule(selector: string): string {

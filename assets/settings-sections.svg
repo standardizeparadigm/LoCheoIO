@@ -1,5 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-label="Lọ Chéo v1.1.7 — settings rebuilt into six sections with toggles, level bars and pickers">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-label="Lọ Chéo v1.1.8 — settings rebuilt into six sections with toggles, level bars and pickers">
   <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="ss-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="ss-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0e3a35"/><stop offset="0.55" stop-color="#092723"/><stop offset="1" stop-color="#061a1a"/>
     </linearGradient>
@@ -30,7 +38,7 @@
   </circle>
 
   <!-- title -->
-  <text x="600" y="70" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="42" letter-spacing="4" fill="#fdf3e0" stroke="#061a1a" stroke-width="6" paint-order="stroke">CÀI ĐẶT <tspan fill="#f5a81c">v1.1.7</tspan></text>
+  <text x="600" y="70" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="42" letter-spacing="4" fill="#fdf3e0" stroke="#061a1a" stroke-width="6" paint-order="stroke">CÀI ĐẶT <tspan fill="#f5a81c">v1.1.8</tspan></text>
   <text x="600" y="98" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="13" letter-spacing="5" fill="#b6e07a">6 MỤC · 3 KIỂU ĐIỀU KHIỂN</text>
 
   <!-- ============ column 1 ============ -->

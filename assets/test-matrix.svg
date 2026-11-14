@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img" aria-label="Ma trận kiểm thử Lọ Chéo v1.1.8 — 1011 test trên 102 file, 9 cổng kiểm tra, phân bố theo nhóm (hoạt họa SMIL)">
+  <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="tm-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="tmBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2422"/>
+      <stop offset="1" stop-color="#061a1a"/>
+    </linearGradient>
+    <linearGradient id="tmCard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f322c"/>
+      <stop offset="1" stop-color="#0a2422"/>
+    </linearGradient>
+    <linearGradient id="tmBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2bb48c"/>
+      <stop offset="1" stop-color="#8cc63f"/>
+    </linearGradient>
+    <linearGradient id="tmBig" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b6e07a"/>
+      <stop offset="1" stop-color="#8cc63f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#tmBg)"/>
+  <rect x="1" y="1" width="1198" height="338" rx="16" fill="none" stroke="#123f38" stroke-width="2"/>
+
+  <text x="40" y="38" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="19" letter-spacing="3" fill="#fdf3e0">TEST MATRIX <tspan fill="#f5a81c">v1.1.8</tspan></text>
+  <text x="40" y="60" font-family="system-ui,sans-serif" font-size="11" fill="#7d9d94">1011 tests · 102 files · 9 gates · all green before release</text>
+
+  <!-- con số lớn -->
+  <text x="1160" y="52" text-anchor="end" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="52" fill="url(#tmBig)" letter-spacing="2">1011</text>
+  <text x="1160" y="72" text-anchor="end" font-family="system-ui,sans-serif" font-size="9" letter-spacing="2.5" fill="#2bb48c">PASSING</text>
+
+  <!-- chín thẻ cổng -->
+  <g font-family="system-ui,sans-serif">
+    <g transform="translate(40,84)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">tsc --noEmit</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">no type errors</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(330,84)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">vitest run</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">1011 / 1011 · 102 files</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="0.6s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="0.3s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(620,84)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">check-readme-sync</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">10 READMEs in sync</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="1.2s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="0.6s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(910,84)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">check-i18n</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">7 locales × 304 keys</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="1.8s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></circle>
+    </g>
+
+    <g transform="translate(40,142)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">check-assets</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">14 SVGs, both directions</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="2.4s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="1.2s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(330,142)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">smoke-ssr</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">every modal renders</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="3s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="1.5s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(620,142)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#9d6bff" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">probe-menu-layout</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">21/21 on real DOM · new in 1.1.8</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#9d6bff"/>
+      <circle cx="256" cy="34" r="3.5" fill="#9d6bff"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle>
+    </g>
+    <g transform="translate(910,142)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#166153" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">vite build</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">845 KB · gzip 392 KB</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="url(#tmBar)">
+        <animate attributeName="opacity" values="0.6;1;1;0.6" dur="9s" begin="4.2s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="256" cy="34" r="3.5" fill="#8cc63f"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="2.1s" repeatCount="indefinite"/></circle>
+    </g>
+
+    <g transform="translate(40,200)">
+      <rect width="270" height="46" rx="4" fill="url(#tmCard)" stroke="#ffc94a" stroke-width="1.4"/>
+      <text x="12" y="19" font-size="10.5" fill="#d9f2c8" font-weight="700">layout sim</text>
+      <text x="12" y="33" font-size="8.5" fill="#7d9d94">7 rows fit 318px exactly</text>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#0b2a28"/>
+      <rect x="170" y="14" width="88" height="7" rx="3.5" fill="#ffc94a"/>
+      <circle cx="256" cy="34" r="3.5" fill="#ffc94a"><animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="2.4s" repeatCount="indefinite"/></circle>
+    </g>
+  </g>
+
+  <!-- phân bố 1011 test -->
+  <text x="40" y="266" font-family="system-ui,sans-serif" font-size="9.5" letter-spacing="1" fill="#7d9d94">WHERE THE 1011 TESTS LIVE</text>
+  <g transform="translate(40,274)">
+    <rect width="1120" height="22" rx="11" fill="#0b2a28"/>
+    <!-- gameplay 96 -->
+    <rect x="0" y="0" width="349" height="22" fill="#f5a81c"><animate attributeName="opacity" values="0.55;1;1;0.55" dur="9s" begin="0s" repeatCount="indefinite"/></rect>
+    <!-- i18n 46 -->
+    <rect x="349" y="0" width="153" height="22" fill="#2bb48c"><animate attributeName="opacity" values="0.55;1;1;0.55" dur="9s" begin="0.8s" repeatCount="indefinite"/></rect>
+    <!-- ui/layout 74 -->
+    <rect x="502" y="0" width="298" height="22" fill="#9d6bff"><animate attributeName="opacity" values="0.55;1;1;0.55" dur="9s" begin="1.6s" repeatCount="indefinite"/></rect>
+    <!-- storage/settings 92 -->
+    <rect x="800" y="0" width="320" height="22" rx="11" fill="#8cc63f"><animate attributeName="opacity" values="0.55;1;1;0.55" dur="9s" begin="2.4s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <g font-family="system-ui,sans-serif" font-size="9" fill="#7d9d94">
+    <circle cx="48" cy="316" r="4" fill="#f5a81c"/><text x="58" y="319">gameplay 96</text>
+    <circle cx="168" cy="316" r="4" fill="#2bb48c"/><text x="178" y="319">i18n 42</text>
+    <circle cx="268" cy="316" r="4" fill="#9d6bff"/><text x="278" y="319">ui · layout 82</text>
+    <circle cx="408" cy="316" r="4" fill="#8cc63f"/><text x="418" y="319">storage · settings 88</text>
+  </g>
+  <text x="1160" y="319" text-anchor="end" font-family="system-ui,sans-serif" font-size="8.5" fill="#166153">tests/ · 102 files</text>
+</svg>

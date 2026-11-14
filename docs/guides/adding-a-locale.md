@@ -36,5 +36,5 @@ npm run check:i18n                                  # parity text-level, ~40 ms,
 npx vitest run tests/i18n.test.ts tests/languageMeta.test.ts
 ```
 
-`check:i18n` (v1.1.7: **302 key × 7 locale**, 5 luật) là bản chạy trong CI (job `readme-sync`) — nó đọc file locale dưới dạng **text**, nên bắt được
+`check:i18n` (v1.1.8: **327 key × 7 locale**, 5 luật) là bản chạy trong CI (job `readme-sync`) — nó đọc file locale dưới dạng **text**, nên bắt được
 cả lỗi cú pháp mà test TypeScript không thấy: key trùng trong cùng một file, value rỗng, placeholder lệch.

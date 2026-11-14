@@ -1,5 +1,11 @@
 import { useI18n } from "../../i18n/useI18n";
 
+/** 0–100, integer; a non-finite value collapses to 0 rather than propagating. */
+function clampVolume(n: number): number {
+  if (!Number.isFinite(n)) return 0;
+  return Math.min(100, Math.max(0, Math.round(n)));
+}
+
 /**
  * Level control for 0–100 values (SFX / music loudness):
  * −/+ buttons, segmented bar, numeric readout. Steps of 10, min/max clamp.
@@ -20,8 +26,20 @@ export default function VolumeStepper({
   step?: number;
 }) {
   const { t } = useI18n();
-  const v = Math.min(100, Math.max(0, Math.round(value)));
-  const set = (next: number) => onChange(Math.min(100, Math.max(0, Math.round(next))));
+  /*
+   * `Math.min(100, Math.max(0, …))` is a *clamp*, not a guard: `Math.round(NaN)`
+   * is `NaN` and both comparisons pass it through. The result renders as
+   * `aria-label="… NaN/100"` and paints zero filled segments — a control that
+   * looks empty and reports a non-number.
+   *
+   * `settings.ts` already normalises its own values with `clampInt`, so this is
+   * defence in depth rather than a live bug. It is here because the component
+   * takes `value: number` from any caller, and because the shape is the same one
+   * that produced nine real bugs elsewhere in this release — see
+   * `docs/guides/numeric-guards.md`.
+   */
+  const v = clampVolume(value);
+  const set = (next: number) => onChange(clampVolume(next));
   const segs = 10;
   const filled = Math.round((v / 100) * segs);
 

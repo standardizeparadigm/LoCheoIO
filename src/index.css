@@ -1,4 +1,6 @@
 @import "./styles/fonts.css";
+@import "./styles/wordmark.css";
+@import "./styles/animations.css";
 @import "tailwindcss";
 
 @theme {
@@ -109,112 +111,31 @@
 
 /* ---------- animations ---------- */
 
-@keyframes lc-pop-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.86) translateY(14px);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.02) translateY(-2px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
 .anim-pop {
   animation: lc-pop-in 320ms cubic-bezier(0.18, 1.1, 0.36, 1) both;
 }
 
-@keyframes lc-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(22px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 .anim-slide {
   animation: lc-slide-up 420ms cubic-bezier(0.16, 0.9, 0.3, 1) both;
 }
 
-@keyframes lc-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(2deg);
-  }
-}
 .anim-bob {
   animation: lc-bob 3.2s ease-in-out infinite;
 }
 
-@keyframes lc-flicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  45% {
-    opacity: 0.72;
-  }
-  55% {
-    opacity: 0.95;
-  }
-}
 .anim-flicker {
   animation: lc-flicker 4s ease-in-out infinite;
 }
 
-@keyframes lc-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
 .anim-marquee {
   animation: lc-marquee 22s linear infinite;
 }
 
-@keyframes lc-pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(245, 168, 28, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 18px rgba(245, 168, 28, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(245, 168, 28, 0);
-  }
-}
 .anim-ring {
   animation: lc-pulse-ring 1.8s ease-out infinite;
 }
 
 /* same pulse, but keeps the chunky offset shadow buttons rely on */
-@keyframes lc-cta-pulse {
-  0% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 0 rgba(245, 168, 28, 0.55);
-  }
-  70% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 16px rgba(245, 168, 28, 0);
-  }
-  100% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 0 rgba(245, 168, 28, 0);
-  }
-}
 .anim-cta {
   animation: lc-cta-pulse 1.9s ease-out infinite;
 }
@@ -232,14 +153,25 @@
   mix-blend-mode: multiply;
 }
 
-::-webkit-scrollbar {
+/*
+ * Scrollbars inside the game's own panels (modals, the changelog list, the
+ * settings body) — dark, thin, on brand.
+ *
+ * v1.1.8 scopes these to `.game-scroll` instead of the bare `::-webkit-scrollbar`
+ * universal selector. The universal form also styled `.menu-scroll`, so the
+ * start screen's scrollbar came back at 8px with a visible thumb no matter
+ * what `.menu-scroll::-webkit-scrollbar { width: 0 }` said — a specificity
+ * tie broken by source order, in favour of the bar the report asked to hide.
+ * Modals keep the styled bar; the menu hides its own.
+ */
+.game-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-::-webkit-scrollbar-track {
+.game-scroll::-webkit-scrollbar-track {
   background: rgba(6, 26, 26, 0.4);
 }
-::-webkit-scrollbar-thumb {
+.game-scroll::-webkit-scrollbar-thumb {
   background: var(--color-jade-700);
   border-radius: 99px;
 }
@@ -301,14 +233,6 @@
   background: radial-gradient(circle at 60% 60%, rgba(245, 168, 28, 0.28), transparent 62%);
   animation: lc-nebula-b 19s ease-in-out infinite alternate;
 }
-@keyframes lc-nebula-a {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
-  100% { transform: translate3d(9vw, 7vh, 0) scale(1.18); opacity: 0.8; }
-}
-@keyframes lc-nebula-b {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
-  100% { transform: translate3d(-8vw, -6vh, 0) scale(1.22); opacity: 0.78; }
-}
 
 /* Twinkling starfield — two parallax layers of round dots */
 .star-field,
@@ -341,10 +265,6 @@
   opacity: 0.7;
   animation: lc-twinkle 5.2s ease-in-out 1.3s infinite alternate;
 }
-@keyframes lc-twinkle {
-  0% { opacity: 0.35; }
-  100% { opacity: 1; }
-}
 
 /* Soft god-ray beam from the top — breathing, barely-there */
 .light-ray {
@@ -367,10 +287,6 @@
   pointer-events: none;
   animation: lc-ray 11s ease-in-out infinite alternate;
 }
-@keyframes lc-ray {
-  0% { opacity: 0.45; transform: translateX(-50%) rotate(-1.6deg); }
-  100% { opacity: 1; transform: translateX(-50%) rotate(1.6deg); }
-}
 
 /* Rotating conic glow ring (mascot backdrop, About logo) */
 .glow-ring {
@@ -390,19 +306,11 @@
   animation: lc-ring-rotate 9s linear infinite;
   pointer-events: none;
 }
-@keyframes lc-ring-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 /* Mascot halo — warm breathing drop-shadow */
 .jar-glow {
   filter: drop-shadow(0 0 26px rgba(245, 168, 28, 0.38)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55));
   animation: lc-jar-glow 3.4s ease-in-out infinite alternate;
-}
-@keyframes lc-jar-glow {
-  0% { filter: drop-shadow(0 0 14px rgba(245, 168, 28, 0.28)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)); }
-  100% { filter: drop-shadow(0 0 34px rgba(245, 168, 28, 0.5)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)); }
 }
 
 /* About modal — perpetually panning gradient card (border-box trick) */
@@ -414,18 +322,10 @@
   background-size: 100% 100%, 320% 320%;
   animation: lc-about-pan 5.5s linear infinite;
 }
-@keyframes lc-about-pan {
-  0% { background-position: 0 0, 0% 50%; }
-  100% { background-position: 0 0, 320% 50%; }
-}
 .about-chip {
   background: linear-gradient(115deg, rgba(245, 168, 28, 0.16), rgba(43, 180, 140, 0.16), rgba(230, 59, 46, 0.16), rgba(245, 168, 28, 0.16));
   background-size: 300% 300%;
   animation: lc-about-chip 6s ease-in-out infinite alternate;
-}
-@keyframes lc-about-chip {
-  0% { background-position: 0% 40%; }
-  100% { background-position: 100% 60%; }
 }
 
 /* CTA shine sweep — a light band glides across the primary button */
@@ -445,12 +345,6 @@
   pointer-events: none;
   animation: lc-cta-shine 2.9s ease-in-out infinite;
 }
-@keyframes lc-cta-shine {
-  0% { left: -90%; opacity: 0; }
-  18% { opacity: 1; }
-  46% { left: 135%; opacity: 0; }
-  100% { left: 135%; opacity: 0; }
-}
 
 /* Drifting aurora backdrop — three coloured lights breathing across the kitchen */
 .aurora-bg {
@@ -462,14 +356,6 @@
   background-size: 200% 200%;
   animation: lc-aurora-drift 16s ease-in-out infinite alternate;
 }
-@keyframes lc-aurora-drift {
-  0% {
-    background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
-  }
-  100% {
-    background-position: 30% 25%, 65% 30%, 70% 70%, 25% 75%;
-  }
-}
 
 /* Checkerboard cement-tile floor, faded toward the edges */
 .tile-floor-mask {
@@ -477,35 +363,6 @@
   mask-image: radial-gradient(120% 90% at 50% 30%, #000 40%, transparent 78%);
 }
 
-/* Diagonal shimmer sweep on big display text */
-.text-shimmer {
-  background: linear-gradient(
-    100deg,
-    #f5a81c 0%,
-    #f5a81c 32%,
-    #fff3c4 42%,
-    #ffc94a 50%,
-    #fff3c4 58%,
-    #f5a81c 68%,
-    #f5a81c 100%
-  );
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: lc-shimmer-sweep 3.4s ease-in-out infinite;
-}
-@keyframes lc-shimmer-sweep {
-  0% {
-    background-position: 120% 0;
-  }
-  55% {
-    background-position: -20% 0;
-  }
-  100% {
-    background-position: -20% 0;
-  }
-}
 
 /* Gold gradient border panel (padding-box / border-box trick) */
 .gradient-border {
@@ -546,42 +403,16 @@
 }
 
 /* Slow rotating halo behind the mascot */
-@keyframes lc-spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 .anim-spin-slow {
   animation: lc-spin-slow 14s linear infinite;
 }
 
 /* Soft breathing glow for the halo ring */
-@keyframes lc-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 .anim-breathe {
   animation: lc-breathe 3.6s ease-in-out infinite;
 }
 
 /* One-sweep shine across a button (use sparingly, e.g. primary CTA) */
-@keyframes lc-sheen {
-  0% {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  60%,
-  100% {
-    transform: translateX(240%) skewX(-18deg);
-  }
-}
 .sheen::after {
   content: "";
   position: absolute;
@@ -594,35 +425,13 @@
 }
 
 /* Achievement badge pop when unlocked */
-@keyframes lc-badge-pop {
-  0% {
-    opacity: 0;
-    transform: scale(0.4) rotate(-14deg);
-  }
-  55% {
-    opacity: 1;
-    transform: scale(1.35) rotate(6deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-}
 .anim-badge-pop {
   animation: lc-badge-pop 560ms cubic-bezier(0.18, 1.4, 0.36, 1) both;
 }
 
 /* Corner-panel entrances (GAME / INFO) */
-@keyframes lc-corner-left {
-  from { opacity: 0; transform: translate(-28px, 18px); }
-  to { opacity: 1; transform: translate(0, 0); }
-}
 .anim-corner-left {
   animation: lc-corner-left 420ms cubic-bezier(0.2, 1.2, 0.36, 1) 120ms both;
-}
-@keyframes lc-corner-right {
-  from { opacity: 0; transform: translate(28px, 18px); }
-  to { opacity: 1; transform: translate(0, 0); }
 }
 .anim-corner-right {
   animation: lc-corner-right 420ms cubic-bezier(0.2, 1.2, 0.36, 1) 200ms both;
@@ -700,4 +509,316 @@
 }
 :focus:not(:focus-visible) {
   outline: none;
+}
+
+/* ==========================================================================
+   v1.1.8 — hero decoration, halo rings, and the single-scroll fix
+   ========================================================================== */
+
+/*
+ * Floating decoration.
+ *
+ * Each item drifts on its own duration and delay (set inline per item), so
+ * the set never pulses in unison. Two independent keyframes are used rather
+ * than one because a single path makes fourteen items read as a wave — which
+ * looks like a loading state, not like a menu.
+ */
+
+.decor-item {
+  animation-duration: var(--float-dur, 7s);
+  animation-delay: var(--float-delay, 0s);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform;
+}
+/* Alternate the two paths by index so neighbours never match. */
+.decor-item:nth-child(odd) {
+  animation-name: lc-float-a;
+}
+.decor-item:nth-child(even) {
+  animation-name: lc-float-b;
+}
+
+/*
+ * The halo behind the mascot: three rings rotating at different speeds.
+ *
+ * One ring at one speed reads as a spinner (a v1.1.7 complaint). Three at
+ * co-prime-ish durations (18s / 26s / 34s) almost never align, so the halo
+ * looks alive rather than loading.
+ */
+.halo-ring-1 {
+  animation: lc-halo-cw 18s linear infinite;
+  transform-origin: 50% 50%;
+}
+.halo-ring-2 {
+  animation: lc-halo-ccw 26s linear infinite;
+  transform-origin: 50% 50%;
+}
+.halo-ring-3 {
+  animation: lc-halo-cw 34s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+/*
+ * A slow drifting glow *behind* the jar. Separate from the rings on purpose:
+ * `mix-blend-mode` with a rotation would drag the highlight around the jar
+ * and make it look like the ceramic is spinning.
+ */
+.halo-glow {
+  animation: lc-halo-breathe 5.2s ease-in-out infinite;
+}
+
+/*
+ * The one-scroll-container fix.
+ *
+ * v1.1.7 nested an `overflow-y-auto` inner scroller inside a flex column, and
+ * centred its content with `min-h-full … justify-center`. When the content
+ * grew taller than the box, centring pushed its top *above* the scroll
+ * origin — the `LỌ` glyph became unreachable at any scroll position, which is
+ * the "kéo lên xuống" in the report.
+ *
+ * `.menu-scroll` makes the whole screen one scroll container:
+ *   - it is the only thing that scrolls
+ *   - content is anchored to the top (`justify-start`), never centred, so
+ *     nothing can be pushed past the origin
+ *   - `scroll-padding-bottom` keeps the floating chrome from covering the
+ *     last row when you scroll to the end
+ */
+/*
+ * `.menu-pane` — the start screen's content box.
+ *
+ * ROUND 3: IT DOES NOT SCROLL. AT ALL.
+ * -----------------------------------
+ * Rounds 1 and 2 argued about how to hide the scrollbar. Both were answering
+ * the wrong question: a bar was visible because the content was taller than
+ * the window, and every "hide the bar" fix just moved the overflow somewhere
+ * the eye found next — a cut wordmark, a missing copyright line, a gap.
+ *
+ * `planMenuLayout()` now guarantees `scene + reserve === viewport.height`, so
+ * the column is exactly one window tall and there is nothing to scroll. This
+ * box is `overflow: hidden` to *prove* it: if a future change makes the
+ * content taller, the content is clipped, which is loud and easy to trace —
+ * unlike a scrollbar that quietly appears on a machine whose font metrics
+ * differ by two pixels.
+ *
+ * `overflow: clip` is preferred where supported: unlike `hidden` it does not
+ * create a scroll container at all, so no wheel event is swallowed and no
+ * keyboard scroll is possible even in a nested case.
+ */
+.menu-pane {
+  overflow: clip;
+  overflow-clip-margin: 0;
+}
+@supports not (overflow: clip) {
+  .menu-pane {
+    overflow: hidden;
+  }
+}
+
+/*
+ * v1.1.8 FIX — "phần thông tin tự nhiên bị chia ra".
+ *
+ * The panel body used to be `justify-around`, which spreads N rows over a
+ * height sized for SEVEN. GAME has seven and looked right; INFO has three and
+ * ended up with a big gap above, a gap between, and a gap below — the
+ * screenshot's THÔNG TIN panel reads as three unrelated buttons floating in a
+ * tall box. `justify-start` keeps rows in a stack at the top of the panel; the
+ * remaining space becomes one deliberate footer instead of three accidental
+ * gaps.
+ */
+/*
+ * GAME pins its rows to the top; INFO spreads them.
+ *
+ * ROUND 6, and this is the hole in both round-6 screenshots. Both panels are
+ * sized to CORNER_MAX_ROWS (7) so their frames line up, but GAME *has* seven
+ * rows and INFO has four plus two blocks. With `flex-start` on both, INFO's
+ * content stacked at the top, its footer was pushed to the bottom by
+ * `margin-top: auto`, and the ~126px between them was empty — the large blank
+ * region under «THOÁT».
+ *
+ * The rejected `justify-around` spread *every* row with equal gaps, which broke
+ * the panels' internal rhythm. `space-between` on INFO only keeps GAME exactly
+ * as it was and turns INFO's single hole into even gaps between its six blocks.
+ *
+ * `flex-start` is kept for the tight economy, where there is no slack at all.
+ */
+.corner-panel-body {
+  justify-content: flex-start;
+}
+.corner-panel[data-panel="right"] .corner-panel-body {
+  justify-content: space-between;
+}
+.corner-panel[data-tight="1"] .corner-panel-body {
+  justify-content: flex-start;
+}
+/* The deliberate footer that fills the space INFO has left over. */
+.panel-footer {
+  /*
+   * No `margin-top: auto`.
+   *
+   * It existed to shove the footer to the bottom of a `flex-start` column,
+   * which is what left the hole above it. Now that INFO distributes its blocks
+   * with `space-between`, an auto margin would push the footer away from the
+   * block above it a *second* time and recreate a smaller version of the same
+   * gap, at the bottom instead of the middle.
+   *
+   * GAME never relied on it: its seven rows fill the body.
+   */
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-top: 2px solid rgba(15, 61, 54, 0.9);
+  padding-top: 6px;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #5c7d74;
+}
+/* (removed in v1.1.8 — a coloured thumb is exactly the bar the report asked to hide) */
+
+/*
+ * The hero's own band. Kept as a class so the height can be driven by a CSS
+ * custom property set from `planMenuLayout()` — the TypeScript number and the
+ * painted pixel come from one source.
+ */
+/*
+ * v1.1.8 FIX — "phần ở dưới menu vẫn còn hơi trống".
+ *
+ * This was `min-height`. The hero therefore only ever grew to the height its
+ * content needed, and the `scene` value the plan assigned it (342px at 720p,
+ * 518px on a tall window) was a *floor* the layout never actually consumed:
+ * the difference between "what the content needs" and "what the plan
+ * reserved" showed up as dead space between the tagline and the corner
+ * panels.
+ *
+ * `height` makes the hero occupy exactly the band the plan paid for. Its own
+ * `justify-center` (in StartScreen) then centres the lockup in that band
+ * instead of stacking it against the top, which is also what puts the
+ * wordmark "ở giữa rồi kéo lên một tí" rather than simply near the top.
+ */
+
+/*
+ * `leading-[0.82]` on the h1 is a *display* choice: the two wordmark lines
+ * should sit tight. It is also why the dot of `Ọ` used to sit outboard of its
+ * own line box and get painted over by the CHÉO band. The fix belongs here,
+ * on the hero, not on the wordmark: the hero owns the padding budget.
+ */
+.menu-hero {
+  /*
+   * `height`, not `min-height`, and no `flex-grow`.
+   *
+   * Round 2 used `min-height` + `flex: 1 0 auto`, which let the hero grow past
+   * its band and push the column taller than the window — the content then
+   * scrolled, and hiding the scrollbar only hid the evidence. The plan now
+   * hands the hero an exact height and `planMenuLayout()` guarantees it fits,
+   * so the hero is a fixed band: `flex: none` and a hard `height`.
+   *
+   * The inline `height` from StartScreen is the source of truth (it comes from
+   * the same plan the chrome's `reserve` comes from); this rule is the
+   * fallback for a server render, where no plan has been computed yet.
+   */
+  flex: none;
+  height: var(--menu-scene-h, 320px);
+  overflow: hidden;
+}
+
+/* A ruled band behind the tagline — the menu's "stage edge". */
+.hero-rule {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(245, 168, 28, 0.5) 18%, rgba(245, 168, 28, 0.5) 82%, transparent);
+}
+
+/*
+ * v1.1.8 (round 3) — the hero's closing caption is GONE.
+ *
+ * Round 2 filled the band under the tagline with three counters (modes,
+ * ingredients, achievements). The report says to remove it: "bỏ luôn chỗ chữ
+ * ở hình 2 hình số 2". Fair — those three numbers are already stated in the
+ * tagline one paragraph above, so the strip repeated them in a louder voice.
+ *
+ * Round 3 replaced the strip with a three-column "deck" that carried the
+ * current mode, the day's challenge and a rotating rule. ROUND 6 removed that
+ * too: the deck was three paragraphs in a fixed-height band, and no band tall
+ * enough for the 200px wordmark was also tall enough for three paragraphs —
+ * at 1920×1080 its right column was clipped mid-sentence.
+ *
+ * So the band under the wordmark is empty now, on purpose. The hero holds the
+ * wordmark, the badge and the record, and nothing else; what the deck knew
+ * either moved to the INFO panel (the challenge, one line) or was already
+ * somewhere better (the mode chip on the mascot, the rules in the how-to
+ * modal). An empty band is the price of a hero that fits at every size.
+ */
+
+/*
+ * ---- landscape economy ---------------------------------------------------
+ *
+ * `planMenuLayout()` has three economies below the normal height, and each one
+ * has a matching hook here. They are kept in CSS rather than Tailwind classes
+ * because they are *plan* decisions, not breakpoints: two windows the same
+ * width can get different plans, so a `sm:`/`lg:` utility would be wrong.
+ */
+
+/* Rows drop from 34px to 26px. The marker is on the panel, and the rows
+ * inherit — one attribute, seven buttons. */
+/*
+ * ---- compact chrome ------------------------------------------------------
+ *
+ * The fourth economy, and the only one that hides nothing. `data-tight` shrinks
+ * rows, the plan drops the ticker and the footer; this one only tightens the
+ * *air* — 6px gaps to 3, 16px padding to 10, a 22px header to 18.
+ *
+ * It is placed third in the sacrifice order (after tight rows, before the
+ * ticker) because at that point it is the cheapest thing left. On a 390px
+ * landscape phone it is worth 28px of hero, which is the difference between a
+ * 146px band that clipped the top of `LỌ` and a 174px one that seats it.
+ */
+.corner-panel[data-compact="1"] .corner-panel-body {
+  gap: 3px;
+  padding: 5px;
+}
+
+.corner-panel[data-compact="1"] .panel-head {
+  height: 18px;
+}
+
+.corner-panel[data-tight="1"] .menu-row {
+  /*
+   * `!important` on purpose. Row height is an inline style from
+   * `MenuItemButton` (`style={{ height }}`), and an inline declaration beats
+   * any selector. The alternative — passing `tight` down through every row —
+   * spreads a plan decision across seven components; this keeps it in one
+   * rule that the plan's marker switches on.
+   */
+  height: 26px !important;
+  min-height: 26px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.corner-panel[data-tight="1"] .menu-row .menu-row-icon {
+  height: 16px;
+  width: 16px;
+}
+.corner-panel[data-tight="1"] h2 {
+  height: 18px;
+  letter-spacing: 0.28em;
+}
+
+/* A dotted orbit arc drawn behind the jar. */
+.halo-arc {
+  stroke-dasharray: 2 8;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decor-item,
+  .halo-ring-1,
+  .halo-ring-2,
+  .halo-ring-3,
+  .halo-glow {
+    animation: none !important;
+  }
 }

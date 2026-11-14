@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 250" role="img" aria-label="Ba tầng phát hành Lọ Chéo v1.1.7 — MAJOR hồng, UPDATE vàng, PATCH tím — kèm thời gian biểu 9 bản từ 26/10 tới 12/11/2026 (hoạt họa SMIL)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 250" role="img" aria-label="Ba tầng phát hành Lọ Chéo v1.1.8 — MAJOR hồng, UPDATE vàng, PATCH tím — kèm thời gian biểu 10 bản từ 26/10 tới 14/11/2026 (hoạt họa SMIL)">
   <defs>
+    <filter id="rt-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="rtBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0a2422"/>
       <stop offset="1" stop-color="#061a1a"/>
@@ -13,7 +18,19 @@
   <rect width="1200" height="250" rx="18" fill="url(#rtBg)"/>
   <rect x="1" y="1" width="1198" height="248" rx="18" fill="none" stroke="#123f38" stroke-width="2"/>
 
-  <text x="600" y="32" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="18" letter-spacing="4" fill="#fdf3e0">BA TẦNG PHÁT HÀNH <tspan fill="#f5a81c">v1.1.7</tspan></text>
+  <!-- Bloom under the heading: the same radial falloff the
+
+       banner uses, at a fifth of the size. It is what stops a
+
+       dark-on-dark diagram from looking printed rather than lit. -->
+
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#f5a81c" opacity="0.10">
+
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+
+  </ellipse>
+
+  <text x="600" y="32" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="18" letter-spacing="4" fill="#fdf3e0">BA TẦNG PHÁT HÀNH <tspan fill="#f5a81c">v1.1.8</tspan></text>
   <text x="600" y="50" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" letter-spacing="2.6" fill="#2bb48c">TẦNG SUY RA TỪ SEMVER — KHÔNG GÕ TAY</text>
 
   <!-- three tier chips -->
@@ -42,7 +59,7 @@
         <animate attributeName="fill-opacity" values="0.10;0.22;0.10" dur="3s" begin="2s" repeatCount="indefinite"/>
       </rect>
       <text x="832" y="102" font-size="13" font-weight="900" letter-spacing="3" fill="#c39bff">PATCH</text>
-      <text x="832" y="122" font-size="9" fill="#fdf3e0" fill-opacity="0.7">x.y.z · bản vá — vd. 1.1.7</text>
+      <text x="832" y="122" font-size="9" fill="#fdf3e0" fill-opacity="0.7">x.y.z · bản vá — vd. 1.1.8</text>
       <text x="832" y="138" font-size="9" fill="#c39bff" fill-opacity="0.8">#9d6bff · violet</text>
     </g>
   </g>
@@ -54,52 +71,57 @@
   </line>
 
   <g font-family="'Courier New',monospace" font-size="8.5" text-anchor="middle" font-weight="700">
-    <g>
-      <circle cx="70" cy="196" r="6" fill="#ff5fb0"/>
-      <text x="70" y="220" fill="#ff8fd0">1.0.0</text>
+        <g>
+      <circle cx="70" cy="196" r="4.4" fill="#ff5fb0"/>
+      <text x="70" y="220" fill="#ffb3da">1.0.0</text>
       <text x="70" y="232" fill="#fdf3e0" fill-opacity="0.45">10-26</text>
     </g>
     <g>
-      <circle cx="203" cy="196" r="5" fill="#f5a81c"/>
-      <text x="203" y="220" fill="#ffc94a">1.1.0</text>
-      <text x="203" y="232" fill="#fdf3e0" fill-opacity="0.45">10-29</text>
+      <circle cx="188" cy="196" r="4.4" fill="#f5a81c"/>
+      <text x="188" y="220" fill="#ffd98a">1.1.0</text>
+      <text x="188" y="232" fill="#fdf3e0" fill-opacity="0.45">10-29</text>
     </g>
     <g>
-      <circle cx="336" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="336" y="220" fill="#c39bff">1.1.1</text>
-      <text x="336" y="232" fill="#fdf3e0" fill-opacity="0.45">10-31</text>
+      <circle cx="306" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="306" y="220" fill="#c39bff" fill-opacity="0.75">1.1.1</text>
+      <text x="306" y="232" fill="#fdf3e0" fill-opacity="0.45">10-31</text>
     </g>
     <g>
-      <circle cx="469" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="469" y="220" fill="#c39bff">1.1.2</text>
-      <text x="469" y="232" fill="#fdf3e0" fill-opacity="0.45">11-02</text>
+      <circle cx="423" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="423" y="220" fill="#c39bff" fill-opacity="0.75">1.1.2</text>
+      <text x="423" y="232" fill="#fdf3e0" fill-opacity="0.45">11-02</text>
     </g>
     <g>
-      <circle cx="602" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="602" y="220" fill="#c39bff">1.1.3</text>
-      <text x="602" y="232" fill="#fdf3e0" fill-opacity="0.45">11-04</text>
+      <circle cx="541" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="541" y="220" fill="#c39bff" fill-opacity="0.75">1.1.3</text>
+      <text x="541" y="232" fill="#fdf3e0" fill-opacity="0.45">11-04</text>
     </g>
     <g>
-      <circle cx="735" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="735" y="220" fill="#c39bff">1.1.4</text>
-      <text x="735" y="232" fill="#fdf3e0" fill-opacity="0.45">11-06</text>
+      <circle cx="659" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="659" y="220" fill="#c39bff" fill-opacity="0.75">1.1.4</text>
+      <text x="659" y="232" fill="#fdf3e0" fill-opacity="0.45">11-06</text>
     </g>
     <g>
-      <circle cx="868" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="868" y="220" fill="#c39bff">1.1.5</text>
-      <text x="868" y="232" fill="#fdf3e0" fill-opacity="0.45">11-08</text>
+      <circle cx="777" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="777" y="220" fill="#c39bff" fill-opacity="0.75">1.1.5</text>
+      <text x="777" y="232" fill="#fdf3e0" fill-opacity="0.45">11-08</text>
     </g>
     <g>
-      <circle cx="1001" cy="196" r="4.4" fill="#9d6bff"/>
-      <text x="1001" y="220" fill="#c39bff">1.1.6</text>
-      <text x="1001" y="232" fill="#fdf3e0" fill-opacity="0.45">11-10</text>
+      <circle cx="894" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="894" y="220" fill="#c39bff" fill-opacity="0.75">1.1.6</text>
+      <text x="894" y="232" fill="#fdf3e0" fill-opacity="0.45">11-10</text>
+    </g>
+    <g>
+      <circle cx="1012" cy="196" r="4.4" fill="#9d6bff"/>
+      <text x="1012" y="220" fill="#c39bff" fill-opacity="0.75">1.1.7</text>
+      <text x="1012" y="232" fill="#fdf3e0" fill-opacity="0.45">11-12</text>
     </g>
     <g>
       <circle cx="1130" cy="196" r="6" fill="#9d6bff" stroke="#fff3c4" stroke-width="1.6">
         <animate attributeName="r" values="6;8.5;6" dur="2s" repeatCount="indefinite"/>
       </circle>
-      <text x="1130" y="220" fill="#e8dcff">1.1.7</text>
-      <text x="1130" y="232" fill="#fdf3e0" fill-opacity="0.45">11-12</text>
+      <text x="1130" y="220" fill="#c39bff">1.1.8</text>
+      <text x="1130" y="232" fill="#fdf3e0" fill-opacity="0.45">11-14</text>
       <text x="1130" y="168" fill="#fff3c4" font-size="8" letter-spacing="1.6">HÔM NAY</text>
     </g>
   </g>

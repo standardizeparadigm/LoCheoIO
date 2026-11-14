@@ -58,7 +58,19 @@ export const MODE_LIST: readonly ModeConfig[] = [
   feast,
 ];
 
-/** Type guard for a stored/URL-supplied mode string. */
+/**
+ * Type guard for a stored/URL-supplied mode string.
+ *
+ * `v in MODES` alone is not enough: `in` walks the prototype chain, so
+ * `isModeId("toString")`, `"constructor"` and `"__proto__"` all returned `true`.
+ * A save file edited by hand — or a fuzzer, or a `?mode=` link — could therefore
+ * hand `MODES["constructor"]` to the engine, which is `Object`, not a mode, and
+ * the boot path would throw reading `pts` off it. `runSave.ts` normalises the
+ * stored mode through this guard, so the bug was reachable from disk.
+ *
+ * `hasOwnProperty.call` fixes it without allocating a key list on every call. (Not
+ * `Object.hasOwn`: the project's TS target predates ES2022.)
+ */
 export function isModeId(v: unknown): v is ModeId {
-  return typeof v === "string" && v in MODES;
+  return typeof v === "string" && Object.prototype.hasOwnProperty.call(MODES, v);
 }

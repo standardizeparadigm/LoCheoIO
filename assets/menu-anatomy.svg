@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-label="Giải phẫu màn hình bắt đầu Lọ Chéo v1.1.8 — hero, 14 món trang trí, panel GAME và THÔNG TIN, dải chỉ số, ticker; kèm chú thích từng vùng (hoạt họa SMIL)">
+  <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="ma-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="maBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2422"/><stop offset="1" stop-color="#061a1a"/>
+    </linearGradient>
+    <linearGradient id="maHero" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d2f2b"/><stop offset="1" stop-color="#0a2422"/>
+    </linearGradient>
+    <linearGradient id="maGold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/><stop offset="0.5" stop-color="#ffd977"/><stop offset="1" stop-color="#f5a81c"/>
+    </linearGradient>
+    <radialGradient id="maGlow"><stop offset="0" stop-color="#8cc63f" stop-opacity="0.4"/><stop offset="1" stop-color="#8cc63f" stop-opacity="0"/></radialGradient>
+  </defs>
+
+  <rect width="1200" height="460" fill="url(#maBg)"/>
+  <rect x="1" y="1" width="1198" height="458" rx="14" fill="none" stroke="#123f38" stroke-width="2"/>
+
+  <text x="34" y="34" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="15" letter-spacing="3" fill="#fdf3e0">GIẢI PHẪU MÀN HÌNH BẮT ĐẦU <tspan fill="#9d6bff">v1.1.8</tspan></text>
+
+  <!-- hero band -->
+  <g transform="translate(34,52)">
+    <rect width="776" height="268" rx="8" fill="url(#maHero)" stroke="#1c6b5c" stroke-width="1.6"/>
+    <text x="12" y="18" font-family="system-ui,sans-serif" font-size="8.5" letter-spacing="2" fill="#3f8177">HERO · scene 342px</text>
+
+    <!-- decor dots -->
+    <g fill="#8cc63f" opacity="0.75">
+      <circle cx="40" cy="60" r="2.4"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite"/></circle>
+      <circle cx="96" cy="46" r="1.8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.6s" begin="0.4s" repeatCount="indefinite"/></circle>
+      <circle cx="188" cy="52" r="2"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.8s" begin="0.9s" repeatCount="indefinite"/></circle>
+      <circle cx="300" cy="44" r="1.6"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.9s" begin="1.3s" repeatCount="indefinite"/></circle>
+      <circle cx="700" cy="66" r="2.2"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.4s" begin="0.6s" repeatCount="indefinite"/></circle>
+      <circle cx="742" cy="120" r="1.7"><animate attributeName="opacity" values="0.3;1;0.3" dur="4.1s" begin="1.1s" repeatCount="indefinite"/></circle>
+      <circle cx="60" cy="212" r="1.9"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.6s" begin="0.2s" repeatCount="indefinite"/></circle>
+      <circle cx="352" cy="222" r="1.5"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.7s" begin="1.6s" repeatCount="indefinite"/></circle>
+    </g>
+
+    <!-- wordmark -->
+    <text x="150" y="96" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="46" fill="#fdf3e0" opacity="0.95">LỌ</text>
+    <text x="112" y="152" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="62" fill="url(#maGold)">CHÉO</text>
+    <!-- emphasis on the accent -->
+    <circle cx="205" cy="92" r="11" fill="none" stroke="#e63b2e" stroke-width="1.6" opacity="0.9">
+      <animate attributeName="r" values="11;16;11" dur="2.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.95;0.2;0.95" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="228" y="78" font-family="system-ui,sans-serif" font-size="8" fill="#e8837a">dấu sắc không thể bị cắt (v1.1.8)</text>
+    <line x1="222" y1="80" x2="206" y2="88" stroke="#e63b2e" stroke-width="1" opacity="0.8"/>
+
+    <!-- tagline -->
+    <rect x="112" y="172" width="290" height="4" rx="2" fill="#2a5d54" opacity="0.7"/>
+    <rect x="112" y="182" width="230" height="4" rx="2" fill="#2a5d54" opacity="0.5"/>
+
+    <!-- stage facts strip -->
+    <g transform="translate(112,206)">
+      <rect width="286" height="34" rx="4" fill="#0b2a28" stroke="#166153" stroke-width="1"/>
+      <g font-family="system-ui,sans-serif" text-anchor="middle">
+        <text x="48" y="16" font-size="11" font-weight="700" fill="#f5a81c">9</text>
+        <text x="48" y="27" font-size="6" letter-spacing="1.4" fill="#4f7a70">CHẾ ĐỘ</text>
+        <text x="143" y="16" font-size="11" font-weight="700" fill="#f5a81c">14</text>
+        <text x="143" y="27" font-size="6" letter-spacing="1.4" fill="#4f7a70">NGUYÊN LIỆU</text>
+        <text x="238" y="16" font-size="11" font-weight="700" fill="#f5a81c">16</text>
+        <text x="238" y="27" font-size="6" letter-spacing="1.4" fill="#4f7a70">THÀNH TỰU</text>
+      </g>
+      <line x1="95" y1="6" x2="95" y2="28" stroke="#166153"/>
+      <line x1="190" y1="6" x2="190" y2="28" stroke="#166153"/>
+    </g>
+
+    <!-- jar + halo -->
+    <g transform="translate(600,132)">
+      <circle r="66" fill="url(#maGlow)"/>
+      <circle r="52" fill="none" stroke="#2bb48c" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="2 8">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/>
+      </circle>
+      <ellipse rx="30" ry="34" fill="#f7f2e4" stroke="#0b2a28" stroke-width="2"/>
+      <rect x="-30" y="-10" width="60" height="44" rx="14" fill="#8cc63f" opacity="0.55"/>
+      <circle cx="-10" cy="4" r="5" fill="#0b2a28"/><circle cx="10" cy="4" r="5" fill="#0b2a28"/>
+      <circle cx="-8" cy="2" r="1.6" fill="#fff"/><circle cx="12" cy="2" r="1.6" fill="#fff"/>
+      <path d="M-7 18 Q0 25 7 18" stroke="#0b2a28" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <text x="600" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="7.5" fill="#4f7a70">3 vòng halo 18s · 26s · 34s</text>
+  </g>
+
+  <!-- GAME panel -->
+  <g transform="translate(34,332)">
+    <rect width="238" height="104" rx="6" fill="#0b2a28" stroke="#1c6b5c" stroke-width="1.4"/>
+    <text x="10" y="15" font-family="'Arial Black',sans-serif" font-weight="900" font-size="7.5" letter-spacing="2.6" fill="#f5a81c">GAME</text>
+    <g font-family="system-ui,sans-serif" font-size="7.5" fill="#d9f2c8">
+      <rect x="8" y="22" width="222" height="17" rx="2" fill="#f5a81c"/><text x="14" y="33.5" fill="#061a1a" font-weight="700">» CHƠI NGAY</text>
+      <rect x="8" y="42" width="222" height="14" rx="2" fill="#0f3d36"/><text x="14" y="52" opacity="0.55">↺ CHƠI TIẾP</text>
+      <rect x="8" y="59" width="222" height="14" rx="2" fill="#0f3d36"/><text x="14" y="69">▦ CHẾ ĐỘ CHƠI</text>
+      <rect x="8" y="76" width="222" height="14" rx="2" fill="#0f3d36"/><text x="14" y="86">▸ CÁCH CHƠI · mới ở 1.1.8</text>
+    </g>
+    <text x="10" y="100" font-family="system-ui,sans-serif" font-size="6.5" letter-spacing="1.6" fill="#5c7d74">7/16 · 9</text>
+  </g>
+
+  <!-- INFO panel -->
+  <g transform="translate(282,332)">
+    <rect width="238" height="104" rx="6" fill="#0b2a28" stroke="#1c6b5c" stroke-width="1.4"/>
+    <text x="10" y="15" font-family="'Arial Black',sans-serif" font-weight="900" font-size="7.5" letter-spacing="2.6" fill="#f5a81c">THÔNG TIN</text>
+    <g font-family="system-ui,sans-serif" font-size="7.5" fill="#d9f2c8">
+      <rect x="8" y="22" width="222" height="14" rx="2" fill="#0f3d36"/><text x="14" y="32">▸ GIỚI THIỆU TÁC GIẢ</text>
+      <rect x="8" y="39" width="222" height="14" rx="2" fill="#0f3d36"/><text x="14" y="49">▸ CHANGELOG</text>
+      <rect x="8" y="56" width="222" height="14" rx="2" fill="#e63b2e"/><text x="14" y="66" fill="#fdf3e0">× THOÁT</text>
+    </g>
+    <line x1="8" y1="80" x2="230" y2="80" stroke="#0f3d54" stroke-width="1" opacity="0.8"/>
+    <text x="10" y="93" font-family="system-ui,sans-serif" font-size="6.5" letter-spacing="1.6" fill="#5c7d74">v1.1.8 · ◆PATCH</text>
+    <text x="10" y="101" font-family="system-ui,sans-serif" font-size="5.5" fill="#3f8177">hàng xếp từ trên — không còn justify-around</text>
+  </g>
+
+  <!-- ticker -->
+  <g transform="translate(534,332)">
+    <rect width="632" height="104" rx="6" fill="#071c1a" stroke="#123f38" stroke-width="1.2"/>
+    <text x="10" y="15" font-family="'Arial Black',sans-serif" font-weight="900" font-size="7.5" letter-spacing="2.6" fill="#2bb48c">TICKER · 48px</text>
+    <g font-family="'Arial Black',sans-serif" font-size="9.5" letter-spacing="0.6">
+      <text x="10" y="42" fill="#f5a81c">CÀ PHÁO +10</text>
+      <text x="112" y="42" fill="#8cc63f">ỚT +15</text>
+      <text x="176" y="42" fill="#f5a81c">TỎI +10</text>
+      <text x="240" y="42" fill="#e8837a">GỪNG +12</text>
+      <text x="322" y="42" fill="#f5a81c">MUỐI +8</text>
+      <text x="392" y="42" fill="#8cc63f">CẢI +18</text>
+      <text x="456" y="42" fill="#e8837a">CẢI VÀNG +45</text>
+      <animateTransform attributeName="transform" type="translate" dur="0s" repeatCount="indefinite"/>
+    </g>
+    <g>
+      <animate attributeName="opacity" values="1" dur="1s"/>
+    </g>
+    <line x1="0" y1="52" x2="632" y2="52" stroke="#123f38" stroke-width="1"/>
+    <text x="316" y="66" text-anchor="middle" font-family="system-ui,sans-serif" font-size="6.5" letter-spacing="2" fill="#3f8177">V1.1.8 · AGPL-3.0 · STANDARDIZE PARADIGM · 100% OFFLINE</text>
+    <text x="10" y="90" font-family="system-ui,sans-serif" font-size="6" fill="#2bb48c">thanh cuộn: 0px — vẫn cuộn được, không hiện bar</text>
+  </g>
+
+  <!-- callouts -->
+  <g font-family="system-ui,sans-serif" font-size="7.5" fill="#7d9d94">
+    <text x="34" y="452">hero giữ đúng band mà planMenuLayout() cấp · không còn khoảng trống dưới tagline</text>
+    <text x="1166" y="452" text-anchor="end" fill="#166153">src/components/menu/ · layout · scene · panel · stage · ticker</text>
+  </g>
+</svg>

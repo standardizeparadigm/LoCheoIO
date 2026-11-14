@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="Lọ Chéo license — GNU AGPL-3.0-only, copyleft free software">
   <defs>
+    <filter id="lc-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <radialGradient id="sealBg" cx="0.5" cy="0.42" r="0.75">
       <stop offset="0" stop-color="#123f38"/>
       <stop offset="0.55" stop-color="#0b2823"/>
@@ -19,6 +24,12 @@
   </defs>
 
   <rect width="1200" height="300" rx="16" fill="url(#sealBg)"/>
+  <!-- Bloom under the heading: the same radial falloff the
+       banner uses, at a fifth of the size. It is what stops a
+       dark-on-dark diagram from looking printed rather than lit. -->
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#2bb48c" opacity="0.10">
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+  </ellipse>
   <text x="600" y="26" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700"
     font-size="11" letter-spacing="6" fill="#2bb48c">— LICENSE · GIẤY PHÉP —</text>
 

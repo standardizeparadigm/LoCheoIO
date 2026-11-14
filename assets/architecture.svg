@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-label="Sơ đồ kiến trúc Lọ Chéo v1.1.7 — input, engine, state, render, audio, i18n, storage và UI, kèm luồng dữ liệu chạy (hoạt họa SMIL)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-label="Sơ đồ kiến trúc Lọ Chéo v1.1.8 — input, engine, state, render, audio, i18n, storage và UI, kèm luồng dữ liệu chạy (hoạt họa SMIL)">
   <defs>
+    <filter id="ar-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="arBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0a2422"/>
       <stop offset="1" stop-color="#061a1a"/>
@@ -12,7 +17,19 @@
   <rect width="1200" height="420" rx="18" fill="url(#arBg)"/>
   <rect x="1" y="1" width="1198" height="418" rx="18" fill="none" stroke="#123f38" stroke-width="2"/>
 
-  <text x="600" y="34" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="20" letter-spacing="4" fill="#fdf3e0">KIẾN TRÚC <tspan fill="#f5a81c">v1.1.7</tspan></text>
+  <!-- Bloom under the heading: the same radial falloff the
+
+       banner uses, at a fifth of the size. It is what stops a
+
+       dark-on-dark diagram from looking printed rather than lit. -->
+
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#2bb48c" opacity="0.10">
+
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+
+  </ellipse>
+
+  <text x="600" y="34" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="20" letter-spacing="4" fill="#fdf3e0">KIẾN TRÚC <tspan fill="#f5a81c">v1.1.8</tspan></text>
   <text x="600" y="54" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" letter-spacing="3" fill="#2bb48c">MỘT CHIỀU DỮ LIỆU · KHÔNG PHỤ THUỘC VÒNG</text>
 
   <g font-family="'Courier New',monospace" font-size="10" font-weight="700" letter-spacing="1.4" text-anchor="middle">
@@ -52,7 +69,7 @@
     <g>
       <rect x="330" y="212" width="260" height="62" rx="10" fill="#0f322c" stroke="#8cc63f" stroke-width="1.6"/>
       <text x="460" y="238" fill="#8cc63f">I18N</text>
-      <text x="460" y="256" fill="#fdf3e0" fill-opacity="0.65" font-size="9">7 locale · t() · 302 khoá</text>
+      <text x="460" y="256" fill="#fdf3e0" fill-opacity="0.65" font-size="9">7 locale · t() · 327 khoá</text>
     </g>
 
     <g>
@@ -64,14 +81,14 @@
     <g>
       <rect x="910" y="212" width="250" height="62" rx="10" fill="#0f322c" stroke="#8cc63f" stroke-width="1.6"/>
       <text x="1035" y="238" fill="#8cc63f">CHANGELOG</text>
-      <text x="1035" y="256" fill="#fdf3e0" fill-opacity="0.65" font-size="9">tierFor() · 9 bản · 3 tầng</text>
+      <text x="1035" y="256" fill="#fdf3e0" fill-opacity="0.65" font-size="9">tierFor() · 10 bản · 3 tầng</text>
     </g>
 
     <!-- row 3 : surfaces -->
     <g>
       <rect x="120" y="338" width="300" height="56" rx="10" fill="#123f38" stroke="#f5a81c" stroke-width="1.8"/>
       <text x="270" y="362" fill="#f5a81c">MENU</text>
-      <text x="270" y="380" fill="#fdf3e0" fill-opacity="0.65" font-size="9">panel góc GAME · INFO · nền 6 lớp</text>
+      <text x="270" y="380" fill="#fdf3e0" fill-opacity="0.65" font-size="9">panel góc GAME · INFO · nền 8 lớp</text>
     </g>
     <g>
       <rect x="450" y="338" width="300" height="56" rx="10" fill="#123f38" stroke="#f5a81c" stroke-width="1.8"/>

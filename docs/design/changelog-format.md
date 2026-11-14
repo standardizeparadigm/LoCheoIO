@@ -20,8 +20,8 @@ src/game/changelog/
 ├── types.ts        ChangelogEntry · ReleaseTier · LegacyKind · copyFor()
 ├── tiers.ts        tierFor() · TIER_ORDER · TIER_LABEL_KEY
 ├── entries/
-│   ├── v1_0_0.ts   … 9 file, mỗi file export một hằng `V1_x_y: ChangelogEntry`
-│   └── v1_1_7.ts
+│   ├── v1_0_0.ts   … 10 file, mỗi file export một hằng `V1_x_y: ChangelogEntry`
+│   └── v1_1_8.ts
 └── index.ts        CHANGELOG_ENTRIES (thứ tự render) + 5 helper
 ```
 
@@ -55,7 +55,7 @@ Quy tắc bắt buộc (đều có test):
 ```ts
 tierFor("1.0.0") // "major"   patch === 0 && minor === 0
 tierFor("1.1.0") // "minor"   patch === 0
-tierFor("1.1.7") // "patch"   patch !== 0
+tierFor("1.1.8") // "patch"   patch !== 0
 tierFor("junk")  // "patch"   không ném lỗi — hàm này chạy trong render
 ```
 

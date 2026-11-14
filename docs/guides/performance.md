@@ -51,7 +51,7 @@ bằng phép so sánh 2 × 1/120 s với 1 × 1/60 s.
 ## Tối ưu single-file
 
 - Font woff2 subset + `font-display: swap` + unicode-range → phần lớn text Latin dùng 1 file.
-- Build một file duy nhất (`vite-plugin-singlefile`) — artifact ~831 KB / gzip ~388 KB (v1.1.7,
-  tăng ~22 KB so với v1.1.6 vì thêm ba module changelog + 96 gạch mô tả × 2 ngôn ngữ trong bundle
-  + 6 key i18n × 7 locale).
+- Build một file duy nhất (`vite-plugin-singlefile`) — artifact ~867 KB / gzip ~399 KB (v1.1.8,
+  tăng ~20 KB so với v1.1.7 vì thêm bốn thư mục menu (`layout`, `scene`, `ticker`, `howto`) + 2 key i18n
+  × 7 locale + bản mô tả 1.1.8 dài 14 gạch × 2 ngôn ngữ).
 - Không runtime dependency nào ngoài React/ReactDOM (clsx/tailwind-merge chỉ cho class names).

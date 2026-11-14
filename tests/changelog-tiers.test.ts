@@ -25,6 +25,38 @@ describe("tierFor — SemVer → release tier", () => {
     }
   });
 
+  it("never promotes junk to major", () => {
+    /*
+     * The regression. `Number.parseInt` reads a numeric prefix and ignores the
+     * rest, and it accepts radix-16 and exponent notation — so all of these
+     * parsed to `0.0.0` and returned **major**, the loudest tier in the UI,
+     * for input that is not a version at all:
+     *
+     *     "0x10.0.0"  → 0.0.0 → major
+     *     "1e1.0.0"   → 1.0.0 → major
+     *     "-0.0.0"    → 0.0.0 → major
+     *
+     * Degrading *upward* is worse than throwing: a corrupt changelog entry
+     * would have claimed the rarest label rather than failing visibly.
+     */
+    for (const bad of ["0x10.0.0", "1e1.0.0", "-0.0.0", "+1.0.0", "1..0", "1.1.0.0", "v1.0.0"]) {
+      expect(tierFor(bad), `${bad} must not be major`).not.toBe("major");
+      expect(tierFor(bad), `${bad} must be patch`).toBe("patch");
+    }
+  });
+
+  it("still treats leading or trailing whitespace as the version it is", () => {
+    // `trim()` before the shape check: a stray space from an env var should not
+    // demote a major release to a patch.
+    expect(tierFor("  1.0.0  ")).toBe("major");
+    expect(tierFor("\t2.0.0\n")).toBe("major");
+  });
+
+  it("rejects values that are not safe integers", () => {
+    // Beyond 2^53 the digits no longer identify a version.
+    expect(tierFor("99999999999999999999.0.0")).toBe("patch");
+  });
+
   it("every changelog entry agrees with its own tier", () => {
     // The whole point of deriving the tag: it can never drift from the number.
     for (const entry of CHANGELOG_ENTRIES) {

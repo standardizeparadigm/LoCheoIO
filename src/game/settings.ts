@@ -1,9 +1,15 @@
 /* =====================================================================
    Lọ Chéo — game settings persistence (locheo.settings.v1)
 
-   v1.1.6: the settings schema grows into four sections —
-     Âm thanh (audio) · Giao diện & chuyển động (display & motion) ·
-     Ngôn ngữ (language) · Dữ liệu (danger zone handled in the UI).
+   v1.1.6 grew the schema; v1.1.8 has six UI sections:
+     Presets · Âm thanh (audio) · Giao diện & chuyển động (display & motion) ·
+     Ngôn ngữ (language) · Sao lưu (backup) · Dữ liệu (danger zone).
+
+   Only four of the six are represented *here*: presets and backup are pure UI
+   (a preset writes other fields; a backup serialises the whole object), and the
+   danger zone deletes storage keys rather than setting one. Writing "four
+   sections" above a six-section modal is how a reader concludes the other two
+   are missing.
 
    Mix of control types:
      • on/off toggles  — sfx, music, shake, reducedMotion, autoPauseOnBlur
@@ -79,12 +85,30 @@ function pick<T extends string>(v: unknown, allowed: readonly T[], fallback: T):
 
 /**
  * Normalise an untrusted value into a valid settings object.
- * Unknown keys are dropped; missing/invalid keys fall back to defaults.
- * `languageFallback` lets the caller seed the language from the i18n
- * module on first run (so VI-first-run / browser-locale still works).
+ * Unknown keys are dropped; missing/invalid keys fall back to `base`.
+ *
+ * `languageFallback` lets the caller seed the language from the i18n module on
+ * first run (so VI-first-run / browser-locale still works).
+ *
+ * `base` is what a **missing** key becomes. It defaults to `DEFAULT_SETTINGS`,
+ * which is right for one job and wrong for the other:
+ *
+ *   · reading storage — there is no previous state, so defaults are correct;
+ *   · importing a backup — the previous state is the player's live settings,
+ *     and filling absent keys with defaults silently resets them.
+ *
+ * The import case is not hypothetical. A backup written by an older build that
+ * predates a field (or a hand-written snippet with three keys) used to reset
+ * every field it did not mention, and the UI reported success — so a player who
+ * turned `reducedMotion` on for motion sickness, restored an old backup, and
+ * saw the setting flip back to `false` had no way to tell why.
  */
-export function normalizeSettings(v: unknown, languageFallback: string = DEFAULT_SETTINGS.language): GameSettings {
-  const d = DEFAULT_SETTINGS;
+export function normalizeSettings(
+  v: unknown,
+  languageFallback: string = DEFAULT_SETTINGS.language,
+  base: GameSettings = DEFAULT_SETTINGS,
+): GameSettings {
+  const d = base;
   if (typeof v !== "object" || v === null) return { ...d, language: pick(languageFallback, SUPPORTED_LANGUAGES, d.language) };
   const s = v as Record<string, unknown>;
   return {

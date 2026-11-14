@@ -18,7 +18,7 @@ if [ -t 1 ]; then
 else
   R=''; B=''; D=''; GOLD=''; GOLD2=''; JADE=''; CHILI=''; BRINE=''; GREEN=''; RED=''; CYAN=''; PINK=''
 fi
-VERSION="1.1.7"
+VERSION="1.1.8"
 
 # ---------- ngôn ngữ giao diện (VI gốc · EN · ZH · JA · KO · ES · FR) ----------
 UI_LANG="${LOCHEO_LANG:-}"

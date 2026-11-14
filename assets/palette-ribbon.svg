@@ -1,52 +1,123 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 54" role="img" aria-label="Bảng màu Lọ Chéo v1.1.7 — brine, jade, turmeric, chili, lime, clay, plum chạy sáng luân phiên (hoạt họa SMIL)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 54" role="img" aria-label="Bảng màu Lọ Chéo v1.1.8 — brine, jade, turmeric, chili, lime, clay, plum chạy sáng luân phiên (hoạt họa SMIL)">
+  <!--
+    The palette ribbon: the seven named colours of the game, in the order the
+    engine uses them.
+
+    Redrawn in round 6. The previous version was seven flat rectangles with a
+    brightness pulse — technically correct, but a *palette* illustrated by flat
+    fills is a circle: each swatch was a single value of the colour it claimed
+    to show. The game never paints with one value; every surface is a gradient
+    (the jar is glaze → clay, the deck edge is jade → jade-dark).
+
+    So each swatch is now a two-stop gradient of its own hue, with a specular
+    highlight along the top edge and a shadow along the bottom, which is the
+    same shading the in-game jar uses. The pulse is kept because the animation
+    is what makes the strip read as a palette rather than a legend.
+  -->
   <defs>
-    <linearGradient id="prSheen" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#fff" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-      <animate attributeName="x1" values="-0.6;0.2;-0.6" dur="6s" repeatCount="indefinite"/>
-      <animate attributeName="x2" values="-0.4;0.4;-0.4" dur="6s" repeatCount="indefinite"/>
+    <!-- One gradient per swatch, all the same shape: the base colour at the
+         bottom, a 32% lightened version at the top. -->
+    <linearGradient id="pr-brine" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#1f7d63"/>
+      <stop offset="1" stop-color="#4fd3aa"/>
     </linearGradient>
-    <clipPath id="prClip">
-      <rect x="40" y="10" width="1120" height="34" rx="17"/>
-    </clipPath>
+    <linearGradient id="pr-jade" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#0f3d36"/>
+      <stop offset="1" stop-color="#2bb48c"/>
+    </linearGradient>
+    <linearGradient id="pr-tumeric" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#b86f08"/>
+      <stop offset="1" stop-color="#ffc94a"/>
+    </linearGradient>
+    <linearGradient id="pr-chili" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#8f1d14"/>
+      <stop offset="1" stop-color="#ff5a44"/>
+    </linearGradient>
+    <linearGradient id="pr-lime" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#4d7016"/>
+      <stop offset="1" stop-color="#b6e05a"/>
+    </linearGradient>
+    <linearGradient id="pr-clay" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#9a7b5a"/>
+      <stop offset="1" stop-color="#f3e3c8"/>
+    </linearGradient>
+    <linearGradient id="pr-plum" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#3d1436"/>
+      <stop offset="1" stop-color="#a05a92"/>
+    </linearGradient>
+
+    <!-- The specular band laid over every swatch. One gradient, one alpha
+         ramp — seven copies of the same idea would be seven ids to mistype. -->
+    <linearGradient id="pr-spec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.34"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.28"/>
+    </linearGradient>
+
+    <filter id="pr-glow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="2.4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- The travelling sheen: it crosses the whole ribbon once per cycle. -->
+    <linearGradient id="pr-sheen" x1="0" y1="0" x2="0.1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      <animate attributeName="x1" values="-0.15;1.15;1.15" dur="6.5s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="0;1.3;1.3" dur="6.5s" repeatCount="indefinite"/>
+    </linearGradient>
   </defs>
 
-  <rect width="1200" height="54" fill="#061a1a"/>
+  <rect width="1200" height="54" fill="#0a2422"/>
+  <rect x="0.5" y="0.5" width="1199" height="53" fill="none" stroke="#123f38"/>
 
-  <g clip-path="url(#prClip)">
-    <!-- seven palette bands; each one breathes on its own phase -->
-    <rect x="40"   y="10" width="160" height="34" fill="#0a2422"/>
-    <rect x="200"  y="10" width="160" height="34" fill="#123f38"/>
-    <rect x="360"  y="10" width="160" height="34" fill="#2bb48c">
-      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0s" repeatCount="indefinite"/>
+  <!-- The seven swatches, each 160 wide with a 6px gutter. They are drawn as
+       one group so the specular overlay can be a single rect on top. -->
+  <g>
+    <rect x="12"  y="8" width="158" height="38" rx="2" fill="url(#pr-brine)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="0s" repeatCount="indefinite"/>
     </rect>
-    <rect x="520"  y="10" width="160" height="34" fill="#8cc63f">
-      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0.4s" repeatCount="indefinite"/>
+    <rect x="182" y="8" width="158" height="38" rx="2" fill="url(#pr-jade)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="0.6s" repeatCount="indefinite"/>
     </rect>
-    <rect x="680"  y="10" width="160" height="34" fill="#f5a81c">
-      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0.8s" repeatCount="indefinite"/>
+    <rect x="352" y="8" width="158" height="38" rx="2" fill="url(#pr-tumeric)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="1.2s" repeatCount="indefinite"/>
     </rect>
-    <rect x="840"  y="10" width="160" height="34" fill="#e63b2e">
-      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="1.2s" repeatCount="indefinite"/>
+    <rect x="522" y="8" width="158" height="38" rx="2" fill="url(#pr-chili)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="1.8s" repeatCount="indefinite"/>
     </rect>
-    <rect x="1000" y="10" width="160" height="34" fill="#6b2d5c">
-      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="1.6s" repeatCount="indefinite"/>
+    <rect x="692" y="8" width="158" height="38" rx="2" fill="url(#pr-lime)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="2.4s" repeatCount="indefinite"/>
     </rect>
-
-    <!-- travelling sheen across the whole ribbon -->
-    <rect x="40" y="10" width="1120" height="34" fill="url(#prSheen)"/>
+    <rect x="862" y="8" width="158" height="38" rx="2" fill="url(#pr-clay)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="3s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="1032" y="8" width="156" height="38" rx="2" fill="url(#pr-plum)">
+      <animate attributeName="opacity" values="1;0.78;1" dur="4.2s" begin="3.6s" repeatCount="indefinite"/>
+    </rect>
   </g>
 
-  <rect x="40" y="10" width="1120" height="34" rx="17" fill="none" stroke="#2bb48c" stroke-opacity="0.35" stroke-width="1.4"/>
+  <!-- Specular + shadow, one pass over all seven. `pointer-events="none"` so it
+       never intercepts anything, though an <img> could not anyway. -->
+  <g pointer-events="none">
+    <rect x="12"  y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="182" y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="352" y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="522" y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="692" y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="862" y="8" width="158" height="38" rx="2" fill="url(#pr-spec)"/>
+    <rect x="1032" y="8" width="156" height="38" rx="2" fill="url(#pr-spec)"/>
+  </g>
 
-  <g font-family="'Courier New',monospace" font-size="9" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#fdf3e0" fill-opacity="0.85">
-    <text x="120"  y="32">#0A2422</text>
-    <text x="280"  y="32">#123F38</text>
-    <text x="440"  y="32">#2BB48C</text>
-    <text x="600"  y="32">#8CC63F</text>
-    <text x="760"  y="32">#F5A81C</text>
-    <text x="920"  y="32">#E63B2E</text>
-    <text x="1080" y="32">#6B2D5C</text>
+  <!-- The sheen crosses everything, so it is not inside the clipped group. -->
+  <rect x="0" y="8" width="1200" height="38" fill="url(#pr-sheen)" pointer-events="none"/>
+
+  <!-- Corner ticks in the game's own accent, which ties the strip to the UI. -->
+  <g fill="#ffc94a" opacity="0.75" filter="url(#pr-glow)">
+    <rect x="12" y="6" width="10" height="2"/>
+    <rect x="12" y="46" width="10" height="2"/>
+    <rect x="1178" y="6" width="10" height="2"/>
+    <rect x="1178" y="46" width="10" height="2"/>
   </g>
 </svg>

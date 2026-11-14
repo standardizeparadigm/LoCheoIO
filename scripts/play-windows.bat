@@ -23,7 +23,7 @@ if defined USE_COLOR (
   set "GOLD=[38;5;220m" & set "GOLD2=[38;5;228m" & set "PINK=[38;5;218m" & set "JADE=[38;5;79m" & set "CHILI=[38;5;203m"
   set "BRINE=[38;5;159m" & set "GREEN=[38;5;114m" & set "CYAN=[38;5;116m"
 )
-set "VERSION=1.1.7"
+set "VERSION=1.1.8"
 
 rem ---------- Ngôn ngữ: LOCHEO_LANG=vi/en/zh/ja/ko/es/fr, mặc định vi ----------
 set "UILANG=%LOCHEO_LANG%"

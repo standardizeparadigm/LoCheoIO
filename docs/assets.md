@@ -4,7 +4,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 
 | File | Nội dung | Dùng ở |
 | --- | --- | --- |
-| `banner.svg` | Banner chính thức **V1.1.7** (9 chế độ · 16 thành tựu) | README ×10 đầu trang |
+| `banner.svg` | Banner chính thức **V1.1.8** (9 chế độ · 16 thành tựu) | README ×10 đầu trang |
 | `demo.svg` | Mô phỏng gameplay (lọ CHÉO, dưa rơi) | README ×10 |
 | `items.svg` | 14 nguyên liệu (dưa, mốc, ruồi…) | README ×10, CONTRIBUTING |
 | `modes.svg` | 9 chế độ chơi | README ×10 |
@@ -12,9 +12,11 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `new-modes.svg` | 2 chế độ mới của v1.1.4 (Lễ Hội Combo · Đại Tiệc Dưa) | README ×10 (mục what's new 1.1.4) |
 | `corner-menu.svg` | 2 panel góc GAME/INFO (v1.1.5) | README ×10 (mục what's new 1.1.5) |
 | `settings-sections.svg` | Tour 6 mục cài đặt (v1.1.6) | README ×10 (mục what's new 1.1.6+) |
-| `palette-ribbon.svg` | 7 dải màu palette chạy sáng luân phiên (v1.1.7) | README ×10 (hero) |
-| `architecture.svg` | Sơ đồ kiến trúc + luồng dữ liệu, có xung chạy trên đường nối (v1.1.7) | README ×10 (mục kiến trúc) |
-| `release-tiers.svg` | 3 tầng MAJOR/UPDATE/PATCH + thời gian biểu 9 bản (v1.1.7) | README ×10 (mục what's new 1.1.7) |
+| `palette-ribbon.svg` | 7 dải màu palette chạy sáng luân phiên (v1.1.8) | README ×10 (hero) |
+| `architecture.svg` | Sơ đồ kiến trúc + luồng dữ liệu, có xung chạy trên đường nối (v1.1.8) | README ×10 (mục kiến trúc) |
+| `release-tiers.svg` | 3 tầng MAJOR/UPDATE/PATCH + thời gian biểu 10 bản (v1.1.8) | README ×10 (mục what's new 1.1.8) |
+| `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
+| `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
 | `divider.svg` | Dải sparkle ngăn cách section | README ×10 |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
@@ -28,7 +30,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 4. Màu bám palette: jade `#0b2b2b`, brine `#b6e07a`, turmeric `#f5a81c`, clay `#f4e3c2`, chili `#e63b2e`.
 5. Banner phải cập nhật `APP_VERSION` cùng commit với version bump (xem `docs/guides/release-process.md`).
 6. **Mọi SVG ghi phiên bản trong `aria-label` hoặc text phải bump cùng lúc** — `scripts/check-assets.mjs`
-   chỉ kiểm tra tham chiếu, không kiểm tra số phiên bản. v1.1.7 tìm ra 3 SVG còn 1.1.4/1.1.5/1.1.6.
+   chỉ kiểm tra tham chiếu, không kiểm tra số phiên bản. v1.1.7 tìm ra 3 SVG còn 1.1.4/1.1.5/1.1.6 — vì vậy từ 1.1.8 kho có thêm hai sơ đồ và mọi banner đều đọc 1.1.8.
 7. **Không dùng `clip-path="inset(...)"`** như thuộc tính — không hợp lệ trên SVG; dùng `<clipPath>` +
    `<rect>` hoặc các hình đã dịch bên trong `<g opacity>`.
 8. **Kiểm tra XML well-formed** trước khi commit:
@@ -46,3 +48,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
+| v1.1.8 | `layout-fix.svg` · `test-matrix.svg` |

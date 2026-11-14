@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.2 — released 2026-11-02 — tier: PATCH
+ * v1.1.2 — released 2026-11-06 — tier: PATCH
  *
  * Đua 60 Giây · Mùa Vàng, combo 12+ bốc lửa, launcher nhấn-đúp cho 3 hệ điều hành, README 10 ngôn ngữ
  *

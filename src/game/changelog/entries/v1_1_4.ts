@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.4 — released 2026-11-06 — tier: PATCH
+ * v1.1.4 — released 2026-11-09 — tier: PATCH
  *
  * Hai chế độ mới (Lễ Hội Combo · Đại Tiệc Dưa), đủ 16 thành tựu, thêm tiếng Tây Ban Nha và Pháp
  *

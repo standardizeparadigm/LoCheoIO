@@ -9,9 +9,9 @@
 
 [🇻🇳 Tiếng Việt](README.md) · [🇬🇧 English](README.en.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md) · [🇰🇷 한국어](README.ko.md) · [🇪🇸 Español](README.es.md) · [🇫🇷 Français](README.fr.md) · [🇹🇭 ไทย](README.th.md) · [🇩🇪 Deutsch](README.de.md) · [🇵🇹 Português](README.pt.md)
 
-[![Version](https://img.shields.io/badge/version-1.1.7-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.7.md)
+[![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-256%20%C2%B7%2033%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1011%20%C2%B7%20102%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalación-y-ejecución)
@@ -37,72 +37,263 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 <img src="assets/divider.svg" alt="" width="100%" />
 
-## 🆕 Novedades de v1.1.7
+## 🆕 Novedades de v1.1.8
 
-> El **último parche** antes de 1.2.0. Sin modos nuevos — solo lo que aún molestaba, arreglado de raíz.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 20 SVG se redibujan.
 
-### 🌫️ El fondo del menú ya no está borroso — arreglado en la raíz
+### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
-Los jugadores tenían razón: *«el fondo detrás del menú sigue borroso»*. La causa no era una capa, sino **cuatro superposiciones que se amplificaban**:
-
-| Capa | Antes | Ahora | Por qué |
-| --- | --- | --- | --- |
-| Nebulosa `.nebula-*` | `blur(64px)`, pico `1.0` | **`blur(22px)`, pico `0.80`** | 64px es más de la mitad del radio de una mancha de 46vw — el borde deja de existir y todo se vuelve niebla |
-| Viñeta del menú | en línea, **pantalla completa**, `0.42 → 0.88 → 1.0` | **`.menu-vignette`**, solo esquinas, `0.30 → 0.62` | de «oscurecer todo el marco por igual» a «oscuro en las esquinas, claro en el centro» |
-| Marco CRT | `inset 0 0 140px @ 0.9` | **`.app-vignette` 90px @ 0.55** | 140px se comía casi todas las esquinas en una ventana pequeña |
-| Suelo de baldosas | `opacity-45` | **`opacity-70`** | al 45% el suelo era ruido gris, no un detalle reconocible |
-
-`.menu-vignette` y `.app-vignette` ahora son **reglas CSS con nombre** en lugar de utilidades enterradas en el JSX — un solo lugar que ajustar, y `prefers-reduced-motion` llega hasta ellas.
-
-### 🏷️ Niveles del changelog — un color por nivel
-
-| Nivel | Etiqueta | Color | Significado | Ejemplo |
-| --- | --- | --- | --- | --- |
-| `major` | **MAJOR** | 🩷 rosa `#ff5fb0` | versión grande — nuevos sistemas | 1.0.0 |
-| `minor` | **UPDATE** | 🟡 dorado `#f5a81c` | mejora — contenido nuevo | 1.1.0 |
-| `patch` | **PATCH** | 🟣 violeta `#9d6bff` | correcciones y limpieza | 1.1.1 → 1.1.7 |
-
-El nivel se **deriva del SemVer** con `tierFor(version)`, nunca se escribe a mano — así la etiqueta jamás puede contradecir la versión impresa al lado. El panel ganó un **filtro**: TODAS · MAJOR · UPDATE · PATCH con el recuento por nivel.
-
-<img src="assets/release-tiers.svg" alt="Los tres niveles MAJOR/UPDATE/PATCH con sus colores y la línea de tiempo de nueve versiones (animación SMIL)" width="100%" />
-
-### 📖 Ocho versiones antiguas: de una línea a una página
-
-Seis de las nueve versiones tenían la **lista de viñetas vacía** — el panel solo podía mostrar un resumen de una línea. v1.1.7 las reescribió todas:
-
-- **96 viñetas en vietnamita + 96 en inglés** escritas o ampliadas
-- Contenido tomado de `docs/releases/v1.1.x.md` **y** del propio código (9 modos, 16 logros)
-- **Fechas reordenadas**: 10-26 · 10-29 · 10-31 · 11-02 · 11-04 · 11-06 · 11-08 · 11-10 · **11-12** — cada dos días, sin dos versiones el mismo día
-
-### 🗂️ El proyecto creció en carpetas
+La captura informaba de cuatro problemas, pero tenían **una** sola causa. La fila de paneles de esquina y el ticker eran hermanos flex con `shrink-0`, así que tomaban su altura primero y al hero solo le llegaba lo que sobraba:
 
 ```
-src/game/changelog/        ← sustituye a un único archivo de 300 líneas
-├── types.ts               ChangelogEntry · ReleaseTier · copyFor()
-├── tiers.ts               tierFor() · TIER_ORDER · TIER_LABEL_KEY
-├── entries/               un archivo por versión — v1_0_0.ts … v1_1_7.ts
-└── index.ts               CHANGELOG_ENTRIES + 5 ayudantes
+ventana de 720px
+├── 415px   fila de paneles GAME/INFO  (alto según el contenido, shrink-0)
+├──  55px   ticker                     (alto según el texto, shrink-0)
+└── 250px   hero                       ← el resto, cuando necesita ~430px
 ```
 
-Añadir 1.2.0 más adelante es ahora **un archivo nuevo** y una línea de import.
+| Síntoma en la captura | Por qué |
+| --- | --- |
+| `LỌ` cortado en el borde superior | hero de 250px, contenido de 430px |
+| `CÀI ĐẶT` desbordando el panel | el panel se dimensionaba por contenido, no por la ventana |
+| La línea de copyright partida en dos | el ticker necesitaba 55px y recibía 48px |
+| La `×` del «Cómo jugar» flotando en mitad de la pantalla | el acordeón que la contenía ya había salido de la vista |
+
+La solución no fue añadir unos píxeles de holgura, sino **declarar la altura una vez y hacer que todo la vuelva a leer**: `layout/metrics.ts` guarda cada número, `layout/fit.ts` devuelve un `MenuPlan` puro, `MenuChrome` es una sola banda `absolute inset-x-0 bottom-0`, y el hero reserva su espacio con un `padding-bottom` calculado por la **misma** función.
+
+<img src="assets/layout-fix.svg" alt="Antes y después del parche 1.1.8 — 1.1.7 comprimía la escena a 250px y cortaba el tarro, 1.1.8 mantiene una escena de 342px y reserva 378px para los paneles (animación SMIL)" width="100%" />
+
+### 🌀 El error de scroll: un contenedor de scroll dentro de otro
+
+La parte inferior se quedaba quieta y la superior seguía subiendo y bajando — exactamente como se describió. v1.1.7 envolvió el contenido del hero en una caja `overflow-y-auto` y lo centró con `min-h-full` + `justify-center`. Eso solo funciona mientras el contenido es **más bajo** que la caja; cuando es **más alto**, `justify-center` lo empuja hacia arriba y su borde superior queda *por encima del origen del scroll* — ninguna posición de scroll puede alcanzarlo.
+
+Ahora toda la pantalla tiene **un** contenedor de scroll (`.menu-scroll`), con el contenido anclado arriba y sin centrado vertical. Las tres clases que causaron el fallo —`flex-1 overflow-y-auto`, `min-h-full`, `justify-center`— están prohibidas por `tests/menu-layout.test.ts`.
+
+### 🎯 Hero: `LỌ CHÉO` centrado y subido un poco
+
+- El logotipo queda **centrado en horizontal** y luego **subido**, como se pidió, con el tamaño limitado por **ancho y alto** a la vez, para que una ventana baja no desborde el glifo.
+- El tarro de cerámica se movió a la derecha, rodeado de **tres anillos de halo a 18s / 26s / 34s** — el anillo único de 14s se leía como un spinner de carga.
+- **Catorce adornos** (estrellas, chispas, aros, burbujas, chiles, hojas de lima, moscas, gotas de salsa de pescado) en dos franjas arriba y abajo del título, cada uno con su duración y retardo — la respuesta a *«solo la palabra y el tarro es muy poco»*.
+- Las coordenadas son **datos** en `scene/decor.ts` con una función de colisión, así que `tests/menu-decor.test.ts` fija posición y cantidad.
+
+### 📖 El «Cómo jugar» se muda al menú GAME
+
+Las seis reglas y la tabla de teclas ya no viven en el hero — abrirlas empujaba el `LỌ` fuera de la pantalla. Ahora son **una fila del panel GAME** que abre un modal (`HowToModal`), de modo que el diseño no se mueve ni abierto ni cerrado. La `×` perdida desapareció junto con el acordeón que la generaba.
+
+### 🗂️ El proyecto gana más carpetas
+
+```
+src/components/menu/
+├── layout/          metrics.ts · fit.ts · useMenuPlan.ts       ← NUEVO: cada número en un sitio
+├── scene/           decor.ts · DecorGlyph · HeroDecor · JarHalo ← NUEVO: el hero decorado
+├── ticker/          strings.ts · tickerTone.ts · MenuTicker     ← NUEVO: la banda como módulo
+├── howto/           rules.ts                                    ← NUEVO: 6 reglas + tabla de teclas
+├── background/      layers.ts · MenuBackground                  ← 8 capas de fondo como datos
+└── MenuChrome.tsx · HowToModal.tsx                              ← NUEVO: la banda inferior + modal
+```
 
 ### 🐛 Correcciones
 
-| # | Fallo | Arreglo |
+| # | Error | Corrección |
 | --- | --- | --- |
-| 1 | Fondo del menú borroso y turbio | los cuatro cambios de arriba |
-| 2 | Suelo de baldosas invisible | `opacity-45` → `opacity-70` |
-| 3 | Etiquetas del changelog que describían otra cosa (`kind` a mano) | `tierFor(version)` lo deriva del SemVer |
-| 4 | Descripciones demasiado delgadas (6 versiones con `items: []`) | 96 viñetas reescritas |
-| 5 | Fechas duplicadas e ilógicas | nueve días consecutivos, sin colisiones |
-| 6 | Docs/SVG/lanzadores desfasados de la versión | barrido completo → 1.1.7 |
-| 7 | El comentario de `check-readme-sync` fijaba 1.1.6 | ahora lee `package.json` |
+| 1 | La parte de arriba seguía haciendo scroll con la de abajo quieta | fuera la caja anidada: **un** `.menu-scroll` anclado arriba |
+| 2 | `LỌ` cortado en el borde superior | el hero conserva una escena de 342px y no se comprime a 250px |
+| 3 | `CÀI ĐẶT` desbordando el panel GAME | `CornerPanel.height` pasa a ser **obligatorio**: 318px (compacto) / 458px (rico) |
+| 4 | Línea de copyright partida en dos | ticker fijo de 48px, copyright dentro del bloque del marquesina |
+| 5 | La `×` del «Cómo jugar» flotando | acordeón → modal, nada `absolute` sobre una caja ya desplazada |
+| 6 | La altura del panel dependía del idioma (alemán y tailandés desbordaban antes) | altura declarada, independiente del contenido |
+| 7 | Un anillo de 14s se leía como spinner | tres anillos a 18s / 26s / 34s que casi nunca coinciden |
+| 8 | Documentación/SVG/lanzadores desfasados | barrido de 10 README + docs + 19 SVG → 1.1.8 |
 
-→ Detalles completos: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md) · Versión anterior: [docs/releases/v1.1.6.md](docs/releases/v1.1.6.md)
+→ Detalles completos: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) · Versión anterior: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md)
 
-<img src="assets/settings-sections.svg" alt="Ajustes en seis secciones (desde v1.1.6) — interruptores, barras y selectores (animación SMIL)" width="100%" />
+### 🪟 Dos capturas, una ventana, 260 píxeles de diferencia
+
+Las dos últimas capturas de esta ronda son **la misma aplicación**: `1920×1080` a pantalla completa y `1920×820` en ventana. El ancho no cambió ni un píxel. Pero en la segunda, la mitad inferior del hero queda **debajo** de los dos paneles de esquina y el chip `CHẾ ĐỘ CHƠI` aparece cortado por la mitad.
+
+La causa no es falta de altura. Es la pregunta equivocada:
+
+| Qué decide el diseño | Sabe | No sabe |
+| --- | --- | --- |
+| `sm:` · `lg:` en CSS | el **ancho** | el **alto** |
+| `plan.minimal` | el **alto** (bajo 220px) | el ancho, y solo cuando ya es tarde |
+| `heroLayout()` (nuevo) | **ambos**, desde el mismo número que usa el chrome | — |
+
+Una decisión que depende de *dos ejes* no se puede escribir como una media query de un eje. Así que el diseño del hero salió del CSS y se volvió una función pura:
+
+```ts
+export function heroLayout({ scene, width, minimal }: HeroInput): HeroLayout {
+  if (minimal) return { sideBySide: false, halo: false, badgeRow: false, mascot: false, liveBadge: false };
+
+  const sideBySide = width >= WIDTH_FOR_SIDE_BY_SIDE && scene >= HEIGHT_FOR_SIDE_BY_SIDE;
+
+  return {
+    sideBySide,
+    halo:       scene >= HEIGHT_FOR_HALO,
+    badgeRow:   scene >= HEIGHT_FOR_BADGE_ROW,
+    mascot:     true,          // el logo nunca se oculta
+    liveBadge:  scene >= HEIGHT_FOR_BADGE_ROW,
+  };
+}
+```
+
+`scene` es la altura que `planMenuLayout()` asignó al hero — **el número exacto** que el chrome reserva. No puede desviarse, porque ambos leen de una sola función.
+
+#### Tres umbrales, los tres derivados
+
+Aquí no hay un solo número redondo. Cada constante es la altura real de lo que controla:
+
+| Constante | Valor | Derivada de |
+| --- | --- | --- |
+| `HEIGHT_FOR_BADGE_ROW` | **232** | wordmark 150 + badge 40 + live badge 22 = 212, más 20px de aire |
+| `HEIGHT_FOR_HALO` | **300** | lockup 150 + anillo 240 − solape 90 |
+| `HEIGHT_FOR_SIDE_BY_SIDE` | **300** | la columna más alta: mascota 192 + chip 24 + relleno |
+
+`232` es un **error que se atrapó**. El primer borrador lo puso en `210` — por debajo del mismo lockup de 212px que controla. Una banda de 210px dibujaba un lockup de 212 y la línea de récord quedaba cortada. Exactamente la clase de error que esta ronda corrige, producido por la propia corrección.
+
+`tests/menu-adaptive.test.ts` recorre **1.682 viewports** — cada combinación de 15 anchos reales × 13 altos reales, y luego un paso por `320..3840` × `150..700` — y verifica `heroContentHeight(layout) ≤ scene` en cada muestra.
+
+#### El cuarto evento que faltaba
+
+El usuario produjo esas dos capturas **pulsando la tecla de pantalla completa**. La app escuchaba `resize` y `orientationchange`. Firefox no dispara ninguna de las dos al alternar pantalla completa; Safari antiguo solo dispara `webkitfullscreenchange`.
+
+Así que la ventana cambió de alto, el hero conservó su plan viejo, y el chip siguió cortado hasta el siguiente resize.
+
+```ts
+export const VIEWPORT_EVENTS = [
+  "resize",
+  "orientationchange",
+  "fullscreenchange",
+  "webkitfullscreenchange",
+  "mozfullscreenchange",
+  "MSFullscreenChange",
+] as const;
+```
+
+La lista vive en un solo lugar, porque `useMenuPlan()` y `useViewportWidth()` **ambos** la necesitan — y cada uno registraba su propia copia, es decir dos copias que pueden describir dos ventanas distintas.
+
+### 🗑️ La banda divisoria de la imagen 12 — y el deck que se fue con ella
+
+La tercera imagen es una tira de `1443×180` recortada del centro de la pantalla: un marcador `🎮`, una línea dorada y tres títulos `GAME / RETO DE HOY / REGLA DEL DÍA`. Ese es el **deck** — tres columnas de prosa dentro de una banda de altura fija.
+
+No puede vivir ahí, y las otras dos capturas dicen por qué: a `1920×1080` su columna derecha se cortaba **a mitad de frase**, a `1920×820` toda la fila quedaba bajo los paneles. Una banda suficientemente alta para un wordmark de 200px no lo es también para tres párrafos.
+
+Nada de lo que decía el deck se pierde:
+
+| Qué decía el deck | Dónde vive ahora |
+| --- | --- |
+| el modo que vas a jugar | el chip bajo la mascota; la lista completa está en GAME |
+| **el reto de hoy** | una línea en el panel INFO — `modo · objetivo` |
+| la regla del día | una línea del modal de instrucciones, que siempre fue la versión completa de esas seis reglas |
+
+Las cuentas de fecha **no** se fueron con él. `challengeFor()` y `tipIndexFor()` se mudaron a `src/game/daily/` — son funciones puras del día local, sin relación con la presentación. Las 21 pruebas se mudaron con ellas, conservando sus nombres.
+
+La banda vacía bajo el wordmark ahora es **deliberada**. Ese es el precio de un hero que encaja en cualquier tamaño.
+
+### 🏷️ Changelog por niveles — un color por nivel
+
+| Nivel | Etiqueta | Color | Significado | Ejemplo |
+| --- | --- | --- | --- | --- |
+| `major` | **MAJOR** | 🩷 rosa `#ff5fb0` | versión grande — sistemas nuevos | 1.0.0 |
+| `minor` | **UPDATE** | 🟡 oro `#f5a81c` | mejora — contenido nuevo | 1.1.0 |
+| `patch` | **PATCH** | 🟣 violeta `#9d6bff` | correcciones y limpieza | 1.1.1 → **1.1.8** |
+
+El nivel se **deriva del SemVer** con `tierFor(version)`, nunca se escribe a mano. El panel añade un **filtro**: TODO · MAJOR · UPDATE · PATCH con el recuento por nivel.
+
+<img src="assets/release-tiers.svg" alt="Los tres niveles MAJOR/UPDATE/PATCH con sus colores y la línea de tiempo de diez versiones (animación SMIL)" width="100%" />
+
+<img src="assets/test-matrix.svg" alt="Matriz de pruebas 1.1.8 — 1011 tests en 102 archivos, nueve puertas (animación SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Paneles GAME (abajo-izquierda) e INFO (abajo-derecha) deslizándose (animación SMIL)" width="100%" />
+
+<img src="assets/settings-sections.svg" alt="Ajustes en seis secciones (desde v1.1.6) — interruptores, barras de nivel y selectores (animación SMIL)" width="100%" />
+
+## 📐 Diseño adaptable — cómo el hero elige su forma
+
+La pantalla de inicio no usa media queries para decidir su diseño. **Mide** la ventana y elige entre cinco capacidades: `sideBySide`, `halo`, `badgeRow`, `mascot`, `liveBadge`.
+
+El flujo tiene dos etapas, ambas puras:
+
+```
+planMenuLayout(viewport) → { scene, reserve, … }    scene + reserve = altura
+            │
+            └─ scene es el número exacto que reserva el chrome
+                        │
+    heroLayout({ scene, width }) → 5 booleanos
+```
+
+| Bandera | Activa cuando | Qué desaparece si está apagada |
+| --- | --- | --- |
+| `sideBySide` | ancho ≥ 1024 **y** hero ≥ 300px | la mascota baja bajo el wordmark |
+| `halo` | hero ≥ 300px | el anillo alrededor del tarro |
+| `badgeRow` | hero ≥ 232px | la placa «HŨ DƯA ĐẠI CHIẾN» y la línea de récord |
+| `mascot` | casi siempre | — (solo se oculta en la economía mínima) |
+| `liveBadge` | hero ≥ 232px | la línea EN DIRECTO DESDE LA COCINA y la versión |
+
+Los tres umbrales **no son números redondos** — cada uno es la altura real de lo que controla:
+
+```ts
+HEIGHT_FOR_BADGE_ROW    = 232  // 150 wordmark + 40 placa + 22 live + 20 aire
+HEIGHT_FOR_HALO         = 300  // 150 lockup + 240 anillo − 90 solape
+HEIGHT_FOR_SIDE_BY_SIDE = 300  // columna más alta: 192 mascota + 24 chip
+```
+
+`tests/menu-adaptive.test.ts` recorre **1.682 viewports** y verifica `heroContentHeight(layout) ≤ scene` en cada muestra. Al redimensionar, ambos hooks escuchan **seis** eventos y actualizan en un solo frame.
+
+### 🌍 La segunda capa: entorno, no solo tamaño
+
+La altura de la ventana no es la altura utilizable. En un iPhone la barra de
+direcciones y el indicador de inicio se comen una parte; al hacer zoom,
+`visualViewport` es menor que `innerHeight`. Por eso hay una capa aparte, pura y
+sin React (`src/components/menu/adaptive/environment.ts`):
+
+```ts
+type Environment = {
+  dpr: number;            // acotado a [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // un dedo, no un ratón
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+Cuatro cosas fáciles de hacer mal, y qué se hizo en su lugar:
+
+1. **`env()` no se puede leer con `getComputedStyle`.** Hace falta un elemento que
+   *use* `env(safe-area-inset-*)` para que su padding calculado signifique algo.
+   La primera versión creaba **cuatro** sondas (una por borde) — cuatro layouts
+   forzados en cada resize. Ahora es **una** sonda con cuatro paddings, retirada
+   en un bloque `finally` para que un error no la deje suelta.
+2. **`pointer: coarse` puede cambiar sin ningún `resize`.** Un portátil híbrido
+   alterna ratón y dedo todo el tiempo. El hook escucha **ambas** media queries,
+   no solo `resize`.
+3. **El inset `0` es legítimo.** El helper `sane()` de los demás campos numéricos
+   tiene suelo 1 — reutilizarlo para el inset convierte «sin notch» en «notch de
+   1px».
+4. **El inset se resta de la altura utilizable, nunca de la escena.**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`, y tanto `planFits` como
+   `occupiesExactly` pasan por ahí, así que no pueden discrepar.
+
+`tests/environment.test.ts` cubre `saneDpr` (también `NaN`, `−1`, `7`),
+`parseInset`, `verticalInset` e `isHandheld`; `tests/use-environment.test.ts`
+construye objetos `window` y `document` falsos (sin jsdom), así que también cubre
+un `matchMedia` que **lanza** y un documento **sin body**.
+
+### ⚠️ Una limitación conocida — registrada, no escondida
+
+En **844×600**, una ventana sin inset da al hero 222px; con un inset de 10px le
+da **268px**. Una ventana más pequeña recibe un hero 46px más alto. La causa es
+que la altura total se reparte por umbrales discretos, y un inset pequeño empuja
+la suma por encima de uno de ellos, lo que cambia la economía.
+
+Es un defecto **real, pequeño y ya existente**. Se intentó una búsqueda de ocho
+economías para maximizar `scene` — **falla**: a 1920×1080 quita el ticker y las
+filas altas, es decir justo lo que ve el jugador. Se revirtió. En su lugar,
+`tests/layout-inset.test.ts` **afirma los números medidos** (222 → 268, +46) como
+un test en verde: quien lo arregle romperá el test y tendrá que actualizarlo, y
+mientras tanto al menos está escrito. Al lado está la invariante que sí se
+cumple: dentro de *una* economía, `scene + reserve === usableHeight` (252
+combinaciones comprobadas).
 
 ## ✨ Lo destacado
 
@@ -118,7 +309,7 @@ Añadir 1.2.0 más adelante es ahora **un archivo nuevo** y una línea de import
 | 💾 **Clasificación TOP 8** | Guardado local, validado y normalizado al leer, nombres en mayúsculas automáticas, highlight para el récord recién marcado |
 | 🎨 **Gráficos 60fps** | Canvas 2D, presupuesto de 460 partículas, DPR tope 2, suelo de losetas pre-renderizado offscreen, titileo de estrellas + aurora en el menú |
 | 📴 **Offline-first de verdad** | Fuentes auto-alojadas (subsets latin + vietnamita, woff2), sin CDN ni APIs — abre `dist/index.html` y a jugar |
-| 🧪 **Calidad** | 256 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
+| 🧪 **Calidad** | 1011 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
 
 <img src="assets/items.svg" alt="Los 14 ingredientes — encurtidos para atrapar, poderes dorados para agarrar, peligros para esquivar" width="100%" />
 
@@ -181,7 +372,7 @@ npm run build      # → dist/index.html (un único archivo autocontenido)
 npm run dev        # servidor de desarrollo con HMR (http://localhost:5173)
 npm run preview    # sirve el build de producción localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 256 tests unitarios (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1011 tests unitarios (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (puerta de calidad CI)
 ```
 
@@ -190,7 +381,7 @@ npm run check      # typecheck + test + build (puerta de calidad CI)
 ```
 lo-cheoio/
 ├─ index.html              # entrada, meta SEO/OG (sin CDN)
-├─ package.json            # lo-cheoio v1.1.7, scripts dev/build/test/check
+├─ package.json            # lo-cheoio v1.1.8, scripts dev/build/test/check
 ├─ .gitattributes          # *.bat/*.cmd → CRLF · posix → LF · binaries
 ├─ vite.config.ts          # vite + react + tailwind v4 + singlefile
 ├─ tsconfig.json           # strict; incluye src + tests
@@ -227,7 +418,7 @@ lo-cheoio/
 │     ├─ v1.1.4.md         # release notes (1.1.4)
 │     ├─ v1.1.5.md         # release notes (1.1.5)
 │     ├─ v1.1.6.md         # release notes (1.1.6)
-│     └─ v1.1.7.md         # current release notes (1.1.7)
+│     └─ v1.1.8.md         # current release notes (1.1.8)
 ├─ README.md               # 🇻🇳 Tiếng Việt
 ├─ README.en.md            # 🇬🇧 English
 ├─ README.zh.md            # 🇨🇳 中文
@@ -241,7 +432,7 @@ lo-cheoio/
 ├─ src/
 │  ├─ main.tsx             # raíz React, StrictMode
 │  ├─ App.tsx              # máquina de fases menu/playing/paused/gameover
-│  ├─ version.ts           # APP_VERSION = "1.1.7" (fuente única de verdad)
+│  ├─ version.ts           # APP_VERSION = "1.1.8" (fuente única de verdad)
 │  ├─ index.css            # tema tailwind v4 + todas las animaciones/gradientes
 │  ├─ assets/fonts/        # subsets woff2 (Be Vietnam Pro ×6, Bungee)
 │  ├─ styles/fonts.css     # @font-face + unicode-range, 100% offline
@@ -253,24 +444,24 @@ lo-cheoio/
 │  │  ├─ GameCanvas.tsx    # canvas + joystick flotante + teclado + visibilidad
 │  │  ├─ StartScreen.tsx   # menú: hero + escena en capas + paneles de esquina
 │  │  ├─ menu/              # paneles GAME/INFO + modales + icons/
-│  │  │  └─ background/     # 8 background layers as data (v1.1.7)
+│  │  │  └─ background/     # 8 background layers as data (v1.1.8)
 │  │  ├─ ModeSelector.tsx  # 9 tarjetas de modo (classic/zen/inferno/blitz/goldrush/storm/hardcore · combo · feast)
 │  │  ├─ AchievementsPanel.tsx  # muro de insignias bloqueadas/desbloqueadas
 │  │  ├─ GameOverScreen.tsx     # ¡ORZA ROTA! + puntos + nuevos logros
 │  │  ├─ PauseScreen.tsx        # PAUSA + estadísticas de la partida
 │  │  ├─ settings/           # ajustes en 6 secciones + controles (v1.1.6)
-│  │  └─ ui/               # ocho primitivas, un archivo cada una (v1.1.7 — separadas de ui.tsx)
+│  │  └─ ui/               # ocho primitivas, un archivo cada una (v1.1.8 — separadas de ui.tsx)
 │  ├─ game/
 │  │  ├─ engine.ts         # toda la simulación + render canvas (~2260 líneas)
-│  │  ├─ modeTypes.ts      # ModeId · ModeConfig (types-only, v1.1.7)
-│  │  ├─ modes/            # 9 balance records — classic.ts … feast.ts (v1.1.7)
-│  │  ├─ modesIndex.ts     # MODES · MODE_LIST · isModeId (v1.1.7)
-│  │  ├─ modeMath.ts       # multiplierForCombo · jarBonus · comboWindowFor… (v1.1.7)
+│  │  ├─ modeTypes.ts      # ModeId · ModeConfig (types-only, v1.1.8)
+│  │  ├─ modes/            # 9 balance records — classic.ts … feast.ts (v1.1.8)
+│  │  ├─ modesIndex.ts     # MODES · MODE_LIST · isModeId (v1.1.8)
+│  │  ├─ modeMath.ts       # multiplierForCombo · jarBonus · comboWindowFor… (v1.1.8)
 │  │  ├─ modes.ts          # barrel — keeps every old import working
 │  │  ├─ achievements.ts   # 16 insignias + checker puro (puro)
 │  │  ├─ storage.ts        # localStorage: top 8, progreso, logros
 │  │  ├─ audio.ts          # sintetizador Web Audio: sfx + música pentatónica
-│  │  ├─ changelog/          # in-game changelog (v1.1.7 — split from one file)
+│  │  ├─ changelog/          # in-game changelog (v1.1.8 — split from one file)
 │  │  │  ├─ types.ts        #   ChangelogEntry · ReleaseTier · copyFor()
 │  │  │  ├─ tiers.ts        #   tierFor() · TIER_ORDER · TIER_LABEL_KEY
 │  │  │  ├─ entries/        #   1 file per release — v1_0_0.ts … v1_1_7.ts
@@ -283,11 +474,11 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # foco atrapado en modales (v1.1.6)
-└─ tests/                  # vitest — 33 archivos · 256 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 97 archivos · 981 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Arquitectura y rendimiento
-<img src="assets/architecture.svg" alt="Arquitectura de Lọ Chéo v1.1.7 — entrada → motor → estado → render y servicios (animación SMIL)" width="100%" />
+<img src="assets/architecture.svg" alt="Arquitectura de Lọ Chéo v1.1.8 — entrada → motor → estado → render y servicios (animación SMIL)" width="100%" />
 
 
 - **Bucle de juego** con `requestAnimationFrame`, delta-time clampeado a `1/20s`, multiplicado por `timeScale` (cámara lenta de HIELO) y un breve **hit-stop** por captura para ese “golpe”.
@@ -326,13 +517,14 @@ Doble clic en [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`
 
 | Versión | Tier | Fecha | Notas |
 | --- | --- | --- | --- |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1011 tests / 102 archivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fondo del menú sin niebla** (cuatro capas: `blur 64→22px`, viñeta de esquinas en vez de pantalla completa, marco CRT 140→90px, suelo 45→70%) · **changelog por niveles con color** · **96 viñetas nuevas** para 8 versiones · fechas reordenadas · `src/game/changelog/` dividido · 10 READMEs rehechos · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes en 6 secciones** (rápidos · audio · pantalla · idioma · copia · datos) · volúmenes 0–100 · intensidad de sacudida · calidad visual · pausa al cambiar de pestaña · idioma dentro de Ajustes · 4 preajustes · exportar/importar JSON · menú multicapa animado · degradado en la tarjeta del autor · foco atrapado en modales · fix de música al recargar · **150 tests** |
-| [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-08 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |
+| [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |
 | [v1.1.4](docs/releases/v1.1.4.md) | 🟣 **PATCH** | 2026-11-06 | **9 modos** (Combo Festival · Gran Festín) · **16 logros** · **7 idiomas** (ES/FR añadidos) · fix play-windows.bat (CRLF+BOM) · lanzadores en 7 idiomas · 61 tests |
 | [v1.1.3](docs/releases/v1.1.3.md) | 🟣 **PATCH** | 2026-11-04 | 7 modos (Lluvia de Conservas · Cerámica Fina) · 14 logros · 5 idiomas · favicon · lanzadores multilingües · 55 tests |
 | [v1.1.2](docs/releases/v1.1.2.md) | 🟣 **PATCH** | 2026-11-02 | 5 modos (60 Segundos · Fiebre de Oro) · 12 logros · combo en llamas · lanzadores de doble clic · README en 10 idiomas · 49 tests |
-| [v1.1.1](docs/releases/v1.1.1.md) | 🟣 **PATCH** | 2026-10-31 | i18n en el juego VI/EN/ZH · README en 7 idiomas · barrido total de bugs · 49 tests |
+| [v1.1.1](docs/releases/v1.1.1.md) | 🟣 **PATCH** | 2026-10-30 | i18n en el juego VI/EN/ZH · README en 7 idiomas · barrido total de bugs · 49 tests |
 | [v1.1.0](docs/releases/v1.1.0.md) | 🟡 **UPDATE** | 2026-10-29 | 3 modos · Escudo de Ajo Dorado · Oruga · Mostaza Dorada · 10 logros · fuentes auto-alojadas |
 | [v1.0.0](docs/releases/v1.0.0.md) | 🩷 **MAJOR** | 2026-10-26 | Primer release: motor completo, 11 ingredientes, GOLPE DE ORZA, combo ×9 |
 
@@ -355,6 +547,8 @@ Notas de diseño y documentación técnica más profunda:
 
 | Doc | What it covers |
 | --- | --- |
+| [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) | Versión v1.1.8 — cuatro errores de maquetación de una sola suma de alturas, el scroll anidado, el «Cómo jugar» en el menú GAME, 14 adornos del hero |
+| [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md) | Versión v1.1.7 — fondo del menú sin niebla (diagnóstico de cuatro capas), changelog por niveles, 96 viñetas nuevas |
 | [docs/releases/v1.1.6.md](docs/releases/v1.1.6.md) | Release v1.1.6 — ajustes en 6 secciones, preajustes, copia, menú multicapa |
 | [docs/releases/v1.1.5.md](docs/releases/v1.1.5.md) | Release v1.1.5 — menús de esquina, guardar/continuar, ajustes, fixes |
 | [docs/design/menu-corners.md](docs/design/menu-corners.md) | Diseño del menú de esquina GAME/INFO — principios, a11y, responsive |
@@ -367,7 +561,7 @@ Notas de diseño y documentación técnica más profunda:
 ## 🤝 Contribuir
 
 1. Haz fork, crea una rama con la convención `arena/<nombre>` o `feat/<nombre>`.
-2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 256 tests + build).
+2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 1011 tests + build).
 3. Evita nuevas dependencias de runtime salvo necesidad real — filosofía: **un archivo, sin red, jugable para siempre**.
 4. En el PR indica las pantallas/modos afectados y adjunta un clip si cambia el gameplay.
 
