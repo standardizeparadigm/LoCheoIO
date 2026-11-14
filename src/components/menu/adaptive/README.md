@@ -67,9 +67,10 @@ this module being imported by the planner.
 
 ## The measurements are the component's, not this folder's
 
-`WORDMARK = 150`, `MASCOT_STACKED = 128`, `CHIP_OVERHANG = 14`, `GAP = 16` and
-`MASCOT_ROW = 240` are read off `StartScreen.tsx`'s class names. If someone
-changes `h-32` to `h-36`, this module is wrong and nothing will tell them —
+`WORDMARK = 150`, `MASCOT_STACKED = 128`, `CHIP_OVERHANG = 14`, `STACK_GAP = 16`
+and `MASCOT_ROW = 240` live in `hero.ts`, and each was read off a class name in
+`StartScreen.tsx` when it was first measured. If someone changes `h-32` to
+`h-36`, `hero.ts` is wrong and nothing will tell them —
 `tests/hero-stacked-fit.test.ts` rebuilds the column independently from those same
 class names, so it fails *only* if the two derivations disagree. That is the
 closest thing to a guarantee available without a real browser.
