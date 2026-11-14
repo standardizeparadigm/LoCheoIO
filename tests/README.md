@@ -41,6 +41,7 @@
 | `adaptive-readme.test.ts` | bốn ngưỡng và năm số đo mà `adaptive/README.md` in ra, đối chiếu hằng số thật; đồng thời khẳng định README **vẫn còn** đoạn tự thừa nhận rằng các số đo đến từ class name của component chứ không từ thư mục này | fs |
 | `panel-readme-table.test.ts` | bảng **bốn chế độ** panel trong `panel/README.md` — mỗi ô so với `cornerPanelHeight()`; bảng này phải viết lại lần hai vì bản đầu bịa bốn trong tám số bằng cách nội suy giữa hai số đúng | fs + pure |
 | `catalogue-counts.test.ts` | ba con số **9 · 14 · 16** mà mười tài liệu in ra — đếm trực tiếp từ `MODE_LIST`, `KINDS`, `ACHIEVEMENTS`, và khẳng định id là duy nhất để một bản trùng không làm số đếm sai | pure |
+| `key-count-docs.test.ts` | **327 key** — số trong bảng i18n; kiểm cả bảy locale cùng độ dài, và cấm 306/307 như một **tuyên bố hiện tại** trong hai hướng dẫn, trong khi vẫn giữ dòng so sánh lịch sử của release doc | fs + i18n |
 | `menu-decor.test.ts` | 14 món trang trí hero — số lượng, toạ độ trong khung, không chồng lên chữ, id duy nhất, hai dải trên/dưới | pure |
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
