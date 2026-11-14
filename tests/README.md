@@ -72,6 +72,7 @@
 | `barrel-contract.test.ts` | sáu barrel không ai import vẫn phải đúng hợp đồng, để lần import đầu tiên không nổ | fs |
 | `folder-readmes.test.ts` | mỗi thư mục dưới `src/` có README phải mô tả **mọi** file trong đó | fs |
 | `docs-counts.test.ts` | số trong tài liệu phải khớp mã nguồn — không tài liệu hiện hành nào được ghi dưới sàn test, không tài liệu nào nói số key i18n cũ | fs |
+| `smoke-coverage.test.ts` | hình dạng của cổng `npm run smoke` — bốn màn hình trong ván có mặt, fixture `RUN_STATS` là một ván thật chứ không phải toàn số 0 (số 0 đi vào nhánh rỗng, tức là màn hình không ai thấy) | fs |
 | `docs-numbers.test.ts` | mười README và doc release trích số file/số test — đọc `tests/` và đối chiếu | fs |
 | `numeric-guards-doc.test.ts` | hướng dẫn về chặn số phải khớp các hàm chặn thật | fs |
 | `storage-doc.test.ts` | tài liệu storage khớp schema thật trong `storage.ts` | fs |
