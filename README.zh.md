@@ -135,6 +135,54 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` 扫描 **1,682 个视口**，并在每个样本上验证 `heroContentHeight(layout) ≤ scene`。
 
+### 🌍 第二层：环境，而不只是尺寸
+
+窗口高度并不等于可用高度。在 iPhone 上，地址栏和 Home 指示条会占去一部分；
+页面缩放时，`visualViewport` 比 `innerHeight` 更小。因此我们单独做了一层，
+纯函数、不依赖 React（`src/components/menu/adaptive/environment.ts`）：
+
+```ts
+type Environment = {
+  dpr: number;            // 限定在 [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // 手指，而非鼠标
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+四个容易出错的地方，以及实际的处理：
+
+1. **`env()` 无法从 `getComputedStyle` 读取。** 必须有一个*使用*了
+   `env(safe-area-inset-*)` 的元素，它的计算内边距才有意义。第一版创建了**四**
+   个探测元素（每条边一个），每次缩放都要强制四次布局。现在只用**一个**元素、
+   四条内边距，并在 `finally` 中移除，抛异常也不会留下节点。
+2. **`pointer: coarse` 可以在没有任何 `resize` 的情况下改变。** 混合设备会不
+   停在鼠标和手指之间切换。钩子订阅了**两个**媒体查询，而不只是 `resize`。
+3. **内边距 `0` 是合法值。** 其它数值字段用的 `sane()` 下限是 1，拿来用在
+   内边距上会把「没有刘海」变成「1px 刘海」。
+4. **内边距只从可用高度里减，绝不动场景高度。**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`，而 `planFits` 与
+   `occupiesExactly` 都走这条路径，所以两者不可能不一致。
+
+`tests/environment.test.ts` 覆盖 `saneDpr`（包括 `NaN`、`−1`、`7`）、
+`parseInset`、`verticalInset`、`isHandheld`；`tests/use-environment.test.ts`
+构造了假的 `window` 与 `document`（无需 jsdom），因此也能覆盖**抛出异常**的
+`matchMedia` 和**没有 body** 的文档。
+
+### ⚠️ 一个已知限制 —— 记录下来，而不是藏起来
+
+在 **844×600** 下，没有内边距的窗口给 hero 222px；加上 10px 内边距反而给
+**268px**。窗口更小，hero 却高了 46px。原因是总高度按离散阈值分配，一个小小
+的内边距把总和推过某个阈值，从而切换了经济档。
+
+这是**真实的、微小的、早就存在的**缺陷。我们试过用八档经济搜索让 `scene`
+最大——**失败**：在 1920×1080 下它会砍掉 ticker 和高行，而那正是玩家看到的
+东西。已回退。改为让 `tests/layout-inset.test.ts` **断言实测数值**
+（222 → 268，+46）作为一个通过的测试：谁修好了就会打破它并被迫更新，在修好
+之前至少它被写下来了。旁边则是真正成立的不变量：在*同一个*经济档内，
+`scene + reserve === usableHeight`（已验证 252 种组合）。
+
 #### 缺失的第四个事件
 
 用户是**按下全屏键**才拍出那两张的。应用监听 `resize` 和 `orientationchange`。Firefox 在切换全屏时两个都不触发；旧版 Safari 只触发 `webkitfullscreenchange`。于是窗口高度变了，首屏保留着旧方案，标签一直是被切的状态，直到下一次 resize。
