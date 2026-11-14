@@ -59,6 +59,15 @@ const T = String(total);
 const F = String(files);
 
 /**
+ * The SVG count has the same problem as the test count and one extra axis: it
+ * is written as "19 SVG", "19 SVGs" and "19 SVGs, references checked both
+ * ways" in different READMEs, and as a *historical* `18 → 19 → 20` table in
+ * the release doc, which must not move. Only the standalone claims are
+ * rewritten; anything inside a row that already shows an arrow is history.
+ */
+const SVGS = String(readdirSync("assets").filter((f) => f.endsWith(".svg")).length);
+
+/**
  * One entry per sentence shape. Each `to` is a function of the match groups, so
  * there is no backreference syntax anywhere in this file.
  */
@@ -96,6 +105,15 @@ const RULES = [
   {
     re: /\d{3,4} เทสต์ใน \d{1,3} ไฟล์/g,
     to: () => `${T} เทสต์ใน ${F} ไฟล์`,
+  },
+  /*
+   * "20 SVG — no orphans" · "20 SVGs, references checked both ways".
+   * Skipped when the same line also carries a count *range* (`18 | 19 | 20`),
+   * because that is the growth table, not a claim about today.
+   */
+  {
+    re: /\b\d{1,2} (SVGs?|file SVG|Dateien|archivos|ficheiros|fichiers)\b(?!.*\|.*\b\d{1,2} \|)/g,
+    to: (m, unit) => (unit === "SVGs" ? `${SVGS} ${unit}` : m),
   },
   // 51 files · 520 tests  (reversed order, some languages prefer it)
   {
@@ -142,4 +160,6 @@ if (problems.length) {
   console.error(`\n${problems.length} problem(s). Expected ${T} tests / ${F} files.`);
   process.exit(1);
 }
-console.log(`prose counts: ${T} tests / ${F} files — ${changed} README(s) ${verify ? "ok" : "updated"}`);
+console.log(
+  `prose counts: ${T} tests / ${F} files / ${SVGS} SVGs — ${changed} README(s) ${verify ? "ok" : "updated"}`,
+);
