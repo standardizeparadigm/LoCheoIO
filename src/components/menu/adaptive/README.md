@@ -1,83 +1,62 @@
-# `menu/adaptive/` — bố cục hero theo kích thước thật
+# `src/components/menu/adaptive/`
 
-Module này trả lời **một** câu hỏi: *ở cửa sổ này, hero được phép hiện những gì?*
+Two files, two jobs: **numbers** (`breakpoints.ts`) and **decision** (`hero.ts`).
 
-Trước vòng 6, câu hỏi đó được trả lời bởi hai hệ thống không biết nhau:
+## Why this exists
 
-| Thứ quyết định | Biết | Không biết |
-| --- | --- | --- |
-| `sm:` · `lg:` trong CSS | chiều **rộng** | chiều **cao** |
-| `plan.minimal` | chiều **cao** (dưới 220px) | chiều rộng, và chỉ bật khi đã quá muộn |
+Round 6's report compared two screenshots of the same app:
 
-Hệ quả là hai ảnh chụp của cùng một ứng dụng, cùng chiều rộng `1920`, lệch
-nhau 260px chiều cao, cho ra **cùng một** bố cục — và một trong hai không có
-chỗ chứa nó.
+    1920×1080 (fullscreen)   everything visible, hero tall
+    1920×820  (windowed)     hero laid out as a wide row, lower half under the
+                             corner panels, chip cut in half
 
-## Hai file
+The difference is 260px of *height* and zero of width. Every breakpoint in the
+CSS is a width breakpoint (`sm:`, `lg:`), so both viewports took the identical
+branch and produced the identical layout — one of which had nowhere to put it.
 
-| File | Xuất | Vai trò |
-| --- | --- | --- |
-| `breakpoints.ts` | 4 hằng số | ngưỡng chiều cao, mỗi cái suy từ chiều cao thật của thứ nó canh |
-| `hero.ts` | `heroLayout()` · `heroContentHeight()` · 2 type | hàm thuần: vào `{ scene, width, minimal }`, ra 5 boolean |
+The answer is not another media query. `heroLayout()` reads the numbers the layout
+plan already computed and answers five booleans; the component branches on those.
+Because they come from `scene` — the same value the chrome reserves — a resize
+cannot leave them stale.
 
-`index.ts` là barrel. Component **không** import trực tiếp từ file nào khác.
+## The rule that changed in round 7
 
-## `heroLayout()` — năm quyết định, không có cascade
+The ladder used to be four independent threshold questions:
 
-```ts
-heroLayout({ scene, width, minimal }) → {
-  sideBySide,   // lockup cạnh mascot, thay vì xếp trên
-  halo,         // vòng sáng quanh mascot
-  badgeRow,     // tấm «HŨ DƯA ĐẠI CHIẾN» + dòng kỷ lục
-  mascot,       // chú lọ — luôn true ngoài `minimal`
-  liveBadge,    // dòng TRỰC TIẾP TỪ BẾP + phiên bản
-}
-```
+    badgeRow  = h >= 232
+    halo      = h >= 300
+    sideBySide= w >= 1024 && h >= 300
 
-`minimal` thắng tất cả. Dưới nó, **mỗi cờ là một phép thử độc lập** — không cờ
-nào phụ thuộc cờ khác. Đó là lý do nâng ngưỡng `badgeRow` không thể vô tình ẩn
-mascot.
+That works only if every threshold is an upper bound on the feature's cost *in the
+layout it ends up in*, and none of them were. `232` was derived from the
+side-by-side row but also fired when stacked, where the same badge row plus the
+mascot below it needs **370**.
 
-## Ba ngưỡng, và tại sao không có số tròn
+It is now a measurement: build candidates richest-first, return the first one
+`heroContentHeight()` says fits. A layout the sweep test says fits is, by
+construction, a layout the component can draw.
 
-| Hằng số | Giá trị | Suy từ |
-| --- | --- | --- |
-| `HEIGHT_FOR_BADGE_ROW` | `232` | wordmark 150 + badge 40 + live badge 22 = 212, cộng 20px thở |
-| `HEIGHT_FOR_HALO` | `300` | lockup 150 + vòng 240 − chồng lấn 90 |
-| `HEIGHT_FOR_SIDE_BY_SIDE` | `300` | cột cao hơn: mascot 192 + chip 24 + đệm |
+## The files
 
-`232` từng là `210` và đó là **một lỗi**: 210 thấp hơn chính cái lockup 212px
-mà nó canh, nên band 210px vẽ lockup 212px và dòng kỷ lục bị cắt. Bài kiểm
-`tests/menu-adaptive.test.ts` bắt được, không phải người đọc mã.
+| File | Owns |
+| --- | --- |
+| `breakpoints.ts` | The four constants, each with the derivation in a comment |
+| `hero.ts` | `heroLayout()`, `heroContentHeight()`, and the component's own measurements |
+| `index.ts` | The public surface — import from here, not the two modules |
 
-`HEIGHT_FOR_HALO` bằng `HEIGHT_FOR_SIDE_BY_SIDE` **có chủ ý**: khi hero xếp dọc,
-vòng sáng ở chung cột với lockup, nên nó cần đúng band mà bố cục hai cột cần.
+## The measurements are the component's, not this folder's
 
-## `heroContentHeight()`
+`WORDMARK = 150`, `MASCOT_STACKED = 128`, `CHIP_OVERHANG = 14`, `GAP = 16` and
+`MASCOT_ROW = 240` are read off `StartScreen.tsx`'s class names. If someone
+changes `h-32` to `h-36`, this module is wrong and nothing will tell them —
+`tests/hero-stacked-fit.test.ts` rebuilds the column independently from those same
+class names, so it fails *only* if the two derivations disagree. That is the
+closest thing to a guarantee available without a real browser.
 
-Trả về chiều cao mà một bố cục **thực sự** cần. Đây là thứ làm các ngưỡng kiểm
-được: bài quét so nó với `scene` ở **1 682** kích thước cửa sổ.
+## Adding a layout feature
 
-```ts
-// tests/menu-adaptive.test.ts
-for (let w = 320; w <= 3840; w += 61) {
-  for (let h = 150; h <= 700; h += 19) {
-    expect(heroContentHeight(heroLayout({ scene: h, width: w, minimal: false })))
-      .toBeLessThanOrEqual(h);
-  }
-}
-```
-
-## Ai dùng
-
-`StartScreen.tsx` — gọi một lần mỗi lần render:
-
-```tsx
-const plan = useMenuPlan();
-const width = useViewportWidth();
-const hero = heroLayout({ scene: plan.scene, width, minimal: plan.minimal });
-```
-
-Cả `plan` và `width` đều cập nhật khi cửa sổ đổi — xem
-`../layout/viewportEvents.ts`. Vì `plan.scene` là **cùng con số** `MenuChrome`
-đang giữ chỗ, bố cục hero và chiều cao chrome không thể lệch nhau.
+1. Add the flag to `HeroLayout`.
+2. Measure what it costs and add it to `heroContentHeight`.
+3. Insert it into the candidate list at the position matching its *value to the
+   player*, not its pixel cost — the list is ordered by what is lost first.
+4. Add a case to `tests/menu-adaptive.test.ts` for the band where it appears.
