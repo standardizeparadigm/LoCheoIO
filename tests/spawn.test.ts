@@ -97,7 +97,8 @@ describe("weightedPick and a broken RNG", () => {
   it("still accepts exactly 1, which the drift branch was written for", () => {
     const last = weightedPick(kinds, opts, () => 1);
     const weights = weightTable(kinds, opts);
-    const lastWeighted = kinds[weights.findLastIndex((w) => w > 0)];
+    // `findLastIndex` is ES2023; this project's lib target predates it.
+    const lastWeighted = kinds[weights.map((w, i) => (w > 0 ? i : -1)).reduce((a, b) => Math.max(a, b), -1)];
     expect(last).toBe(lastWeighted);
   });
 
