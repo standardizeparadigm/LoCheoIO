@@ -19,6 +19,24 @@ export function unit(v: unknown, fallback = 1): number {
   return typeof v === "number" && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : fallback;
 }
 
+/**
+ * Smallest gain that can be passed to `exponentialRampToValueAtTime`.
+ *
+ * The Web Audio spec rejects `0` there with a `RangeError` — which is exactly
+ * what `sfxPeak` returns at volume 0, so a player who dragged the SFX slider to
+ * zero got an exception on every sound instead of silence.
+ *
+ * `0.0001` is the conventional floor: it is inaudible (-80 dB) and it is what
+ * the engine already ramps *to* when a sound decays, so nothing about the
+ * envelope shape changes.
+ */
+export const FLOOR_GAIN = 0.0001;
+
+/** A peak safe to hand to an exponential ramp: never zero, never non-finite. */
+export function rampPeak(baseGain: number, volume: number): number {
+  return Math.max(FLOOR_GAIN, sfxPeak(baseGain, volume));
+}
+
 /** Final music bus gain: 0 when the gate is off, else base × volume. */
 export function musicBusGain(enabled: boolean, volume: number): number {
   return enabled ? MUSIC_BUS_BASE * unit(volume, 1) : 0;
