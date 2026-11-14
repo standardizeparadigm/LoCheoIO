@@ -145,6 +145,39 @@ test**: `it.each(BẢNG)` là một lời gọi và mười một test, và có 
 và nó **fail chính vì badge cũ** — đúng thứ script này sinh ra để sửa. Đọc báo
 cáo bất kể exit code là cách phá vòng luẩn quẩn.
 
+## `sync-prose-counts.mjs`
+
+Cùng ý tưởng với `sync-test-badge.mjs`, nhưng cho **câu văn** thay vì badge.
+
+```bash
+node scripts/sync-prose-counts.mjs            # viết lại
+node scripts/sync-prose-counts.mjs --verify   # chỉ báo, exit 1 nếu lệch
+```
+
+**Vì sao cần script thứ hai.** Badge là widget sinh tự động, một regex lo cả
+mười README. Câu văn thì không: tám ngôn ngữ nói cùng một sự thật theo tám cách
+— «520 tests / 51 files», «520 Tests in 51 Dateien», «520 test trên 48 file»,
+«520 testes em 51 ficheiros», «520 Unit-Tests», «typecheck + 520 tests + build»,
+«501 เทสต์ใน 48 ไฟล์» — và **mọi** cách đều đã lệch hàng trăm so với badge.
+(Đặt trong «» vì đây là **trích dẫn** những con số cũ, không phải số hôm nay.)
+Badge cũ thì người đọc hiểu là số sinh tự động; câu văn cũ thì bị đọc như sự
+thật.
+
+**Bài học đắt.** Bản đầu viết lại bằng template chứa `$&` — trong replacement
+không phải regex thì `$&` là **ký tự thường**, nên không sửa gì. Bản "sửa" sau
+đó dùng backreference trong template và tạo ra `82 Dateien · 882 51 Dateien ·
+520 Tests`: hỏng dữ liệu, trong sáu file, mà suite không bắt được vì **không có
+test nào đọc số trong câu văn**. Vì thế script này:
+
+1. **mỗi thay thế là một hàm của match đầy đủ** — không `$1`, không `$&`,
+   không gì phải escape;
+2. **tự kiểm tra đầu ra**: sau khi viết lại, dòng nào còn ghép số cũ với số file
+   cũ trong ngữ cảnh câu văn sẽ bị báo và script exit 1, thay vì lặng lẽ để lại
+   số sai trong tám ngôn ngữ.
+
+Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn trừ** qua
+`HISTORICAL` — bảng phát hành ghi lại con số của thời điểm đó, không phải hôm nay.
+
 ## `check-svg.mjs`
 
 Validator cho 20 file SVG trong `assets/`. Không có trình render SVG trong CI,
