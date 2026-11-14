@@ -85,3 +85,38 @@ describe("the newest changelog entry", () => {
     expect(guide).toMatch(/check:readme/);
   });
 });
+
+/*
+ * `tests/README.md` — the README inside the suite — opened with
+ * "**904 tests / 84 files**" while the suite ran 997 across 100. It sat three
+ * hundred tests stale in the one file a reader is most likely to open when
+ * asking how big the suite is, because the sweep only ever looked at the READMEs
+ * in the repository root and this one is a level down.
+ *
+ * The count is read from the badge, which `npm run sync:badge` generates from a
+ * real `vitest run`; asserting against a literal here would make this file the
+ * next thing to go stale.
+ */
+describe("tests/README.md", () => {
+  const body = readFileSync(join(__dirname, "README.md"), "utf8");
+  const badge = /badge\/tests-(\d+)%20%C2%B7%20(\d+)%20files/.exec(
+    readFileSync(join(__dirname, "..", "README.md"), "utf8"),
+  );
+
+  it("states the suite size the badge states", () => {
+    expect(badge).not.toBeNull();
+    const [, tests, files] = badge!;
+    expect(body).toContain(`**${tests} tests / ${files} files.**`);
+  });
+
+  it("states no other test total", () => {
+    /*
+     * Historical numbers are quoted with «», the convention the rest of the
+     * docs use for "this was true then" — so anything outside guillemets that
+     * looks like a total has to be the current one.
+     */
+    const bare = body.replace(/«[^»]*»/g, "").replace(/`[^`]*`/g, "");
+    const totals = [...bare.matchAll(/\b(\d{3,4}) tests?\b/gi)].map((m) => m[1]);
+    for (const t of totals) expect(Number(t)).toBe(Number(badge![1]));
+  });
+});

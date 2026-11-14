@@ -252,6 +252,13 @@ const QUOTED = /(«[^»]*»)/;
 const READMES = [
   ...readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f)),
   "scripts/README.md",
+  /*
+   * `tests/README.md` opens with "**904 tests / 84 files**" — a claim about the
+   * suite, in the directory the suite lives in, three hundred tests out of date.
+   * Every README that states the total has to be in this list, or the sweep
+   * keeps reporting a clean run while the file next to the tests is wrong.
+   */
+  "tests/README.md",
 ];
 const verify = process.argv.includes("--verify");
 let changed = 0;
