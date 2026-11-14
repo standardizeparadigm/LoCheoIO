@@ -77,17 +77,36 @@ describe("heroLayout — the two screenshots", () => {
     // Windowed: ~452px, which is under the 300px row threshold *plus* the
     // mascot's own 240px. This is the screenshot where the chip was cut.
     const layout = heroLayout({ scene: 452, width: 1920, minimal: false });
-    expect(layout.sideBySide).toBe(true); // 452 ≥ 300 — a row still fits
+    expect(layout.sideBySide).toBe(true); // 452 ≥ 240 — a row still fits
 
-    // The failure case is the band *below* the threshold:
-    const tight = heroLayout({ scene: 280, width: 1920, minimal: false });
+    // The failure case is the band *below* what the row needs. Round 7 corrected
+    // this: it used to assert `badgeRow: true` here, which is a 370px stacked
+    // column in a 280px band — the very layout the windowed screenshot shows cut.
+    /*
+     * 280px is still a row: the row needs 240 and the width easily allows it.
+     *
+     * Below 240 there is no intermediate rung — a *stacked* hero needs 308px
+     * (lockup 212 + gap 16 + mascot 128 + chip overhang 14), so every band from
+     * 239 down goes straight to the wordmark. That is not a missing step; it is
+     * the honest consequence of the mascot being 128px tall. Round 7's earlier
+     * ladder tried the 308px stack at 230 and the top of the jar was what got
+     * clipped.
+     */
+    const tight = heroLayout({ scene: 230, width: 1920, minimal: false });
     expect(tight.sideBySide).toBe(false);
-    expect(tight.badgeRow).toBe(true);
+    expect(tight.mascot).toBe(false);
+    expect(tight.badgeRow).toBe(false);
+    expect(heroContentHeight(tight)).toBeLessThanOrEqual(230);
   });
 
   it("gives the same width two different layouts, which is the whole point", () => {
+    /*
+     * The two bands have to be on opposite sides of what the *row* needs, not
+     * of the old 300px threshold: 240 is exactly a row's height, so 239 is the
+     * shortest stacked band and 240 the shortest rown one.
+     */
     const wide = heroLayout({ scene: 620, width: 1920, minimal: false });
-    const short = heroLayout({ scene: 240, width: 1920, minimal: false });
+    const short = heroLayout({ scene: 239, width: 1920, minimal: false });
     expect(wide).not.toEqual(short);
     expect(wide.sideBySide).toBe(true);
     expect(short.sideBySide).toBe(false);
@@ -104,9 +123,25 @@ describe("heroLayout — the ladder", () => {
       if (previous.halo && !current.halo) {
         expect(current.mascot, `mascot dropped with halo at ${scene}`).toBe(true);
       }
-      if (previous.badgeRow && !current.badgeRow) {
-        // The halo may already be gone; the mascot may not be.
-        expect(current.mascot, `mascot dropped with badge row at ${scene}`).toBe(true);
+      /*
+       * Round 7 replaced this block's rule. It used to assert "the mascot is
+       * still present when the badge row goes", which holds on the *row* ladder
+       * (240 seats a row with the badge row) and fails on the stacked one, where
+       * the badge row and the mascot are in the same 308px column and go
+       * together at the 240/239 boundary.
+       *
+       * The properties that do hold, and are what the component depends on:
+       */
+      // 1. Nothing ever reappears as the band shrinks.
+      const flags = (l: typeof current) => [l.sideBySide, l.halo, l.badgeRow, l.mascot, l.liveBadge];
+      for (let i = 0; i < flags(current).length; i++) {
+        if (!flags(previous)[i]) {
+          expect(flags(current)[i], `flag ${i} reappeared at ${scene}`).toBe(false);
+        }
+      }
+      // 2. The mascot outlives the halo: a ring around nothing is a bug.
+      if (previous.halo && !current.halo) {
+        expect(current.mascot, `halo gone but mascot too at ${scene}`).toBe(true);
       }
       previous = current;
     }
@@ -123,21 +158,49 @@ describe("heroLayout — the ladder", () => {
     });
   });
 
-  it("keeps the mascot whenever the plan is not minimal", () => {
+  it("keeps the mascot for as long as the band can seat it", () => {
+    /*
+     * Round 7 replaced the old assertion — "the mascot is present whenever the
+     * plan is not minimal" — because it was the bug in test form. `minimal` is
+     * the plan's flag (true below 220px of band); a 240px band is not minimal
+     * and cannot hold a 308px stacked column, so the old test demanded a layout
+     * that overflowed and passed because `heroContentHeight` under-reported.
+     *
+     * The honest property: the mascot is present whenever the *smallest* layout
+     * that contains it fits, and absent otherwise.
+     */
+    /*
+     * "Smallest layout containing the mascot" depends on the width, because a
+     * row and a stack have different floors: 240 when the window is wide enough
+     * to put them side by side, 308 when it is not. Testing only the stacked
+     * form fails at 240 — where a row is exactly what the band can seat.
+     */
+    const stack = { sideBySide: false, halo: false, badgeRow: false, mascot: true, liveBadge: false };
+    const row = { sideBySide: true, halo: false, badgeRow: false, mascot: true, liveBadge: false };
     for (const scene of BANDS) {
       const layout = heroLayout({ scene, width: 1280, minimal: false });
-      expect(layout.mascot, `mascot missing at ${scene}px`).toBe(true);
+      const fits =
+        heroContentHeight(stack) <= scene || heroContentHeight(row) <= scene;
+      expect(layout.mascot, `mascot at ${scene}px (fits=${fits})`).toBe(fits);
     }
   });
 });
 
 describe("heroLayout — rubbish input", () => {
   it("treats NaN and Infinity as the smallest possible viewport", () => {
+    /*
+     * `Infinity` is the trap: `Number.isFinite` sends it to the floor, so a
+     * non-finite band becomes 0px — which means *no* layout fits, including the
+     * mascot. The old expectation here (`mascot: true`, "never hide the logo")
+     * asserted the opposite of what the code can honour: a 0px band has no
+     * honest answer that includes a 128px jar.
+     */
     for (const bad of [NaN, Infinity, -Infinity]) {
       const layout = heroLayout({ scene: bad, width: bad, minimal: false });
       expect(layout.sideBySide).toBe(false);
       expect(layout.badgeRow).toBe(false);
-      expect(layout.mascot).toBe(true); // never hide the logo
+      expect(layout.mascot).toBe(false);
+      expect(heroContentHeight(layout)).toBeLessThanOrEqual(150);
     }
   });
 
