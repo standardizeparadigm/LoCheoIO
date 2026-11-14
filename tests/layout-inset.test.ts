@@ -120,7 +120,7 @@ describe("KNOWN LIMITATION: the hero is not monotonic in the window height", () 
    * for one fires, the hero jumps *up* by more than the window shrank:
    *
    *     844×600, inset  0    reserve 378 (rich rows)   scene 222
-   *     844×600, inset 10    reserve 322 (tight rows)  scene 240   ← +18
+   *     844×600, inset 10    reserve 322 (tight rows)  scene 268   ← +46
    *
    * The jump is real but small, and it was already present before insets —
    * 844×600 and 844×610 differ by 46px of hero for 10px of window. It is not a
@@ -141,7 +141,7 @@ describe("KNOWN LIMITATION: the hero is not monotonic in the window height", () 
     const small = planMenuLayout({ width: 844, height: 600, inset: 10 }).scene;
     expect(small, "the 10px-shorter window has the taller hero").toBeGreaterThan(big);
     // 46px of hero bought by removing 10px of window, because taking the tight
-    // rows returns 56px of row height in one step.
+    // rows returns 56px of row height in one step — 268 against 222.
     expect(small - big).toBe(46);
   });
 
