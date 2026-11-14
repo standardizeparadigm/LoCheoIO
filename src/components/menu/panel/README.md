@@ -10,9 +10,24 @@ index.ts           barrel
 
 ## Vấn đề nó sửa
 
-`CornerPanel` là một khung **cao cố định**: 318px ở chế độ gọn, 458px ở chế độ
-đầy đủ (xem `layout/metrics.ts`). Panel GAME có 7 hàng nên 7 hàng đó gần lấp
-hết khung; panel INFO có 3 hàng nên còn dư một khoảng rất lớn.
+`CornerPanel` là một khung **cao cố định**, và từ vòng 7 nó có **bốn** giá trị
+chứ không phải hai (xem `layout/metrics.ts`, hàm `cornerPanelHeight(7, rich,
+tight, compact)`):
+
+| Chế độ | Hàng | Header · gap · padding | 7 hàng (GAME) | 3 hàng (INFO) |
+| --- | --- | --- | --- | --- |
+| gọn | 34px | 22 · 6 · 16 | **318** | 158 |
+| gọn + tight | 26px | 22 · 6 · 16 | **262** | 134 |
+| đầy đủ | 54px | 22 · 6 · 16 | **458** | 218 |
+| đầy đủ + compact | 54px | 18 · 3 · 10 | **430** | 202 |
+
+Bốn hàng đó là bốn cách trả cùng một hoá đơn. `tight` hạ **hàng** — thứ duy nhất
+được phép mất chiều cao, vì nó vẫn là một nút bấm được. `compact` hạ **không
+khí** — header, gap, padding — và giữ nguyên mọi hàng. Vòng 7 cần cả hai vì một
+cửa sổ 677px không đủ cho 318px panel cộng hero 299px.
+
+Panel GAME có 7 hàng nên 7 hàng đó gần lấp hết khung; panel INFO có 3 hàng nên
+còn dư một khoảng rất lớn — 240px ở chế độ đầy đủ.
 
 Cách cũ xử lý khoảng dư đó là `justify-content: space-around` trên body. Với
 GAME (7 hàng) kết quả trông ổn. Với INFO (3 hàng) nó biến khung thành:
