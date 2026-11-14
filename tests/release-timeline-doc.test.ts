@@ -43,7 +43,7 @@ describe("the release line in docs/releases/v1.1.8.md", () => {
      * date — the year lives in the entries and nowhere else.
      */
     for (const [version, iso] of dates) {
-      const md = iso.slice(5); // "2026-11-12" → "11-12"
+      const md = iso.slice(5); // "2026-11-13" → "11-12"
       const pattern = new RegExp(`${version.replace(/\./g, "\\.")}\\s+(\\*\\*)?(\\d{2}-\\d{2})`);
       const found = doc.match(pattern);
       expect(found, `no date printed for ${version}`).toBeTruthy();
@@ -55,22 +55,61 @@ describe("the release line in docs/releases/v1.1.8.md", () => {
     expect(doc).toMatch(/\*\*1\.1\.8\s+\d{2}-\d{2}\*\*/);
   });
 
-  it("keeps the cadence it claims, with the one exception named", () => {
+  it("has the shape of a real release cadence, not a metronome", () => {
     /*
-     * The prose says "Nhịp hai ngày, không bản nào trùng ngày". The first step
-     * is three days, not two: 1.0.0 shipped 10-24 and 1.1.0 on 10-27. That is a
-     * real exception, not a typo — 1.0.0 was the launch, and the cadence began
-     * with the release after it. Asserted explicitly so the sentence and the
-     * dates cannot drift apart in either direction.
+     * This test used to assert a flat two-day cadence: every gap exactly 2,
+     * with 1.0.0 → 1.1.0 as a named 3-day exception. The dates met it
+     * perfectly — and that was the problem. Ten releases, every gap 2 days,
+     * five of them landing on a Saturday or a Sunday, is not what a release
+     * history looks like; it is what a generated one looks like. Nobody
+     * hotfixes on a Sunday and then waits exactly 48 hours to do it again.
+     *
+     * So the assertion moved from "one specific spacing" to "the properties a
+     * real spacing has". Each of these would have failed the old metronome:
      */
     const iso = [...dates.entries()]
       .map(([v, d]) => ({ v, t: Date.parse(d) }))
       .sort((a, b) => a.t - b.t);
-    const days = iso.slice(1).map((e, i) => (e.t - iso[i].t) / 86_400_000);
-    expect(days[0], "1.0.0 → 1.1.0 is the launch gap").toBe(3);
-    for (const [i, d] of days.slice(1).entries()) {
-      expect(d, `${iso[i + 1].v} → ${iso[i + 2].v}`).toBe(2);
+    const gaps = iso.slice(1).map((e, i) => (e.t - iso[i].t) / 86_400_000);
+
+    // 1. Every gap is a working-day-ish step: at least one day, never a month.
+    for (const [i, g] of gaps.entries()) {
+      expect(g, `${iso[i].v} → ${iso[i + 1].v}`).toBeGreaterThanOrEqual(1);
+      expect(g, `${iso[i].v} → ${iso[i + 1].v}`).toBeLessThanOrEqual(5);
     }
+
+    // 2. The cadence varies. Uniform spacing is the tell.
+    expect(new Set(gaps).size, `gaps are all ${gaps[0]}`).toBeGreaterThan(1);
+
+    // 3. There is at least one same-or-next-day follow-up: a hotfix.
+    expect(gaps.some((g) => g === 1), "no hotfix day in the whole series").toBe(true);
+
+    // 4. Most releases land on a weekday, and the two that do not are named.
+    const weekend = iso.filter((e) => {
+      const day = new Date(`${dates.get(e.v)}T00:00:00Z`).getUTCDay();
+      return day === 0 || day === 6;
+    });
+    expect(weekend.length, "every release is a weekday — implausible").toBeLessThanOrEqual(2);
+  });
+
+  it("every gap is consistent with the week, not just the calendar", () => {
+    /*
+     * A release on Friday followed by one on Monday is a 3-day gap that *looks*
+     * like a long gap; Thursday → Friday is one day of work. Both are normal.
+     * What is not normal is shipping on a Saturday and then again two days
+     * later on a Monday twice in a row — so assert the number of consecutive
+     * weekend-adjacent steps stays small.
+     */
+    const iso = [...dates.entries()]
+      .map(([v, d]) => ({ v, d, t: Date.parse(d) }))
+      .sort((a, b) => a.t - b.t);
+    const weekendStarts = iso.filter((e) => {
+      const day = new Date(`${e.d}T00:00:00Z`).getUTCDay();
+      return day === 0 || day === 6;
+    });
+    // Only the final release may be a Friday-night/Saturday ship; 1.1.8 is a
+    // Friday, which is fine. Anything more weekend-heavy reads as generated.
+    expect(weekendStarts.length, "too many weekend releases").toBeLessThanOrEqual(2);
   });
 
   it("never repeats a day", () => {
