@@ -54,9 +54,18 @@ describe("every module the guide names still carries its guard", () => {
 
 describe("the guide's own claims", () => {
   it("states the count it actually lists", () => {
-    // "tám chỗ trong sáu module" — both numbers appear in prose and both drift.
-    expect(guide).toMatch(/tám/);
-    expect(guide).toMatch(/sáu module/);
+    /*
+     * Both numbers in the summary line drift independently of the table, which
+     * is why they are asserted here at all — the eight→nine update was caught
+     * by this test, and so was nine→eleven.
+     *
+     * Asserted as *the current numbers* rather than by counting table rows,
+     * because the prose deliberately undercounts: it says "eleven places in
+     * eight modules" while the table has twelve rows, since `modeMath.ts ×2`
+     * shares one file. The reader should trust the sentence.
+     */
+    expect(guide).toMatch(/mười một/);
+    expect(guide).toMatch(/tám module/);
   });
 
   it("explains why `??` is not a guard", () => {

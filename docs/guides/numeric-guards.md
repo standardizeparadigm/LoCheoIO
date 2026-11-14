@@ -1,6 +1,6 @@
 # Chặn số hỏng — vì sao `Math.max(0, x)` không phải guard
 
-Vòng 6 tìm ra **chín** chỗ trong sáu module khác nhau dùng một phép toán như thể
+Vòng 6 tìm ra **mười một** chỗ trong tám module khác nhau dùng một phép toán như thể
 nó chặn được giá trị không hữu hạn. Sáu chỗ dùng `Math.max(0, x)`, hai chỗ dùng
 `?? 1`. Cả hai đều không chặn.
 
@@ -33,6 +33,8 @@ phải guard cho `Infinity`, và tên hàm (`max`) trông như thể nó bao qu�
 | `menu/panel/stat.ts` | Footer panel in `✓NaN/NaN` và `✓5/Infinity`; giá trị đến từ localStorage nên người chơi **sửa được** |
 | `game/modeMath.ts` ×2 | `comboWindowFor("id-không-tồn-tại")` ném `TypeError` **trong tick engine** → mất cả ván; `?? 1` để `Infinity` thành cửa sổ combo vô hạn |
 | `game/engine.resize` | `canvas.width = NaN` → trình duyệt **đặt lại backing store về 300×150**; game chạy ở độ phân giải không ai biết |
+| `menu/layout/metrics` | `cornerPanelHeight(NaN)` → chiều cao **khai báo** là `NaN`; React bỏ `style` hỏng, panel tự cao bằng nội dung (đúng lỗi 1.1.7) |
+| `settings/VolumeStepper` | `Math.round(NaN)` → nhãn `NaN/100`, thanh âm lượng vẽ **0 vạch** (phòng thủ hai lớp) |
 
 Đó là sáu chỗ dùng `Math.max`. Chỗ thứ bảy và thứ tám không dùng `Math.max` mà
 dùng **`??`** như một guard số — cùng một sai lầm, khác cú pháp:
