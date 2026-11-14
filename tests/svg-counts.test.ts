@@ -98,3 +98,79 @@ describe("counts printed inside SVG figures", () => {
     expect(SVGS.length).toBeGreaterThanOrEqual(20);
   });
 });
+
+/*
+ * Every README embeds `assets/test-matrix.svg`, and every embed carries an
+ * `alt` attribute that repeats the two counts the figure draws. Five languages
+ * said 986 / 98; three said 344 / 40 (ja), 495 / 51 (ko) and 501 / 51 (zh) —
+ * numbers from three different releases, preserved through seven count sweeps
+ * because the line looks like markup, not prose, and a sighted reader gets the
+ * numbers from the picture underneath.
+ *
+ * The order differs by language: English and the Romance/Germanic READMEs write
+ * "986 tests across 98 files", while ja/ko/zh write the file count first with no
+ * connector — "40ファイル344テスト". A rule that only knew the first shape could
+ * never have seen the second.
+ */
+describe("the alt text of the test-matrix figure", () => {
+  const READS = readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
+
+  it("is present in all ten READMEs", () => {
+    const missing = READS.filter(
+      (f) => !/<img[^>]*src="assets\/test-matrix\.svg"[^>]*alt="[^"]*\d[^"]*"/.test(readFileSync(f, "utf8")),
+    );
+    expect(READS.length).toBe(10);
+    expect(missing).toEqual([]);
+  });
+
+  it("quotes the current counts in every language, in either order", () => {
+    const wrong: string[] = [];
+    for (const f of READS) {
+      const alt = /alt="([^"]*test-matrix[^"]*)"/.exec(readFileSync(f, "utf8"))?.[1]
+        ?? /<img[^>]*test-matrix\.svg"[^>]*alt="([^"]*)"/.exec(readFileSync(f, "utf8"))?.[1];
+      if (!alt) continue;
+      const found = [...alt.matchAll(/\d+/g)].map((m) => Number(m[0]));
+      /* The version prefix (1, 1, 8) is the only other number allowed. */
+      const counts = found.filter((n) => n !== 1 && n !== 8);
+      if (!counts.includes(TESTS) || !counts.includes(FILES)) {
+        wrong.push(`${f}: ${TESTS}/${FILES} missing from ${JSON.stringify(alt.slice(0, 90))}`);
+      }
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  it("leaves no stale third count to be misread", () => {
+    /*
+     * The failures were half-migrated pairs — `98ファイル 344 テスト` — which
+     * pass a check for "does it contain 98" while still printing a second,
+     * stale number.
+     *
+     * The attribute legitimately holds a third number: the gate count
+     * (`9 gates` / `九つのゲート` / `九个质量门`), which the SVG itself prints
+     * as "9 gates" and which does not move when tests are added. So the rule
+     * is not "exactly two numbers" — it is "no *test* count that is not the
+     * current one", which is the claim that actually went stale in three
+     * languages.
+     */
+    const GATES = 9;
+    const extra: string[] = [];
+    for (const f of READS) {
+      const body = readFileSync(f, "utf8");
+      const alt = /<img[^>]*test-matrix\.svg"[^>]*alt="([^"]*)"/.exec(body)?.[1];
+      if (!alt) continue;
+      const nums = [...alt.matchAll(/\d+/g)].map((m) => Number(m[0])).filter((n) => n > 8);
+      for (const n of nums) {
+        if (n === TESTS || n === FILES || n === GATES) continue;
+        /* A count in the 300–600 range is a test count from an older release. */
+        if (n >= 300) extra.push(`${f}: ${n} alongside ${nums.join(" · ")}`);
+      }
+    }
+    expect(extra).toEqual([]);
+  });
+
+  it("the gate count it allows is the one the figure draws", () => {
+    /* Guards the allowance above from silently becoming a hole. */
+    const svg = readFileSync("assets/test-matrix.svg", "utf8");
+    expect(svg).toMatch(/\b9 gates\b/);
+  });
+});

@@ -157,6 +157,30 @@ const RULES = [
     current: true,
     to: (m, unit) => `${KEYS} ${unit}`,
   },
+  /*
+   * CJK `alt` text puts the file count first and drops every separator word:
+   *
+   *     40ファイル344テスト            (ja)
+   *     51개 파일 495 테스트           (ko)
+   *     51 个文件 501 项测试、九个质量门  (zh)
+   *
+   * Eight READMEs describe the same test-matrix.svg image; five said the
+   * current numbers and three said numbers from three different releases
+   * (344/40, 495/51, 501/51). A sighted reader sees the SVG and never reads
+   * this line — it exists for screen readers, which is exactly why nobody
+   * noticed it drift. Matched as one unit so the pair cannot be half-updated
+   * into "986 ファイル 344 テスト".
+   */
+  {
+    /*
+     * Separators are captured and re-emitted verbatim. Japanese sets the pair
+     * closed up (`40ファイル344テスト`), Korean and Chinese space it out
+     * (`51개 파일 495 테스트`) — a rule that normalises whitespace would
+     * "fix" the counts and leave a subtly un-Japanese line behind.
+     */
+    re: /(\d{1,3})(\s*)(ファイル|개\s*파일|个文件)(\s*)(\d{3,4})(\s*)(テスト|테스트|项测试)/g,
+    to: (m, fc, g1, fu, g2, tc, g3, tu) => `${F}${g1}${fu}${g2}${T}${g3}${tu}`,
+  },
   // 51 files · 520 tests  (reversed order, some languages prefer it)
   {
     re: /\b\d{1,3} ([A-Za-z][\w]*) · \d{3,4} ([Tt]ests?|[Tt]estes?)\b/g,
