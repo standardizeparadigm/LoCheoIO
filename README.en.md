@@ -238,6 +238,61 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // taller column: 192 mascot + 24 chip + padding
 
 `tests/menu-adaptive.test.ts` sweeps **1,682 viewports** and asserts `heroContentHeight(layout) ≤ scene` at every sample — so a wrong threshold is a red test, not something a player finds. On resize, both hooks listen for **six** events and update in one animation frame.
 
+### 🌍 The second layer: environment, not just size
+
+The window height is not the usable height. On an iPhone the address bar and the
+home indicator eat part of it; when the page is zoomed, `visualViewport` is
+smaller than `innerHeight`. So there is a separate, pure, React-free layer that
+reads it (`src/components/menu/adaptive/environment.ts`):
+
+```ts
+type Environment = {
+  dpr: number;            // clamped to [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // a finger, not a mouse
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+Four things that are easy to get wrong, and what was done instead:
+
+1. **`env()` cannot be read from `getComputedStyle`.** You need an element that
+   *uses* `env(safe-area-inset-*)` before its computed padding means anything.
+   The first version created **four** probe elements (one per edge) — four forced
+   layouts on every resize. Now it is **one** element with four paddings, removed
+   in a `finally` block so a throw cannot leak it.
+2. **`pointer: coarse` can flip with no `resize` at all.** A hybrid laptop
+   switches between mouse and finger constantly. The hook subscribes to **both**
+   media queries, not only `resize`.
+3. **Inset `0` is legitimate.** The `sane()` helper used by every other numeric
+   field floors at 1 — reusing it for the inset turns “no notch” into “a 1px
+   notch”.
+4. **The inset is subtracted from the usable height, never from the scene.**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`, and both `planFits` and
+   `occupiesExactly` go through it, so the two can never disagree.
+
+`tests/environment.test.ts` covers `saneDpr` (including `NaN`, `−1`, `7`),
+`parseInset`, `verticalInset` and `isHandheld`; `tests/use-environment.test.ts`
+builds fake `window` and `document` objects (no jsdom) so it can also cover a
+`matchMedia` that **throws** and a document with **no body**.
+
+### ⚠️ One known limitation — recorded, not hidden
+
+At **844×600**, a window with no inset gives the hero 222px; adding a 10px inset
+gives it **268px**. A smaller window gets a 46px taller hero. The cause is that
+the total height is divided by discrete thresholds, and a small inset pushes the
+total across one of them, which changes the economy.
+
+This is a **real, small, pre-existing** defect. It was attacked with an
+eight-economy search for maximum `scene` — that **fails**: at 1920×1080 it strips
+the ticker and the tall rows, which is exactly what a player sees. It was
+reverted. Instead `tests/layout-inset.test.ts` **asserts the measured numbers**
+(222 → 268, +46) as a passing test: whoever fixes it breaks the test and has to
+update it, and until then it is at least written down. Beside it sits the
+invariant that does hold: inside *one* economy, `scene + reserve ===
+usableHeight` (252 combinations asserted).
+
 ## ✨ Highlights
 
 | Group | Details |
