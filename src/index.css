@@ -989,6 +989,27 @@
 
 /* Rows drop from 34px to 26px. The marker is on the panel, and the rows
  * inherit — one attribute, seven buttons. */
+/*
+ * ---- compact chrome ------------------------------------------------------
+ *
+ * The fourth economy, and the only one that hides nothing. `data-tight` shrinks
+ * rows, the plan drops the ticker and the footer; this one only tightens the
+ * *air* — 6px gaps to 3, 16px padding to 10, a 22px header to 18.
+ *
+ * It is placed third in the sacrifice order (after tight rows, before the
+ * ticker) because at that point it is the cheapest thing left. On a 390px
+ * landscape phone it is worth 28px of hero, which is the difference between a
+ * 146px band that clipped the top of `LỌ` and a 174px one that seats it.
+ */
+.corner-panel[data-compact="1"] .corner-panel-body {
+  gap: 3px;
+  padding: 5px;
+}
+
+.corner-panel[data-compact="1"] .panel-head {
+  height: 18px;
+}
+
 .corner-panel[data-tight="1"] .menu-row {
   /*
    * `!important` on purpose. Row height is an inline style from
