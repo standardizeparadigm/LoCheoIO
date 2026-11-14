@@ -78,10 +78,21 @@ export interface ChallengeLine {
   target: number;
 }
 
-/** Build the challenge line, clamping a corrupt target to zero. */
+/**
+ * Build the challenge line, clamping a corrupt target to zero.
+ *
+ * The mode is *sanitised*, not trusted. `challengeFor()` always hands over an
+ * id from `MODE_IDS`, but this is an exported function and `InfoMenu` passes
+ * its `modeKey` straight to `t()`, which returns the key itself when it is not
+ * in the table. So an empty or foreign id does not fail visibly — it puts
+ * «mode..name» or «mode.khong-ton-tai.name» on the start screen. A mode id is
+ * an identifier, so anything outside `[a-z0-9-]` is not one; it falls back to
+ * `classic`, the same fallback `challengeFor()` uses for an empty catalogue.
+ */
 export function challengeLine(mode: string, target: number): ChallengeLine {
+  const safe = /^[a-z][a-z0-9-]*$/.test(mode) ? mode : "classic";
   return {
-    modeKey: `mode.${mode}.name`,
+    modeKey: `mode.${safe}.name`,
     target: Number.isFinite(target) ? Math.max(0, Math.trunc(target)) : 0,
   };
 }
