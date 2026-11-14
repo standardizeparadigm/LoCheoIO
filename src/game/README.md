@@ -76,3 +76,11 @@ restored run could therefore name a mode that does not exist.
 `daily/` and `changelog/` sit here because their output is game content, but
 neither is part of the engine: `daily/` is a pure function of the local date and
 `changelog/` is a read-only data set. Both have their own README.
+
+`storage/` is here for a different reason: it is not game content, it is the
+**persistence** of it. It sits under `game/` because the record shapes
+(`ScoreEntry`, `Progress`) are game types, and it is a folder rather than a file
+because the three record kinds have three different invariants — a bounded top-8
+list, a set of counters, and a merge-only set of ids — that were previously
+sharing one module because they shared one storage layer. `storage.ts` remains
+as a re-export so that the forty-odd imports of `../game/storage` keep working.
