@@ -259,6 +259,13 @@ const READMES = [
    * keeps reporting a clean run while the file next to the tests is wrong.
    */
   "tests/README.md",
+  /*
+   * `docs/README.md` indexes the docs and states "kho 19 SVG SMIL" for the
+   * asset store, which held 20. Nothing in the root README describes the docs
+   * folder, so this line has no twin to disagree with — it was simply never in
+   * a file the sweep opened.
+   */
+  "docs/README.md",
 ];
 const verify = process.argv.includes("--verify");
 let changed = 0;
