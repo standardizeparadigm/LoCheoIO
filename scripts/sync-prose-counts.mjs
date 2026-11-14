@@ -95,6 +95,16 @@ const RULES = [
     re: /\b\d{3,4} ([Tt]ests?|[Tt]est|[Tt]estes|[Tt]este) \/ \d{1,3} ([A-Za-z][\w]*)\b/g,
     to: (m, noun, unit) => `${T} ${noun} / ${F} ${unit}`,
   },
+  /*
+   * The parenthesised form: "\`menu-layout.test.ts\` khoá toàn bộ phép cộng chiều
+   * cao (976 test)". Survived the other rules for several rounds because a
+   * number in brackets, next to a filename, reads as a note about *that file*
+   * rather than as a claim about the suite.
+   */
+  {
+    re: /\(\d{3,4} ([Tt]ests?|[Tt]est|[Tt]estes?)\)/g,
+    to: (m, noun) => `(${T} ${noun})`,
+  },
   // 520 tests across 51 files
   {
     re: /\b\d{3,4} tests? across \d{1,3} files\b/g,
