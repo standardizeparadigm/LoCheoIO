@@ -18,12 +18,28 @@ import ChangelogModal from "../src/components/menu/ChangelogModal";
 import QuitModal from "../src/components/menu/QuitModal";
 import { DEFAULT_SETTINGS } from "../src/game/settings";
 import HowToModal from "../src/components/menu/HowToModal";
+import PauseScreen from "../src/components/PauseScreen";
+import GameOverScreen from "../src/components/GameOverScreen";
+import ModeSelector from "../src/components/ModeSelector";
+import AchievementsPanel from "../src/components/AchievementsPanel";
+import type { RunStats } from "../src/game/engine";
 import { planMenuLayout } from "../src/components/menu/layout";
 
 /** The reference plan the SSR fallback also uses (1280×720). */
 const PLAN = planMenuLayout({ width: 1280, height: 720 });
 
 const noop = () => {};
+
+/** A run that has actually happened — score, combos and a countdown all set. */
+const RUN_STATS: RunStats = {
+  score: 4820,
+  catches: 37,
+  bestCombo: 9,
+  level: 4,
+  jars: 2,
+  sliced: 61,
+  time: 84,
+};
 const scores = [
   { id: "1", name: "TEST", score: 9999, level: 6, jars: 3, combo: 21, date: Date.now() },
 ];
@@ -92,6 +108,24 @@ const pieces: Array<[string, () => string]> = [
   ["QuitModal", () => renderToString(createElement(QuitModal as never, { onBack: noop } as never))],
   ["HowToModal", () => renderToString(createElement(HowToModal as never, { onClose: noop, touchMode: false } as never))],
   ["HowToModal(touch)", () => renderToString(createElement(HowToModal as never, { onClose: noop, touchMode: true } as never))],
+  /*
+   * The four screens that were missing. StartScreen and the eleven modals were
+   * covered from the beginning; the pause screen, the game-over screen, the
+   * mode picker and the achievements panel were not — and those are the
+   * screens a player reaches by *playing*, which makes them the ones a render
+   * crash would hit hardest.
+   */
+  ["ModeSelector", () => renderToString(createElement(ModeSelector as never, { mode: "classic", onChange: noop } as never))],
+  ["AchievementsPanel", () => renderToString(createElement(AchievementsPanel as never, { unlocked: ["first-catch"], justUnlocked: [] } as never))],
+  ["AchievementsPanel(fresh)", () => renderToString(createElement(AchievementsPanel as never, { unlocked: [], justUnlocked: [] } as never))],
+  ["PauseScreen", () => renderToString(createElement(PauseScreen as never, {
+    stats: RUN_STATS, muted: false, mode: "classic",
+    onResume: noop, onRestart: noop, onMenu: noop, onToggleMute: noop,
+  } as never))],
+  ["GameOverScreen", () => renderToString(createElement(GameOverScreen as never, {
+    stats: RUN_STATS, scores, best: 12345, isHigh: true, rank: 1, savedId: null,
+    mode: "classic", newAchievements: [], onSave: noop, onRestart: noop, onMenu: noop,
+  } as never))],
 ];
 for (const [name, fn] of pieces) {
   const out = fn();
