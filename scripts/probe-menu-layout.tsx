@@ -23,6 +23,7 @@ import { createElement } from "react";
 import StartScreen from "../src/components/StartScreen";
 import { DEFAULT_SETTINGS } from "../src/game/settings";
 import { planMenuLayout } from "../src/components/menu/layout";
+import { heroLayout, heroContentHeight } from "../src/components/menu/adaptive";
 
 const noop = () => {};
 
@@ -102,6 +103,60 @@ check(
   html.includes(`--menu-scene-h`) && html.includes(`${plan.scene}px`),
   `scene ${plan.scene}px`,
 );
+
+// ---------------------------------------------------------------------------
+// 2b. THE WINDOWED BUG (round 7).
+//
+// The screenshot is a 1568×677 window — not fullscreen — showing the mascot
+// sliced across the middle and its mode chip cut in half at the bottom edge.
+// The hero is `justify-start` + `overflow: hidden`, so anything taller than the
+// band is cut at the bottom; the question is whether the layout the markup
+// contains is taller than the band the markup declares.
+//
+// This probe cannot measure pixels, but it can do the arithmetic the component
+// does, using the same two exported functions, and it can assert that the
+// markup agrees with the answer.
+// ---------------------------------------------------------------------------
+const windowed = planMenuLayout({ width: 1568, height: 677 });
+const windowedHero = heroLayout({
+  scene: windowed.scene,
+  width: 1568,
+  minimal: windowed.minimal,
+});
+const windowedNeed = heroContentHeight(windowedHero);
+
+check(
+  "the windowed hero fits its band (1568×677)",
+  windowedNeed <= windowed.scene,
+  `needs ${windowedNeed}px of a ${windowed.scene}px band`,
+);
+
+check(
+  "the windowed hero is not wordmark-only",
+  windowedHero.badgeRow || windowedHero.mascot,
+  JSON.stringify(windowedHero),
+);
+
+/*
+ * The same check at every windowed size a real browser produces when the user
+ * clicks the maximize button and drags the window to a random size. This is the
+ * regression the whole round is about: the old ladder reported "fits" at all of
+ * these and drew a 370px column into a 299px band.
+ */
+const WINDOWED: [number, number][] = [
+  [1568, 677], [1440, 677], [1366, 650], [1280, 720], [1280, 640],
+  [1920, 820], [1920, 900], [1600, 700], [1024, 600], [900, 500],
+];
+for (const [w, h] of WINDOWED) {
+  const p = planMenuLayout({ width: w, height: h });
+  const l = heroLayout({ scene: p.scene, width: w, minimal: p.minimal });
+  const need = heroContentHeight(l);
+  check(
+    `hero fits at ${w}×${h}`,
+    need <= p.scene,
+    `needs ${need}px of ${p.scene}px${l.mascot ? "" : " (wordmark only)"}`,
+  );
+}
 
 // ---------------------------------------------------------------------------
 // 3. The chrome is out of the flex flow.
