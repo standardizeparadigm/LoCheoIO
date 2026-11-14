@@ -4,16 +4,16 @@ One file per release, ten of them, newest first in `../index.ts`.
 
 | File | Version | Tier | Date |
 | --- | --- | --- | --- |
-| `v1_1_8.ts` | 1.1.8 | 🟣 patch | 2026-11-12 |
-| `v1_1_7.ts` | 1.1.7 | 🟣 patch | 2026-11-10 |
-| `v1_1_6.ts` | 1.1.6 | 🟣 patch | 2026-11-08 |
-| `v1_1_5.ts` | 1.1.5 | 🟣 patch | 2026-11-06 |
-| `v1_1_4.ts` | 1.1.4 | 🟣 patch | 2026-11-04 |
-| `v1_1_3.ts` | 1.1.3 | 🟣 patch | 2026-11-02 |
-| `v1_1_2.ts` | 1.1.2 | 🟣 patch | 2026-10-31 |
-| `v1_1_1.ts` | 1.1.1 | 🟣 patch | 2026-10-29 |
-| `v1_1_0.ts` | 1.1.0 | 🟡 minor | 2026-10-27 |
-| `v1_0_0.ts` | 1.0.0 | 🩷 major | 2026-10-24 |
+| `v1_1_8.ts` | 1.1.8 | 🟣 patch | 2026-11-13 |
+| `v1_1_7.ts` | 1.1.7 | 🟣 patch | 2026-11-12 |
+| `v1_1_6.ts` | 1.1.6 | 🟣 patch | 2026-11-10 |
+| `v1_1_5.ts` | 1.1.5 | 🟣 patch | 2026-11-09 |
+| `v1_1_4.ts` | 1.1.4 | 🟣 patch | 2026-11-06 |
+| `v1_1_3.ts` | 1.1.3 | 🟣 patch | 2026-11-04 |
+| `v1_1_2.ts` | 1.1.2 | 🟣 patch | 2026-11-02 |
+| `v1_1_1.ts` | 1.1.1 | 🟣 patch | 2026-10-30 |
+| `v1_1_0.ts` | 1.1.0 | 🟡 minor | 2026-10-29 |
+| `v1_0_0.ts` | 1.0.0 | 🩷 major | 2026-10-26 |
 
 The tier column is **derived** by `tierFor()` and shown here only for reading.
 It is not a field in the files.
