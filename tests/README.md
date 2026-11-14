@@ -39,6 +39,7 @@
 | `layout-metrics.test.ts` | bảy hằng số không có assertion nào — mỗi cái là một số hạng trong `cornerPanelHeight()`; khẳng định **hai lần**: như tổng các số hạng của chính nó, và như số cụ thể (458/430) vì một đẳng thức vẫn đúng khi cả hai vế đều sai | pure |
 | `layout-readme-table.test.ts` | bảng bảy viewport trong `layout/README.md` được **tính lại** từ `planMenuLayout()` — đọc từng hàng và so `reserve`/`scene`, cộng hai khối số học (458/430, 518/490) và bất biến `scene + reserve === height` | fs + pure |
 | `adaptive-readme.test.ts` | bốn ngưỡng và năm số đo mà `adaptive/README.md` in ra, đối chiếu hằng số thật; đồng thời khẳng định README **vẫn còn** đoạn tự thừa nhận rằng các số đo đến từ class name của component chứ không từ thư mục này | fs |
+| `panel-readme-table.test.ts` | bảng **bốn chế độ** panel trong `panel/README.md` — mỗi ô so với `cornerPanelHeight()`; bảng này phải viết lại lần hai vì bản đầu bịa bốn trong tám số bằng cách nội suy giữa hai số đúng | fs + pure |
 | `menu-decor.test.ts` | 14 món trang trí hero — số lượng, toạ độ trong khung, không chồng lên chữ, id duy nhất, hai dải trên/dưới | pure |
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
