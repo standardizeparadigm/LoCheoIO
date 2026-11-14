@@ -373,6 +373,58 @@ Khi cửa sổ đổi kích thước, `useMenuPlan()` và `useViewportWidth()` c
 **sáu** sự kiện (`resize` · `orientationchange` · `fullscreenchange` + ba tiền tố
 nhà cung cấp) và cập nhật trong một `requestAnimationFrame`.
 
+### 🌍 Tầng thứ hai: môi trường, không chỉ kích thước
+
+Chiều cao cửa sổ không phải chiều cao **dùng được**. Trên iPhone, thanh địa chỉ
+và home indicator ăn mất một phần; khi người dùng phóng to, `visualViewport` nhỏ
+hơn `innerHeight`. Nên có một tầng đọc riêng, thuần, không React
+(`src/components/menu/adaptive/environment.ts`):
+
+```ts
+type Environment = {
+  dpr: number;            // kẹp [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // ngón tay, không phải chuột
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+Bốn điểm dễ sai, và cách xử lý:
+
+1. **`env()` không đọc được từ `getComputedStyle`.** Phải có một phần tử *dùng*
+   `env(safe-area-inset-*)` rồi mới đọc được padding đã tính. Bản đầu tạo **bốn**
+   phần tử (mỗi cạnh một cái) → bốn lần ép layout mỗi lần resize. Nay: **một**
+   phần tử, bốn padding, và `finally { probe.remove() }` để không rò rỉ node.
+2. **`pointer: coarse` có thể đổi mà không có `resize`.** Thiết bị hybrid (laptop
+   cảm ứng) chuyển chuột ↔ ngón tay là chuyện thường. Nên hook đăng ký **cả hai**
+   media query, không chỉ `resize`.
+3. **Inset `0` là hợp lệ.** Hàm `sane()` của các trường khác kẹp về tối thiểu 1 —
+   dùng nhầm nó cho inset là biến "không có tai thỏ" thành "có 1px tai thỏ".
+4. **Inset chỉ được trừ vào chiều cao dùng được**, không trừ vào `scene`:
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`, và `planFits` /
+   `occupiesExactly` cùng đi qua nó nên hai bên không thể lệch nhau.
+
+`tests/environment.test.ts` phủ `saneDpr` (kể cả `NaN`, `−1`, `7`), `parseInset`,
+`verticalInset`, `isHandheld`; `tests/use-environment.test.ts` dựng `window` và
+`document` giả (không cần jsdom) để kiểm cả trường hợp `matchMedia` **ném lỗi**
+và trường hợp **không có `body`**.
+
+### ⚠️ Một giới hạn đã biết — ghi lại, không giấu
+
+Ở **844×600**, cửa sổ không có inset thì hero nhận 222px; thêm inset 10px thì
+nhận **268px** — cửa sổ *nhỏ hơn* mà hero *cao hơn* 46px. Nguyên nhân: tổng
+chiều cao bị chia theo ngưỡng rời rạc, và inset nhỏ đẩy tổng vượt một ngưỡng làm
+economy đổi. Đây là khiếm khuyết **có thật, nhỏ, và có từ trước**.
+
+Đã thử sửa bằng cách tìm kiếm 8 economy cho `scene` tối đa — **hỏng**: ở
+1920×1080 nó cắt ticker và hàng cao để lấy `scene`, tức là phá đúng thứ người
+dùng thấy. Đã hoàn nguyên. Thay vào đó, `tests/layout-inset.test.ts` **khẳng
+định con số đo được** (222 → 268, +46) như một test đang xanh: nếu ai sửa được
+thì test đỏ và buộc phải cập nhật, còn nếu không ai sửa thì ít nhất nó được ghi
+lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: trong *một* economy,
+`scene + reserve === usableHeight` (252 tổ hợp được kiểm).
+
 ## ✨ Tính năng nổi bật
 
 | Nhóm | Chi tiết |
