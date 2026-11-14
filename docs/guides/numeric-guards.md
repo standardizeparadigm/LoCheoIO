@@ -1,6 +1,6 @@
 # Chặn số hỏng — vì sao `Math.max(0, x)` không phải guard
 
-Vòng 6 tìm ra **mười một** chỗ trong tám module khác nhau dùng một phép toán như thể
+Vòng 6 tìm ra **mười hai** chỗ trong chín module khác nhau dùng một phép toán như thể
 nó chặn được giá trị không hữu hạn. Sáu chỗ dùng `Math.max(0, x)`, hai chỗ dùng
 `?? 1`. Cả hai đều không chặn.
 
@@ -35,6 +35,7 @@ phải guard cho `Infinity`, và tên hàm (`max`) trông như thể nó bao qu�
 | `game/engine.resize` | `canvas.width = NaN` → trình duyệt **đặt lại backing store về 300×150**; game chạy ở độ phân giải không ai biết |
 | `menu/layout/metrics` | `cornerPanelHeight(NaN)` → chiều cao **khai báo** là `NaN`; React bỏ `style` hỏng, panel tự cao bằng nội dung (đúng lỗi 1.1.7) |
 | `settings/VolumeStepper` | `Math.round(NaN)` → nhãn `NaN/100`, thanh âm lượng vẽ **0 vạch** (phòng thủ hai lớp) |
+| `game/audioLevels` | `sfxPeak` trả `0` đúng, nhưng `exponentialRampToValueAtTime(0)` **ném `RangeError`** → mọi tiếng động lỗi khi âm lượng = 0 |
 
 Đó là sáu chỗ dùng `Math.max`. Chỗ thứ bảy và thứ tám không dùng `Math.max` mà
 dùng **`??`** như một guard số — cùng một sai lầm, khác cú pháp:
@@ -55,6 +56,29 @@ chơi sửa storage là tới được trạng thái đó — và lỗi ném tro
 
 Điểm chung: mỗi chỗ đều có một **comment khẳng định nó an toàn**. Đó là lý do
 chúng sống lâu — người đọc tin comment hơn đọc phép toán.
+
+## Khi số 0 là đúng, nhưng số 0 đi vào API thì sai
+
+`sfxPeak(0.8, 0)` trả `0`. Đó là **hành vi đúng** — âm lượng bằng 0 nghĩa là
+không có âm thanh. Lỗi nằm ở chỗ khác: Web Audio từ chối `0` trong
+`exponentialRampToValueAtTime` bằng `RangeError`.
+
+```ts
+const peak = sfxPeak(gain, volume);              // đúng: 0 khi tắt tiếng
+g.gain.exponentialRampToValueAtTime(peak, t);    // ném RangeError khi peak === 0
+```
+
+Đây là lớp bug thứ ba, khác với `Math.max` vờ làm guard và `??` vờ làm guard:
+
+| Lớp | Ví dụ | Sửa thế nào |
+| --- | --- | --- |
+| clamp giả | `Math.max(0, x)` với `x = NaN` | `Number.isFinite` trước |
+| guard giả | `x ?? 1` với `x = Infinity` | `multOf()` — kiểm số học, không kiểm vắng mặt |
+| **miền giá trị** | `rampPeak()` — `0` hợp lệ, nhưng API cần `> 0` | kẹp **ở biên gọi API**, giữ hàm tính đúng |
+
+Điểm phân biệt: hai lớp đầu là lỗi **ở hàm tính**; lớp thứ ba là lỗi **ở biên**.
+Sửa `sfxPeak` để trả `0.0001` là làm hỏng nó — hàm đó trả lời câu "to bằng nào",
+và câu trả lời đúng là 0. `rampPeak` là biên, và ở biên thì kẹp là đúng.
 
 ## Khi nào `??` là đúng
 

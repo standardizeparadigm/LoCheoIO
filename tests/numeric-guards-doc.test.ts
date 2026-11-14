@@ -64,8 +64,8 @@ describe("the guide's own claims", () => {
      * eight modules" while the table has twelve rows, since `modeMath.ts ×2`
      * shares one file. The reader should trust the sentence.
      */
-    expect(guide).toMatch(/mười một/);
-    expect(guide).toMatch(/tám module/);
+    expect(guide).toMatch(/mười hai/);
+    expect(guide).toMatch(/chín module/);
   });
 
   it("explains why `??` is not a guard", () => {
@@ -77,6 +77,16 @@ describe("the guide's own claims", () => {
   it("gives the three-way question for choosing an operator", () => {
     // What replaced "use saneInt everywhere" as the actual rule.
     expect(guide).toMatch(/có phải là một câu trả lời|is this value an answer/);
+  });
+
+  it("separates a wrong function from a wrong boundary", () => {
+    // The third class: 0 is a correct answer from `sfxPeak` and an illegal
+    // argument to `exponentialRampToValueAtTime`. Asserting the distinction
+    // because "clamp it" is the wrong fix for the first two classes and the
+    // right fix for the third.
+    expect(guide).toMatch(/miền giá trị|range/);
+    expect(guide).toContain("rampPeak");
+    expect(guide).toContain("exponentialRampToValueAtTime");
   });
 
   it("includes a correct `??` usage, not only wrong ones", () => {
