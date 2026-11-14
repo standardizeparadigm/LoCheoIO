@@ -98,7 +98,7 @@ export default function InfoMenu({
       {/*
         ROUND 5: the fourth row.
 
-        INFO carried three rows in a panel sized for seven, so 160px of it was
+        INFO carried three rows in a panel sized for seven, so 240px of it was
         empty — visible in the round-5 screenshot as a large blank region under
         «THOÁT». The report asked for that space to be used. The shortcuts panel
         is the honest filler: it is information the menu should have had anyway
@@ -120,8 +120,9 @@ export default function InfoMenu({
         onClick={onQuit}
       />
       {/*
-        The panel is sized for GAME's seven rows and INFO has four, so ~126px
-        of it was blank. This fills it with the catalogue counts — the same
+        The panel is sized for GAME's seven rows and INFO has four, so 240px of
+        it was blank — 458px of frame around 218px of content (see
+        \`cornerPanelHeight(3, true)\`). This fills it with the catalogue counts — the same
         numbers the modes list and achievements list already use, printed once,
         in the panel whose job is summarising. Not the rejected hero strip: no
         duplication on this screen, and not in the hero.
