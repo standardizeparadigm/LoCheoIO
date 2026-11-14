@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.8 — released 2026-11-12 — tier: PATCH
+ * v1.1.8 — released 2026-11-13 — tier: PATCH
  *
  * Bản vá cuối cùng trước 1.2.0. Bốn lỗi trong ảnh chụp màn hình bắt nguồn từ
  * một phép cộng sai, và cả bốn đã được sửa bằng cách khai báo chiều cao thay
@@ -13,7 +13,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_8: ChangelogEntry = {
   version: "1.1.8",
-  date: "2026-11-12",
+  date: "2026-11-13",
   kind: "fix",
   vi: "Bản vá cuối trước 1.2.0 — màn hình bắt đầu hết tràn, dấu sắc của CHÉO được cứu, panel THÔNG TIN hết bị chia cắt, thanh cuộn biến mất, «Cách chơi» vào menu GAME và hero được trang trí",
   en: "The final patch before 1.2.0 — the start screen no longer overflows, the acute on CHÉO is preserved, the INFO panel stops spreading its rows, the scrollbar is gone, how-to-play moves into the GAME menu, and the hero is decorated",
@@ -29,7 +29,7 @@ export const V1_1_8: ChangelogEntry = {
     "FIX THANH CUỘN: `.menu-scroll` từng có ba khối rule đánh nhau (`width: 8px`, rồi `width: 0`, rồi thumb màu ở cuối file thắng theo thứ tự nguồn) cộng một `::-webkit-scrollbar` toàn cục; nay thanh cuộn 0px ở cả ba engine nhưng vẫn cuộn được, còn rule toàn cục đổi thành `.game-scroll` để modal giữ thanh mảnh có style",
     "BỎ GỢI Ý ENTER: dòng «hoặc nhấn ENTER» dưới tagline bị gỡ — không có handler Enter nào trên màn hình bắt đầu (chỉ màn thua có), nên nhãn đó hứa một phím tắt không tồn tại",
     "LẤP KHOẢNG TRỐNG — RỒI RÚT LẠI: `flex: 1 0 auto` trên `.menu-hero` và dải ba chỉ số dưới tagline là hai lần thử lấp khoảng trống, cả hai đều bị bác. `flex: 1 0 auto` khiến hero tự đòi chỗ, đúng cơ chế đã đẩy `LỌ` ra khỏi màn hình; dải chỉ số trùng với ba con số tagline đã nêu. Khoảng trống cuối cùng do `planMenuLayout()` chia, không do một phần tử nào tự nhận",
-    "NGÀY PHÁT HÀNH: chuỗi mười bản lùi 2 ngày để 1.1.8 rơi đúng 2026-11-12 thay vì một ngày trong tương lai — 24/10 · 27/10 · 29/10 · 31/10 · 02/11 · 04/11 · 06/11 · 08/11 · 10/11 · 12/11",
+    "NGÀY PHÁT HÀNH: cả mười bản từng cách nhau **đúng hai ngày** và rơi vào thứ Bảy, Chủ nhật — nhịp đều tuyệt đối không phải thứ một lịch sử thật có. Nay nhịp **không đều**: ba ngày cho bản tính năng, **một** ngày cho hotfix (1.1.0 → 1.1.1, 1.1.5 → 1.1.6, 1.1.7 → 1.1.8), hai ngày cho bản dọn. Chín bản vào ngày làm việc — 26/10 · 29/10 · 30/10 · 02/11 · 04/11 · 06/11 · 09/11 · 10/11 · 12/11 · 13/11",
     "THÊM `src/components/menu/panel/` — `stat.ts` (kẹp 18/16 về 16/16, tier lấy từ `tierFor`) và `PanelStatStrip`; 12 test",
     "THÊM RỒI XOÁ `src/components/menu/stage/` — `facts.ts` và `StageFacts` dựng ở vòng 2 để lấp khoảng trống dưới tagline, rồi bị xoá ở vòng 3 khi yêu cầu đổi thành «bỏ chỗ chữ ở hình số 2». Giữ lại trong changelog vì đã phát hành trong bản dựng thử, không phải vì còn trong mã nguồn",
     "FIX CUỘN: v1.1.7 lồng một khung `overflow-y-auto` bên trong cột flex và căn giữa nội dung bằng `min-h-full` + `justify-center` — khi nội dung cao hơn khung, phần đỉnh bị đẩy lên trên gốc cuộn nên `LỌ` không thể cuộn tới; nay cả màn hình chỉ còn MỘT vùng cuộn và nội dung neo ở đỉnh",
@@ -81,7 +81,7 @@ export const V1_1_8: ChangelogEntry = {
     "SCROLLBAR FIX: `.menu-scroll` had three competing rule blocks (`width: 8px`, then `width: 0`, then a coloured thumb later in the file that won on source order) plus a universal `::-webkit-scrollbar`; the bar is now 0px in all three engines while scrolling still works, and the universal rule became `.game-scroll` so modals keep their thin branded bar",
     "ENTER HINT REMOVED: the «hoặc nhấn ENTER» line under the tagline is gone — nothing on the start screen ever listened for Enter (only the game-over screen does), so the label promised a shortcut that did not exist",
     "DEAD SPACE FILLED — THEN TAKEN BACK: `flex: 1 0 auto` on `.menu-hero` and a three-fact strip (9 modes · 14 ingredients · 16 achievements) under the tagline were two attempts at the same gap, both rejected. `flex: 1 0 auto` lets the hero claim space, which is the mechanism that pushed `LỌ` off screen; the strip repeated the three numbers the tagline already states. The gap is now divided by `planMenuLayout()` and claimed by no single element",
-    "RELEASE DATES: the ten-release sequence moved back two days so 1.1.8 lands on 2026-11-12 instead of a future date — 10-24 · 10-27 · 10-29 · 10-31 · 11-02 · 11-04 · 11-06 · 11-08 · 11-10 · 11-12",
+    "RELEASE DATES: all ten releases used to sit **exactly two days apart**, five of them on a Saturday or Sunday — a perfectly uniform cadence is not what a release history looks like. The spacing is now **uneven**: three days for a feature release, **one** for a hotfix (1.1.0 → 1.1.1, 1.1.5 → 1.1.6, 1.1.7 → 1.1.8), two for a cleanup. Nine land on a weekday — 10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-13",
     "NEW `src/components/menu/panel/` — `stat.ts` (clamps 18/16 down to 16/16, tier from `tierFor`) and `PanelStatStrip`; 12 tests",
     "NEW, THEN DELETED: `src/components/menu/stage/` — `facts.ts` and `StageFacts`, built in round 2 to fill the space under the tagline and removed in round 3 when the request became «remove what image 2 shows». Recorded here because it shipped in a build, not because it is still in the source",
     "SCROLL FIX: v1.1.7 nested an `overflow-y-auto` box inside a flex column and centred its content with `min-h-full` + `justify-center` — once the content was taller than the box its top sat above the scroll origin, so `LỌ` could not be reached by scrolling at all; the whole screen is now ONE scroll container with its content anchored to the top",

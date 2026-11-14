@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.6 — released 2026-11-08 — tier: PATCH
+ * v1.1.6 — released 2026-11-13 — tier: PATCH
  *
  * Đại tu cài đặt thành 6 mục, ngôn ngữ dời hẳn vào Settings, nền menu nhiều lớp, 11 lỗi thật được sửa
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_6: ChangelogEntry = {
   version: "1.1.6",
-  date: "2026-11-08",
+  date: "2026-11-10",
   kind: "feature",
   vi: "Đại tu cài đặt thành 6 mục, ngôn ngữ dời hẳn vào Settings, nền menu nhiều lớp, 11 lỗi thật được sửa",
   en: "Settings rebuilt into six sections, language moved into Settings, a layered menu scene and eleven real fixes",

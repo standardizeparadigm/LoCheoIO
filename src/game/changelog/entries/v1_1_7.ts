@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.7 — released 2026-11-10 — tier: PATCH
+ * v1.1.7 — released 2026-11-13 — tier: PATCH
  *
  * Nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_7: ChangelogEntry = {
   version: "1.1.7",
-  date: "2026-11-10",
+  date: "2026-11-12",
   kind: "fix",
   vi: "Nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ",
   en: "The foggy menu background is gone, the changelog gains release tiers and full descriptions for all 8 older releases, every README rebuilt",
