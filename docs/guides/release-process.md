@@ -52,8 +52,16 @@ Hệ quả cho người làm bản phát hành:
   theo **mọi** biến thể ngôn ngữ, không chỉ tiếng Anh.
 - **Đừng cộng dồn lớp phủ tối mà không đo.** v1.1.6 thêm bốn lớp nền đẹp nhưng không kiểm tra tổng độ
   tối → v1.1.7 phải sửa. Xem `docs/design/menu-scene.md` § Độ tương phản.
-- **Đừng để ngày phát hành trùng.** Bảy bản từng ghi chung `2026-11-12`; khi mọi bản cùng ngày thì
+- **Đừng để ngày phát hành trùng.** Bảy bản từng ghi chung `2026-11-13`; khi mọi bản cùng ngày thì
   không thể sắp lịch sử, không thể viết "2 ngày sau bản trước", và panel trong game trông như bị lỗi.
+- **Đừng để ngày phát hành *đều*.** Sửa xong ngày trùng thì cả mười bản lại cách nhau **đúng hai ngày**,
+  rơi vào thứ Bảy và Chủ nhật — đúng nhịp của một lịch bịa, không phải của một dự án. Nhịp thật có
+  hotfix sau một hôm, có bản cuối tuần, có tuần nghỉ. `tests/release-timeline-doc.test.ts` khoá
+  **tính chất** (mọi bước 1–5 ngày · có ít nhất một hotfix · không quá hai bản rơi cuối tuần) chứ
+  không khoá một hằng số, vì khoá hằng số chính là thứ đã sinh ra nhịp đều.
+- **Đừng sửa ngày bằng cách lặp qua từng cặp (cũ, mới).** Lần đầu tôi làm thế và `11-10 → 11-12`
+  rồi chính `11-12` đó `→ 11-13`, nên 1.1.7 trùng ngày 1.1.8. Phải quét **một lượt** với hàm tra cứu,
+  hoặc ghi đè trực tiếp từ `date:` trong `src/game/changelog/entries/*.ts` — nguồn duy nhất.
 - **Đừng viết cứng số phiên bản trong script.** `scripts/check-readme-sync.mjs` từng hardcode `1.1.6`
   trong cả comment lẫn hai literal; giờ nó đọc `src/version.ts`.
 - **Đừng thêm code không được gọi.** Một `JarLogo` "chuẩn bị dùng" từng vào lịch sử rồi phải soft-reset;

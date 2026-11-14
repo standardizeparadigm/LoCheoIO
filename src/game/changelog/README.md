@@ -41,10 +41,11 @@ order *and* the dates. `tests/changelog.test.ts` asserts both, plus that no date
 is in the future relative to the newest entry, because a changelog whose dates
 contradict its own order is a changelog nobody trusts.
 
-The v1.1.x chain runs two days apart and ends on the release day:
+The v1.1.x chain is deliberately uneven — features on Mondays, hotfixes the
+next day, cleanups at the end of the week — and ends on the release day:
 
-    1.0.0 10-24 · 1.1.0 10-27 · 1.1.1 10-29 · 1.1.2 10-31 · 1.1.3 11-02
-    1.1.4 11-04 · 1.1.5 11-06 · 1.1.6 11-08 · 1.1.7 11-10 · 1.1.8 11-12
+    1.0.0 10-26 · 1.1.0 10-29 · 1.1.1 10-30 · 1.1.2 11-02 · 1.1.3 11-04
+    1.1.4 11-06 · 1.1.5 11-09 · 1.1.6 11-10 · 1.1.7 11-12 · 1.1.8 11-13
 
 ## The bullet-count rule
 
