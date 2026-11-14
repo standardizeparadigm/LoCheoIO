@@ -101,7 +101,7 @@ src/components/menu/
 | 5 | The `×` of «How to play» floating mid-screen | accordion → modal, nothing `absolute` on a box that has scrolled away |
 | 6 | Panel height followed translation length (German/Thai overflowed first) | declared height, independent of content |
 | 7 | One 14s halo ring read as a spinner | three rings on 18s / 26s / 34s that almost never align |
-| 8 | Docs/SVGs/launchers lagging behind the version | full sweep of 10 READMEs + docs + 19 SVGs → 1.1.8 |
+| 8 | Docs/SVGs/launchers lagging behind the version | full sweep of 10 READMEs + docs + 20 SVGs → 1.1.8 |
 
 → Full details: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) · Previous release: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md)
 
@@ -441,7 +441,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 306 keys, nothing missing or extra
-$ npm run check:assets # 19 SVGs — no orphans, no broken references
+$ npm run check:assets # 20 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
@@ -452,7 +452,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `smoke-ssr` | menu, 6 settings sections, changelog, 9 modals | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 306 keys | ✅ |
-| `check-assets` | 19 SVGs, references checked both ways | ✅ |
+| `check-assets` | 20 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.

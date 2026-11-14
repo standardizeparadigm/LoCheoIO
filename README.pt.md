@@ -103,7 +103,7 @@ src/components/menu/
 | 5 | O `×` do «Como jogar» a flutuar | acordeão → modal, nada `absolute` sobre uma caixa já deslocada |
 | 6 | Altura do painel dependia do idioma (alemão e tailandês transbordavam primeiro) | altura declarada, independente do conteúdo |
 | 7 | Um anel de 14s lia-se como spinner | três anéis a 18s / 26s / 34s que quase nunca coincidem |
-| 8 | Documentação/SVGs/launchers atrasados | varredura de 10 READMEs + docs + 19 SVGs → 1.1.8 |
+| 8 | Documentação/SVGs/launchers atrasados | varredura de 10 READMEs + docs + 20 SVGs → 1.1.8 |
 
 → Detalhes completos: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) · Versão anterior: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md)
 
@@ -473,7 +473,7 @@ Notas de design e documentação técnica mais profunda:
 ## 🤝 Contribuindo
 
 1. Faça fork do repo, crie a branch no padrão `arena/<nome>` ou `feat/<nome>`.
-2. `npm run check` deve estar verde antes de abrir PR (typecheck + 882 testes + build).
+2. `npm run check` deve estar verde antes de abrir PR (typecheck + 883 testes + build).
 3. Evite novas dependências de runtime salvo se realmente necessário — filosofia: **um arquivo, sem rede, jogável para sempre**.
 4. No PR, indique as telas/modos afetados e anexe um clipe se o gameplay mudar.
 
