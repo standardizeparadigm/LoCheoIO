@@ -79,7 +79,7 @@ describe("a partial backup merges instead of resetting", () => {
       app: "lo-cheoio",
       kind: "settings",
       version: 1,
-      exportedAt: "2026-11-12T00:00:00.000Z",
+      exportedAt: "2026-11-13T00:00:00.000Z",
       settings: { shake: false },
     });
     const next = importSettings(envelope, "en", MINE)!;
