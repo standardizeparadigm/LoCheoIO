@@ -526,7 +526,7 @@ Notas de design e documentação técnica mais profunda:
 ## 🤝 Contribuindo
 
 1. Faça fork do repo, crie a branch no padrão `arena/<nome>` ou `feat/<nome>`.
-2. `npm run check` deve estar verde antes de abrir PR (typecheck + 883 testes + build).
+2. `npm run check` deve estar verde antes de abrir PR (typecheck + 976 testes + build).
 3. Evite novas dependências de runtime salvo se realmente necessário — filosofia: **um arquivo, sem rede, jogável para sempre**.
 4. No PR, indique as telas/modos afetados e anexe um clipe se o gameplay mudar.
 
