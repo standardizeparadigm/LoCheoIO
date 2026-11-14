@@ -68,6 +68,24 @@ const F = String(files);
 const SVGS = String(readdirSync("assets").filter((f) => f.endsWith(".svg")).length);
 
 /**
+ * The i18n key count, counted from the Vietnamese source table.
+ *
+ * This is the third count that had drifted: the READMEs said "306 keys" and one
+ * guide said 307 while the table held 327 — and 306 was *written into two
+ * different files on two different days*, so it looked corroborated. It was
+ * simply old.
+ *
+ * Counted from the locale file as text, the same way `check:i18n` does, rather
+ * than imported: this script runs outside the app's module graph.
+ */
+function messageKeyCount() {
+  const src = readFileSync("src/i18n/locales/vi.ts", "utf8");
+  // Key lines look like `  "some.key": "value",` — at one indent level, quoted.
+  return (src.match(/^ {2}"[^"]+":/gm) ?? []).length;
+}
+const KEYS = String(messageKeyCount());
+
+/**
  * One entry per sentence shape. Each `to` is a function of the match groups, so
  * there is no backreference syntax anywhere in this file.
  */
@@ -119,6 +137,15 @@ const RULES = [
     re: /\b\d{1,2} (SVGs?|file SVG)\b/g,
     current: true,
     to: (m, unit) => `${SVGS} ${unit}`,
+  },
+  /*
+   * "7 locales × 327 keys" · "327 khoá × 7 locale". Current-facing, and it
+   * appears both in a shell comment and in a quality-gate table cell.
+   */
+  {
+    re: /\b\d{3} (keys?|khoá|key|clés|claves|Schlüssel|teclas|键|키|キー)\b/g,
+    current: true,
+    to: (m, unit) => `${KEYS} ${unit}`,
   },
   // 51 files · 520 tests  (reversed order, some languages prefer it)
   {
@@ -189,5 +216,5 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(
-  `prose counts: ${T} tests / ${F} files / ${SVGS} SVGs — ${changed} README(s) ${verify ? "ok" : "updated"}`,
+  `prose counts: ${T} tests / ${F} files / ${SVGS} SVGs / ${KEYS} keys — ${changed} README(s) ${verify ? "ok" : "updated"}`,
 );
