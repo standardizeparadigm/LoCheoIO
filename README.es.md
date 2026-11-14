@@ -240,6 +240,61 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // columna más alta: 192 mascota + 24 chip
 
 `tests/menu-adaptive.test.ts` recorre **1.682 viewports** y verifica `heroContentHeight(layout) ≤ scene` en cada muestra. Al redimensionar, ambos hooks escuchan **seis** eventos y actualizan en un solo frame.
 
+### 🌍 La segunda capa: entorno, no solo tamaño
+
+La altura de la ventana no es la altura utilizable. En un iPhone la barra de
+direcciones y el indicador de inicio se comen una parte; al hacer zoom,
+`visualViewport` es menor que `innerHeight`. Por eso hay una capa aparte, pura y
+sin React (`src/components/menu/adaptive/environment.ts`):
+
+```ts
+type Environment = {
+  dpr: number;            // acotado a [1, 4]
+  landscape: boolean;
+  coarse: boolean;        // un dedo, no un ratón
+  insetTop / Right / Bottom / Left: number;
+  reducedMotion: boolean;
+};
+```
+
+Cuatro cosas fáciles de hacer mal, y qué se hizo en su lugar:
+
+1. **`env()` no se puede leer con `getComputedStyle`.** Hace falta un elemento que
+   *use* `env(safe-area-inset-*)` para que su padding calculado signifique algo.
+   La primera versión creaba **cuatro** sondas (una por borde) — cuatro layouts
+   forzados en cada resize. Ahora es **una** sonda con cuatro paddings, retirada
+   en un bloque `finally` para que un error no la deje suelta.
+2. **`pointer: coarse` puede cambiar sin ningún `resize`.** Un portátil híbrido
+   alterna ratón y dedo todo el tiempo. El hook escucha **ambas** media queries,
+   no solo `resize`.
+3. **El inset `0` es legítimo.** El helper `sane()` de los demás campos numéricos
+   tiene suelo 1 — reutilizarlo para el inset convierte «sin notch» en «notch de
+   1px».
+4. **El inset se resta de la altura utilizable, nunca de la escena.**
+   `usableHeight(h, inset) = clamp(h − inset, 1, ∞)`, y tanto `planFits` como
+   `occupiesExactly` pasan por ahí, así que no pueden discrepar.
+
+`tests/environment.test.ts` cubre `saneDpr` (también `NaN`, `−1`, `7`),
+`parseInset`, `verticalInset` e `isHandheld`; `tests/use-environment.test.ts`
+construye objetos `window` y `document` falsos (sin jsdom), así que también cubre
+un `matchMedia` que **lanza** y un documento **sin body**.
+
+### ⚠️ Una limitación conocida — registrada, no escondida
+
+En **844×600**, una ventana sin inset da al hero 222px; con un inset de 10px le
+da **268px**. Una ventana más pequeña recibe un hero 46px más alto. La causa es
+que la altura total se reparte por umbrales discretos, y un inset pequeño empuja
+la suma por encima de uno de ellos, lo que cambia la economía.
+
+Es un defecto **real, pequeño y ya existente**. Se intentó una búsqueda de ocho
+economías para maximizar `scene` — **falla**: a 1920×1080 quita el ticker y las
+filas altas, es decir justo lo que ve el jugador. Se revirtió. En su lugar,
+`tests/layout-inset.test.ts` **afirma los números medidos** (222 → 268, +46) como
+un test en verde: quien lo arregle romperá el test y tendrá que actualizarlo, y
+mientras tanto al menos está escrito. Al lado está la invariante que sí se
+cumple: dentro de *una* economía, `scene + reserve === usableHeight` (252
+combinaciones comprobadas).
+
 ## ✨ Lo destacado
 
 | Grupo | Detalles |
