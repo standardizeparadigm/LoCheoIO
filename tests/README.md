@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**839 tests / 78 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**904 tests / 84 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -40,6 +40,24 @@
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
 | `modes-split.test.ts` | sau khi tách `modes/`: 9 id đúng thứ tự, MODE_LIST ↔ MODES 1:1, mỗi record tự khai đúng id, đủ trường bắt buộc, knob tuỳ chọn hợp lệ, `isModeId` từ chối `"Classic"` | pure |
+| `panel-summary.test.ts` | `summaryLines`/`summaryText`/`challengeLine` của panel INFO — kẹp NaN/±Infinity/âm, đúng ba dòng, và **sanitise mode id** (id rỗng hay lạ không được sinh key `mode..name`) | pure |
+| `howto-rules.test.ts` | bảng «Cách chơi» đối chiếu **bảng dịch thật** qua `hasKey()` — sáu rule, số 1..6, id duy nhất, accent xoay vòng, mỗi thẻ dùng đúng key của số nó | pure + i18n |
+| `layout-inset.test.ts` | `usableHeight()` và inset an toàn vùng — clamp [0, 200], NaN/âm/∞ → 0, và **một GIỚI HẠN ĐÃ BIẾT** được khẳng định bằng số đo (844×600: inset 0 → 222, inset 10 → 268) | pure |
+| `hero-stacked-fit.test.ts` | lỗi cửa sổ hẹp, kiểm từ nguyên lý — wordmark + badge + live badge + mascot xếp chồng phải vừa `scene`, khoảng cách cộng đúng | pure |
+| `environment.test.ts` | tín hiệu môi trường và bốn cách mỗi tín hiệu nói dối — `saneDpr` (NaN/âm/7), `parseInset`, `verticalInset`, `isHandheld` | pure |
+| `use-environment.test.ts` | `useEnvironment()` với `window`/`document` giả (không jsdom) — hướng, dpr, `matchMedia` thiếu/throw, `pointer: coarse`, inset, padding không parse được, không có `body`, probe dọn khi throw | `vi.stubGlobal` |
+| `viewport-events.test.ts` | danh sách sự kiện resize — không sót tiền tố nhà cung cấp, không trùng, huỷ đăng ký đúng cặp | pure |
+| `layout-fit.test.ts` | `planFits`/`occupiesExactly` — scene + reserve, kinh tế, ngưỡng min/tight, `sceneFor` sàn khi crop | pure |
+| `layout-guards.test.ts` | chốt chặn đầu vào hình học — NaN, âm, ∞, số vô lý không được tạo plan rác | pure |
+| `menu-adaptive.test.ts` | quét **1 682 viewport** và khẳng định `heroContentHeight(layout) ≤ scene` ở từng mẫu | pure |
+| `menu-panel.test.ts` | panel góc — chiều cao 318/458, bảy hàng, `cornerRowReserve`, co theo `compact` | pure |
+| `menu-row.test.ts` | hàng panel — nhãn, icon, trạng thái khoá, không tràn khi nhãn dài nhất | pure |
+| `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
+| `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
+| `menu-about.test.ts` | modal About — mọi mục có key i18n thật, thứ tự ổn định | pure + i18n |
+| `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
+| `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
+| `panel-slack.test.ts` | khoảng thở của panel — reserve ≥ nội dung ở mọi economy đã biết | pure |
 
 ## Thêm test mới
 
