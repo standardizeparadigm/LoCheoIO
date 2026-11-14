@@ -101,7 +101,7 @@ src/components/menu/
 | 5 | The `×` of «How to play» floating mid-screen | accordion → modal, nothing `absolute` on a box that has scrolled away |
 | 6 | Panel height followed translation length (German/Thai overflowed first) | declared height, independent of content |
 | 7 | One 14s halo ring read as a spinner | three rings on 18s / 26s / 34s that almost never align |
-| 8 | Docs/SVGs/launchers lagging behind the version | full sweep of 10 READMEs + docs + 20 SVGs → 1.1.8 |
+| 8 | Docs/SVGs/launchers lagging behind the version | full sweep of 10 READMEs + docs + 19 SVGs → 1.1.8 |
 
 → Full details: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) · Previous release: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md)
 

@@ -103,7 +103,7 @@ src/components/menu/
 | 5 | O `×` do «Como jogar» a flutuar | acordeão → modal, nada `absolute` sobre uma caixa já deslocada |
 | 6 | Altura do painel dependia do idioma (alemão e tailandês transbordavam primeiro) | altura declarada, independente do conteúdo |
 | 7 | Um anel de 14s lia-se como spinner | três anéis a 18s / 26s / 34s que quase nunca coincidem |
-| 8 | Documentação/SVGs/launchers atrasados | varredura de 10 READMEs + docs + 20 SVGs → 1.1.8 |
+| 8 | Documentação/SVGs/launchers atrasados | varredura de 10 READMEs + docs + 19 SVGs → 1.1.8 |
 
 → Detalhes completos: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md) · Versão anterior: [docs/releases/v1.1.7.md](docs/releases/v1.1.7.md)
 
