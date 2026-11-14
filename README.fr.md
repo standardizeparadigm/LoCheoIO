@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-943%20%C2%B7%2089%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-948%20%C2%B7%2090%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installation--exécution)
@@ -171,7 +171,7 @@ Le niveau est **déduit du SemVer** par `tierFor(version)`, jamais tapé à la m
 
 <img src="assets/release-tiers.svg" alt="Les trois niveaux MAJOR/UPDATE/PATCH avec leurs couleurs et la chronologie de dix versions (animation SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matrice de tests 1.1.8 — 943 tests sur 89 fichiers, neuf portes (animation SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matrice de tests 1.1.8 — 948 tests sur 90 fichiers, neuf portes (animation SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Panneaux GAME (en bas à gauche) et INFO (en bas à droite) qui glissent (animation SMIL)" width="100%" />
 
@@ -277,7 +277,7 @@ l'invariant qui tient : dans *une* économie, `scene + reserve === usableHeight`
 | 💾 **TOP 8** | Sauvegarde locale, validée et normalisée à la lecture, noms en majuscules automatiques, surbrillance pour le record tout frais |
 | 🎨 **60fps** | Canvas 2D, budget de 460 particules, DPR plafonné à 2, sol à carreaux pré-rendu offscreen, scintillement d'étoiles + aurore dans le menu |
 | 📴 **Vraiment offline-first** | Polices auto-hébergées (sous-ensembles latin + vietnamien, woff2), aucun CDN ni API — ouvrez `dist/index.html` et jouez |
-| 🧪 **Qualité** | 943 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
+| 🧪 **Qualité** | 948 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
 
 <img src="assets/items.svg" alt="Les 14 ingrédients — les pickles à attraper, les pouvoirs dorés à saisir, les dangers à éviter" width="100%" />
 
@@ -340,7 +340,7 @@ npm run build      # → dist/index.html (un seul fichier auto-suffisant)
 npm run dev        # serveur de dev avec HMR (http://localhost:5173)
 npm run preview    # sert le build de production en local
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 943 tests unitaires (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 948 tests unitaires (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (porte qualité CI)
 ```
 
@@ -442,7 +442,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # confinement du focus (v1.1.6)
-└─ tests/                  # vitest — 89 fichiers · 943 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 90 fichiers · 948 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Architecture & performance
@@ -485,7 +485,7 @@ Double-clique sur [`scripts/play-mac.command`](scripts/play-mac.command) (macOS)
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **943 tests / 89 fichiers** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **948 tests / 90 fichiers** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fond du menu débrumé** (quatre couches : `blur 64→22px`, vignette de coins au lieu du plein écran, cadre CRT 140→90px, sol 45→70%) · **changelog par niveaux colorés** · **96 puces neuves** pour 8 versions · dates réordonnées · `src/game/changelog/` découpé · 10 READMEs refaits · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Réglages en 6 sections** (rapides · audio · affichage · langue · sauvegarde · données) · volumes 0–100 · intensité des secousses · qualité visuelle · pause au changement d'onglet · langue dans les Réglages · 4 préréglages · export/import JSON · menu multicouche animé · dégradé sur la carte auteur · focus piégé dans les modales · fix musique après rechargement · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus d'angle GAME/INFO** (Jouer · Reprendre · Modes · Classement · Succès · Réglages / À propos · Changelog · Quitter) · **sauvegarde & reprise de partie** (`locheo.run.v1`) · réglages en jeu (SFX/musique/tremblement/animations) · fix raccourcis à travers les modales · prefers-reduced-motion partout · **113 tests** |
@@ -529,7 +529,7 @@ Notes de conception et documentation technique approfondie :
 ## 🤝 Contribuer
 
 1. Fork le repo, branche avec la convention `arena/<nom>` ou `feat/<nom>`.
-2. `npm run check` doit être au vert avant d'ouvrir une PR (typecheck + 943 tests + build).
+2. `npm run check` doit être au vert avant d'ouvrir une PR (typecheck + 948 tests + build).
 3. Évite les nouvelles dépendances runtime sauf nécessité réelle — philosophie : **un seul fichier, hors réseau, jouable pour toujours**.
 4. Dans la PR, indique les écrans/modes touchés et joins un clip si le gameplay change.
 
