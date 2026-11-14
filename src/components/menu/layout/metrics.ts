@@ -245,9 +245,9 @@ export function cornerPanelHeight(
    * Measured at the 7-row GAME panel, rich rows (54px):
    *
    *   normal   22 + 7×54 + 6×6  + 16 + 6 = 458
-   *   compact  18 + 7×54 + 6×3  + 10 + 6 = 426   (−32)
+   *   compact  18 + 7×54 + 6×3  + 10 + 6 = 430   (−28)
    *
-   * 32px is not the whole story — the ticker and margin are on top — but it is
+   * 28px is not the whole story — the ticker and margin are on top — but it is
    * real, and it is bought without hiding a single button.
    */
   if (compact) {
