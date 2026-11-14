@@ -55,7 +55,14 @@ export const PANEL_BORDER = 6;
 /** Gap between rows in the compact economy — half the normal gap. */
 export const MENU_ROW_GAP_COMPACT = 3;
 
-/** Inner padding in the compact economy. */
+/**
+ * Inner padding in the compact economy, **summed over both sides**.
+ *
+ * `PANEL_PADDING` is 16 because `.corner-panel-body` carries Tailwind `p-2` —
+ * 8px top and 8px bottom. Compact uses 5px a side, so the total is 10. Writing
+ * "10 per side" here would make the plan reserve 20px more than the panel
+ * paints, and the two numbers are the whole reason this module exists.
+ */
 export const PANEL_PADDING_COMPACT = 10;
 
 /** Header strip in the compact economy. */
