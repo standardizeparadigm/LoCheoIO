@@ -28,29 +28,35 @@ Vì thế `LỌ` bị đẩy lên trên mép và bị cắt, còn `CÀI ĐẶT` 
 ## Phép cộng đúng
 
 ```
-ROW    34   RICH 54   GAP 6   HEADER 22   PADDING 16   BORDER 6   ROWS 6
+ROW 34   RICH 54   GAP 6   HEADER 22   PADDING 16   BORDER 6   ROWS 7
 
-panel(compact) = 22 + 6×34 + 5×6 + 16 + 6 = 278
-panel(rich)    = 22 + 6×54 + 5×6 + 16 + 6 = 398
+panel(rich)    = 22 + 7×54 + 6×6 + 16 + 6 = 458
+panel(compact) = 18 + 7×54 + 6×3 + 10 + 6 = 430      ← header 18, gap 3, padding 10
 
-reserve(compact) = 278 + 48 (ticker) + 12 (margin) = 338
-reserve(rich)    = 398 + 48 + 12                    = 458
+reserve(rich)    = 458 + 48 (ticker) + 12 (margin) = 518
+reserve(compact) = 430 + 48 + 12                   = 490
 
-scene@720  = 720 − 338 = 382   ✅ > 320
-scene@1080 = 1080 − 458 = 622  ✅
+scene@720  = 720 − 378 = 342   ✅      (rows 34px: panel = 278)
+scene@1080 = 1080 − 518 = 562  ✅
 ```
 
 ## Năm viewport thật
 
 | Viewport | reserve | scene | bố cục | fit |
 | --- | --- | --- | --- | --- |
-| 1280×720 | 378 | **342** | cạnh nhau / gọn | `none` |
-| 1366×768 | 378 | 390 | cạnh nhau / gọn | `none` |
-| 1920×1080 | 518 | 562 | cạnh nhau / đầy đủ | `none` |
-| 768×1024 | 518 | 506 | cạnh nhau / đầy đủ | `none` |
-| 375×667 | 378 | 289 | **xếp dọc** / gọn | `squeeze` |
-| 375×568 | 274 | 294 | xếp dọc / **26px** | `squeeze` |
-| 844×390 | 244 | 146 | cạnh nhau / **26px + minimal** | `squeeze` |
+| 1280×720 | 378 | **342** | cạnh nhau / gọn (34px) | `none` |
+| 1366×768 | 378 | 390 | cạnh nhau / gọn (34px) | `none` |
+| 1920×1080 | 518 | 562 | cạnh nhau / đầy đủ (54px) | `none` |
+| 768×1024 | 518 | 506 | cạnh nhau / đầy đủ (54px) | `none` |
+| 375×667 | 378 | 289 | **xếp dọc** / gọn (34px) | `squeeze` |
+| 375×568 | 274 | 294 | xếp dọc / tight (26px) | `squeeze` |
+| 844×390 | 216 | 174 | xếp dọc / tight + minimal | `squeeze` |
+
+Dòng cuối từng ghi `244 / 146`, và nó sai theo cả hai cách: `reserve` 244 không
+phải một tổng nào `cornerRowReserve()` sinh ra được (tight + minimal cho **216**),
+và hero 174 không vừa `MIN_SCENE_HEIGHT` 220 — đúng, vì `minimal` hạ sàn xuống
+`TIGHT_SCENE_HEIGHT` 140. Một dòng trong bảng mô tả một chế độ mà bảng không có
+cột nào để nói ra.
 
 ## Bất biến duy nhất, và nó được kiểm
 
