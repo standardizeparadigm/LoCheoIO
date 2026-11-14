@@ -31,8 +31,11 @@ planMenuLayout(viewport)  ──►  MenuPlan { scene, reserve, minimal, … }
 
 Ba bất biến:
 
-1. **`scene + reserve === viewport.height`** — luôn đúng, ở mọi kích thước.
-   Đây là bất biến của `layout/fit.ts`, không phải của tài liệu này.
+1. **`scene + reserve === usableHeight(height, inset)`** — luôn đúng khi economy
+   không đổi. Bản trước của câu này ghi `viewport.height`, và nó đúng cho tới khi
+   inset an toàn vùng được thêm vào: khi đó phần bị tai thỏ / home indicator ăn
+   mất không thuộc về layout, nên tổng phải bằng phần **còn dùng được**. Đây là
+   bất biến của `layout/fit.ts`, không phải của tài liệu này.
 2. **`heroLayout` không đọc DOM.** Nó là hàm thuần của ba số. Đó là lý do
    `tests/menu-adaptive.test.ts` quét được 1 682 kích thước trong 15ms.
 3. **`heroContentHeight(heroLayout(x)) ≤ x.scene`** với mọi `x` mà plan sinh
@@ -98,3 +101,73 @@ hai ảnh chụp mở đầu vòng này.
 
 Bước 3 là bước dễ quên nhất, và là bước duy nhất khiến ngưỡng trở thành số
 suy ra thay vì số đoán.
+
+## 7. Tầng dưới cùng: môi trường
+
+Ba mục trên nói về *kích thước*. Nhưng kích thước cửa sổ không phải thứ duy nhất
+quyết định bố cục, và `adaptive/environment.ts` đọc phần còn lại:
+
+| Trường | Nguồn | Vì sao không đọc thẳng ở nơi dùng |
+| --- | --- | --- |
+| `dpr` | `window.devicePixelRatio` | có thể là `0`, `NaN`, hay `1.5` — phải kẹp [1, 4] |
+| `landscape` | `matchMedia("(orientation: landscape)")` | `innerWidth > innerHeight` sai khi bàn phím ảo mở |
+| `coarse` | `matchMedia("(pointer: coarse)")` | đổi **không cần** `resize` trên máy hybrid |
+| `inset*` | `env(safe-area-inset-*)` qua một phần tử dò | không đọc được nếu không có phần tử *dùng* nó |
+| `reducedMotion` | `matchMedia("(prefers-reduced-motion: reduce)")` | người dùng đổi giữa phiên |
+
+### 7.1 Inset: phần tử dò
+
+`env()` chỉ có giá trị khi một phần tử **dùng** nó. Cách đọc:
+
+```ts
+probe.style.padding = "env(safe-area-inset-top) env(safe-area-inset-right) " +
+                      "env(safe-area-inset-bottom) env(safe-area-inset-left)";
+body.appendChild(probe);
+const cs = getComputedStyle(probe);   // một lần ép layout
+const top = parseFloat(cs.paddingTop) || 0;
+// … và finally { probe.remove(); }
+```
+
+Bản đầu tạo **bốn** phần tử (mỗi cạnh một cái) vì cho rằng phải tách. Không: bốn
+padding trên **một** phần tử cho đúng bốn số, với **một** lần ép layout thay vì
+bốn — và trên một sự kiện `resize` bắn 60 lần/giây thì đó là khác biệt thật.
+
+`parseFloat("")` là `NaN`, `|| 0` biến nó thành 0. Dùng `sane()` thì sai: hàm đó
+có sàn 1, và inset `0` là hợp lệ.
+
+### 7.2 `usableHeight()`
+
+```ts
+export function usableHeight(v: { height: number; inset?: number }): number {
+  const raw = Number.isFinite(v.inset) ? Math.trunc(v.inset!) : 0;
+  const inset = Math.min(Math.max(raw, 0), MAX_INSET);   // [0, 200]
+  return Math.max(1, Math.trunc(v.height) - inset);
+}
+```
+
+Ba lựa chọn ở đây, mỗi cái có lý do:
+
+- **`Number.isFinite` trước, `Math.max` sau** — `Math.max(1, NaN)` là `NaN`, và
+  một `NaN` đi vào phép chia economy sẽ tạo ra `scene: NaN`, mà React lặng lẽ bỏ.
+- **`MAX_INSET = 200`** — một inset lớn hơn thế là dữ liệu hỏng, không phải tai
+  thỏ. Không kẹp thì `inset: 9999` cho `usableHeight = 1`, tức là màn hình tối
+  giản trên một cửa sổ 1080p.
+- **Sàn `1`** — không phải để "tránh 0", mà để phép chia economy không bao giờ
+  chia cho 0.
+
+### 7.3 Giới hạn đã biết
+
+Ở **844×600**: inset 0 → hero 222px; inset 10 → hero **268px**. Cửa sổ nhỏ hơn,
+hero cao hơn 46px. Nguyên nhân là economy đổi ngưỡng, không phải inset bị tính
+sai.
+
+Đã thử sửa bằng cách liệt kê 8 economy và lấy cái cho `scene` lớn nhất — hàm
+**đơn điệu** theo thiết kế. Nhưng nó cũng tối đa `scene` *ở mọi nơi*, nên ở
+1920×1080 nó cắt ticker và hàng cao để nhường chỗ cho hero: 12 test hiện có đỏ.
+Đã hoàn nguyên. Sửa đúng cần hai mục tiêu (đặt sàn trước, tối đa sau), tức là
+thiết kế lại bố cục — không phải một bản vá.
+
+`tests/layout-inset.test.ts` khẳng định **con số đo được** (222 → 268, +46) như
+một test đang xanh. Sửa được thì test đỏ và buộc cập nhật; không sửa thì nó vẫn
+được ghi lại. Cạnh đó là bất biến thật: trong *một* economy,
+`scene + reserve === usableHeight` (252 tổ hợp).
