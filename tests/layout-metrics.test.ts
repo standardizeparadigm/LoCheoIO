@@ -128,6 +128,12 @@ describe("cornerRowHeight", () => {
     expect(cornerRowHeight(true)).toBe(cornerPanelHeight(CORNER_MAX_ROWS, true));
   });
 
+  it("leaves 240px empty in the three-row INFO panel, which section 12 documents", () => {
+    // docs/releases/v1.1.8.md §12 explains this gap and used to quote 320px,
+    // 46px rows and a 458px three-row panel — none of which the code produces.
+    expect(cornerPanelHeight(7, true) - cornerPanelHeight(3, true)).toBe(240);
+  });
+
   it("is taller than the four-row INFO panel, which is why INFO has slack", () => {
     const info = cornerPanelHeight(4, true);
     expect(cornerRowHeight(true)).toBeGreaterThan(info);
