@@ -74,6 +74,20 @@ export interface MenuPlan {
   /** Rows use the 26px landscape height instead of 34px. */
   tight: boolean;
   /**
+   * The panel chrome shrinks (gaps, padding, header) to buy the hero room.
+   *
+   * Round 7. This is a *fourth* economy, below `tight`, and it exists because of
+   * the windowed screenshot: at 1568×677 the chrome reserved 378px of a 677px
+   * window and left the hero 299px — while the GAME panel sat in the bottom-left
+   * corner using 318px of that reserve for *six rows of buttons and air*.
+   *
+   * `compact` is the only economy that changes nothing about which controls
+   * exist. `tight` shortens rows, `minimal` hides the mascot, the ticker and
+   * the footer can disappear — this one just tightens gaps, and it is therefore
+   * the first thing to reach for and the last thing to give up.
+   */
+  compact: boolean;
+  /**
    * The hero shows the wordmark only — no tagline, no deck, no mascot.
    *
    * True in landscape-phone territory, where 220px of hero does not exist and
@@ -218,13 +232,23 @@ export function planMenuLayout(viewport: Viewport): MenuPlan {
   const tight =
     !dense && height - cornerRowReserve(false) < MIN_SCENE_HEIGHT;
   /*
+   * Compact chrome: the step between `tight` and dropping the ticker.
+   *
+   * The order below is now: tight rows → **compact chrome** → ticker → footer.
+   * It sits third because it is the cheapest thing left: it removes no control
+   * and no information, only air. On 1280×720 it is not needed (`scene` is 342);
+   * on 1568×677 and 1366×650 it buys the hero ~28px, which is the difference
+   * between the stacked layout's 308px and the 272px band it was being handed.
+   */
+  const compact = height - cornerRowReserve(dense, tight, ticker, false) < MIN_SCENE_HEIGHT;
+  /*
    * Dropping the ticker buys back its 48px *and* the margin above it, which
    * is the only reason a 568px phone can seat both a usable hero and both
    * panels. `cornerRowReserve()` includes the ticker, so it is subtracted
    * rather than recomputed — one source for the number.
    */
   const reserve =
-    cornerRowReserve(dense, tight, ticker) - (footer ? 0 : PANEL_FOOTER_HEIGHT);
+    cornerRowReserve(dense, tight, ticker, compact) - (footer ? 0 : PANEL_FOOTER_HEIGHT);
   const available = height - reserve;
   /*
    * The floor the scene aims at. Normally MIN_SCENE_HEIGHT (220). When even
@@ -241,6 +265,7 @@ export function planMenuLayout(viewport: Viewport): MenuPlan {
   return {
     dense,
     tight,
+    compact,
     minimal,
     stacked,
     reserve,
