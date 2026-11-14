@@ -591,7 +591,7 @@ lo-cheoio/
 │  │  ├─ GameOverScreen.tsx     # VỠ HŨ! + điểm + new achievements
 │  │  ├─ PauseScreen.tsx        # TẠM NGHỈ + stats ván
 │  │  ├─ settings/           # 6 mục cài đặt + control tái dùng (v1.1.6)
-│  │  └─ ui/               # 8 primitive, 48 file mỗi cái (v1.1.8 — tách từ ui.tsx)
+│  │  └─ ui/               # 8 primitive, 1 file mỗi cái (v1.1.8 — tách từ ui.tsx)
 │  │                          jar · panel · button · keycap · stat · modal · switch · scoreboard
 │  ├─ game/
 │  │  ├─ engine.ts         # toàn bộ simulation + render canvas (~2260 dòng)
@@ -603,10 +603,10 @@ lo-cheoio/
 │  │  ├─ achievements.ts   # 16 huy hiệu + checker thuần (pure)
 │  │  ├─ storage.ts        # localStorage: top 8, progress, achievements
 │  │  ├─ audio.ts          # Web Audio synth: sfx + pentatonic music
-│  │  ├─ changelog/          # in-game changelog (v1.1.8 — tách từ 48 file)
+│  │  ├─ changelog/          # in-game changelog (v1.1.8 — tách từ 1 file)
 │  │  │  ├─ types.ts        #   ChangelogEntry · ReleaseTier · copyFor()
 │  │  │  ├─ tiers.ts        #   tierFor() · TIER_ORDER · TIER_LABEL_KEY
-│  │  │  ├─ entries/        #   48 file / 1 bản — v1_0_0.ts … v1_1_7.ts
+│  │  │  ├─ entries/        #   1 file / 1 bản — v1_0_0.ts … v1_1_7.ts
 │  │  │  └─ index.ts        #   danh sách có thứ tự + 5 helper
 │  │  ├─ runSave.ts         # suspended-run persistence
 │  │  ├─ settings.ts        # game settings schema + normalize
