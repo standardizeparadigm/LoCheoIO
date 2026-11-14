@@ -39,7 +39,11 @@ Cả hai panel cao bằng `CORNER_MAX_ROWS` hàng — **kể cả khi nội dung
 lý do khung của GAME và INFO thẳng hàng được, và cũng là lý do phát sinh lỗi "nửa dưới
 panel THÔNG TIN trống" của v1.1.8.
 
-GAME có 7 hàng, INFO có 4 hàng cộng hai khối (thử thách + tóm tắt). Chênh lệch ~126px.
+GAME có 7 hàng, INFO có 4 hàng cộng hai khối (thử thách + tóm tắt). Khung bảy
+hàng rich là **458px**; bốn hàng là **278px**, ba hàng là **218px**. Khoảng trống
+lớn nhất — khi INFO chỉ có ba hàng — là **240px**, và đó là con số §12 của
+`docs/releases/v1.1.8.md` mô tả. (Tài liệu này từng ghi ~126px, tức là chênh lệch
+của một hàng, không phải của cả khung.)
 Cách xử lý:
 
 | Kinh tế | `justify-content` của body | Vì sao |
