@@ -648,7 +648,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
 | `vitest run` | **935 test / 87 file** | ✅ |
-| `smoke-ssr` | menu, 6 mục cài đặt, changelog, 9 modal | ✅ |
+| `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 306 khoá | ✅ |
 | `check-assets` | 20 SVG, 2 chiều tham chiếu | ✅ |
