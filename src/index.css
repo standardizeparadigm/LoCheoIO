@@ -1,5 +1,6 @@
 @import "./styles/fonts.css";
 @import "./styles/wordmark.css";
+@import "./styles/animations.css";
 @import "tailwindcss";
 
 @theme {
@@ -110,112 +111,31 @@
 
 /* ---------- animations ---------- */
 
-@keyframes lc-pop-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.86) translateY(14px);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.02) translateY(-2px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
 .anim-pop {
   animation: lc-pop-in 320ms cubic-bezier(0.18, 1.1, 0.36, 1) both;
 }
 
-@keyframes lc-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(22px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 .anim-slide {
   animation: lc-slide-up 420ms cubic-bezier(0.16, 0.9, 0.3, 1) both;
 }
 
-@keyframes lc-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(2deg);
-  }
-}
 .anim-bob {
   animation: lc-bob 3.2s ease-in-out infinite;
 }
 
-@keyframes lc-flicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  45% {
-    opacity: 0.72;
-  }
-  55% {
-    opacity: 0.95;
-  }
-}
 .anim-flicker {
   animation: lc-flicker 4s ease-in-out infinite;
 }
 
-@keyframes lc-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
 .anim-marquee {
   animation: lc-marquee 22s linear infinite;
 }
 
-@keyframes lc-pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(245, 168, 28, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 18px rgba(245, 168, 28, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(245, 168, 28, 0);
-  }
-}
 .anim-ring {
   animation: lc-pulse-ring 1.8s ease-out infinite;
 }
 
 /* same pulse, but keeps the chunky offset shadow buttons rely on */
-@keyframes lc-cta-pulse {
-  0% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 0 rgba(245, 168, 28, 0.55);
-  }
-  70% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 16px rgba(245, 168, 28, 0);
-  }
-  100% {
-    box-shadow:
-      3px 3px 0 0 rgba(6, 26, 26, 0.7),
-      0 0 0 0 rgba(245, 168, 28, 0);
-  }
-}
 .anim-cta {
   animation: lc-cta-pulse 1.9s ease-out infinite;
 }
@@ -313,14 +233,6 @@
   background: radial-gradient(circle at 60% 60%, rgba(245, 168, 28, 0.28), transparent 62%);
   animation: lc-nebula-b 19s ease-in-out infinite alternate;
 }
-@keyframes lc-nebula-a {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
-  100% { transform: translate3d(9vw, 7vh, 0) scale(1.18); opacity: 0.8; }
-}
-@keyframes lc-nebula-b {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
-  100% { transform: translate3d(-8vw, -6vh, 0) scale(1.22); opacity: 0.78; }
-}
 
 /* Twinkling starfield — two parallax layers of round dots */
 .star-field,
@@ -353,10 +265,6 @@
   opacity: 0.7;
   animation: lc-twinkle 5.2s ease-in-out 1.3s infinite alternate;
 }
-@keyframes lc-twinkle {
-  0% { opacity: 0.35; }
-  100% { opacity: 1; }
-}
 
 /* Soft god-ray beam from the top — breathing, barely-there */
 .light-ray {
@@ -379,10 +287,6 @@
   pointer-events: none;
   animation: lc-ray 11s ease-in-out infinite alternate;
 }
-@keyframes lc-ray {
-  0% { opacity: 0.45; transform: translateX(-50%) rotate(-1.6deg); }
-  100% { opacity: 1; transform: translateX(-50%) rotate(1.6deg); }
-}
 
 /* Rotating conic glow ring (mascot backdrop, About logo) */
 .glow-ring {
@@ -402,19 +306,11 @@
   animation: lc-ring-rotate 9s linear infinite;
   pointer-events: none;
 }
-@keyframes lc-ring-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 /* Mascot halo — warm breathing drop-shadow */
 .jar-glow {
   filter: drop-shadow(0 0 26px rgba(245, 168, 28, 0.38)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55));
   animation: lc-jar-glow 3.4s ease-in-out infinite alternate;
-}
-@keyframes lc-jar-glow {
-  0% { filter: drop-shadow(0 0 14px rgba(245, 168, 28, 0.28)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)); }
-  100% { filter: drop-shadow(0 0 34px rgba(245, 168, 28, 0.5)) drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)); }
 }
 
 /* About modal — perpetually panning gradient card (border-box trick) */
@@ -426,18 +322,10 @@
   background-size: 100% 100%, 320% 320%;
   animation: lc-about-pan 5.5s linear infinite;
 }
-@keyframes lc-about-pan {
-  0% { background-position: 0 0, 0% 50%; }
-  100% { background-position: 0 0, 320% 50%; }
-}
 .about-chip {
   background: linear-gradient(115deg, rgba(245, 168, 28, 0.16), rgba(43, 180, 140, 0.16), rgba(230, 59, 46, 0.16), rgba(245, 168, 28, 0.16));
   background-size: 300% 300%;
   animation: lc-about-chip 6s ease-in-out infinite alternate;
-}
-@keyframes lc-about-chip {
-  0% { background-position: 0% 40%; }
-  100% { background-position: 100% 60%; }
 }
 
 /* CTA shine sweep — a light band glides across the primary button */
@@ -457,12 +345,6 @@
   pointer-events: none;
   animation: lc-cta-shine 2.9s ease-in-out infinite;
 }
-@keyframes lc-cta-shine {
-  0% { left: -90%; opacity: 0; }
-  18% { opacity: 1; }
-  46% { left: 135%; opacity: 0; }
-  100% { left: 135%; opacity: 0; }
-}
 
 /* Drifting aurora backdrop — three coloured lights breathing across the kitchen */
 .aurora-bg {
@@ -473,14 +355,6 @@
     radial-gradient(50% 50% at 8% 92%, rgba(140, 198, 63, 0.12), transparent 65%);
   background-size: 200% 200%;
   animation: lc-aurora-drift 16s ease-in-out infinite alternate;
-}
-@keyframes lc-aurora-drift {
-  0% {
-    background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
-  }
-  100% {
-    background-position: 30% 25%, 65% 30%, 70% 70%, 25% 75%;
-  }
 }
 
 /* Checkerboard cement-tile floor, faded toward the edges */
@@ -529,42 +403,16 @@
 }
 
 /* Slow rotating halo behind the mascot */
-@keyframes lc-spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 .anim-spin-slow {
   animation: lc-spin-slow 14s linear infinite;
 }
 
 /* Soft breathing glow for the halo ring */
-@keyframes lc-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 .anim-breathe {
   animation: lc-breathe 3.6s ease-in-out infinite;
 }
 
 /* One-sweep shine across a button (use sparingly, e.g. primary CTA) */
-@keyframes lc-sheen {
-  0% {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  60%,
-  100% {
-    transform: translateX(240%) skewX(-18deg);
-  }
-}
 .sheen::after {
   content: "";
   position: absolute;
@@ -577,35 +425,13 @@
 }
 
 /* Achievement badge pop when unlocked */
-@keyframes lc-badge-pop {
-  0% {
-    opacity: 0;
-    transform: scale(0.4) rotate(-14deg);
-  }
-  55% {
-    opacity: 1;
-    transform: scale(1.35) rotate(6deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-}
 .anim-badge-pop {
   animation: lc-badge-pop 560ms cubic-bezier(0.18, 1.4, 0.36, 1) both;
 }
 
 /* Corner-panel entrances (GAME / INFO) */
-@keyframes lc-corner-left {
-  from { opacity: 0; transform: translate(-28px, 18px); }
-  to { opacity: 1; transform: translate(0, 0); }
-}
 .anim-corner-left {
   animation: lc-corner-left 420ms cubic-bezier(0.2, 1.2, 0.36, 1) 120ms both;
-}
-@keyframes lc-corner-right {
-  from { opacity: 0; transform: translate(28px, 18px); }
-  to { opacity: 1; transform: translate(0, 0); }
 }
 .anim-corner-right {
   animation: lc-corner-right 420ms cubic-bezier(0.2, 1.2, 0.36, 1) 200ms both;
@@ -697,30 +523,6 @@
  * than one because a single path makes fourteen items read as a wave — which
  * looks like a loading state, not like a menu.
  */
-@keyframes lc-float-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  }
-  33% {
-    transform: translate3d(3px, -9px, 0) rotate(6deg) scale(1.06);
-  }
-  66% {
-    transform: translate3d(-4px, -4px, 0) rotate(-4deg) scale(0.97);
-  }
-}
-@keyframes lc-float-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  }
-  40% {
-    transform: translate3d(-6px, -7px, 0) rotate(-7deg) scale(1.05);
-  }
-  70% {
-    transform: translate3d(4px, -12px, 0) rotate(5deg) scale(0.96);
-  }
-}
 
 .decor-item {
   animation-duration: var(--float-dur, 7s);
@@ -744,22 +546,6 @@
  * co-prime-ish durations (18s / 26s / 34s) almost never align, so the halo
  * looks alive rather than loading.
  */
-@keyframes lc-halo-cw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes lc-halo-ccw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
-}
 .halo-ring-1 {
   animation: lc-halo-cw 18s linear infinite;
   transform-origin: 50% 50%;
@@ -778,17 +564,6 @@
  * `mix-blend-mode` with a rotation would drag the highlight around the jar
  * and make it look like the ceramic is spinning.
  */
-@keyframes lc-halo-breathe {
-  0%,
-  100% {
-    opacity: 0.45;
-    transform: scale(0.96);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.04);
-  }
-}
 .halo-glow {
   animation: lc-halo-breathe 5.2s ease-in-out infinite;
 }
