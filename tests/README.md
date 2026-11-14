@@ -68,6 +68,25 @@
 | `barrels.test.ts` | mỗi thư mục có barrel, và barrel không xuất thứ không tồn tại | fs |
 | `barrel-contract.test.ts` | sáu barrel không ai import vẫn phải đúng hợp đồng, để lần import đầu tiên không nổ | fs |
 | `folder-readmes.test.ts` | mỗi thư mục dưới `src/` có README phải mô tả **mọi** file trong đó | fs |
+| `docs-counts.test.ts` | số trong tài liệu phải khớp mã nguồn — không tài liệu hiện hành nào được ghi dưới sàn test, không tài liệu nào nói số key i18n cũ | fs |
+| `docs-numbers.test.ts` | mười README và doc release trích số file/số test — đọc `tests/` và đối chiếu | fs |
+| `numeric-guards-doc.test.ts` | hướng dẫn về chặn số phải khớp các hàm chặn thật | fs |
+| `storage-doc.test.ts` | tài liệu storage khớp schema thật trong `storage.ts` | fs |
+| `modes-balance-doc.test.ts` | bảng cân bằng trong docs khớp hệ số trong `modes/*.ts` | fs |
+| `changelog-dates.test.ts` | ba nguồn ngày phải đồng ý — `entries/*.ts`, `docs/releases/v*.md`, và heading `CHANGELOG.md`; cộng anchor trỏ đúng | fs |
+| `release-timeline-doc.test.ts` | dòng cadence trong `v1.1.8.md` khớp entry, và nhịp **có hình dạng của thật** (1–5 ngày, có hotfix, ≤ 2 cuối tuần) | fs |
+| `settings-import-merge.test.ts` | nhập JSON cài đặt — merge, không ghi đè ngoài phạm vi, chịu file hỏng | pure |
+| `settings-presets-guard.test.ts` | preset không được chạm `language`, không chạm dữ liệu người chơi | pure |
+| `daily-challenge.test.ts` | thử thách hôm nay — số ngày theo giờ địa phương, `mix()` tất định, target trong khoảng, danh mục rỗng vẫn hợp lệ | pure |
+| `tip-index.test.ts` | mẹo trong ngày — chỉ số quấn vòng, không âm, không lặp trước khi hết danh sách | pure |
+| `engine-resize.test.ts` | `LoCheoGame.resize` — nơi duy nhất kích thước canvas đi vào engine; DPR kẹp, không phóng to quá 2 | pure |
+| `wordmark-scale.test.ts` | `lockupWidth` — 300 @375, 374 @768, 427 @≥1024, và không bao giờ nhỏ hơn sàn | pure |
+| `wordmark-diacritics.test.ts` | dấu nặng của `LỌ` — ba thứ cộng lại (font, line-height, padding) không được quay lại | pure + fs |
+| `palette-contrast.test.ts` | tương phản chữ/nền đạt WCAG AA trên mọi cặp màu dùng thật | pure |
+| `assets-round-two.test.ts` | ba SVG của vòng hai — tồn tại, được tham chiếu, có animation | fs |
+| `mode-math.test.ts` | toán của chế độ — time limit, combo window, jar bonus, không chia cho 0 | pure |
+| `mode-multiplier.test.ts` | chín hệ số nhân khớp bảng công bố trong docs | pure |
+| `storage-normalise.test.ts` | chuẩn hoá bản ghi — làm tròn, cắt tên, kẹp ngày, không NaN | `memStorage()` |
 
 ## Thêm test mới
 
