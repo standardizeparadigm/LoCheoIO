@@ -42,7 +42,7 @@ function matches(query: string): boolean {
  * `getComputedStyle` on each, which is four forced layouts per resize event. It
  * ran on every `resize`, including the dozens a drag fires.
  */
-function readInsets(): Pick<Environment, "insetTop" | "insetRight" | "insetBottom" | "insetLeft"> {
+export function readInsets(): Pick<Environment, "insetTop" | "insetRight" | "insetBottom" | "insetLeft"> {
   const zero = { insetTop: 0, insetRight: 0, insetBottom: 0, insetLeft: 0 };
   if (typeof window === "undefined" || typeof document === "undefined") return zero;
   let probe: HTMLDivElement | null = null;

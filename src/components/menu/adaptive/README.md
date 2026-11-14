@@ -42,7 +42,28 @@ construction, a layout the component can draw.
 | --- | --- |
 | `breakpoints.ts` | The four constants, each with the derivation in a comment |
 | `hero.ts` | `heroLayout()`, `heroContentHeight()`, and the component's own measurements |
-| `index.ts` | The public surface — import from here, not the two modules |
+| `environment.ts` | Readings the geometry cannot carry: safe areas, dpr, pointer, orientation |
+| `useEnvironment.ts` | The only place that touches `window`: reads them, and `readInsets()` for the plan |
+| `index.ts` | The public surface — import from here, not the modules |
+
+## `environment.ts` — readings, not decisions
+
+`planMenuLayout()` is a pure function of `{width, height}`, which is right for
+geometry and not enough for four things that change what the geometry *should* be.
+None of them were read at all before round 7:
+
+    safe-area insets   a notched phone loses 44px top + 34px bottom, so an
+                       844×390 phone has 312px of usable height, not 390
+    dpr                2× draws a 1px border as 2 device pixels — which is why
+                       the corner ticks are 3px
+    orientation        `width > height` is not "landscape phone": a 1600×900
+                       desktop window is landscape too
+    coarse pointer     no hover, and 34px rows are below the 44px touch target
+
+Everything in that file is a *reading*. The decisions stay in `fit.ts` and
+`hero.ts`, which never touch `window` — that is what keeps them pure and
+testable, and it is why `Viewport` carries a plain `inset?: number` instead of
+this module being imported by the planner.
 
 ## The measurements are the component's, not this folder's
 

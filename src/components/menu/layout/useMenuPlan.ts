@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { planMenuLayout } from "./fit";
 import type { MenuPlan, Viewport } from "./fit";
 import { onViewportChange } from "./viewportEvents";
+import { readInsets } from "../adaptive/useEnvironment";
 
 /** The viewport the SSR smoke test and the fallback path use. */
 export const REFERENCE_VIEWPORT: Viewport = { width: 1280, height: 720 };
@@ -52,7 +53,32 @@ function readViewport(): Viewport {
   const rawH = vv?.height ?? window.innerHeight;
   const usable = (n: number) => Number.isFinite(n) && n >= 1;
   if (!usable(rawW) || !usable(rawH)) return REFERENCE_VIEWPORT;
-  return { width: Math.round(rawW), height: Math.round(rawH) };
+  /*
+   * The safe-area inset is read here, once per viewport update, and carried on
+   * the `Viewport` so `planMenuLayout()` can subtract it.
+   *
+   * Reading it here rather than inside the planner keeps `fit.ts` pure — it
+   * takes a number, not a `window` — which is what lets the whole layout be
+   * tested without a DOM. `readInsets()` is exported from the adaptive module
+   * and does the `env()` probe; it returns zeroes on every desktop browser.
+   */
+  return { width: Math.round(rawW), height: Math.round(rawH), inset: readViewportInset() };
+}
+
+/**
+ * `env(safe-area-inset-top + bottom)`, or 0 when there is nothing to read.
+ *
+ * Wrapped because it runs on every resize and touches the DOM: a throw here
+ * would take out the whole re-plan, and the correct fallback (no inset, lay out
+ * against the raw viewport) is exactly the pre-round-7 behaviour.
+ */
+function readViewportInset(): number {
+  try {
+    const insets = readInsets();
+    return insets.insetTop + insets.insetBottom;
+  } catch {
+    return 0;
+  }
 }
 
 /** The current viewport width — the same value the plan was computed from. */
