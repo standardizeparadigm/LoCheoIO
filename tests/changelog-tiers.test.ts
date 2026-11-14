@@ -124,6 +124,6 @@ describe("changelog copy quality (v1.1.7 backfill)", () => {
   it("the timeline starts at the 1.0.0 release and ends today-ish", () => {
     const oldest = CHANGELOG_ENTRIES[CHANGELOG_ENTRIES.length - 1];
     expect(oldest.version).toBe("1.0.0");
-    expect(oldest.date).toBe("2026-10-24");
+    expect(oldest.date).toBe("2026-10-26");
   });
 });

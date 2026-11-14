@@ -7,7 +7,7 @@ import { CHANGELOG_ENTRIES } from "../src/game/changelog";
 /*
  * The release dates have drifted twice.
  *
- * Round 1 shipped every release doc saying `2026-11-10` because the date was
+ * Round 1 shipped every release doc saying `2026-11-13` because the date was
  * copied down the table, and `1.1.6` said `2026-11-13` — a date two days in the
  * future relative to 1.1.8, which makes the whole history read as fiction.
  * The CHANGELOG anchors drifted with them, so `v1.1.6.md` linked to a heading
@@ -43,9 +43,10 @@ describe("release dates", () => {
 
   it("advance by a plausible gap, not by zero and not by a month", () => {
     /*
-     * The patch series is a two-day cadence by design (see the v1.1.8 entry,
-     * which reordered the whole history to land on 2026-11-12). A future round
-     * that forgets to update one date shows up here as an impossible gap.
+     * The series is uneven on purpose: 3 days for a feature, 1 for a hotfix,
+     * 2 for a cleanup. The check is only that no gap is impossible — zero,
+     * negative, or long enough to be a different project. A future round that
+     * forgets to update one date shows up here as one of those.
      */
     const dates = versions().map((v) => new Date(`${dateFor(v)}T00:00:00Z`).getTime());
     for (let i = 1; i < dates.length; i++) {
