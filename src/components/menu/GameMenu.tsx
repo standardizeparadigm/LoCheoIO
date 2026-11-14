@@ -56,6 +56,7 @@ export default function GameMenu({
       height={cornerRowHeight(plan.dense, plan.tight)}
       width={plan.panelWidth}
       tight={plan.tight}
+      compact={plan.compact}
       footer={plan.footer ? <PanelStatStrip stats={progressStat(achievementsUnlocked, achievementsTotal, MODE_LIST.length)} /> : undefined}
     >
       <MenuItemButton icon={<PlayIcon className="h-5 w-5" />} label={t("game.play")} variant="primary" shine rich={plan.dense} onClick={onPlay} />

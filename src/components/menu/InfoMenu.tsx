@@ -78,6 +78,7 @@ export default function InfoMenu({
       height={cornerRowHeight(plan.dense, plan.tight)}
       width={plan.panelWidth}
       tight={plan.tight}
+      compact={plan.compact}
       footer={plan.footer ? <PanelStatStrip stats={buildStat(APP_VERSION, tierFor(latestEntry().version))} /> : undefined}
     >
       <MenuItemButton
