@@ -22,8 +22,21 @@ import { readdirSync, readFileSync } from "node:fs";
 
 import { localeTable } from "../src/i18n/i18n";
 
-const TESTS = 976;
-const FILES = 96;
+/*
+ * Read from the badge rather than hardcoded: this file is itself part of the
+ * suite, so a literal here is stale the moment the file is added — which is
+ * exactly what happened on the first run (976 written, 981 actual).
+ *
+ * The badge is generated from `vitest run` by `npm run sync:badge`, so it is
+ * the one place in the repo that cannot be wrong without the script failing.
+ */
+function badgeCounts(): { tests: number; files: number } {
+  const readme = readFileSync("README.md", "utf8");
+  const m = readme.match(/badge\/tests-(\d+)%20%C2%B7%20(\d+)%20files/);
+  if (!m) throw new Error("README badge is missing or has an unexpected shape");
+  return { tests: Number(m[1]), files: Number(m[2]) };
+}
+const { tests: TESTS, files: FILES } = badgeCounts();
 const KEYS = Object.keys(localeTable("vi")).length;
 
 const SVGS = readdirSync("assets")
