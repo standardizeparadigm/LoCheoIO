@@ -36,6 +36,9 @@ export {
 export {
   planMenuLayout,
   planFits,
+  usableHeight,
+  MAX_INSET,
+  occupiesExactly,
   cornerLayoutFor,
   rowDensityFor,
 } from "./fit";

@@ -43,6 +43,30 @@ import {
   cornerRowReserve,
 } from "./metrics";
 
+/**
+ * Largest safe-area inset the plan will honour.
+ *
+ * 78 is the real worst case (a landscape iPhone: 44 + 34). 200 is a generous
+ * ceiling that still stops a corrupt value from collapsing the layout to 1px.
+ */
+export const MAX_INSET = 200;
+
+/**
+ * The usable height: the viewport minus its safe-area inset, floored at 1.
+ *
+ * Exported because `planFits()` and `occupiesExactly()` both need it and they
+ * must agree with `planMenuLayout()` — three places subtracting an inset with
+ * slightly different clamps is how "the plan says it fits and the column does
+ * not" gets reintroduced.
+ */
+export function usableHeight(viewport: Viewport): number {
+  const h = Number.isFinite(viewport.height) ? Math.max(1, Math.trunc(viewport.height)) : 1;
+  const inset = Number.isFinite(viewport.inset)
+    ? Math.min(MAX_INSET, Math.max(0, Math.trunc(viewport.inset as number)))
+    : 0;
+  return Math.max(1, h - inset);
+}
+
 /** How the corner row arranges GAME and INFO. */
 export type CornerLayout = "side-by-side" | "stacked";
 
@@ -65,6 +89,15 @@ export type FitMode = "none" | "squeeze" | "crop";
 export interface Viewport {
   width: number;
   height: number;
+  /**
+   * `env(safe-area-inset-top + bottom)`, in CSS px. Optional — every caller that
+   * predates round 7 omits it and gets 0, which is correct on every desktop
+   * browser and is the only honest default when nothing has been measured.
+   *
+   * A notched phone in landscape reports 44 + 34 = 78, and the plan lays out
+   * against `height - 78`.
+   */
+  inset?: number;
 }
 
 /** Everything the start screen needs to know before it paints. */
@@ -183,7 +216,15 @@ export function planMenuLayout(viewport: Viewport): MenuPlan {
    */
   const sane = (n: number) => (Number.isFinite(n) ? Math.max(1, Math.trunc(n)) : 1);
   const width = sane(viewport.width);
-  const height = sane(viewport.height);
+  /*
+   * The safe-area inset is subtracted from the height **before** anything else
+   * looks at it, so every economy below reasons about usable pixels.
+   *
+   * `Math.trunc` on a truncated float rather than `sane`: an inset may
+   * legitimately be `0`, and `sane` floors at 1. A negative inset is refused
+   * because it would *grow* the viewport, which no platform means by it.
+   */
+  const height = usableHeight(viewport);
 
   const dense = rowDensityFor(height) === "rich";
   const stacked = cornerLayoutFor(width) === "stacked";
@@ -287,7 +328,7 @@ export function planMenuLayout(viewport: Viewport): MenuPlan {
  * one size below it reports `crop` instead of quietly overflowing.
  */
 export function planFits(plan: MenuPlan, viewport: Viewport): boolean {
-  return plan.fit !== "crop" && plan.scene + plan.reserve === Math.max(1, Math.trunc(viewport.height));
+  return plan.fit !== "crop" && occupiesExactly(plan, viewport);
 }
 
 /**
@@ -298,7 +339,13 @@ export function planFits(plan: MenuPlan, viewport: Viewport): boolean {
  * every viewport in a sweep.
  */
 export function occupiesExactly(plan: MenuPlan, viewport: Viewport): boolean {
-  return plan.scene + plan.reserve === Math.max(1, Math.trunc(viewport.height));
+  /*
+   * The column is `scene + reserve` tall and must fill the *usable* height
+   * exactly — not the raw viewport. On a notched phone those differ by 78px, and
+   * comparing against the raw height would report a layout that is exactly right
+   * as "short by 78".
+   */
+  return plan.scene + plan.reserve === usableHeight(viewport);
 }
 
 /** Re-exported so callers need one import, not two. */
