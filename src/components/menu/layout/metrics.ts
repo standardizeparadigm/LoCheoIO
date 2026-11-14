@@ -52,6 +52,15 @@ export const PANEL_PADDING = 16;
 /** Two corner ticks, each 3px of border overhang on top and bottom. */
 export const PANEL_BORDER = 6;
 
+/** Gap between rows in the compact economy — half the normal gap. */
+export const MENU_ROW_GAP_COMPACT = 3;
+
+/** Inner padding in the compact economy. */
+export const PANEL_PADDING_COMPACT = 10;
+
+/** Header strip in the compact economy. */
+export const PANEL_HEADER_HEIGHT_COMPACT = 18;
+
 /**
  * How many rows the GAME panel holds.
  *
@@ -61,8 +70,9 @@ export const PANEL_BORDER = 6;
  *
  *   play · continue · modes · leaderboard · achievements · how-to · settings
  *
- * INFO has three (about · changelog · quit), so GAME sets the row height and
- * the panel height for both.
+ * INFO has four (about · changelog · shortcuts · quit), so GAME sets the row
+ * height and the panel height for both. (This comment said three until round 7;
+ * the fourth row is «Phím tắt», added in 1.1.8 and never reflected here.)
  */
 export const CORNER_MAX_ROWS = 7;
 
@@ -200,7 +210,12 @@ export function rowHeight(rich: boolean, tight = false): number {
  * scene has to reserve exactly this much, and the two numbers drifting apart
  * is precisely what cut the artwork in 1.1.7.
  */
-export function cornerPanelHeight(rows: number, rich: boolean, tight = false): number {
+export function cornerPanelHeight(
+  rows: number,
+  rich: boolean,
+  tight = false,
+  compact = false,
+): number {
   /*
    * `Math.max(1, rows)` floors a negative and passes `NaN` and `Infinity`
    * through — the tenth instance of this shape in the release, and here the
@@ -213,6 +228,30 @@ export function cornerPanelHeight(rows: number, rich: boolean, tight = false): n
    * cannot account for.
    */
   const n = Number.isFinite(rows) ? Math.max(1, Math.trunc(rows)) : 1;
+  /*
+   * The compact economy (round 7) shrinks the *chrome* rather than dropping
+   * rows. Rows are the one thing that must never be sacrificed — every button
+   * stays on screen — but the 6px gaps, 16px padding and 22px header are all
+   * air, and on a 677px-tall window they are 6×6 + 16 + 22 = 74px of the 378px
+   * the chrome was claiming from a 299px hero.
+   *
+   * Measured at the 7-row GAME panel, rich rows (54px):
+   *
+   *   normal   22 + 7×54 + 6×6  + 16 + 6 = 458
+   *   compact  18 + 7×54 + 6×3  + 10 + 6 = 426   (−32)
+   *
+   * 32px is not the whole story — the ticker and margin are on top — but it is
+   * real, and it is bought without hiding a single button.
+   */
+  if (compact) {
+    return (
+      PANEL_HEADER_HEIGHT_COMPACT +
+      n * rowHeight(rich, tight) +
+      (n - 1) * MENU_ROW_GAP_COMPACT +
+      PANEL_PADDING_COMPACT +
+      PANEL_BORDER
+    );
+  }
   return (
     PANEL_HEADER_HEIGHT +
     n * rowHeight(rich, tight) +
@@ -223,11 +262,16 @@ export function cornerPanelHeight(rows: number, rich: boolean, tight = false): n
 }
 
 /** The GAME panel's height — it is the taller of the two, so it sets the row. */
-export function cornerRowHeight(rich: boolean, tight = false): number {
-  return cornerPanelHeight(CORNER_MAX_ROWS, rich, tight);
+export function cornerRowHeight(rich: boolean, tight = false, compact = false): number {
+  return cornerPanelHeight(CORNER_MAX_ROWS, rich, tight, compact);
 }
 
 /** Total vertical space the floating chrome occupies at the bottom. */
-export function cornerRowReserve(rich: boolean, tight = false, ticker = true): number {
-  return cornerRowHeight(rich, tight) + (ticker ? TICKER_HEIGHT : 0) + CORNER_ROW_MARGIN;
+export function cornerRowReserve(
+  rich: boolean,
+  tight = false,
+  ticker = true,
+  compact = false,
+): number {
+  return cornerRowHeight(rich, tight, compact) + (ticker ? TICKER_HEIGHT : 0) + CORNER_ROW_MARGIN;
 }
