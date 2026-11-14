@@ -64,8 +64,8 @@ describe("the guide's own claims", () => {
      * eight modules" while the table has twelve rows, since `modeMath.ts ×2`
      * shares one file. The reader should trust the sentence.
      */
-    expect(guide).toMatch(/mười hai/);
-    expect(guide).toMatch(/chín module/);
+    expect(guide).toMatch(/mười ba/);
+    expect(guide).toMatch(/mười module/);
   });
 
   it("explains why `??` is not a guard", () => {

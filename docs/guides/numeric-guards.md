@@ -1,6 +1,6 @@
 # Chặn số hỏng — vì sao `Math.max(0, x)` không phải guard
 
-Vòng 6 tìm ra **mười hai** chỗ trong chín module khác nhau dùng một phép toán như thể
+Vòng 6 tìm ra **mười ba** chỗ trong mười module khác nhau dùng một phép toán như thể
 nó chặn được giá trị không hữu hạn. Sáu chỗ dùng `Math.max(0, x)`, hai chỗ dùng
 `?? 1`. Cả hai đều không chặn.
 
@@ -36,6 +36,7 @@ phải guard cho `Infinity`, và tên hàm (`max`) trông như thể nó bao qu�
 | `menu/layout/metrics` | `cornerPanelHeight(NaN)` → chiều cao **khai báo** là `NaN`; React bỏ `style` hỏng, panel tự cao bằng nội dung (đúng lỗi 1.1.7) |
 | `settings/VolumeStepper` | `Math.round(NaN)` → nhãn `NaN/100`, thanh âm lượng vẽ **0 vạch** (phòng thủ hai lớp) |
 | `game/audioLevels` | `sfxPeak` trả `0` đúng, nhưng `exponentialRampToValueAtTime(0)` **ném `RangeError`** → mọi tiếng động lỗi khi âm lượng = 0 |
+| `game/spawn` | `random() = NaN` → `NaN <= 0` luôn sai, rơi vào nhánh drift và trả **vật hiếm nhất** thay vì vật phổ biến nhất |
 
 Đó là sáu chỗ dùng `Math.max`. Chỗ thứ bảy và thứ tám không dùng `Math.max` mà
 dùng **`??`** như một guard số — cùng một sai lầm, khác cú pháp:
