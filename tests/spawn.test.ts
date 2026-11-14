@@ -71,3 +71,52 @@ describe("weightedPick", () => {
     expect(storm).toBeGreaterThan(classic);
   });
 });
+
+/**
+ * The roll is a probability, and neither `Math.random` nor an injected test RNG
+ * promises one. `NaN` used to reach the drift fallback and return the *last*
+ * legal kind — the rarest item in the table — which reads as a balance bug.
+ */
+describe("weightedPick and a broken RNG", () => {
+  const kinds = KINDS.slice(0, 4);
+  const opts = { level: 1, mode: {} };
+
+  it("returns the first weighted kind for every non-finite roll", () => {
+    const first = weightedPick(kinds, opts, () => 0);
+    for (const r of [NaN, Infinity, -Infinity]) {
+      expect(weightedPick(kinds, opts, () => r), `random=${r}`).toBe(first);
+    }
+  });
+
+  it("treats a negative roll as the lowest roll, not the highest", () => {
+    // `-1` used to work by accident: `r` was negative and the first subtraction
+    // satisfied `r <= 0`. Asserting it so a future clamp cannot invert it.
+    expect(weightedPick(kinds, opts, () => -5)).toBe(weightedPick(kinds, opts, () => 0));
+  });
+
+  it("still accepts exactly 1, which the drift branch was written for", () => {
+    const last = weightedPick(kinds, opts, () => 1);
+    const weights = weightTable(kinds, opts);
+    const lastWeighted = kinds[weights.findLastIndex((w) => w > 0)];
+    expect(last).toBe(lastWeighted);
+  });
+
+  it("never returns a kind whose weight is zero, whatever the roll", () => {
+    // The property the drift branch exists to protect, now checked against
+    // every roll in the broken set rather than only the one it anticipated.
+    const off = { level: 1, mode: { hazardMult: 0 } };
+    const weights = weightTable(kinds, off);
+    for (const r of [0, 0.5, 1, NaN, Infinity, -1]) {
+      const picked = weightedPick(kinds, off, () => r);
+      expect(weights[kinds.indexOf(picked)], `random=${r} picked ${picked}`).toBeGreaterThan(0);
+    }
+  });
+
+  it("is deterministic for a given roll sequence", () => {
+    // The reason `random` is injectable at all: the same seed must replay.
+    const rolls = [0.1, 0.7, 0.3, 0.9];
+    const a = rolls.map((r) => weightedPick(kinds, opts, () => r));
+    const b = rolls.map((r) => weightedPick(kinds, opts, () => r));
+    expect(a).toEqual(b);
+  });
+});
