@@ -200,7 +200,35 @@ const PAST =
  */
 const TREE = /[│├└─]/;
 
-const READMES = readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
+/**
+ * Text inside «guillemets» is a quotation, and a quotation of a number is
+ * usually a quotation of an *old* number.
+ *
+ * THE BUG THIS FIXES
+ * ------------------
+ * `scripts/README.md` explains why prose counts drift by exhibiting them:
+ *
+ *     — «520 tests / 51 files», «520 Tests in 51 Dateien», «520 test trên 48 file»,
+ *     «520 testes em 51 ficheiros», «520 Unit-Tests», «typecheck + 520 tests + build»
+ *     (Đặt trong «» vì đây là trích dẫn những con số cũ, không phải số hôm nay.)
+ *
+ * The rule rewrote every one of them to 981 and left the sentence beneath it
+ * saying "these are the old numbers". A file can discuss a stale count without
+ * holding a stale count — so the count only moves outside the quotation marks,
+ * not by skipping the line: a line may quote an old figure *and* state today's.
+ */
+const QUOTED = /(«[^»]*»)/;
+
+/*
+ * The ten READMEs, plus the guides whose tables state counts as part of a
+ * procedure. `scripts/README.md` said "839 tests / 78 file" in a step-by-step
+ * table — the same claim as the badge, one directory down, and outside the
+ * glob below.
+ */
+const READMES = [
+  ...readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f)),
+  "scripts/README.md",
+];
 const verify = process.argv.includes("--verify");
 let changed = 0;
 const problems = [];
@@ -209,18 +237,28 @@ for (const file of READMES) {
   const body = readFileSync(file, "utf8");
   let next = body;
   for (const { re, to, current } of RULES) {
-    if (!current) {
-      next = next.replace(re, to);
-      continue;
-    }
     /*
-     * Line-by-line, because "is this sentence about today?" is a property of
-     * the line, not of the file. A README can legitimately contain both a
-     * current claim and a historical one.
+     * Every rule — not only the `current` ones — goes line-by-line, because
+     * "is this sentence about today?" is a property of the line, not of the
+     * file, and a README legitimately holds both a current claim and a
+     * historical one.
+     *
+     * The first version applied the guards only to rules flagged `current`,
+     * which silently exempted the test/file/key rules — the ones that had
+     * actually corrupted a tree and rewritten a paragraph of quoted old
+     * numbers. A guard that covers half the rules covers nothing.
      */
     next = next
       .split("\n")
-      .map((line) => (PAST.test(line) || TREE.test(line) ? line : line.replace(re, to)))
+      .map((line) => {
+        if (TREE.test(line)) return line;
+        if (PAST.test(line)) return line;
+        /* Odd indices are the «…» spans; only even ones are prose to update. */
+        return line
+          .split(QUOTED)
+          .map((part, i) => (i % 2 === 1 ? part : part.replace(re, to)))
+          .join("");
+      })
       .join("\n");
   }
   if (next !== body) {
@@ -237,9 +275,18 @@ for (const file of READMES) {
   for (const line of next.split("\n")) {
     if (!/\b\d{3,4}\b/.test(line)) continue;
     if (HISTORICAL.test(line)) continue;
-    const stalePair = /\b(?:5[0-9]{2}|6[0-9]{2}|7[0-9]{2})\b[^\n]*\b(?:4[0-9]|5[0-9]|6[0-9])\b/.test(line)
-      && /\b(?:tests?|Tests?|testes?|Unit)\b/.test(line)
-      && !line.includes(String(total));
+    /*
+     * Judge only the unquoted half of the line. `scripts/README.md` quotes
+     * seven old spellings of the count to explain why the counts drift; every
+     * one of them is a 3-digit number next to a 1–2 digit file count, which is
+     * exactly the shape this check hunts. Strip the «» spans first, or the
+     * documentation of the bug is indistinguishable from the bug.
+     */
+    const bare = line.split(QUOTED).filter((_, i) => i % 2 === 0).join("");
+    if (!/\b\d{3,4}\b/.test(bare)) continue;
+    const stalePair = /\b(?:5[0-9]{2}|6[0-9]{2}|7[0-9]{2})\b[^\n]*\b(?:4[0-9]|5[0-9]|6[0-9])\b/.test(bare)
+      && /\b(?:tests?|Tests?|testes?|Unit)\b/.test(bare)
+      && !bare.includes(String(total));
     if (stalePair) problems.push(`${file}: suspicious count line → ${line.trim().slice(0, 90)}`);
   }
 }

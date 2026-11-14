@@ -61,6 +61,16 @@ describe("the project tree in README.md", () => {
      */
     const script = readFileSync("scripts/sync-prose-counts.mjs", "utf8");
     expect(script).toMatch(/const TREE = /);
-    expect(script).toMatch(/PAST\.test\(line\) \|\| TREE\.test\(line\)/);
+    /*
+     * Not the literal `PAST.test(line) || TREE.test(line)`: that conjunction
+     * stopped being true when the guards became separate early returns, and a
+     * test pinned to the spelling of a guard fails on every refactor while
+     * missing the case where a *rule* is exempted from the guard entirely —
+     * which is exactly what happened.
+     */
+    const loop = script.slice(script.indexOf("for (const { re, to, current } of RULES)"));
+    const body = loop.slice(0, loop.indexOf("if (next !== body)"));
+    expect(body).toMatch(/TREE\.test\(line\)/);
+    expect(body).not.toMatch(/if \(!current\)/);
   });
 });
