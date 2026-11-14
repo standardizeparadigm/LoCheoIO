@@ -164,7 +164,31 @@ const HISTORICAL = /v1\.1\.[0-7]|2026-1[01]-\d\d/;
  * plus a version, or an explicit old-value marker all mean "this was true
  * then".
  */
-const PAST = /→ *1\.1\.8|→ *v1\.1\.8|quét toàn bộ|sweep of 10|barrido de 10|balayage des 10|kompletter Durchlauf|varredura de 10|ตรวจ 10|全量扫描|\| *\d{1,2} *\| *\*?\d{1,2}\*? *\|/;
+const PAST =
+  /→ *1\.1\.8|→ *v1\.1\.8|quét toàn bộ|sweep of 10|barrido de 10|balayage des 10|kompletter Durchlauf|varredura de 10|ตรวจ 10|全量扫描|\| *\d{1,2} *\| *\*?\d{1,2}\*? *\|/;
+
+/**
+ * Lines that are part of the project-tree diagram, not prose.
+ *
+ * THE BUG THIS FIXES
+ * ------------------
+ * The test/file rule `\d{1,3} files` matched inside the ASCII tree in the
+ * README:
+ *
+ *     │  └─ ui/          # 8 primitive, 1 file mỗi cái
+ *     ├─ changelog/      # in-game changelog (tách từ 1 file)
+ *     │  ├─ entries/     #   1 file / 1 bản
+ *
+ * and rewrote all three `1`s to `48`, the number of test files. The tree then
+ * claimed eight primitives live in "48 file mỗi cái" and that `changelog/` was
+ * split from 48 files. It survived six rounds of review because a tree is the
+ * one part of a README nobody re-reads once it looks right.
+ *
+ * A line is a tree line when it contains a box-drawing glyph. Blocking the
+ * whole line is the only safe rule: a tree node describes a file that exists,
+ * not a count of files that exist.
+ */
+const TREE = /[│├└─]/;
 
 const READMES = readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
 const verify = process.argv.includes("--verify");
@@ -186,7 +210,7 @@ for (const file of READMES) {
      */
     next = next
       .split("\n")
-      .map((line) => (PAST.test(line) ? line : line.replace(re, to)))
+      .map((line) => (PAST.test(line) || TREE.test(line) ? line : line.replace(re, to)))
       .join("\n");
   }
   if (next !== body) {
