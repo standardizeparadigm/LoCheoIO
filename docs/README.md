@@ -8,7 +8,7 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 
 | Bản | Tầng | Nội dung chính | Tests lúc phát hành |
 | --- | --- | --- | --- |
-| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · `menu/{layout,scene,ticker,howto}/` | 828 / 77 file |
+| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · `menu/{layout,scene,ticker,howto}/` | 834 / 78 file |
 | [v1.1.7](releases/v1.1.7.md) | 🟣 PATCH | Nền menu hết mờ (4 lớp) · changelog chia tầng · 96 gạch mô tả mới · tách `src/game/changelog/` | 256 / 33 file |
 | [v1.1.6](releases/v1.1.6.md) | 🟣 PATCH | Settings 6 mục · preset · backup JSON · a11y pass | 222 / 29 file |
 | [v1.1.5](releases/v1.1.5.md) | 🟣 PATCH | Panel góc GAME/INFO, Chơi tiếp ván dở | 113 |
