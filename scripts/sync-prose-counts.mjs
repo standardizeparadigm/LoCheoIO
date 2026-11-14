@@ -108,12 +108,17 @@ const RULES = [
   },
   /*
    * "20 SVG — no orphans" · "20 SVGs, references checked both ways".
-   * Skipped when the same line also carries a count *range* (`18 | 19 | 20`),
-   * because that is the growth table, not a claim about today.
+   * This rule is marked `current: true`, which means the whole *line* is
+   * skipped when it looks like a record of the past: an arrow into 1.1.8, a
+   * version-range row, or a changelog table. The sweep row in every README
+   * says "10 READMEs + docs + 19 SVGs → 1.1.8", and 19 really was the count
+   * when that sweep happened — rewriting it would falsify the record. The
+   * growth table (`| SVG | 18 | 19 |`) has the same problem.
    */
   {
-    re: /\b\d{1,2} (SVGs?|file SVG|Dateien|archivos|ficheiros|fichiers)\b(?!.*\|.*\b\d{1,2} \|)/g,
-    to: (m, unit) => (unit === "SVGs" ? `${SVGS} ${unit}` : m),
+    re: /\b\d{1,2} (SVGs?|file SVG)\b/g,
+    current: true,
+    to: (m, unit) => `${SVGS} ${unit}`,
   },
   // 51 files · 520 tests  (reversed order, some languages prefer it)
   {
@@ -125,6 +130,15 @@ const RULES = [
 /** Sentences that look like a count but must NOT be rewritten (released rows). */
 const HISTORICAL = /v1\.1\.[0-7]|2026-1[01]-\d\d/;
 
+/**
+ * Sentences that describe the past rather than today, so their numbers must be
+ * left exactly as written. Widened after the SVG rule rewrote two sweep rows
+ * that said "19 SVGs → 1.1.8": an arrow into the release, a "sweep"/"quét" verb
+ * plus a version, or an explicit old-value marker all mean "this was true
+ * then".
+ */
+const PAST = /→ *1\.1\.8|→ *v1\.1\.8|quét toàn bộ|sweep of 10|barrido de 10|balayage des 10|kompletter Durchlauf|varredura de 10|ตรวจ 10|全量扫描|\| *\d{1,2} *\| *\*?\d{1,2}\*? *\|/;
+
 const READMES = readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
 const verify = process.argv.includes("--verify");
 let changed = 0;
@@ -133,7 +147,21 @@ const problems = [];
 for (const file of READMES) {
   const body = readFileSync(file, "utf8");
   let next = body;
-  for (const { re, to } of RULES) next = next.replace(re, to);
+  for (const { re, to, current } of RULES) {
+    if (!current) {
+      next = next.replace(re, to);
+      continue;
+    }
+    /*
+     * Line-by-line, because "is this sentence about today?" is a property of
+     * the line, not of the file. A README can legitimately contain both a
+     * current claim and a historical one.
+     */
+    next = next
+      .split("\n")
+      .map((line) => (PAST.test(line) ? line : line.replace(re, to)))
+      .join("\n");
+  }
   if (next !== body) {
     changed += 1;
     if (verify) problems.push(`${file}: prose count is stale`);
