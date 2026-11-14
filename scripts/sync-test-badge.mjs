@@ -50,10 +50,31 @@ function realCounts() {
     /* report is written either way — see above */
   }
   const report = JSON.parse(readFileSync("/tmp/vitest-badge.json", "utf8"));
-  return { total: report.numTotalTests, files: report.testResults.length };
+  return { total: report.numTotalTests, files: report.testResults.length, report };
 }
 
-const { total, files } = realCounts();
+const { total, files, report } = realCounts();
+
+/*
+ * Per-file case counts, so the release notes can be checked against the suite
+ * instead of against a table someone typed once.
+ *
+ * `docs/releases/v1.1.8.md` §6.8 lists four test files and how many cases each
+ * holds; two of the counts were wrong. A whole-suite total is checked by
+ * `docs-numbers.test.ts` and the badge, but a per-file count has no such twin —
+ * it changes only when that file changes, and nothing points back at the table
+ * when it does.
+ *
+ * Written next to the tests rather than into `dist/` or `/tmp` so that a clean
+ * clone has it after `npm test`, and ignored by git like any other build output.
+ */
+const perFile = Object.fromEntries(
+  report.testResults.map((t) => [String(t.name).split("/").pop(), t.assertionResults.length]),
+);
+writeFileSync(
+  "tests/.counts.json",
+  JSON.stringify(Object.fromEntries(Object.entries(perFile).sort()), null, 1) + "\n",
+);
 
 const badge = `tests-${total}%20%C2%B7%20${files}%20files`;
 const pattern = /badge\/tests-\d+%20%C2%B7%20\d+%20files/g;
