@@ -25,7 +25,7 @@
 
 <img src="assets/palette-ribbon.svg" alt="Bảng màu Lọ Chéo v1.1.8 — 7 dải màu chạy sáng luân phiên (hoạt họa SMIL)" width="100%" />
 
-**v1.1.8** · bản vá cuối trước **1.2.0** · *menu không cuộn được ở bất kỳ cỡ nào* · *dấu nặng `LỌ` không còn bị che* · *dấu sắc `CHÉO` được cứu* · *panel THÔNG TIN hết chia cắt* · *deck thay dải đếm* · 520 test / 48 file
+**v1.1.8** · bản vá cuối trước **1.2.0** · *menu không cuộn được ở bất kỳ cỡ nào* · *dấu nặng `LỌ` không còn bị che* · *dấu sắc `CHÉO` được cứu* · *panel THÔNG TIN hết chia cắt* · *deck thay dải đếm* · 882 test / 82 file
 
 </div>
 
@@ -322,7 +322,7 @@ Hai panel cũng nhận **footer** thay vì để khoảng dư rơi rải rác: G
 
 <img src="assets/diagonal-motion.svg" alt="Cơ chế CHÉO — ba trạng thái đứng yên, tăng tốc, chém tan đồ hư (hoạt họa SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Ma trận kiểm thử 1.1.8 — 520 test trên 48 file, 9 cổng kiểm tra (hoạt họa SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Ma trận kiểm thử 1.1.8 — 882 test trên 82 file, 9 cổng kiểm tra (hoạt họa SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Panel GAME (góc dưới-trái) & INFO (góc dưới-phải) trượt vào (hoạt họa SMIL)" width="100%" />
 
@@ -387,7 +387,7 @@ nhà cung cấp) và cập nhật trong một `requestAnimationFrame`.
 | 💾 **Bảng vàng TOP 8** | Điểm lưu cục bộ, validate & chuẩn hoá khi đọc, tên tự viết hoa, highlight dòng vừa lập kỷ lục |
 | 🎨 **Đồ hoạ 60fps** | Canvas 2D, particle budget 460, DPR cap 2, nền gạch bông pre-render offscreen, star twinkle + aurora menu |
 | 📴 **Offline-first thật sự** | Fonts tự host (subset latin + vietnamese, woff2), không CDN, không API — mở `dist/index.html` là chơi |
-| 🧪 **Chất lượng** | 520 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
+| 🧪 **Chất lượng** | 882 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
 
 <img src="assets/items.svg" alt="14 nguyên liệu Lọ Chéo — nhóm hứng, nhóm power, nhóm né" width="100%" />
 
@@ -450,7 +450,7 @@ npm run build      # → dist/index.html (một file tự chứa mọi thứ)
 npm run dev        # dev server với HMR (http://localhost:5173)
 npm run preview    # xem thử bản build bằng server tĩnh
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 520 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 882 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (cổng chất lượng ci)
 ```
 
@@ -564,7 +564,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # trap Tab trong modal (v1.1.6)
-└─ tests/                  # vitest — 60 files · 637 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
+└─ tests/                  # vitest — 82 files · 882 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
 ```
 
 ## 🧱 Kiến trúc & hiệu năng
@@ -595,14 +595,14 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | Cổng | Phạm vi | Trạng thái 1.1.8 |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **520 test / 48 file** | ✅ |
+| `vitest run` | **882 test / 82 file** | ✅ |
 | `smoke-ssr` | menu, 6 mục cài đặt, changelog, 9 modal | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 306 khoá | ✅ |
 | `check-assets` | 19 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 
-Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (520 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
+Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (882 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
 
 ## ❓ FAQ
 
@@ -633,7 +633,7 @@ Mỗi bản có một tầng: <kbd>MAJOR</kbd> 🩷 hồng · <kbd>UPDATE</kbd> 
 
 | Bản | Tầng | Ngày | Ghi chú |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-12 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **520 test / 48 file** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-12 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **882 test / 82 file** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-10 | **Nền menu hết mờ** (4 lớp phủ cộng hưởng: `blur 64→22px`, vignette góc thay vignette toàn màn hình, khung CRT 140→90px, sàn 45→70%) · **changelog chia tầng có màu** · **96 gạch mô tả mới** cho 8 bản cũ · ngày phát hành xếp lại · `src/game/changelog/` tách thư mục · README 10 ngôn ngữ làm lại · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-08 | **Cài đặt 6 mục** (nhanh · âm thanh · giao diện · ngôn ngữ · sao lưu · dữ liệu) · âm lượng 0–100 · mức rung · chất lượng hình · tự pause khi đổi tab · ngôn ngữ dời vào Cài đặt · 4 preset · xuất/nhập JSON · nền menu nhiều lớp · gradient chạy vòng ở mục tác giả · trap focus modal · fix nhạc reload · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-06 | **Menu góc GAME/INFO** (Chơi · Chơi tiếp · Chế độ · BXH · Thành tựu · Cài đặt / About · Changelog · Thoát) · **lưu & Chơi tiếp ván dở** (`locheo.run.v1`) · cài đặt trong game (SFX/nhạc/rung/giảm chuyển động) · fix phím tắt rò rỉ modal · prefers-reduced-motion toàn bộ · **113 tests** |
@@ -677,7 +677,7 @@ Tài liệu thiết kế & hướng dẫn kỹ thuật sâu hơn:
 ## 🤝 Đóng góp
 
 1. Fork repo, tạo branch theo quy ước `arena/<tên>` hoặc `feat/<tên>`.
-2. `npm run check` phải xanh trước khi mở PR (typecheck + 520 test + build).
+2. `npm run check` phải xanh trước khi mở PR (typecheck + 882 test + build).
 3. Không thêm dependency runtime nếu không thực sự cần — triết lý: **một file, không mạng, chơi được mãi mãi**.
 4. Mô tả PR ghi rõ chế độ/màn hình bị ảnh hưởng và kèm clip nếu thay đổi gameplay.
 

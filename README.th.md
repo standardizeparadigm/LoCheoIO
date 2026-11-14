@@ -171,7 +171,7 @@ src/components/menu/
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 501 เทสต์ใน 48 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 882 เทสต์ใน 82 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="แผง GAME (ล่างซ้าย) และ INFO (ล่างขวา) เลื่อนเข้ามา (แอนิเมชัน SMIL)" width="100%" />
 
