@@ -48,4 +48,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
-| v1.1.8 | `layout-fix.svg` · `test-matrix.svg` |
+| v1.1.8 | `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` |

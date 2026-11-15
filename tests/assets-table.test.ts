@@ -74,3 +74,45 @@ describe("docs/assets.md, the 'Dùng ở' column", () => {
     expect(embedded(vi, "divider.svg")).toBe(true);
   });
 });
+
+/*
+ * The "Hình ra đời" table is the other half of the same file, and it had the
+ * opposite fault: a claim that silently stops covering everything.
+ *
+ *     | v1.1.8 | `layout-fix.svg` · `test-matrix.svg` |
+ *
+ * v1.1.7 shipped 14 SVGs; the folder holds 20. Six arrived with v1.1.8 and the
+ * row listed two of them, so four pictures — a third of that release's artwork —
+ * had no row at all. Nobody notices an absent row: the table looks complete
+ * because every line that is there is correct, and the sum is never taken.
+ */
+describe("docs/assets.md, the 'Hình ra đời' table", () => {
+  const body = readFileSync(join(ROOT, "docs/assets.md"), "utf8");
+  const listed = new Set([...body.matchAll(/^\| v[\d.]+ \|(.+)$/gm)]
+    .flatMap((m) => [...m[1].matchAll(/`([\w.-]+\.svg)`/g)].map((x) => x[1])));
+
+  it("names every SVG in assets/", () => {
+    const onDisk = readdirSync(join(ROOT, "assets")).filter((f) => f.endsWith(".svg"));
+    expect(onDisk.length).toBe(20);
+    const unlisted = onDisk.filter((f) => !listed.has(f));
+    expect(unlisted, "SVGs with no release row").toEqual([]);
+  });
+
+  it("names nothing that is not there", () => {
+    /*
+     * A row can also lie in the other direction — a picture renamed or deleted
+     * but still credited to a release.
+     */
+    const onDisk = new Set(readdirSync(join(ROOT, "assets")).filter((f) => f.endsWith(".svg")));
+    const ghost = [...listed].filter((f) => !onDisk.has(f));
+    expect(ghost).toEqual([]);
+  });
+
+  it("keeps the rows in release order", () => {
+    const versions = [...body.matchAll(/^\| (v[\d.]+) \|/gm)].map((m) => m[1]);
+    const sorted = [...versions].sort((a, b) =>
+      a.slice(1).localeCompare(b.slice(1), undefined, { numeric: true }));
+    expect(versions).toEqual(sorted);
+    expect(versions[0]).toBe("v1.0.0");
+  });
+});
