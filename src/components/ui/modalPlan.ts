@@ -68,10 +68,19 @@ export function planModal(box: Box, wide = false): ModalPlan {
    */
   const comfortable = Math.round(box.height * 0.86);
   const usable = Math.max(160, box.height - inset * 2);
-  const maxHeight = Math.max(160, Math.min(usable, Math.max(200, comfortable)));
+  /*
+   * The floors are `160` / `240` — a dialog smaller than that is not a dialog —
+   * and they used to win over the window itself. On a 100px-tall window (a
+   * split-screen pane, or the frame a rotation reports before layout settles) the
+   * plan returned `maxHeight: 160` for a 100px screen, i.e. a dialog 60px taller
+   * than the display with its own footer off-screen. Round 9's contract
+   * (`dialog-fits-window`) caught it; the clamp against the window now comes
+   * **last**, so the floor still applies wherever there is room for it.
+   */
+  const maxHeight = Math.max(1, Math.min(box.height, Math.max(160, Math.min(usable, Math.max(200, comfortable)))));
 
   const requested = wide ? MODAL_WIDTH.wide : MODAL_WIDTH.narrow;
-  const maxWidth = Math.max(240, Math.min(requested, box.width - inset * 2));
+  const maxWidth = Math.max(1, Math.min(box.width, Math.max(240, Math.min(requested, box.width - inset * 2))));
 
   const drive = roomDriver(box, 360, 1100);
   const padding = quantised(fluid({ min: 10, max: 20 }, drive), 1, 8);
