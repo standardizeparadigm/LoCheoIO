@@ -2,7 +2,7 @@
   "name": "lo-cheoio",
   "private": true,
   "version": "1.1.8",
-  "description": "Lọ Chéo — Hũ Dưa Đại Chiến: arcade muối dưa chạy 100% trong trình duyệt, gói gọn trong một file HTML duy nhất, offline-first — không CDN, không server. Chiếc lọ gốm chỉ chịu đi đường CHÉO: giữ 2 phím để lượn xiên, tăng tốc chém tan mốc, ruồi, sâu rau, hứng đầy hũ trước khi gốm nứt làm ba. 9 chế độ chơi, 14 nguyên liệu, 16 thành tựu, bảng vàng TOP 8, giao diện 7 ngôn ngữ (VI/EN/ZH/JA/KO/ES/FR). v1.1.8: màn hình bắt đầu hết tràn — chữ LỌ không còn bị cắt, panel GAME và ticker nằm gọn trong khung, cách chơi chuyển vào mục GAME, hero có 14 món trang trí động và ba vòng halo quanh chú lọ; toàn bộ chiều cao khai báo trong menu/layout thay vì co giãn theo bản dịch.",
+  "description": "Lọ Chéo — Hũ Dưa Đại Chiến: arcade muối dưa chạy 100% trong trình duyệt, gói gọn trong một file HTML duy nhất, offline-first — không CDN, không server. Chiếc lọ gốm chỉ chịu đi đường CHÉO: giữ 2 phím để lượn xiên, tăng tốc chém tan mốc, ruồi, sâu rau, hứng đầy hũ trước khi gốm nứt làm ba. 9 chế độ chơi, 14 nguyên liệu, 16 thành tựu, bảng vàng TOP 8, giao diện 7 ngôn ngữ.",
   "author": "Standardize Paradigm <standardizeparadigm@donuco.com>",
   "license": "AGPL-3.0-only",
   "engines": {
