@@ -37,6 +37,14 @@ jobs:
       - name: Tests badge matches the suite (runs it, ~40 s)
         run: node scripts/sync-test-badge.mjs --verify
 
+      # The other half of the same problem: the badge only covers the number of
+      # tests. Thirteen documents also state how many SVGs, i18n keys and
+      # directories the repo has, and those were written by
+      # `sync-prose-counts.mjs` and never read back by anything. `--verify`
+      # re-measures and exits 1 on any stale sentence.
+      - name: Prose counts (SVG · keys · dirs) match the repo
+        run: node scripts/sync-prose-counts.mjs --verify
+
   readme-sync:
     name: README sync (10 locales)
     runs-on: ubuntu-latest

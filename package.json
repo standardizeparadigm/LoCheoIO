@@ -50,7 +50,7 @@
     "test": "vitest run",
     "check": "tsc --noEmit && vitest run && vite build",
     "smoke": "vite-node scripts/smoke-ssr.tsx",
-    "check:readme": "node scripts/check-readme-sync.mjs && node scripts/sync-test-badge.mjs --verify",
+    "check:readme": "node scripts/check-readme-sync.mjs && node scripts/sync-test-badge.mjs --verify && node scripts/sync-prose-counts.mjs --verify",
     "sync:badge": "node scripts/sync-test-badge.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:assets": "node scripts/check-assets.mjs"
