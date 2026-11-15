@@ -3,7 +3,7 @@
 Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến được ghi ở đây.
 Định dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/), phiên bản theo [SemVer](https://semver.org/lang/vi/).
 
-## [1.1.8] — 2026-11-13
+## [1.1.8] — 2026-11-15
 
 Bản **vá cuối cùng trước 1.2.0**, sáu vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · 20 hình SVG vẽ lại · 1059 unit tests (109 file)**.
 
@@ -89,7 +89,7 @@ Ngoài ra:
 
 - Đồng bộ toàn bộ **10 README**, `docs/`, `assets/*.svg`, ba launcher và `index.html` lên **1.1.8**
 - Xoá hết câu "1.1.7 là bản vá cuối cùng trước 1.2.0" — vai trò đó thuộc về 1.1.8
-- Chuỗi ngày phát hành: `10-26 · 10-30 · 11-06 · 11-09 · 11-09 · 11-09 · 11-13 · 11-13 · 11-13 · 11-14`
+- Chuỗi ngày phát hành: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15` — mỗi bản một ngày khác nhau, nhịp 1–3 ngày
 
 [1.1.8]: https://github.com/standardizeparadigm/LoCheoIO/releases/tag/v1.1.8
 
@@ -101,7 +101,7 @@ Ngoài ra:
 
 ### Fixed
 - **Nền sau menu vẫn mờ** — bốn lớp phủ cộng hưởng: `.nebula-*` `blur(64px)` + opacity đỉnh `1.0`; vignette nội tuyến `rgba(6,26,26, 0.42 → 0.88 → 1.0)` phủ toàn màn hình; khung CRT `inset 0 0 140px rgba(6,26,26,0.9)`; `.tile-floor` chỉ `opacity-45` nên gần như vô hình. Sửa: `blur(22px)`, đỉnh `0.80`, `.menu-vignette` chỉ tối ở góc (`0.30` / `0.62`), `.app-vignette` `90px @ 0.55`, sàn `opacity-70`
-- **Ngày phát hành trùng và phi logic** — bảy bản liền nhau đều ghi `2026-11-13`, riêng 1.1.6 ghi `2026-11-13` (sau thời điểm phát hành). Chuỗi mới: 10-26 · 10-30 · 11-06 · 11-09 · 11-09 · 11-09 · 11-13 · 11-13 · 11-13 (nhịp 2 ngày, không bản nào trùng ngày)
+- **Ngày phát hành trùng và phi logic** — bảy bản liền nhau đều ghi `2026-11-13`, riêng 1.1.6 ghi `2026-11-13` (sau thời điểm phát hành). Chuỗi mới lúc đó: 10-26 · 10-30 · 11-06 · 11-09 · 11-09 · 11-09 · 11-13 · 11-13 · 11-13 (nhịp 2 ngày, không bản nào trùng ngày). Vòng 8 chỉnh lại lần cuối cho khớp dữ liệu: 10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15
 - **Nhãn changelog sai bản chất** — trường `kind` viết tay (`feature`/`fix`/`polish`) không suy ra từ SemVer nên đã từng lệch. Nay `tierFor(version)` suy tầng trực tiếp từ số phiên bản; `kind` còn đó nhưng `@deprecated` và không còn được đọc khi render
 - **Năm chuỗi chưa dịch lọt qua mọi cổng** — `changelog.title` / `info.changelog` ở es và fr, `scoreboard.top` ở es/fr/ko vẫn là tiếng Anh. Bật luật thứ 5 trong `check:i18n` (một locale không được mang nguyên văn chuỗi tiếng Anh) và dịch: **CAMBIOS** / **NOUVEAUTÉS** / **MEJORES** / **MEILLEURS** / **상위**
 - **Comment của `scripts/check-readme-sync.mjs` ghi cứng `1.1.6`** — đọc từ `package.json` thay vì sao chép tay qua từng bản
