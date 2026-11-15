@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, chín vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · 20 hình SVG vẽ lại · 1244 unit tests (126 file) và hai corpus 1 620 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, chín vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · 21 hình SVG vẽ lại, thêm sơ đồ HUD · 1250 unit tests (127 file) và hai corpus 1 620 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
