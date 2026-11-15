@@ -10,8 +10,11 @@
  * height impossible to reserve for.
  *
  * Now the height is an input. `planMenuLayout()` decides it, the panel paints
- * it, and the hero reserves it. Six rows are 278px (compact) or 398px (rich),
- * in every language, forever.
+ * it, and the hero reserves it. Seven rows are 318px (comfortable) or 458px
+ * (rich) — and 290px / 430px in the compact economy — in every language,
+ * forever. The *painter* gets that number from `densityMetricsFor(plan)`, not
+ * from the flags: passing `dense` and `tight` and forgetting `compact` is what
+ * drew the panel 28px taller than the reserve on every compact window.
  *
  * v1.1.8 also fixes the *distribution*. The body used to be
  * `justify-around`, which spreads N rows over a height sized for seven: GAME

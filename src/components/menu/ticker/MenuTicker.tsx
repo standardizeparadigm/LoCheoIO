@@ -49,7 +49,7 @@ export function MenuTicker({
         </div>
       </div>
       {/* one footer line, 16px — inline, never wrapped */}
-      <div className="flex h-[16px] items-center justify-center gap-2 overflow-hidden px-2 font-body text-[8px] font-bold tracking-[0.22em] whitespace-nowrap text-jade-700 uppercase">
+      <div className="ticker-foot flex h-[16px] items-center justify-center gap-2 overflow-hidden px-2 font-body text-[8px] font-bold tracking-[0.22em] whitespace-nowrap text-jade-700 uppercase">
         <span>v{version}</span>
         <span aria-hidden="true">·</span>
         <span>AGPL-3.0</span>
