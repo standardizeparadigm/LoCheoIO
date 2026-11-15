@@ -8,6 +8,7 @@ import type { MessageKey } from "../i18n/i18n";
 import type { ScoreEntry } from "../game/storage";
 import { fmtTime } from "../utils/time";
 import { GameButton, JarLogo, Keycap, Panel, ScoreBoard, Stat } from "./ui";
+import { useAdaptive } from "./menu/adaptive";
 
 export default function GameOverScreen({
   stats,
@@ -35,6 +36,12 @@ export default function GameOverScreen({
   onMenu: () => void;
 }) {
   const { t, lang } = useI18n();
+  /*
+   * The headline used `text-[clamp(2.6rem,9vw,5rem)]` — width-only, like every
+   * other title in v1.1.7. A 1920×500 window therefore drew a 5rem «KẾT THÚC»
+   * that filled the screen. The adaptive table caps it by the shorter axis.
+   */
+  const { type } = useAdaptive();
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,8 +82,8 @@ export default function GameOverScreen({
                   {t("gameover.kicker")}
                 </span>
                 <h2
-                  className="font-display text-[clamp(2.6rem,9vw,5rem)] leading-[0.85] text-chili-500"
-                  style={{ textShadow: "5px 5px 0 #061a1a" }}
+                  className="font-display leading-[0.85] text-chili-500"
+                  style={{ fontSize: type.overScore, textShadow: "5px 5px 0 #061a1a" }}
                 >
                   {t("gameover.title")}
                 </h2>
