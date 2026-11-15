@@ -532,7 +532,19 @@ Chỉ hàng thứ ba vượt ra, và nó là hàng mà bảng chữ Latin không
 4. **Hộp nào có hàng xóm thì hộp đó phải có hàm đo.** `chipBoxHeight(plan)` thay
    cho hằng số `14` đoán mò của `heroContentHeight()`.
 
-### 19.3 `diagnose()` lớp 8 in thêm chiều cao hộp
+### 19.3 Cùng một con số, ba chỗ đọc
+
+| Chỗ | In ra | Test khoá |
+| --- | --- | --- |
+| `describeModeChip()` | `… · box 35px` | `mode-chip.test.ts` |
+| `diagnose()` lớp 8 | `… · box 35px` | `adaptive-diagnostics.test.ts` |
+| `check:adaptive` | cột `box` + cổng `chip-box` ≤ 128px | `check-adaptive-script.test.ts` |
+
+`chip-box` **không** phải một bất biến của hợp đồng adaptive: `chipBoxHeight()`
+là con số của một component, không phải của một cửa sổ. Nó là một cổng trong
+công cụ, đúng chỗ mà hàng xóm bị ảnh hưởng.
+
+### 19.4 `diagnose()` lớp 8 in thêm chiều cao hộp
 
 ```
 8 · chip   band 452px · needs 246px · full · box 35px
@@ -542,7 +554,7 @@ Ba số, ba câu hỏi khác nhau: band là chỗ được cấp, `needs` là ch
 `box` là chiều cao nó chiếm. Vòng 11 đổi cái thứ ba mà không đổi hai cái đầu —
 nên nó là cái phải hiện ra.
 
-### 19.4 Vì sao test component không bắt được
+### 19.5 Vì sao test component không bắt được
 
 Không có DOM, không có `getComputedStyle`, và `overflow: hidden` không làm thay
 đổi `textContent`. Cái duy nhất nhìn thấy được là **pixel**, và repo này không có
@@ -551,7 +563,7 @@ khẳng định `.clip-safe` tồn tại với `padding`/`margin` cân nhau, kh�
 `truncate` nào trong `src/`, và chip không có `overflow` nào trong cây. Thô, nhưng
 nó bắt đúng thứ đã ship sai hai lần.
 
-### 19.5 Hàng xóm của sửa đổi này
+### 19.6 Hàng xóm của sửa đổi này
 
 | Hàng xóm | Ảnh hưởng | Xử lý |
 | --- | --- | --- |
