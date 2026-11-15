@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1290 tests / 130 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1310 tests / 131 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -180,7 +180,7 @@ Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn tr�
 
 ## `check-svg.mjs`
 
-Validator cho 23 file SVG trong `assets/`. Không có trình render SVG trong CI,
+Validator cho 24 file SVG trong `assets/`. Không có trình render SVG trong CI,
 nên nó kiểm đúng những cách một SVG **hỏng trên trình duyệt mà vẫn hợp lệ XML**:
 
 1. `url(#id)` trỏ tới `id` không tồn tại — gradient biến mất, hình phẳng.
@@ -194,7 +194,7 @@ animation SMIL và một filter.
 
 ```bash
 node scripts/check-svg.mjs
-# → ASSETS OK — 23 SVG, all references resolve, all animated.
+# → ASSETS OK — 24 SVG, all references resolve, all animated.
 ```
 
 > **Vì sao có sàn:** trước vòng 6, 12/20 file có gradient và animation nhưng

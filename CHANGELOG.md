@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, mười vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · 21 hình SVG vẽ lại, thêm hai sơ đồ · 1290 unit tests (130 file) và hai corpus 1 620 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười một vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · 21 hình SVG vẽ lại, thêm ba sơ đồ · 1310 unit tests (131 file) và ba corpus 1 809 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -105,6 +105,24 @@ Ngoài ra:
 - **`heroBandWidth()`** — bề rộng thật của hàng trong hero (`px-4` dưới `sm`, `px-8` từ `sm`), khác `heroContainerWidth()` vốn cố ý thận trọng cho câu hỏi row-fit
 - **`tests/fixtures/mode-chips/`** — **189** ảnh chụp (21 preset × 9 chế độ) + `scripts/gen-mode-chip-fixtures.ts` (`npm run gen:chip`, có `--check`)
 - **2 test mới** — `mode-chip` (23) · `mode-chip-fixtures` (6)
+
+### Fixed — vòng mười một (dấu tiếng Việt)
+
+- **Chip chế độ mất dấu mũ: «CỔ ĐIỂN» đọc thành «CỔ ĐIÊN»** — hồi quy của vòng 10. `truncate` thêm vào span tên để canh bề rộng, nhưng `truncate` là `overflow: hidden`, và `overflow: hidden` cắt theo **hộp dòng**. Tiếng Việt chồng dấu thanh lên dấu mũ (`Ố Ổ Ể Ấ Ự`), đỉnh mực cao hơn chiều cao in hoa của Bungee (0.78em) khoảng **0.35em** — đúng phần bị cắt. `Ổ` còn mà `Ể` mất vì dấu sắc cao hơn dấu huyền và **E** hẹp hơn **O**, nên chỉ một chữ vượt qua đường cắt. Nay planner tự cắt chuỗi (`plan.text` + `…`) và span chỉ còn `white-space: nowrap` với hộp dòng **1.5em** — không `overflow` nào trong cây chip
+- **`truncate` ở năm component khác cũng cùng một bẫy** — `MenuItemButton` (nhãn + hint), `PanelChallenge`, `PresetsSection`, `scoreboard`, `AchievementsPanel` nay dùng `.clip-safe`
+- **`.menu-row-label` / `.menu-row-hint` / `.panel-head` có hộp dòng 1.2 vừa khít** — nâng lên **1.35**; chiều cao hàng không đổi vì hàng có `height` cố định
+- **Chip cao thêm 3.3px mà không ai biết** — `line-height` 1.2 → 1.5 làm hộp chip cao thêm `11 × 0.3px`, trong khi `heroContentHeight()` cộng hằng số `CHIP_OVERHANG = 14` đoán mò. Nay có `chipBoxHeight(plan)` và ba nơi đọc nó: `describeModeChip()`, lớp **8 · chip** của `diagnose()`, và test khoá "chip 35px < mascot 128px" trên 21 preset
+- **Hai bảng kiểm chứng cũ trong `docs/releases/v1.1.8.md` ghi sai số của chính vòng đó** — §16.6 (vòng 9) và §15.7 (vòng 8) cùng ghi 1 290/130 do một lần thay số hàng loạt; nay trả về 1 250/127 và 1 183/122
+
+### Added — vòng mười một
+
+- **`.clip-safe` (`src/index.css`)** — utility thay `truncate` cho mọi chữ dịch được: `overflow: hidden` + `text-overflow: ellipsis` + `white-space: nowrap` + `padding-block: .24em` + `margin-block: -.24em`. Padding nới hộp cắt ra khỏi mực, margin âm trả bố cục về như cũ, nên không dòng nào nhúc nhích
+- **`chipBoxHeight()`** trong `menu/adaptive/chip/modeChip.ts` — chiều cao hộp chip từ `border + padding + max(dot, nameSize × lineHeight)`; hằng số `MODE_CHIP_LINE_HEIGHT` (1.5) và `CHIP_BORDER`/`CHIP_PAD_Y`/`CHIP_DOT` được export
+- **`assets/diacritics-clip.svg`** — sơ đồ trước/sau vẽ đúng cơ chế (hộp cắt bằng hộp dòng cắt cụt đỉnh mũ; `clip-safe` nới ±0.24em), nhúng ở cả 10 README. Kho hình 23 → **24**
+- **`tests/diacritics-clip.test.ts`** (15) — `.clip-safe` tồn tại với `padding`/`margin` cân nhau, không còn `truncate` nào trong `src/`, chip in `plan.text` với `lineHeight: plan.lineHeight` và giữ `aria-label` đầy đủ, hộp dòng nhãn ≥ 1.3
+- **5 test mới trong `mode-chip.test.ts`** — `chipBoxHeight()` bằng 0 khi ẩn, đúng công thức ở mọi bậc, nhỏ hơn mascot ở cả 21 preset, và hộp dòng đủ chỗ cho 0.35em mực
+- **`docs/design/adaptive-v2.md` §19** — bốn luật (không `truncate` trên chữ dịch được · `line-height` ≥ 1.3 · không `overflow` trên cây có planner · hộp có hàng xóm phải có hàm đo) và bảng hàng xóm bị ảnh hưởng
+- **`docs/guides/adaptive-debugging.md` §10** — "chữ mất dấu": ba triệu chứng, nguyên nhân, cách kiểm không cần trình duyệt
 
 ### Fixed — vòng chín (HUD)
 
