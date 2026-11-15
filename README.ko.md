@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1290%20%C2%B7%20130%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1310%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——130개 파일 1290 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——131개 파일 1310 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -300,6 +300,35 @@ label-dropped → name-shrunk → ellipsis`)를 지킵니다. 폭 추정이 6% �
 (189개 스냅샷, 21 프리셋 × 9 모드)도 포함됩니다.
 
 <img src="assets/mode-chip.svg" alt="1.1.8에서 수정한 모드 칩의 전후 —— 수정 전: 오른쪽 마스코트를 기준으로 가운데 정렬되어 overflow hidden에 오른쪽 절반이 잘림 / 수정 후: 안쪽 가장자리에 정렬하고 폭 상한, 라벨 → 크기 → 말줄임 단계 (SMIL 애니메이션)" width="100%" />
+
+### 11라운드 —— 베트남어 성조 부호가 더 이상 잘리지 않습니다
+
+이번 스크린샷은 "오른쪽 절반이 사라짐"이 아니라 **"부호가 사라짐"**이었습니다.
+칩이 «MUỐI DƯA CỔ ĐIÊN»로 읽혔고, **Ể**의 곡절 부호만 사라졌으며 앞의 **Ổ**는
+그대로였습니다. 원인은 **10라운드의 회귀**입니다. `truncate`는 가로만 자르지
+않습니다. `overflow: hidden`은 **줄 상자**를 자르고, 베트남어는 성조 부호를 곡절
+위에 겹쳐 놓기 때문에(`Ố Ổ Ể Ấ Ự`) 대문자 높이보다 약 **0.35em** 위까지 잉크가
+올라갑니다.
+
+세 층을 각각 고쳤고, 서로 겹치지 않습니다.
+
+| 층 | 이전 | 이후 |
+| --- | --- | --- |
+| 문자열 | CSS 말줄임 | `planModeChip()`이 문자열을 자르고 `…`를 붙임 |
+| 줄 상자 | 1.2em | **1.5em** (`MODE_CHIP_LINE_HEIGHT`) |
+| 자르는 상자 | 이름 span의 `truncate` | **하위 트리에 `overflow` 없음** |
+
+여기에 **`.clip-safe`** —— 번역되는 모든 텍스트에서 `truncate`를 대신합니다.
+`padding-block: .24em`이 자르는 상자를 잉크에서 떼어내고, `margin-block: -.24em`이
+그 공간을 레이아웃에 돌려주므로 어떤 줄도 움직이지 않고 부호만 남습니다. 여섯
+곳이 이 유틸리티로 바뀌었습니다. `chipBoxHeight()`는 추측 상수를 대체합니다.
+칩이 3.3px 높아진 것은 `heroContentHeight()`의 일이므로, 기억이 아니라 측정값을
+읽습니다.
+
+자세히: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
+
+<img src="assets/diacritics-clip.svg" alt="베트남어 성조 부호가 사라지는 이유 —— 이전: 줄 상자 크기의 자르는 상자가 Ể의 곡절을 깎아 «CỔ ĐIỂN»이 «CỔ ĐIÊN»으로; 이후: 1.5em 줄 상자와 clip-safe의 ±0.24em 패딩으로 부호가 그대로 (SMIL 애니메이션)" width="100%" />
+
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
 
