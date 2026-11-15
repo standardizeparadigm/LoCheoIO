@@ -53,7 +53,7 @@ export function ScoreBoard({
             >
               <span className={`w-6 shrink-0 font-display text-sm ${MEDALS[i] ?? "text-jade-500"}`}>{i + 1}</span>
               <span
-                className={`min-w-0 flex-1 truncate font-body text-xs font-bold tracking-wide ${
+                className={`min-w-0 flex-1 clip-safe font-body text-xs font-bold tracking-wide ${
                   hot ? "text-tumeric-400" : "text-clay-100"
                 }`}
               >
