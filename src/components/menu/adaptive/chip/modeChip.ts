@@ -32,13 +32,27 @@
  * The estimate can be 6% wrong and the chip is still correct, because the
  * clamp in (1) is what actually holds the box.
  */
-import { estimateText } from "./measure";
+import { charsThatFit, estimateText } from "./measure";
 
 /** Below this the chip is not worth drawing at all. */
 export const MODE_CHIP_FLOOR = 108;
 
 /** The name never goes below this, matching `type-legible`'s floor for labels. */
 export const MODE_CHIP_NAME_FLOOR = 9.5;
+
+/**
+ * Line box of the name, as a multiple of its font size.
+ *
+ * 1.5, not `normal`, and the difference is a shipped bug. «MUỐI DƯA CỔ ĐIỂN»
+ * stacks a circumflex and a tone mark on one letter (`Ố`, `Ổ`, `Ể`); Bungee's
+ * caps are 0.78em and the marks add ~0.35em above them. A line box of 1.5em with
+ * the font's own ascent/descent leaves room for that ink; a line box of 1em puts
+ * the tips of the marks outside the box — and the moment anything clips
+ * (an `overflow: hidden` from an ellipsis, a tight `leading-none`), the tips are
+ * what disappears. That is the round-11 screenshot: the chip showed
+ * «MUỐI DƯA CỔ ĐIÊN».
+ */
+export const MODE_CHIP_LINE_HEIGHT = 1.5;
 
 /** Breathing room between the chip and the band's edges, px. */
 export const MODE_CHIP_GUTTER = 8;
@@ -49,6 +63,13 @@ const CHROME_X = 15;
 const DOT = 16;
 /** The gap between the label and the name. */
 const GAP = 8;
+
+/** The button's border, per side: `border-[3px]`. */
+export const CHIP_BORDER = 3;
+/** The button's `py-1.5`: 6px of padding above and below the text. */
+export const CHIP_PAD_Y = 6;
+/** The affordance dot: `h-2 w-2`. */
+export const CHIP_DOT = 8;
 
 export interface ModeChipInput {
   /** Width of the band the chip lives in, px — `profile.box.width`. */
@@ -86,8 +107,20 @@ export interface ModeChipPlan {
   needed: number;
   /** Width available between the gutters, px. */
   available: number;
-  /** The name needs an ellipsis even at the floor size. */
+  /** The name is shortened — `text` is not `name`. */
   truncated: boolean;
+  /**
+   * The string to render.
+   *
+   * Equal to `name` unless the ladder reached its last rung, in which case the
+   * planner has already cut it and appended `…`. Truncation is decided here, with
+   * the same estimator that sized the chip, instead of being left to
+   * `text-overflow: ellipsis` — because that mechanism needs `overflow: hidden`,
+   * and a vertical clip is what eats Vietnamese tone marks.
+   */
+  text: string;
+  /** Line box of the name, as a multiple of its size. */
+  lineHeight: number;
   /** Which step of the ladder decided this. */
   reason: "full" | "label-dropped" | "name-shrunk" | "ellipsis" | "hidden";
 }
@@ -128,8 +161,10 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
     needed: 0,
     available,
     truncated: false,
+    text: "",
+    lineHeight: MODE_CHIP_LINE_HEIGHT,
     reason: "hidden",
-    };
+  };
 
   if (available < MODE_CHIP_FLOOR || name.length === 0) return blank;
 
@@ -147,6 +182,8 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
       needed: full,
       available,
       truncated: false,
+      text: name,
+      lineHeight: MODE_CHIP_LINE_HEIGHT,
       reason: "full",
     };
   }
@@ -168,6 +205,8 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
       needed: withoutLabel,
       available,
       truncated: false,
+      text: name,
+      lineHeight: MODE_CHIP_LINE_HEIGHT,
       reason: "label-dropped",
     };
   }
@@ -193,9 +232,24 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
       needed: 2 * CHROME_X + DOT + nameAt(shrunk),
       available,
       truncated: false,
+      text: name,
+      lineHeight: MODE_CHIP_LINE_HEIGHT,
       reason: "name-shrunk",
     };
   }
+
+  /*
+   * The last rung: cut the string here, not in CSS.
+   *
+   * `charsThatFit` counts what fits at the floor size, minus one character for
+   * the ellipsis itself, and the result is what the component paints — so the
+   * span can be `white-space: nowrap` with no `overflow` at all, and a tone mark
+   * above a letter can never be clipped by a box that was sized for the letters
+   * only.
+   */
+  const budget = charsThatFit(name, room, MODE_CHIP_NAME_FLOOR, nameTracking);
+  const keep = Math.max(1, budget - 1);
+  const text = `${name.slice(0, keep).trimEnd()}…`;
 
   return {
     visible: true,
@@ -207,6 +261,8 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
     needed: 2 * CHROME_X + DOT + nameAt(MODE_CHIP_NAME_FLOOR),
     available,
     truncated: true,
+    text,
+    lineHeight: MODE_CHIP_LINE_HEIGHT,
     reason: "ellipsis",
   };
 }
@@ -224,10 +280,33 @@ function finite(value: number | undefined, fallback: number): number {
   return Number.isFinite(value) ? (value as number) : fallback;
 }
 
+/**
+ * The chip's outer box height, px — border + padding + the tallest line.
+ *
+ * WHY THIS IS MEASURED AND NOT A CONSTANT
+ * ---------------------------------------
+ * It used to be implicit: the chip was a one-line button of about 31px, the
+ * stacked hero reserved `CHIP_OVERHANG` for the sliver that hangs below the
+ * mascot, and nothing connected the two numbers. Round 11 raised the line box
+ * from 1.2 to 1.5 to stop the tone marks being clipped — which made the chip
+ * **3.3px taller**, and a number nobody had written down changed with it.
+ *
+ * That is the shape of the bug the user keeps reporting: improve one box, break
+ * its neighbour. So the height is now a pure function of the plan, and the
+ * neighbours (the hero's reserve, the diagnostics row) read this function instead
+ * of guessing. `tests/mode-chip.test.ts` asserts the box never grows past the
+ * mascot it is pinned to, and `tests/adaptive-*` sweep every preset.
+ */
+export function chipBoxHeight(plan: ModeChipPlan): number {
+  if (!plan.visible) return 0;
+  const line = Math.max(CHIP_DOT, plan.nameSize * plan.lineHeight);
+  return Math.ceil(2 * CHIP_BORDER + 2 * CHIP_PAD_Y + line);
+}
+
 /** One line, for a console or a test failure message. */
 export function describeModeChip(plan: ModeChipPlan): string {
   if (!plan.visible) return "chip hidden — band under the floor";
   const label = plan.showLabel ? `label ${plan.labelSize}px` : "no label";
   const end = plan.truncated ? "ellipsis" : plan.reason;
-  return `chip ${plan.align} · name ${plan.nameSize}px · ${label} · ${Math.round(plan.needed)}/${plan.available}px · ${end}`;
+  return `chip ${plan.align} · name ${plan.nameSize}px/${plan.lineHeight} · ${label} · ${Math.round(plan.needed)}/${plan.available}px · box ${chipBoxHeight(plan)}px · ${end}`;
 }
