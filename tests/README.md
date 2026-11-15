@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1029 tests / 104 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1032 tests / 105 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -68,7 +68,7 @@
 | `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
 | `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
 | `panel-slack.test.ts` | khoảng thở của panel — reserve ≥ nội dung ở mọi economy đã biết | pure |
-| `a11y-claims.test.ts` | hướng dẫn trợ năng nói về mã nguồn, nên mã nguồn được kiểm — mọi khẳng định trong `docs/design/a11y.md` phải có thật | fs |
+| `a11y-claims.test.ts` | hướng dẫn trợ năng nói về mã nguồn, nên mã nguồn được kiểm — mọi khẳng định trong `docs/guides/accessibility.md` phải có thật | fs |
 | `focus-trap.test.ts` | `useFocusTrap` — Tab/Shift+Tab quấn vòng, Esc đóng, focus trả về nơi xuất phát | fake DOM |
 | `keyboard-guide.test.ts` | bảng điều khiển trong README khớp phím thật trong mã nguồn | fs |
 | `i18n-interpolate.test.ts` | `{param}` — thiếu tham số, tham số thừa, dấu ngoặc lồng, chuỗi rỗng | pure |

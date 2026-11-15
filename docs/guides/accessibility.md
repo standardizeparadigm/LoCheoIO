@@ -22,7 +22,7 @@ nhìn thấy được bằng mắt thường và không ném lỗi nào.
 - **Menu**: Tab đi qua mọi hàng, `Enter` kích hoạt, `Escape` đóng modal.
 - **Trong game**: WASD/mũi tên + `Space` + `P`/`Escape` + `R` + `M` + `Enter`.
   Danh sách đầy đủ ở `src/components/menu/shortcuts/keys.ts` và mọi phím trong đó
-  **đều có handler thật** (xem `tests/shortcuts.test.ts`).
+  **đều có handler thật** (xem `tests/menu-shortcuts.test.ts`).
 - **`focus-visible`**: viền vàng trên nền jade, phân biệt với trạng thái hover.
 
 ### Cấu trúc

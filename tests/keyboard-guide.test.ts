@@ -11,7 +11,8 @@
  * two-choice controls the arrow keys move are the two that exist.
  */
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const guide = readFileSync("docs/guides/keyboard-shortcuts.md", "utf8");
 const canvas = readFileSync("src/components/GameCanvas.tsx", "utf8");
@@ -94,6 +95,20 @@ describe("the guide explains why it can be trusted", () => {
 
   it("points at the single source of truth and its test", () => {
     expect(guide).toContain("shortcuts/keys.ts");
-    expect(guide).toContain("tests/shortcuts.test.ts");
+    /*
+     * This asserted `tests/shortcuts.test.ts` — a file that does not exist, and
+     * has not since the menu was split into folders. So the guide pointed at a
+     * missing file and a test certified the pointer. A test that pins a string
+     * the source never had is worse than no test: it makes the wrong name look
+     * intentional.
+     *
+     * The assertion now names the file that does the work, and reads it, so the
+     * next rename fails here instead of quietly making the guide lie.
+     */
+    expect(guide).toContain("tests/menu-shortcuts.test.ts");
+    expect(
+      existsSync(join(__dirname, "menu-shortcuts.test.ts")),
+      "the guide points at a test file that must exist",
+    ).toBe(true);
   });
 });

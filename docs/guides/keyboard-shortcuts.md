@@ -35,7 +35,7 @@ mà có: bản v1.1.7 từng quảng cáo «hoặc nhấn ENTER» dưới taglin
 không tồn tại ở đúng màn hình hiển thị nó.
 
 Từ đó, `src/components/menu/shortcuts/keys.ts` là danh sách duy nhất, và
-`tests/shortcuts.test.ts` đối chiếu nó với handler trong `GameCanvas.tsx`. Bảng
+`tests/menu-shortcuts.test.ts` đối chiếu nó với handler trong `GameCanvas.tsx`. Bảng
 này chép từ đó.
 
 **Không có `Shift`.** Không tổ hợp phím nào dùng modifier, nên bảng không liệt kê
