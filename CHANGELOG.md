@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, sáu vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · 20 hình SVG vẽ lại · 1059 unit tests (109 file)**.
+Bản **vá cuối cùng trước 1.2.0**, tám vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · 20 hình SVG vẽ lại · 1183 unit tests (122 file) và hai corpus 1 620 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -65,6 +65,14 @@ Ngoài ra:
 - **`tipIndexFor()` mất người gọi duy nhất khi deck bị xoá** — hàm thuần còn 6 test xanh và không ảnh hưởng gì tới app. Nay modal Cách chơi đánh dấu luật của hôm nay, và có test khoá "mỗi hàm export phải có caller thật".
 - **Panel THÔNG TIN trống ~126px** — `flex-start` + `margin-top: auto` đẩy footer xuống đáy; nay `space-between` chỉ trên panel phải.
 
+### Fixed — vòng tám (adaptive)
+
+- **Panel vẽ 30px footer mà reserve đã cắt** — `reserveFor()` trừ `PANEL_FOOTER_HEIGHT` khi `plan.footer` sai (đó là cách cửa sổ 390px cao mua 30px hero), nhưng `panelHeightForPlan()` chỉ nhìn `density` nên vẫn vẽ đủ chiều cao. Ở **844×390** — iPhone nằm ngang, đúng cỡ trong ảnh chụp — panel cao 234px trong dải 216px: 18px chân panel nằm ngoài màn hình, đỉnh panel đè lên hero. Test cũ khẳng định `panelHeightForPlan() === cornerRowHeight()`, hai vế **cùng một phép tính**, nên nó xanh trong khi pixel sai
+- **Bốn nơi ghi ngày phát hành, ba nơi sai** — comment đầu mỗi entry ghi `2026-11-13` cho cả chín bản, `CHANGELOG.md` ghi `11-14` (một ngày không entry nào có), `assets/release-tiers.svg` in `10-31 · 11-08 · 11-14`, 10 README ghi `2026-11-13`. Chuỗi đúng: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15`
+- **Tên repo có dấu gạch nối ở 19 file** — dòng «Mã nguồn» trong hộp thoại GIỚI THIỆU in `Lo-CheoIO`; repo thật là `LoCheoIO`. Lỗi nằm ở `package.json`, 10 badge CI, `ISSUE_TEMPLATE/config.yml`, `CHANGELOG.md` và `about.source` của cả 7 locale
+- **`86vh` không có trần trên màn 4K** — hộp thoại cao 1 857px trên cửa sổ 2 160px; nay `planModal()` kẹp cả hai chiều và chọn số cột theo bề ngang
+- **`GameOverScreen` / `PauseScreen` dùng `text-6xl` cố định** — 60px ở mọi cửa sổ, kể cả 320×480; nay đọc `type.overScore`
+
 ### Fixed — vòng sáu (giao diện)
 
 - **`1920×820` cắt mất nửa chip `CHẾ ĐỘ CHƠI`** — band ~452px, hero hai cột cần ~460px, `minimal` là `false`, nên hàng ngang được dựng rồi bị cắt ở đáy
@@ -84,6 +92,19 @@ Ngoài ra:
 - **`scripts/probe-menu-layout.tsx`** — render `StartScreen` thành HTML thật rồi kiểm **21 tính chất** trên DOM sinh ra
 - **`docs/releases/v1.1.8.md`** — mô tả phát hành đầy đủ
 - **Hai i18n key** `game.howtoHint` · `howto.goal` cho cả 7 locale — **304 key**, parity nguyên vẹn
+
+### Added — vòng tám
+
+- **`src/components/menu/adaptive/`** — sáu lớp: `viewport.ts` (`Box`, `aspectClassOf`, `roomDriver`), `tiers.ts` (`SizeTier`), `density.ts` (năm bảng pixel), `typeScale.ts` (17 biến `--type-*`), `resolve.ts` (`resolveAdaptive()` toàn phần), `useAdaptive.ts` (một subscription `resize` + `visualViewport` mỗi frame)
+- **`src/components/menu/wordmark/scale.ts`** — `lockupMaxForBand()`, `lockupAtBand()`; trần band **thắng** tier, `limitedBy` nói cap nào thắng
+- **`src/game/adaptive/playfield.ts`** — `planPlayfield()` (chuyển nguyên công thức khỏi `engine.resize()`), `playable()`
+- **`src/components/ui/modalPlan.ts`** — `planModal()`, `modalStyle()`
+- **`tests/fixtures/adaptive-matrix/`** — **1 110** ảnh chụp, một file mỗi cửa sổ (45 × 32)
+- **`tests/fixtures/hero-bands/`** — **510** cặp (bề ngang, band) cho bậc thang hero
+- **`scripts/gen-adaptive-fixtures.ts`** · **`scripts/gen-hero-fixtures.ts`** — sinh corpus, có `--check`
+- **`scripts/check-adaptive.ts`** — `npm run check:adaptive`: bảng 21 viewport + cổng bất biến
+- **`docs/design/adaptive-v2.md`** · **`docs/guides/adaptive-debugging.md`** — hợp đồng vòng tám và cách đọc `data-adaptive-*`
+- **13 test mới** — `adaptive-{viewport,tiers,scale,density,type,modal,resolve,wordmark-band}` · `adaptive-{fixtures,hero-fixtures}` · `playfield` · `panel-footer-overflow` · `repo-name`
 
 ### Documentation
 
