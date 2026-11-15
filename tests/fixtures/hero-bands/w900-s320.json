@@ -1,0 +1,14 @@
+{
+ "width": 900,
+ "scene": 320,
+ "sideBySide": false,
+ "halo": false,
+ "badgeRow": false,
+ "mascot": true,
+ "liveBadge": false,
+ "needs": 308,
+ "rowFits": true,
+ "lockup": 85.5,
+ "cheo": 70,
+ "limitedBy": "width"
+}
