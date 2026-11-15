@@ -227,7 +227,32 @@ npm run gen:chip -- --check   # xem cái nào lệch
 npx vitest run tests/mode-chip.test.ts tests/mode-chip-fixtures.test.ts
 ```
 
-## 10. Khi nào **không** phải sửa adaptive
+## 10. "Chữ mất dấu" — dấu tiếng Việt bị cắt
+
+Triệu chứng: một chữ đọc sai mà **không** có cảnh báo nào. «CỔ ĐIỂN» thành «CỔ
+ĐIÊN». Nhìn kỹ mới thấy thiếu đúng phần **đỉnh** dấu, không thiếu chữ.
+
+Nguyên nhân gần như luôn là một trong hai:
+
+| Thấy gì | Nguyên nhân | Sửa |
+| --- | --- | --- |
+| mất đỉnh mũ/sắc, chữ vẫn đủ | `overflow: hidden` từ `truncate` trên chữ có dấu | `.clip-safe` |
+| mất đỉnh ở **mọi** chỗ cùng lúc | `leading-none` / `leading-[0.85]` trên chữ dịch được | `line-height` ≥ 1.3 |
+| mất cả dấu ở wordmark | mask glyph chỉ giữ chữ gốc | không đụng `É` — dùng `text-shadow` |
+
+Kiểm nhanh, không cần trình duyệt:
+
+```bash
+npx vitest run tests/diacritics-clip.test.ts   # 15 test, đọc file
+grep -rn truncate src --include=*.tsx          # phải rỗng
+node -e "console.log(require('fs').readFileSync('src/index.css','utf8').match(/\.clip-safe[^}]*}/)[0])"
+```
+
+Và nếu đã đổi chiều cao của một hộp có hàng xóm: chạy
+`npx vitest run tests/mode-chip.test.ts` — nó khoá `chipBoxHeight()` nhỏ hơn
+mascot, và `describeModeChip()` in ra con số để so với `diagnose()` lớp 8.
+
+## 11. Khi nào **không** phải sửa adaptive
 
 - Ảnh chụp ở 320×480: `crop` là câu trả lời đúng, không phải lỗi.
 - Chữ nhỏ hơn ở cửa sổ 900×500 so với 1280×720: đúng, cạnh ngắn là 500.
