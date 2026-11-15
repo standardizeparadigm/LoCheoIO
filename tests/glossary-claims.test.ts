@@ -61,3 +61,36 @@ describe("docs/guides/glossary.md", () => {
     }
   });
 });
+
+/*
+ * The `plan` row described a shape that changed twice and was counted once.
+ *
+ *     | **plan** | MenuPlan — … Năm cờ + bốn con số |
+ *
+ * `MenuPlan` has seven booleans and three numbers. Two flags arrived after that
+ * sentence was written (`compact` in round 7, `stacked` with the corner panels)
+ * and one number left. Nobody edits a shape description when they add a field:
+ * the field has a comment, a test and a call site, and the glossary row has none
+ * of those.
+ */
+describe("the plan row", () => {
+  const fit = readFileSync(join(ROOT, "src/components/menu/layout/fit.ts"), "utf8");
+  const row = GLOSSARY.split("\n").find((l) => l.startsWith("| **plan**"))!;
+  const iface = fit.slice(fit.indexOf("export interface MenuPlan"), fit.indexOf("}", fit.indexOf("export interface MenuPlan")));
+
+  it("states the number of flags the interface has", () => {
+    const flags = (iface.match(/^\s+\w+: boolean;/gm) ?? []).length;
+    const numbers = (iface.match(/^\s+\w+: number;/gm) ?? []).length;
+    expect(flags).toBeGreaterThanOrEqual(7);
+    expect(numbers).toBeGreaterThanOrEqual(3);
+    /* The row now spells both counts in words — Vietnamese numerals. */
+    expect(row).toContain("Bảy cờ");
+    expect(row).toContain("ba con số");
+  });
+
+  it("names every flag, so adding one is visible here", () => {
+    const flags = [...iface.matchAll(/^\s+(\w+): boolean;/gm)].map((m) => m[1]);
+    const missing = flags.filter((f) => !row.includes(f));
+    expect(missing, "flags the glossary row omits").toEqual([]);
+  });
+});
