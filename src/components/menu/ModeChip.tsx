@@ -48,9 +48,16 @@ export default function ModeChip({
   if (!plan.visible) return null;
 
   /*
-   * `whitespace-nowrap` stays on the button so the three parts cannot wrap into
-   * each other, and `min-w-0` + `truncate` move the overflow to the *name* — the
-   * only part that has a safe shorter form.
+   * NO `overflow: hidden` ANYWHERE IN HERE — and that is the whole point.
+   *
+   * Round 10 added `truncate` to the name span to make the layout safe, and round
+   * 11's screenshot showed why that was the wrong tool: `truncate` clips
+   * vertically as well as horizontally, so the tops of the stacked marks in
+   * «MUỐI DƯA CỔ ĐIỂN» were shaved off — the chip read «MUỐI DƯA CỔ ĐIÊN».
+   *
+   * The planner now cuts the string itself (`plan.text`) when it has to, so the
+   * span is plain `white-space: nowrap` with a 1.5em line box, and nothing in
+   * this subtree can clip a diacritic.
    */
   return (
     <button
@@ -72,17 +79,17 @@ export default function ModeChip({
       />
       {plan.showLabel && (
         <span
-          className="shrink-0 font-body font-extrabold tracking-[0.2em] text-jade-500 uppercase"
-          style={{ fontSize: plan.labelSize }}
+          className="shrink-0 whitespace-nowrap font-body font-extrabold tracking-[0.2em] text-jade-500 uppercase"
+          style={{ fontSize: plan.labelSize, lineHeight: plan.lineHeight }}
         >
           {label}
         </span>
       )}
       <span
-        className="min-w-0 truncate font-display tracking-[0.06em] text-tumeric-400"
-        style={{ fontSize: plan.nameSize }}
+        className="min-w-0 whitespace-nowrap font-display tracking-[0.06em] text-tumeric-400"
+        style={{ fontSize: plan.nameSize, lineHeight: plan.lineHeight }}
       >
-        {name}
+        {plan.text}
       </span>
     </button>
   );
