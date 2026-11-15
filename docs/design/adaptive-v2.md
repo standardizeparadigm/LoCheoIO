@@ -494,3 +494,70 @@ lớp ký tự:
 `npm run gen:chip`, kiểm bằng `--check` và bằng một suite riêng. Đây là corpus đầu
 tiên về một **component** chứ không phải một bố cục: nó ghim đúng hai đầu vào đã
 sinh ra lỗi — bề ngang band và một bản dịch dài.
+
+## 19. Vòng 11 — chữ có dấu không được để CSS cắt
+
+### 19.1 Một thuộc tính, ba tác dụng, một cái phá
+
+`truncate` trong Tailwind là ba khai báo. Hai cái đầu ai cũng biết
+(`text-overflow`, `white-space`); cái thứ ba — `overflow: hidden` — là cái **cắt**,
+và nó cắt theo cả hai trục. Trục dọc mới là vấn đề: hộp dòng của một span một
+dòng được tính từ `font-size × line-height`, không từ **mực**.
+
+Tiếng Việt có mực ngoài hộp đó:
+
+| Dấu | Ví dụ | Vị trí mực |
+| --- | --- | --- |
+| dấu thanh dưới | `Ạ Ụ Ợ` | dưới đường chân chữ, trong hộp |
+| dấu thanh giữa | `À Ả` | trên in hoa, vẫn trong hộp 1.5em |
+| **chồng hai dấu** | `Ố Ổ Ể Ấ Ự` | **~0.35em trên chiều cao in hoa** |
+| móc | `Ư Ơ` | gắn vào thân chữ, không vượt trần |
+
+Chỉ hàng thứ ba vượt ra, và nó là hàng mà bảng chữ Latin không có. Với Bungee
+(in hoa 0.78em) và một hộp dòng 1.5em: chỗ phía trên in hoa là
+`1.5 − 0.78 = 0.72em`, chia hai bên theo `half-leading` → ~0.36em — **vừa đủ**. Với
+1.2em thì còn ~0.21em, và với `leading-none` là **0**. Đó là toàn bộ lý do
+`MODE_CHIP_LINE_HEIGHT = 1.5` và con số `.24em` trong `.clip-safe`.
+
+### 19.2 Luật, không phải mẹo
+
+1. **Chữ dịch được thì không `truncate`.** Dùng `.clip-safe` (`overflow` + nới
+   `padding-block` + bù `margin-block`). Nếu phải cắt *chuỗi* thì cắt trong code,
+   như `planModeChip()` làm.
+2. **`line-height` của chữ hiển thị ≥ 1.3.** Ngoại lệ duy nhất là wordmark
+   (`leading-[0.9]`), và nó không bao giờ bị cắt — quyết định từ vòng 2 vì hộp
+   glyph của `CHÉO` được căn theo `LOCKUP_BOX_RATIO`.
+3. **Không `overflow` trên cây của một component đã có planner.** Nếu chip cần
+   nhỏ hơn, planner trả về chuỗi nhỏ hơn.
+4. **Hộp nào có hàng xóm thì hộp đó phải có hàm đo.** `chipBoxHeight(plan)` thay
+   cho hằng số `14` đoán mò của `heroContentHeight()`.
+
+### 19.3 `diagnose()` lớp 8 in thêm chiều cao hộp
+
+```
+8 · chip   band 452px · needs 246px · full · box 35px
+```
+
+Ba số, ba câu hỏi khác nhau: band là chỗ được cấp, `needs` là chỗ nó muốn,
+`box` là chiều cao nó chiếm. Vòng 11 đổi cái thứ ba mà không đổi hai cái đầu —
+nên nó là cái phải hiện ra.
+
+### 19.4 Vì sao test component không bắt được
+
+Không có DOM, không có `getComputedStyle`, và `overflow: hidden` không làm thay
+đổi `textContent`. Cái duy nhất nhìn thấy được là **pixel**, và repo này không có
+trình duyệt trong CI. Nên lớp bảo vệ là **đọc file**: `tests/diacritics-clip.test.ts`
+khẳng định `.clip-safe` tồn tại với `padding`/`margin` cân nhau, không còn
+`truncate` nào trong `src/`, và chip không có `overflow` nào trong cây. Thô, nhưng
+nó bắt đúng thứ đã ship sai hai lần.
+
+### 19.5 Hàng xóm của sửa đổi này
+
+| Hàng xóm | Ảnh hưởng | Xử lý |
+| --- | --- | --- |
+| `heroContentHeight()` | chip cao thêm 3.3px | `chipBoxHeight()` + test ≤ mascot 128px |
+| `.menu-row-label` 1.2 | chỗ dấu chỉ vừa khít | nâng 1.35, chiều cao hàng không đổi |
+| 6 call site `truncate` | mất ellipsis | `.clip-safe` — cùng hành vi, khác hộp cắt |
+| `menu-row.test.ts` | ghim `truncate` | sửa thành `clip-safe` |
+| `mode-chip-wiring.test.ts` | ghim `min-w-0 truncate` | sửa thành "không tự cắt chữ" |
+| `assets/` 23 hình | tài liệu trực quan | thêm `diacritics-clip.svg` (24) |
