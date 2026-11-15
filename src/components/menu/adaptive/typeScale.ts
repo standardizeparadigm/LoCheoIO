@@ -98,8 +98,14 @@ export const LOCKUP_BOX_RATIO = 1.68;
 /** The smallest the wordmark is allowed to get, px. */
 export const MIN_LOCKUP_PX = 22;
 
-/** The largest the wordmark is allowed to get, px — the 5.6rem cap. */
-export const MAX_LOCKUP_PX = 89.6;
+/**
+ * The largest the wordmark is allowed to get, px — the 5.6rem cap, quantised.
+ *
+ * 5.6rem is 89.6px, and every size this module returns is rounded to half a
+ * pixel (`legible`), so the cap is stated as the largest reachable half pixel
+ * rather than as a value the rounding can never produce.
+ */
+export const MAX_LOCKUP_PX = 89.5;
 
 /**
  * The largest `LỌ` font size that fits a band, before the width cap.
