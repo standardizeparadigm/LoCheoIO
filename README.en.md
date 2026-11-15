@@ -585,7 +585,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
 | `check-assets` | 22 SVGs, references checked both ways | ✅ |
-| `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
+| `build` | `dist/index.html` ~914 KB · gzip ~418 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
 

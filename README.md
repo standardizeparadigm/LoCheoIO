@@ -745,7 +745,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
 | `check-assets` | 22 SVG, 2 chiều tham chiếu | ✅ |
-| `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
+| `build` | `dist/index.html` ~914 KB · gzip ~418 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1244 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
 
