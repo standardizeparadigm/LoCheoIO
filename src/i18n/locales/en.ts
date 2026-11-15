@@ -315,7 +315,7 @@ const en: Record<MessageKey, string> = {
   "about.role": "Independent developer — Standardize Paradigm",
   "about.craft": "Lọ Chéo is a passion project: a pickle-jar arcade that runs entirely in the browser, one self-contained HTML file, no network, no server. Hand-drawn, hand-coded, hand-tuned — every Vietnamese diacritic included.",
   "about.contact": "Contact: standardizeparadigm@donuco.com",
-  "about.source": "Source: github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "Source: github.com/standardizeparadigm/LoCheoIO",
   "about.license": "License: AGPL-3.0-only © 2026",
   "about.fonts": "Fonts: Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "Thanks for dropping by the pickle kitchen! 🫙",
