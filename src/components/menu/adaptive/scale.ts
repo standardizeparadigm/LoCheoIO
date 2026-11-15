@@ -89,7 +89,7 @@ export function within(value: unknown, span: Span): number {
  */
 export function scaled(span: Span, factor: unknown): Span {
   const f =
-    typeof factor === "number" && Number.isFinite(factor)
+    typeof factor === "number" && !Number.isNaN(factor)
       ? Math.min(4, Math.max(0.25, factor))
       : 1;
   const { min, max } = ordered(span);
@@ -125,7 +125,13 @@ export function quantised(px: unknown, step = 0.5, floor = 0): number {
  */
 export function legible(px: unknown, floor = 9, cap = Number.POSITIVE_INFINITY): number {
   const lo = Number.isFinite(floor) ? floor : 9;
-  const hi = Number.isFinite(cap) ? Math.max(lo, cap) : lo;
+  /*
+   * No cap means no cap. The first version fell back to `lo`, so every call
+   * that omitted the ceiling — `fitText` among them — returned the floor: a
+   * 90px box with three 1.5-height lines came back as 1px instead of 20px. An
+   * absent upper bound is `Infinity`, not "the lower bound twice".
+   */
+  const hi = typeof cap === "number" && Number.isFinite(cap) ? Math.max(lo, cap) : Number.POSITIVE_INFINITY;
   const v = typeof px === "number" && Number.isFinite(px) ? px : lo;
   return half(Math.min(hi, Math.max(lo, v)));
 }
