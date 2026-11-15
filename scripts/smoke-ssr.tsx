@@ -142,6 +142,24 @@ const html = renderToString(
   check("chip keeps its label where it fits", wide.includes('data-mode-chip="full"'));
   check("chip drops the label before the name", tight.includes('data-mode-chip="label-dropped"') && tight.includes("MUỐI DƯA CỔ ĐIỂN"));
   check("chip draws nothing under the floor", tiny === "");
+
+  /*
+   * Round 11: the chip must never clip its own text, so the SSR markup may not
+   * contain an ellipsis class or a hidden overflow — and the marks must be in the
+   * string, not shaved off it.
+   */
+  const clipped = /truncate|overflow-hidden/.test(wide + tight);
+  check("chip never clips its own text", !clipped, clipped ? "(found truncate/overflow-hidden)" : "");
+  check("chip paints every tone mark of the classic mode", wide.includes("MUỐI DƯA CỔ ĐIỂN"));
+  /*
+   * The label is upper-cased by CSS (`uppercase`), but `aria-label` is the raw
+   * translation — so the check uses the string the component was given.
+   */
+  check("chip keeps the full name for screen readers", wide.includes("CH\u1ebe \u0110\u1ed8 CH\u01a0I: MU\u1ed0I D\u01afA C\u1ed4 \u0110I\u1ec2N"));
+  check(
+    "chip declares the planner's 1.5em line box",
+    wide.includes("line-height:1.5"),
+  );
 }
 
 console.log("StartScreen html length:", html.length, html.includes("LỌ") || html.includes("L") ? "contains title" : "TITLE MISSING?");
