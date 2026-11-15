@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Structural validation for the 20 README assets.
+ * Structural validation for the 21 README assets.
  *
  * There is no SVG renderer in CI (no rsvg, no headless browser), so the assets
  * cannot be screenshot-tested. What *can* be checked is everything that makes
@@ -36,8 +36,14 @@ const idsIn = (src) => new Set([...src.matchAll(/\sid="([^"]+)"/g)].map((m) => m
 const refsIn = (src) => [...src.matchAll(/url\(#([^)]+)\)/g)].map((m) => m[1]);
 
 const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
-if (files.length !== 20) {
-  problems.push(`expected 20 assets, found ${files.length}`);
+/*
+ * A count, not a floor: an asset that silently loses its README reference is
+ * the failure this guards against, and a floor would let a dead file sit there.
+ * Round 8 added `adaptive-layers.svg`, the twenty-first.
+ */
+const EXPECTED_ASSETS = 21;
+if (files.length !== EXPECTED_ASSETS) {
+  problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }
 
 for (const file of files) {

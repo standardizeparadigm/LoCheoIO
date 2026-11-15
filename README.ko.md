@@ -226,6 +226,8 @@ type Environment = {
 
 <img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——122개 파일 1183 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
+
 <img src="assets/corner-menu.svg" alt="GAME(왼쪽 아래)과 INFO(오른쪽 아래) 패널이 슬라이드 인 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="여섯 구역 설정(v1.1.6부터)——스위치, 레벨 바, 피커 (SMIL 애니메이션)" width="100%" />

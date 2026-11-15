@@ -222,6 +222,8 @@ type Environment = {
 
 <img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1183 เทสต์ใน 122 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
+<img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
+
 <img src="assets/corner-menu.svg" alt="แผง GAME (ล่างซ้าย) และ INFO (ล่างขวา) เลื่อนเข้ามา (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="ตั้งค่า 6 หมวด (ตั้งแต่ v1.1.6) — สวิตช์ แถบระดับ และตัวเลือก (แอนิเมชัน SMIL)" width="100%" />

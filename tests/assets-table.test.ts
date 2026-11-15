@@ -81,10 +81,11 @@ describe("docs/assets.md, the 'Dùng ở' column", () => {
  *
  *     | v1.1.8 | `layout-fix.svg` · `test-matrix.svg` |
  *
- * v1.1.7 shipped 14 SVGs; the folder holds 20. Six arrived with v1.1.8 and the
- * row listed two of them, so four pictures — a third of that release's artwork —
- * had no row at all. Nobody notices an absent row: the table looks complete
- * because every line that is there is correct, and the sum is never taken.
+ * v1.1.7 shipped 14 SVGs; the folder holds 21. Seven arrived with v1.1.8 (six
+ * diagrams and `adaptive-layers.svg`, the round-8 one) and the row listed two of
+ * them, so five pictures — a third of that release's artwork — had no row at
+ * all. Nobody notices an absent row: the table looks complete because every line
+ * that is there is correct, and the sum is never taken.
  */
 describe("docs/assets.md, the 'Hình ra đời' table", () => {
   const body = readFileSync(join(ROOT, "docs/assets.md"), "utf8");
@@ -93,7 +94,7 @@ describe("docs/assets.md, the 'Hình ra đời' table", () => {
 
   it("names every SVG in assets/", () => {
     const onDisk = readdirSync(join(ROOT, "assets")).filter((f) => f.endsWith(".svg"));
-    expect(onDisk.length).toBe(20);
+    expect(onDisk.length).toBe(21);
     const unlisted = onDisk.filter((f) => !listed.has(f));
     expect(unlisted, "SVGs with no release row").toEqual([]);
   });

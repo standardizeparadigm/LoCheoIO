@@ -226,6 +226,8 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——122ファイル1183テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
+
 <img src="assets/corner-menu.svg" alt="GAME（左下）と INFO（右下）パネルがスライドイン（SMIL アニメーション）" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="六区分の設定（v1.1.6 から）——スイッチ、レベルバー、ピッカー（SMIL アニメーション）" width="100%" />
