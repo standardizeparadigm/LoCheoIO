@@ -240,6 +240,51 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // taller column: 192 mascot + 24 chip + padding
 
 `tests/menu-adaptive.test.ts` sweeps **1,682 viewports** and asserts `heroContentHeight(layout) ≤ scene` at every sample — so a wrong threshold is a red test, not something a player finds. On resize, both hooks listen for **six** events and update in one animation frame.
 
+### 🧱 Round eight: six layers, one profile
+
+Round six taught the hero to measure its own window. Everything else still
+guessed: the modal was `86vh` with no cap, the game-over headline was a fixed
+`text-6xl`, the panels called `cornerRowHeight()` themselves, and
+`engine.resize()` computed the jar radius on its own. **Six readers, six reads** —
+and two reads can land on two different frames.
+
+v1.1.8 round eight collapses them into **one pure function of one box**:
+
+<img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
+
+| Layer | File | Decides |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w, h, inset, dpr` — clamps `NaN`, 1×1, inverted range |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` from the short side; `handset`…`cinema` |
+| 3 · Plan | `layout/fit.ts` | `scene`, `reserve`, `fit`, four economies |
+| 4 · Density | `adaptive/density.ts` | five pixel tables: rows 54/34/26px, panels 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row or stack, which flags, lockup fits the band |
+| 6 · Type | `adaptive/typeScale.ts` | 17 `--type-*` vars, none below 8px |
+| 7 · Modal | `ui/modalPlan.ts` | width × height × columns, `86vh` **with** a ceiling |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale`, `hudScale`, jar radius |
+
+`resolveAdaptive()` is total: `NaN`, a 1×1 window, a 500px inset and an inverted
+range each produce a coherent profile with finite numbers. `useAdaptive()` reads
+the window **once** per frame and every consumer reads fields of the same object,
+so they cannot disagree.
+
+**The eighth bug, caught by this round itself:** the new invariant
+`panel + margin ≤ reserve` fails at `844×390` — an iPhone in landscape, the size
+from the report. `reserveFor()` subtracts 30px when the panel draws no footer,
+but `panelHeightForPlan()` only looked at the density and drew the full height:
+a 234px panel in a 216px band, **18px of its base off the bottom of the screen**.
+
+**A corpus of 1 620 snapshots** keeps it that way:
+
+| Corpus | Size | Answers |
+| --- | --- | --- |
+| `tests/fixtures/adaptive-matrix/` | **1 110** windows (45 × 32), one file each | what this window is given |
+| `tests/fixtures/hero-bands/` | **510** (width, band) pairs | what the hero does with exactly N pixels |
+
+One file per window is deliberate: when a threshold moves, `git diff --stat`
+**names** the windows whose behaviour changed. And `npm run check:adaptive`
+prints a 21-row table and asserts six invariants — no browser required.
+
 ### 🌍 The second layer: environment, not just size
 
 The window height is not the usable height. On an iPhone the address bar and the

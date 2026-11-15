@@ -374,6 +374,49 @@ Khi cửa sổ đổi kích thước, `useMenuPlan()` và `useViewportWidth()` c
 **sáu** sự kiện (`resize` · `orientationchange` · `fullscreenchange` + ba tiền tố
 nhà cung cấp) và cập nhật trong một `requestAnimationFrame`.
 
+### 🧱 Vòng tám: sáu lớp, một profile
+
+Vòng 6 dạy hero tự đo cửa sổ. Nhưng hộp thoại vẫn cao `86vh` không trần, tiêu đề
+kết thúc ván vẫn `text-6xl` cố định, panel vẫn tự gọi `cornerRowHeight()`, và
+`engine.resize()` vẫn tự tính bán kính hũ. **Sáu nơi đọc sáu lần** — và hai lần
+đọc có thể rơi vào hai frame khác nhau.
+
+v1.1.8 vòng 8 gộp tất cả vào **một hàm thuần của một cái hộp**:
+
+<img src="assets/adaptive-layers.svg" alt="Sáu lớp adaptive của Lọ Chéo 1.1.8 — hộp cửa sổ, tier, plan, rồi density/hero/type/modal/board, kèm một chiều dữ liệu (hoạt họa SMIL)" width="100%" />
+
+| Lớp | File | Quyết định gì |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w, h, inset, dpr` — kẹp `NaN`, 1×1, khoảng đảo |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` theo cạnh ngắn; `handset`…`cinema` |
+| 3 · Plan | `layout/fit.ts` | `scene`, `reserve`, `fit`, bốn nền kinh tế |
+| 4 · Density | `adaptive/density.ts` | năm bảng pixel: hàng 54/34/26px, panel 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | hàng hay cột, cờ nào bật, lockup vừa band |
+| 6 · Type | `adaptive/typeScale.ts` | 17 biến `--type-*`, không biến nào dưới 8px |
+| 7 · Modal | `ui/modalPlan.ts` | rộng × cao × số cột, `86vh` **có** trần |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale`, `hudScale`, bán kính hũ |
+
+`resolveAdaptive()` là toàn phần: `NaN`, cửa sổ 1×1, inset 500px và khoảng đảo
+đều cho một profile nhất quán với số hữu hạn. `useAdaptive()` đọc cửa sổ **một
+lần** mỗi frame; mọi consumer đọc trường của cùng một object nên không thể bất
+đồng.
+
+**Lỗi thứ tám, do chính vòng này bắt:** bất biến mới `panel + lề ≤ reserve` đỏ ở
+`844×390` — iPhone nằm ngang, đúng cỡ trong ảnh chụp. `reserveFor()` trừ 30px
+khi panel không vẽ footer, còn `panelHeightForPlan()` chỉ nhìn density nên vẫn
+vẽ đủ: panel 234px trong dải 216px, **18px chân panel ngoài màn hình**.
+
+**Corpus 1 620 ảnh chụp số** giữ cho nó không quay lại:
+
+| Corpus | Kích thước | Trả lời |
+| --- | --- | --- |
+| `tests/fixtures/adaptive-matrix/` | **1 110** cửa sổ (45 × 32), một file mỗi cửa sổ | cửa sổ này được cấp những gì |
+| `tests/fixtures/hero-bands/` | **510** cặp (bề ngang, band) | hero làm gì với đúng N pixel |
+
+Một file mỗi cửa sổ là chủ ý: khi một ngưỡng dịch, `git diff --stat` **kể tên**
+đúng những cửa sổ đổi hành vi. Và `npm run check:adaptive` in bảng 21 viewport
+rồi khẳng định sáu bất biến — không cần trình duyệt.
+
 ### 🌍 Tầng thứ hai: môi trường, không chỉ kích thước
 
 Chiều cao cửa sổ không phải chiều cao **dùng được**. Trên iPhone, thanh địa chỉ
