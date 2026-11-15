@@ -20,7 +20,7 @@ từ xuất hiện trong commit, review và tên file mà người mới phải 
 
 | Thuật ngữ | Nghĩa trong dự án này |
 | --- | --- |
-| **plan** | `MenuPlan` — kết quả của `planMenuLayout(width, height)`. Năm cờ + bốn con số. Không phải state, không phải context: một hàm thuần, tính lại mỗi lần cửa sổ đổi |
+| **plan** | `MenuPlan` — kết quả của `planMenuLayout(width, height)`. Bảy cờ (`dense` · `tight` · `compact` · `minimal` · `stacked` · `ticker` · `footer`) và ba con số (`reserve` · `scene` · `panelWidth`). Không phải state, không phải context: một hàm thuần, tính lại mỗi lần cửa sổ đổi |
 | **scene** | chiều cao hero còn lại sau khi trừ `reserve`. `scene + reserve === viewport.height` là bất biến |
 | **reserve** | chiều cao `MenuChrome` giữ chỗ ở đáy. Cùng một lần gọi plan sinh ra cả hai |
 | **economy** | mức "kinh tế" của panel: `full` · `dense` · `tight` · `minimal`. Quyết định hàng cao bao nhiêu và khối nào còn hiện |
@@ -34,8 +34,8 @@ từ xuất hiện trong commit, review và tên file mà người mới phải 
 | **tier** | tầng phát hành: `major` · `minor` · `patch`. **Suy ra** từ SemVer bằng `tierFor()`, không lưu |
 | **bullets** | các dòng `itemsVi` / `itemsEn` của một changelog entry. Phải cùng độ dài |
 | **barrel** | file `index.ts` chỉ re-export. App không import barrel nào — cố ý |
-| **gate** | một trong 9 bước kiểm tra (`tsc`, `vitest`, `check:readme`, `check:i18n`, `check-assets`, `check-svg`, `smoke`, `probe`, `build`) |
-| **probe** | `scripts/probe-menu-layout.tsx` — 33 cỡ cửa sổ, đọc DOM thật |
+| **gate** | một bước kiểm tra chạy trong CI: `tsc` · `vitest` · `build` · `smoke` · `check:readme` · `check:i18n` · `check:assets` · `check-svg`. **`probe` không phải gate** — nó cần DOM thật nên chạy tay, và không chặn merge |
+| **probe** | `scripts/probe-menu-layout.tsx` — 14 cỡ cửa sổ, đọc DOM thật |
 | **smoke** | `scripts/smoke-ssr.tsx` — render headless, chỉ trả lời "có ném lỗi không" |
 
 ## Ba từ dễ nhầm

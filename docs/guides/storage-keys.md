@@ -4,9 +4,9 @@ Mọi dữ liệu đều nằm trên máy người chơi — game **không gửi
 
 | Key | Ghi bởi | Nội dung | Xóa khi |
 | --- | --- | --- | --- |
-| `locheo.scores.v1` | `storage.ts` | TOP 8 (normalize, dedupe theo id) | Hard reset (không có nút) |
-| `locheo.progress.v1` | `storage.ts` | `{runs, totalJars, totalSliced, bestScore}` cộng dồn | Settings → Xóa dữ liệu |
-| `locheo.achievements.v1` | `storage.ts` | Mảng id thành tựu đã mở | Settings → Xóa dữ liệu |
+| `locheo.scores.v1` | `storage/scores.ts` | TOP 8 (normalize, dedupe theo id) | Hard reset (không có nút) |
+| `locheo.progress.v1` | `storage/progress.ts` | `{runs, totalJars, totalSliced, bestScore}` cộng dồn | Settings → Xóa dữ liệu |
+| `locheo.achievements.v1` | `storage/achievements.ts` | Mảng id thành tựu đã mở | Settings → Xóa dữ liệu |
 | `locheo.lang.v1` | `i18n/i18n.ts` | `"vi" \| "en" \| "zh" \| "ja" \| "ko" \| "es" \| "fr"` — gương của `settings.language` (v1.1.6: chọn ngôn ngữ nằm trong Settings) | Xóa thủ công |
 | `locheo.mode.v1` | `App.tsx` | Chế độ đã chọn (`ModeId`) | Xóa thủ công |
 | `locheo.muted.v1` | `App.tsx` | `"1"` hoặc `"0"` — trạng thái tắt tiếng, ghi mỗi lần đổi | Xóa thủ công |
