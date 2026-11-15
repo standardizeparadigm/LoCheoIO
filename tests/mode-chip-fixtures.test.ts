@@ -62,7 +62,6 @@ describe("the mode-chip corpus", () => {
 
   it("still matches what the planner produces", () => {
     for (const s of snapshots) {
-      const preset = PRESETS.find((p) => p.id === s.preset)!;
       const mode = MODE_LIST.find((m) => m.id === s.mode)!;
       const plan = planModeChip({ heroWidth: s.band, side: "right", name: mode.name, label: "CHẾ ĐỘ CHƠI" });
       expect(
