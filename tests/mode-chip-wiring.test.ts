@@ -14,7 +14,16 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 
-const chip = readFileSync("src/components/menu/ModeChip.tsx", "utf8");
+const chipFile = readFileSync("src/components/menu/ModeChip.tsx", "utf8");
+
+/**
+ * The file without its comments.
+ *
+ * The comments *describe* the bug on purpose — `truncate`, `overflow: hidden` —
+ * so a naive `not.toContain` would fail on the documentation of the fix. Strip
+ * them first, exactly like `sync-prose-counts.mjs` strips quoted spans.
+ */
+const chip = chipFile.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
 const start = readFileSync("src/components/StartScreen.tsx", "utf8");
 
 describe("ModeChip applies the plan", () => {
@@ -41,9 +50,18 @@ describe("ModeChip applies the plan", () => {
     expect(chip).toContain("if (!plan.visible) return null;");
   });
 
-  it("lets the name ellipsis but not the box", () => {
-    expect(chip).toContain("min-w-0 truncate");
+  it("never clips its own text — the round-11 bug", () => {
+    /*
+     * `truncate` was the round-10 fix and the round-11 regression: it needs
+     * `overflow: hidden`, which clips vertically too, and the tops of the stacked
+     * marks in «MUỐI DƯA CỔ ĐIỂN» are exactly what a 1em line box puts outside.
+     * The planner cuts the string instead, so no class in this file may clip.
+     */
+    expect(chip).not.toContain("truncate");
+    expect(chip).not.toContain("overflow-hidden");
     expect(chip).toContain("whitespace-nowrap");
+    expect(chip).toContain("{plan.text}");
+    expect(chip).toContain("lineHeight: plan.lineHeight");
   });
 });
 
