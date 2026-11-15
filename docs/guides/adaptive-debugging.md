@@ -113,7 +113,7 @@ npx vitest run tests/adaptive-type.test.ts tests/adaptive-resolve.test.ts
 npm run check:adaptive                 # in bảng 21 viewport thật
 ```
 
-`scripts/check-adaptive.mjs` in tier, density, scene, reserve, cỡ chữ và fit cho
+`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ và fit cho
 từng viewport trong danh sách, để so với ảnh chụp mà không phải mở app.
 
 ## 9. Khi nào **không** phải sửa adaptive
