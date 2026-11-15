@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, chín vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · 21 hình SVG vẽ lại, thêm sơ đồ HUD · 1281 unit tests (129 file) và hai corpus 1 620 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · 21 hình SVG vẽ lại, thêm hai sơ đồ · 1281 unit tests (129 file) và hai corpus 1 620 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -92,6 +92,19 @@ Ngoài ra:
 - **`scripts/probe-menu-layout.tsx`** — render `StartScreen` thành HTML thật rồi kiểm **21 tính chất** trên DOM sinh ra
 - **`docs/releases/v1.1.8.md`** — mô tả phát hành đầy đủ
 - **Hai i18n key** `game.howtoHint` · `howto.goal` cho cả 7 locale — **304 key**, parity nguyên vẹn
+
+### Fixed — vòng mười (chip chế độ)
+
+- **Chip dưới mascot mất viền phải, phần đệm và đoạn cuối của tên chế độ** — chip là `absolute; left: 50%; translateX(-50%)` bên trong cột mascot, không có `max-width`. Ở bố cục **hàng** mascot là phần tử cuối của hàng (mép phải band), nên một nửa chiếc chip nằm ngoài `.menu-hero` — mà hero là `overflow: hidden`. Tên dài nhất («MUỐI DƯA CỔ ĐIỂN», 19 ký tự) bị cắt rõ nhất nên lỗi đọc thành "chế độ cổ điển bị lỗi", trong khi mọi tên đều bị cắt ít hơn. Nay: căn theo mép trong khi mascot ở phải, `maxWidth` cứng bằng bề rộng band, và thang bậc `full → label-dropped → name-shrunk → ellipsis` quyết định *trước khi vẽ*
+- **Không có lời hứa nào giữ chip trong band** — thêm hai bất biến `chip-name-survives` và `chip-labelled` vào hợp đồng adaptive (12 → 14), chạy trên 21 preset ở cả suite lẫn `check:adaptive`
+
+### Added — vòng mười
+
+- **`src/components/menu/adaptive/chip/`** — `measure.ts` (`estimateText`, `charsThatFit`: bề rộng chữ từ lớp ký tự, không cần layout engine) · `modeChip.ts` (`planModeChip`, `describeModeChip`, `MODE_CHIP_FLOOR`, `MODE_CHIP_NAME_FLOOR`) · `index.ts` · `README.md`
+- **`src/components/menu/ModeChip.tsx`** — component của chip, ghim `data-mode-chip` / `-align` / `-name`
+- **`heroBandWidth()`** — bề rộng thật của hàng trong hero (`px-4` dưới `sm`, `px-8` từ `sm`), khác `heroContainerWidth()` vốn cố ý thận trọng cho câu hỏi row-fit
+- **`tests/fixtures/mode-chips/`** — **189** ảnh chụp (21 preset × 9 chế độ) + `scripts/gen-mode-chip-fixtures.ts` (`npm run gen:chip`, có `--check`)
+- **2 test mới** — `mode-chip` (23) · `mode-chip-fixtures` (6)
 
 ### Fixed — vòng chín (HUD)
 
