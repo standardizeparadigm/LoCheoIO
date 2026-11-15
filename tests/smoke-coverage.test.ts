@@ -11,7 +11,9 @@
  * renders a screen no player will ever see.
  */
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 
 const SRC = "scripts/smoke-ssr.tsx";
 const body = readFileSync(SRC, "utf8");
@@ -54,4 +56,69 @@ describe("the smoke gate's coverage", () => {
   it("still prints SMOKE OK, which is the only success signal the gate has", () => {
     expect(body).toContain('"SMOKE OK"');
   });
+});
+
+/*
+ * The gate covered eleven modals and missed the twelfth.
+ *
+ * `ShortcutsModal` opens from `StartScreen` at `modal === "shortcuts"`, renders
+ * 7 191 characters, and was in no gate at all: not in the list below, and not as
+ * a child of anything that is. Nothing pointed at the omission because the
+ * existing assertions name four screens and check they are present — a rule
+ * about a list cannot notice a missing entry.
+ *
+ * The fix is the inverse assertion: find every `*Modal.tsx` in the tree and
+ * require the smoke gate to name it. That rule fails the day someone adds a
+ * modal and forgets the gate, which is the case that actually happens.
+ */
+describe("every modal is in the smoke gate", () => {
+  const files = (dir: string, out: string[] = []): string[] => {
+    for (const entry of readdirSync(join(__dirname, "..", dir))) {
+      const rel = `${dir}/${entry}`;
+      const st = statSync(join(__dirname, "..", rel));
+      if (st.isDirectory()) files(rel, out);
+      else if (entry.endsWith("Modal.tsx")) out.push(entry.replace(/\.tsx$/, ""));
+    }
+    return out;
+  };
+
+  it("names each one", () => {
+    const modals = files("src/components");
+    // Nine today; a floor so adding a modal is allowed, removing them all is not.
+    expect(modals.length).toBeGreaterThanOrEqual(9);
+    const missing = modals.filter((m) => !body.includes(m));
+    expect(missing, `not in scripts/smoke-ssr.tsx: ${missing.join(", ")}`).toEqual([]);
+  });
+
+  it("still reports the count it renders", () => {
+    /*
+     * Counted from the real output, not from the source. Entries span one line
+     * or six, and a regex tight enough to match only the one-line form found 17
+     * of 21 — which is exactly the kind of undercount this file exists to catch
+     * in other people's work.
+     *
+     * `npm run smoke` prints one `ok <name> <n> chars` line per piece; that is
+     * its only success signal, so it is also the honest thing to count.
+     */
+    const out = execFileSync("npx", ["vite-node", "scripts/smoke-ssr.tsx"], {
+      cwd: join(__dirname, ".."),
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    /* Only the per-component lines: `ok <name> <chars> chars`. The gate also
+       prints inline `ok <assertion>` lines for its DOM checks. */
+    const ok = out.split("\n").filter((l) => /^ok .+ \d+ chars$/.test(l));
+    /*
+     * 17 render pieces today: 13 screens/modals plus the four screens reached
+     * by playing, with HowToModal, AchievementsPanel and SettingsModal each
+     * rendered twice (touch, fresh, defaults). A floor, not an equality.
+     */
+    expect(ok.length).toBeGreaterThanOrEqual(17);
+    expect(out).toMatch(/SMOKE OK/);
+    /* A render that returns nothing is not a render. */
+    for (const line of ok) {
+      const chars = Number(/ (\d+) chars$/.exec(line)?.[1] ?? 0);
+      expect(chars, line).toBeGreaterThan(500);
+    }
+  }, 120_000);
 });

@@ -18,6 +18,7 @@ import ChangelogModal from "../src/components/menu/ChangelogModal";
 import QuitModal from "../src/components/menu/QuitModal";
 import { DEFAULT_SETTINGS } from "../src/game/settings";
 import HowToModal from "../src/components/menu/HowToModal";
+import ShortcutsModal from "../src/components/menu/ShortcutsModal";
 import PauseScreen from "../src/components/PauseScreen";
 import GameOverScreen from "../src/components/GameOverScreen";
 import ModeSelector from "../src/components/ModeSelector";
@@ -107,6 +108,12 @@ const pieces: Array<[string, () => string]> = [
   ["ChangelogModal", () => renderToString(createElement(ChangelogModal as never, { onClose: noop } as never))],
   ["QuitModal", () => renderToString(createElement(QuitModal as never, { onBack: noop } as never))],
   ["HowToModal", () => renderToString(createElement(HowToModal as never, { onClose: noop, touchMode: false } as never))],
+  /*
+   * The twelfth modal. `StartScreen` opens it at `modal === "shortcuts"`, so it
+   * renders for a player and was in no gate: not in this list, and not as a
+   * child of anything else that is.
+   */
+  ["ShortcutsModal", () => renderToString(createElement(ShortcutsModal as never, { onClose: noop } as never))],
   ["HowToModal(touch)", () => renderToString(createElement(HowToModal as never, { onClose: noop, touchMode: true } as never))],
   /*
    * The four screens that were missing. StartScreen and the eleven modals were
