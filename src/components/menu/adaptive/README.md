@@ -1,6 +1,6 @@
 # `src/components/menu/adaptive/`
 
-Twelve files, one direction of dependency:
+Twelve files and one subfolder (`chip/`), one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -16,6 +16,7 @@ useAdaptive.ts —                          the only file that touches window
 presets.ts    —                           the 21 named windows the tables use
 constraints.ts AdaptiveProfile           →  the invariants, as data
 diagnostics.ts AdaptiveProfile           →  why the layout is shaped this way
+chip/         Box width + the band width →  how the mode chip fits (see chip/README.md)
 ```
 
 | File | Owns |
