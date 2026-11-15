@@ -53,7 +53,8 @@
     "check:readme": "node scripts/check-readme-sync.mjs && node scripts/sync-test-badge.mjs --verify && node scripts/sync-prose-counts.mjs --verify",
     "sync:badge": "node scripts/sync-test-badge.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
-    "check:assets": "node scripts/check-assets.mjs"
+    "check:assets": "node scripts/check-assets.mjs",
+    "check:adaptive": "vite-node scripts/check-adaptive.ts"
   },
   "dependencies": {
     "clsx": "2.1.1",
