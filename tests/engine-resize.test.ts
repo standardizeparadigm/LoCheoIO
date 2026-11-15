@@ -66,16 +66,27 @@ describe("the engine still calls it", () => {
      * the *call* rather than the arithmetic:
      *
      *   · `resize()` must build one plan from the raw numbers and its dpr
-     *   · every field it then uses (`w`, `h`, `S`, `SP`, `pr`, `hudScale`)
-     *     must come from that plan, not from a second expression
+     *   · every field it then uses (`w`, `h`, `S`, `SP`, `pr`) must come from
+     *     `this.pf`, which the same plan produced
+     *
+     * Round 9 removed the `hudScale` field entirely: the HUD is planned by
+     * `planHud(this.pf, …)` at draw time, so the scale reaches it through the
+     * plan rather than through a copy on the class. The assertion therefore moved
+     * from "the class stores it" to "the HUD reads the plan" — and the reader is
+     * `hud.ts`, which the second half of this test checks.
      */
     const at = engine.indexOf("resize(w: number, h: number)");
     expect(at).toBeGreaterThan(-1);
     const body = engine.slice(at, engine.indexOf("buildBackground()", at));
     expect(body).toContain("planPlayfield(");
-    for (const field of ["pf.width", "pf.height", "pf.itemScale", "pf.playerSpeed", "pf.playerRadius", "pf.hudScale"]) {
+    for (const field of ["pf.width", "pf.height", "pf.itemScale", "pf.playerSpeed", "pf.playerRadius"]) {
       expect(body, `${field} is not read from the plan`).toContain(field);
     }
+    // The HUD takes its scale from the same plan, one call deeper.
+    const draw = engine.slice(engine.indexOf("private drawHud("));
+    expect(draw).toContain("planHud(this.pf");
+    const hud = readFileSync("src/game/adaptive/hud.ts", "utf8");
+    expect(hud, "the HUD plan must read the playfield's scale").toContain("pf.hudScale");
     expect(body).toContain("Math.floor(pf.width * this.dpr)");
     expect(body).toContain("Math.floor(pf.height * this.dpr)");
   });
