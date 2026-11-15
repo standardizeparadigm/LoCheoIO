@@ -5,6 +5,7 @@ import { clamp, damp, lerp } from "../utils/math";
 import { CANVAS_COLORS } from "./palette";
 import { weightedPick } from "./spawn";
 import { planPlayfield, type PlayfieldPlan } from "./adaptive/playfield";
+import { planHud } from "./adaptive/hud";
 import {
   MODES,
   comboWindowFor,
@@ -258,13 +259,12 @@ export class LoCheoGame {
   /**
    * The canvas plan the current size produced.
    *
-   * `S`, `SP`, `pr` and `hudScale` all come from this object, so the background
+   * `S`, `SP`, `pr` come from this object and `planHud()` reads it too, so the background
    * tile, the star count, the HUD and the collisions describe one board rather
    * than four independent readings of the same `resize()` arguments.
    */
   private pf: PlayfieldPlan = planPlayfield(800, 600, 1);
   /** HUD text multiplier — see `adaptive/playfield.ts`. */
-  private hudScale = 1;
 
   phase: Phase = "menu";
   stats: RunStats = { score: 0, catches: 0, bestCombo: 0, level: 1, jars: 0, sliced: 0, time: 0 };
@@ -391,7 +391,6 @@ export class LoCheoGame {
     // player speed blends width + height so phones and ultrawides both feel right
     this.SP = pf.playerSpeed;
     this.pr = pf.playerRadius;
-    this.hudScale = pf.hudScale;
     this.px = clamp(this.px || pf.width / 2, this.pr, pf.width - this.pr);
     this.py = clamp(this.py || pf.height * 0.72, this.pr, pf.height - this.pr);
     this.buildBackground();
@@ -2153,42 +2152,80 @@ export class LoCheoGame {
     ctx.beginPath(); ctx.roundRect(x + 2, y + 2, Math.max(0, (w - 4) * clamp(v, 0, 1)), h - 4, (h - 4) / 2); ctx.fill();
   }
 
+  /** The power chips the current state wants to show, in draw order. */
+  private hudChips(): Array<[string, number, number, string]> {
+    const chips: Array<[string, number, number, string]> = [];
+    if (this.frenzy > 0) chips.push([t("hud.frenzy"), this.frenzy, 7, "#ff6a4d"]);
+    if (this.slow > 0) chips.push([t("hud.slow"), this.slow, 5, "#a8e6ff"]);
+    if (this.shield > 0) chips.push([t("hud.shield", { n: this.shield }), this.shield, 2, "#ffe9a8"]);
+    if (this.phase === "playing") {
+      chips.push([
+        this.slamCd > 0 ? t("hud.slamCd") : t("hud.slamReady"),
+        6 - this.slamCd,
+        6,
+        this.slamCd > 0 ? "#7fa396" : C.goldLight,
+      ]);
+    }
+    return chips;
+  }
+
+  /**
+   * The HUD, drawn from a plan instead of from offsets.
+   *
+   * Every number below used to be `pad + N * s` written inline, which meant
+   * nothing could ask whether the stack fitted the board. `planHud()` answers
+   * that, drops the rows that do not fit and compresses the rest — the drawing
+   * code then only has to respect the flags. On a 1280×720 board the plan returns
+   * the same numbers the inline version computed, so nothing moved; on a 420×360
+   * board the chips stop landing in the touch strip.
+   */
   private drawHud(ctx: CanvasRenderingContext2D) {
     const a = this.hudAlpha;
     ctx.save();
     ctx.globalAlpha = a;
     ctx.textBaseline = "alphabetic";
-    const pad = Math.round(clamp(this.w * 0.022, 14, 26));
-    /*
-     * The HUD multiplier comes from the canvas plan, which reads both axes.
-     * It used to be `clamp(this.w / 900, 0.78, 1.16)` — width only, so a short
-     * wide window drew a desktop-sized readout over a 400px board.
-     */
-    const s = this.hudScale;
+
+    const chips = this.hudChips();
+    /* The combo number grows with the count; the plan needs the size it will paint. */
+    const comboSize = clamp(18 + this.combo * 0.7, 18, 34);
+    const hud = planHud(this.pf, {
+      combo: this.combo > 1,
+      comboSize,
+      chips: chips.length,
+      cracks: true,
+    });
+    const pad = hud.pad;
+    const s = hud.scale;
+    const drawn = chips.slice(0, hud.chipSlots);
 
     // ---- score (top-left)
     ctx.textAlign = "left";
-    const score = fmtNum(this.stats.score);
-    this.txt(ctx, score, pad, pad + 34 * s, Math.round(36 * s), C.cream);
-    this.txt(ctx, `${t("hud.best")} ${fmtNum(Math.max(this.best, Math.round(this.stats.score)))}`, pad, pad + 54 * s, Math.round(13 * s), C.goldLight, '"Be Vietnam Pro"');
+    this.txt(ctx, fmtNum(this.stats.score), pad, hud.scoreY, hud.scoreSize, C.cream);
+    if (hud.showBest) {
+      this.txt(
+        ctx,
+        `${t("hud.best")} ${fmtNum(Math.max(this.best, Math.round(this.stats.score)))}`,
+        pad, hud.bestY, Math.round(13 * s), C.goldLight, '"Be Vietnam Pro"',
+      );
+    }
 
     // stamina (chéo)
-    const sy = pad + 68 * s;
+    const sy = hud.staminaY;
     ctx.save();
     ctx.translate(pad + 6, sy + 5);
     ctx.rotate(-Math.PI / 4);
     ctx.fillStyle = this.cheo ? C.goldLight : "rgba(253,243,224,0.55)";
     ctx.fillRect(-2.5, -7, 5, 14);
     ctx.restore();
-    this.bar(ctx, pad + 18, sy, 118 * s, 11, this.stamina, this.stamina < 0.25 ? C.chili : C.goldLight);
-    if (this.cheo) this.txt(ctx, t("hud.cheo"), pad + 142 * s, sy + 11, Math.round(14 * s), C.goldLight);
+    this.bar(ctx, pad + 18, sy, hud.staminaWidth, 11, this.stamina, this.stamina < 0.25 ? C.chili : C.goldLight);
+    if (this.cheo) this.txt(ctx, t("hud.cheo"), pad + 18 + hud.staminaWidth + 6, hud.cheoY, Math.round(14 * s), C.goldLight);
 
     // ---- cracks (top-right)
     ctx.textAlign = "right";
-    const cr = 16 * s;
+    const cr = hud.crackSize;
     for (let i = 0; i < 3; i++) {
       const x = this.w - pad - (2 - i) * (cr + 8);
-      const y = pad + 78 * s;
+      const y = hud.cracksY;
       const alive = i >= this.cracks;
       ctx.save();
       ctx.translate(x, y);
@@ -2212,27 +2249,28 @@ export class LoCheoGame {
     // ---- centre column: level, combo, fill
     const cx = this.w / 2;
     ctx.textAlign = "center";
-    this.txt(ctx, t("hud.level", { n: this.stats.level }), cx, pad + 20 * s, Math.round(15 * s), C.goldLight);
-    this.txt(
-      ctx,
-      t("hud.jarsCatches", { jars: this.stats.jars, catches: this.stats.catches }),
-      cx, pad + 38 * s, Math.round(12 * s), "rgba(253,243,224,0.75)", '"Be Vietnam Pro"',
-    );
+    this.txt(ctx, t("hud.level", { n: this.stats.level }), cx, hud.levelY, Math.round(15 * s), C.goldLight);
+    if (hud.showJars) {
+      this.txt(
+        ctx,
+        t("hud.jarsCatches", { jars: this.stats.jars, catches: this.stats.catches }),
+        cx, hud.jarsY, Math.round(12 * s), "rgba(253,243,224,0.75)", '"Be Vietnam Pro"',
+      );
+    }
 
     // fill meter
-    const fw = clamp(this.w * 0.24, 120, 240);
-    this.bar(ctx, cx - fw / 2, pad + 46 * s, fw, 10, this.fill, C.brine);
+    this.bar(ctx, cx - hud.fillWidth / 2, hud.fillY, hud.fillWidth, 10, this.fill, C.brine);
     const timeLimit = MODES[this.mode].timeLimit;
     if (timeLimit) {
       // ĐUA 60 GIÂY — countdown replaces the quiet jar label; pulses red under 10s
       const left = Math.max(0, timeLimit - this.stats.time);
       const urgent = left <= 10.5;
       const pulse = urgent ? 1 + 0.18 * Math.abs(Math.sin(this.t * 6)) : 1;
-      this.txt(ctx, t("hud.timeLeft", { n: Math.ceil(left) }), cx, pad + 70 * s, Math.round((urgent ? 15 : 13) * s * pulse), urgent ? C.chili : C.goldLight, '"Be Vietnam Pro"');
+      this.txt(ctx, t("hud.timeLeft", { n: Math.ceil(left) }), cx, hud.clockY, Math.round((urgent ? 15 : 13) * s * pulse), urgent ? C.chili : C.goldLight, '"Be Vietnam Pro"');
     } else {
       ctx.font = `700 ${Math.round(10 * s)}px "Be Vietnam Pro", sans-serif`;
       ctx.fillStyle = "rgba(253,243,224,0.7)";
-      ctx.fillText(t("hud.jar"), cx, pad + 70 * s);
+      ctx.fillText(t("hud.jar"), cx, hud.clockY);
     }
 
     // combo
@@ -2240,31 +2278,21 @@ export class LoCheoGame {
       const k = clamp(this.comboT / comboWindowFor(this.mode), 0, 1);
       const pulse = 1 + Math.sin(this.t * 12) * 0.04 * (this.combo > 8 ? 1 : 0.4);
       ctx.save();
-      ctx.translate(cx, pad + 96 * s);
+      ctx.translate(cx, hud.comboY);
       ctx.scale(pulse, pulse);
-      this.txt(ctx, t("hud.combo", { n: this.combo }), 0, 0, Math.round(clamp(18 + this.combo * 0.7, 18, 34) * s), this.multiplier() >= 6 ? C.chili : C.goldLight);
+      this.txt(ctx, t("hud.combo", { n: this.combo }), 0, 0, Math.round(comboSize * s), this.multiplier() >= 6 ? C.chili : C.goldLight);
       ctx.restore();
-      this.bar(ctx, cx - 46 * s, pad + 104 * s, 92 * s, 5, k, "rgba(255,201,74,0.8)");
+      if (hud.showComboBar) {
+        this.bar(ctx, cx - 46 * s, hud.comboBarY, 92 * s, 5, k, "rgba(255,201,74,0.8)");
+      }
       ctx.textAlign = "center";
-      this.txt(ctx, `×${this.multiplier()}`, cx, pad + 128 * s, Math.round(16 * s), C.cream);
+      this.txt(ctx, `×${this.multiplier()}`, cx, hud.multY, Math.round(16 * s), C.cream);
     }
 
-    // power chips
-    const chips: [string, number, number, string][] = [];
-    if (this.frenzy > 0) chips.push([t("hud.frenzy"), this.frenzy, 7, "#ff6a4d"]);
-    if (this.slow > 0) chips.push([t("hud.slow"), this.slow, 5, "#a8e6ff"]);
-    if (this.shield > 0) chips.push([t("hud.shield", { n: this.shield }), this.shield, 2, "#ffe9a8"]);
-    if (this.phase === "playing") {
-      chips.push([
-        this.slamCd > 0 ? t("hud.slamCd") : t("hud.slamReady"),
-        6 - this.slamCd,
-        6,
-        this.slamCd > 0 ? "#7fa396" : C.goldLight,
-      ]);
-    }
-    chips.forEach(([label, v, m, col], i) => {
-      const y = pad + (this.combo > 1 ? 146 : 96) * s + i * 24 * s;
-      const wChip = Math.max(142 * s, 126);
+    // power chips — as many as the plan says fit, never on top of the stick strip
+    drawn.forEach(([label, v, m, col], i) => {
+      const y = hud.chipsY + i * hud.chipStep;
+      const wChip = hud.chipWidth;
       ctx.fillStyle = "rgba(6,26,26,0.72)";
       ctx.beginPath(); ctx.roundRect(cx - wChip / 2, y - 14 * s, wChip, 18 * s, 9 * s); ctx.fill();
       this.bar(ctx, cx - wChip / 2 + 3, y - 11 * s, wChip - 6, 12 * s, v / m, col);
@@ -2278,13 +2306,16 @@ export class LoCheoGame {
       ctx.fillText(label, cx, y - 2 * s);
     });
 
-    // mode tag — bottom-centre, very quiet
-    ctx.textAlign = "center";
-    ctx.globalAlpha = a * 0.55;
-    ctx.font = `800 ${Math.round(9 * s)}px "Be Vietnam Pro", sans-serif`;
-    ctx.fillStyle = "rgba(253,243,224,0.9)";
-    ctx.fillText(`— ${t(`mode.${this.mode}.name`)} —`, cx, this.h - 10 * s);
-    ctx.globalAlpha = a;
+    // mode tag — bottom-centre, very quiet, and only when the HUD leaves room
+    const tagY = this.h - 10 * s;
+    if (tagY > hud.bottom + 12) {
+      ctx.textAlign = "center";
+      ctx.globalAlpha = a * 0.55;
+      ctx.font = `800 ${Math.round(9 * s)}px "Be Vietnam Pro", sans-serif`;
+      ctx.fillStyle = "rgba(253,243,224,0.9)";
+      ctx.fillText(`— ${t(`mode.${this.mode}.name`)} —`, cx, tagY);
+      ctx.globalAlpha = a;
+    }
 
     ctx.restore();
     ctx.textAlign = "left";
