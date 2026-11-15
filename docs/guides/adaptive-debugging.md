@@ -153,7 +153,7 @@ const { diagnose, renderDiagnosis } = await import("/src/components/menu/adaptiv
 console.log(renderDiagnosis(resolveForSize(1280, 720)));
 ```
 
-Tám dòng, theo đúng thứ tự suy ra:
+Chín dòng, theo đúng thứ tự suy ra:
 
 ```
 1 · box      ↳ aspect is the width over the height; everything below reads it
@@ -163,7 +163,9 @@ Tám dòng, theo đúng thứ tự suy ra:
 5 · hero     row   ↳ band 342px clears the row floor
 6 · type     89.5px ↳ lockup capped by the band
 7 · modal    448×619px · 1 col ↳ 448px is under the 560px two-column floor
-8 · board    jar 38px · hud ×1.029 ↳ item scale follows height
+8 · chip     band 1088px · needs 246px · full
+             ↳ right-aligned to the mascot's inner edge
+9 · board    jar 38px · hud ×1.029 ↳ item scale follows height
 trade-offs: none — this window gets the full layout
 ```
 

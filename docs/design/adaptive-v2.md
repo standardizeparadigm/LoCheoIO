@@ -390,8 +390,8 @@ hứa không ai kiểm được ở mọi cửa sổ.
 
 Một bảng số trả lời *cái gì*. Câu hỏi đến cùng ảnh chụp màn hình luôn là *vì
 sao*: vì sao không có ticker, vì sao hero thành hàng ở đây mà thành cột ở kia.
-`diagnose()` xếp tám lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
-từ chính trường đã quyết định nó:
+`diagnose()` xếp **chín** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
+từ chính trường đã quyết định nó — lớp 8 là chip chế độ, thêm ở vòng 10:
 
 ```
 1280×720 · lg · comfortable · row · fit none
@@ -409,7 +409,9 @@ từ chính trường đã quyết định nó:
              ↳ lockup capped by the band
 7 · modal    448×619px · 1 col
              ↳ 448px is under the 560px two-column floor
-8 · board    1280×720 · jar 38px · hud ×1.029
+8 · chip     band 1088px · needs 246px · full
+             ↳ right-aligned to the mascot's inner edge, 246px of 1072px used
+9 · board    1280×720 · jar 38px · hud ×1.029
              ↳ item scale follows height (1.029), radius follows the short side
 
 trade-offs: none — this window gets the full layout
