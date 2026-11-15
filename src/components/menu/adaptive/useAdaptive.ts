@@ -28,7 +28,8 @@ import { useEffect, useMemo, useState } from "react";
 import { onViewportChange } from "../layout/viewportEvents";
 import { readViewport } from "../layout/useMenuPlan";
 import { boxOf } from "./viewport";
-import { readEnvironment, type Environment } from "./useEnvironment";
+import { readEnvironment } from "./useEnvironment";
+import type { Environment } from "./environment";
 import { resolveAdaptive, type AdaptiveProfile } from "./resolve";
 
 /**
