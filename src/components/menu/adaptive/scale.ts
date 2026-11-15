@@ -77,11 +77,23 @@ export function within(value: unknown, span: Span): number {
   return v < min ? min : v > max ? max : v;
 }
 
-/** `span` scaled by `factor`, with a floor so a bad factor cannot collapse it. */
-export function scaled(span: Span, factor: unknown, floor = 1): Span {
-  const f = typeof factor === "number" && Number.isFinite(factor) ? Math.max(floor > 0 ? 0 : -Infinity, factor) : 1;
+/**
+ * `span` multiplied by `factor`, clamped to a sane multiplier.
+ *
+ * The first draft of this helper read `Math.max(floor > 0 ? 0 : -Infinity, factor)`,
+ * which is a comparison against 0 dressed up as a floor: every factor, including
+ * a sane 1.2, was accepted, and `Infinity` sailed through to produce
+ * `font-size: Infinitypx`. The multiplier is now bounded to `[0.25, 4]` — four
+ * times any size this UI has ever used — so a bad factor shrinks or grows a size
+ * rather than destroying the declaration.
+ */
+export function scaled(span: Span, factor: unknown): Span {
+  const f =
+    typeof factor === "number" && Number.isFinite(factor)
+      ? Math.min(4, Math.max(0.25, factor))
+      : 1;
   const { min, max } = ordered(span);
-  return { min: Math.abs(min * f), max: Math.abs(max * f) };
+  return { min: Math.abs(min) * f, max: Math.abs(max) * f };
 }
 
 /** Half-pixel rounding — the only rounding a CSS size needs. */
