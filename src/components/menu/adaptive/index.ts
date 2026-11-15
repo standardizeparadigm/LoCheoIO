@@ -29,6 +29,10 @@ export type { HeroInput, HeroLayout } from "./hero";
 export {
   BADGE_ROW_WIDTH,
   CHIP_OVERHANG,
+  HERO_PAD_NARROW,
+  HERO_PAD_SWITCH,
+  HERO_PAD_WIDE,
+  heroBandWidth,
   heroContainerWidth,
   heroContentHeight,
   heroLayout,
@@ -40,6 +44,18 @@ export {
   ROW_GAP,
   STACK_GAP,
 } from "./hero";
+
+/* ---- the mode chip ---------------------------------------------------- */
+export type { ModeChipInput, ModeChipPlan } from "./chip";
+export {
+  charsThatFit,
+  describeModeChip,
+  estimateText,
+  MODE_CHIP_FLOOR,
+  MODE_CHIP_GUTTER,
+  MODE_CHIP_NAME_FLOOR,
+  planModeChip,
+} from "./chip";
 
 /* ---- the window ------------------------------------------------------- */
 export type { AspectClass, Box, Orientation } from "./viewport";
