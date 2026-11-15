@@ -873,7 +873,33 @@
 .menu-row-label,
 .menu-row-hint,
 .panel-head {
-  line-height: 1.2;
+  line-height: 1.35;
+}
+
+/*
+ * ---- clip-safe: ellipsis without eating tone marks ----------------------
+ *
+ * v1.1.8 (round 11). `truncate` is three declarations — `overflow: hidden`,
+ * `text-overflow: ellipsis`, `white-space: nowrap` — and the first of them clips
+ * **vertically** as well. Vietnamese stacks a circumflex or a horn with a tone
+ * mark on one letter (`Ố Ổ Ể Ấ Ự`), which puts ~0.35em of ink above the cap
+ * height. Any line box that is tighter than that ink gets its tips shaved: the
+ * label reads «CỔ ĐIÊN», «CÀI ĐĂT», «THÀNH TƯU».
+ *
+ * Padding the clipped box and pulling the layout back with an equal negative
+ * margin keeps the ellipsis (horizontal) and gives the ink (vertical) somewhere
+ * to live. `padding-block` expands the clip rectangle; `margin-block` cancels its
+ * effect on flow, so nothing moves and no row grows.
+ *
+ * Use this instead of `truncate` for any text a translation can put a stacked
+ * mark into. `tests/diacritics-clip.test.ts` enforces the rule.
+ */
+.clip-safe {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-block: 0.24em;
+  margin-block: -0.24em;
 }
 
 /*
