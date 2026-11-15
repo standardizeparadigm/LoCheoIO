@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1244%20%C2%B7%20126%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -152,7 +152,7 @@ v1.1.8 은 이것을 **하나의 상자에 대한 하나의 순수 함수**로 �
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 새 불변식 `panel + 여백 ≤ reserve` 는 **844×390**(가로 iPhone, 보고서 스크린샷의 크기)에서 빨개집니다. `reserveFor()` 는 푸터를 그리지 않을 때 30px 을 빼지만, `panelHeightForPlan()` 은 밀도만 보아 전체 높이를 그렸습니다 — 216px 대역에 234px 패널, **아래 18px 이 화면 밖**.
 
@@ -247,13 +247,32 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——122개 파일 1183 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——126개 파일 1244 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME(왼쪽 아래)과 INFO(오른쪽 아래) 패널이 슬라이드 인 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="여섯 구역 설정(v1.1.6부터)——스위치, 레벨 바, 피커 (SMIL 애니메이션)" width="100%" />
+
+### 🔟 9라운드: HUD도 하나의 계획이 되고, `diagnose()`가 *왜*를 답합니다
+
+8라운드에서 메뉴 전체가 하나의 profile을 갖게 되었습니다. 손으로 그리던 것은 단
+하나, `engine.ts`의 HUD였습니다 — 좌표를 계속 더해 가는 `fillText` 연쇄로, 1280×720
+에서만 맞았습니다.
+
+`planHud()`는 각 표시에 **글리프 밴드**(`baseline − 0.72 × size`, 높이 `0.97 ×
+size`)를 주고, 좌우 열을 고정하며, 가운데 열을 `clockY`에서 **흐르게** 배치합니다.
+들어가지 않으면 정보가 적은 것부터 버리고(`chips → combo bar → jars → best`),
+0.02 단위로 0.55 하한까지 압축합니다.
+
+1 500개 보드 스윕: 옛 공식은 **4 004**쌍이 겹쳤고, 새 계획은 플레이 가능한 보드에서
+**0**입니다. `playable()` 미만에서 남는 겹침은 `traceHud().collisions`로 **보고**
+됩니다.
+
+이번 라운드에는 크기순 **21개 프리셋**(320×480 → 3840×2160), `constraints.ts`의
+**12개 불변식**(테스트·`check:adaptive`·문서가 같은 목록), 그리고 스크린샷의 질문에
+답하는 `diagnose()`도 포함됩니다.
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
 

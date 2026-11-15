@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1244%20%C2%B7%20126%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -152,7 +152,7 @@ v1.1.8 はそれらを**ひとつの箱に対するひとつの純粋関数**に
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 新しい不変条件 `panel + 余白 ≤ reserve` は **844×390**（横向きの iPhone、報告のスクリーンショットと同じ寸法）で赤になります。`reserveFor()` はフッターを描かないとき 30px を引きますが、`panelHeightForPlan()` は密度しか見ずに full の高さで描いていました —— 216px の帯に 234px のパネル、**下端 18px が画面の外**。
 
@@ -247,13 +247,31 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——122ファイル1183テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——126ファイル1244テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME（左下）と INFO（右下）パネルがスライドイン（SMIL アニメーション）" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="六区分の設定（v1.1.6 から）——スイッチ、レベルバー、ピッカー（SMIL アニメーション）" width="100%" />
+
+### 🔟 第9ラウンド：HUD も「計画」に、`diagnose()` が*なぜ*を答える
+
+第8ラウンドでメニュー全体がひとつの profile を持ちました。手描きのまま残ったのは
+`engine.ts` の HUD だけ —— 座標を足し続ける `fillText` の連なりで、1280×720 以外
+では崩れていました。
+
+`planHud()` は各表示に**グリフ帯**（`baseline − 0.72 × size`、高さ `0.97 × size`）
+を与え、左右の列を固定し、中央の列を `clockY` から**流れる**ように並べます。収まら
+なければ情報量の少ない順に外し（`chips → combo bar → jars → best`）、さらに 0.02
+刻みで 0.55 の下限まで圧縮します。
+
+1 500 面の走査：旧式は **4 004** 組の重なり、新しい計画はプレイ可能な面で **0**。
+`playable()` 未満の重なりは `traceHud().collisions` で**報告**されます。
+
+さらに今ラウンド：サイズ順の **21 プリセット**（320×480 → 3840×2160）、
+`constraints.ts` の **12 不変条件**（テスト・`check:adaptive`・文書で同一リスト）、
+そしてスクリーンショットの疑問に答える `diagnose()`。
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
 

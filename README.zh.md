@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1244%20%C2%B7%20126%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -152,7 +152,7 @@ v1.1.8 把它们收拢成**一个盒子的一次纯函数**：
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 新不变量 `panel + 边距 ≤ reserve` 在 **844×390**（横屏 iPhone，正是报告截图的尺寸）变红：`reserveFor()` 在没有页脚时省掉 30px，而 `panelHeightForPlan()` 只看密度，仍然画满 —— 216px 的带里放 234px 的面板，**底边 18px 在屏幕之外**。
 
@@ -242,13 +242,29 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——122 个文件 1183 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——126 个文件 1244 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME（左下）与 INFO（右下）面板滑入（SMIL 动画）" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="六段设置（自 v1.1.6）——开关、等级条与选择器（SMIL 动画）" width="100%" />
+
+### 🔟 第九轮：HUD 也变成一份计划，`diagnose()` 回答*为什么*
+
+第八轮让整个菜单共用一份 profile。仍有一件事是手绘的：`engine.ts` 里的 HUD ——
+一串累加坐标的 `fillText`，只在 1280×720 正确。
+
+`planHud()` 给每个读数一个**字形带**（`baseline − 0.72 × size`，高 `0.97 ×
+size`），左右两列固定，中列从 `clockY` **顺势流动**；放不下时先丢掉信息最少的
+项（`chips → combo bar → jars → best`），再以 0.02 为步长压缩到 0.55 的下限。
+
+扫描 1 500 个棋盘：旧公式产生 **4 004** 对重叠，新计划在可玩棋盘上为 **0**；
+低于 `playable()` 的部分通过 `traceHud().collisions` **如实报告**。
+
+本轮还包括：按尺寸排序的 **21 个预设**（320×480 → 3840×2160）、
+`constraints.ts` 里的 **12 条不变量**（测试、`check:adaptive` 与文档共用一份），
+以及回答截图问题的 `diagnose()`。
 
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
 
