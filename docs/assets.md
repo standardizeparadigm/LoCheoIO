@@ -16,6 +16,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `architecture.svg` | Sơ đồ kiến trúc + luồng dữ liệu, có xung chạy trên đường nối (v1.1.8) | README ×10 (mục kiến trúc) |
 | `release-tiers.svg` | 3 tầng MAJOR/UPDATE/PATCH + thời gian biểu 10 bản (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `adaptive-layers.svg` | sáu lớp adaptive + hai corpus + cổng 21 viewport (v1.1.8 vòng 8) | README ×10 (ngay dưới ma trận test) |
+| `hud-bands.svg` | **HUD thành kế hoạch**: băng glyph cho từng readout, cột giữa chảy từ đồng hồ, bậc thang `chips → comboBar → jars → best`, rồi nén 1.029 → sàn 0.55 (v1.1.8 vòng 9) | README ×10 (mục vòng chín) |
 | `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
 | `divider.svg` | Dải sparkle ngăn cách section | README ×9 (không có ở bản en) |
@@ -49,4 +50,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
-| v1.1.8 | `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` |
+| v1.1.8 | `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` |

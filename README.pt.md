@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, e os 21 SVGs são redesenhados.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, os 22 SVGs existentes são redesenhados e a nona rodada acrescenta o diagrama de faixas do HUD.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 
@@ -274,6 +274,8 @@ plano produz **0** em todo tabuleiro jogável. Abaixo de `playable()` as restant
 Também nesta rodada: **21 presets** ordenados por tamanho (320×480 → 3840×2160),
 **12 invariantes** em `constraints.ts` — uma lista para a suíte, `check:adaptive` e a
 documentação — e `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="O HUD como plano em 1.1.8 — uma faixa por indicador, coluna central fluindo do relógio, escada chips → comboBar → jars → best e compressão até o piso 0,55 (animação SMIL)" width="100%" />
 
 ## 📐 Layout adaptativo — como o hero escolhe sua forma
 

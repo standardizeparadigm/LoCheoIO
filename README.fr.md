@@ -39,7 +39,7 @@ C'est un **arcade d'action mono-écran** inspiré des pickles populaires vietnam
 
 ## 🆕 Nouveautés de v1.1.8
 
-> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît et les 21 SVG sont redessinés.
+> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît et les 22 SVG existants sont redessinés et le tour neuf ajoute le schéma des bandes du HUD.
 
 ### 📐 Une addition que personne ne surveillait — et quatre bugs à la fois
 
@@ -198,6 +198,8 @@ sont **signalés** (`traceHud().collisions`), pas masqués.
 Aussi : **21 presets** classés par taille (320×480 → 3840×2160), **12 invariants**
 dans `constraints.ts` — une seule liste pour la suite, `check:adaptive` et la doc —
 et `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="Le HUD comme plan en 1.1.8 — une bande par indicateur, colonne centrale qui coule depuis l'horloge, échelle chips → comboBar → jars → best puis compression jusqu'au plancher 0,55 (animation SMIL)" width="100%" />
 
 ## 📐 Mise en page adaptative — comment le hero choisit sa forme
 

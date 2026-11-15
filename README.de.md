@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt, alle 21 SVGs sind neu gezeichnet.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt, alle 21 vorhandenen SVGs sind neu gezeichnet, dazu kommt das HUD-Bandschema aus Runde neun.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -198,6 +198,8 @@ restlichen **gemeldet** (`traceHud().collisions`) statt versteckt.
 Ebenfalls in dieser Runde: **21 Presets** nach Größe sortiert (320×480 → 3840×2160),
 **12 Invarianten** in `constraints.ts` — eine Liste für Suite, `check:adaptive` und
 Doku — sowie `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="Das HUD als Plan in 1.1.8 — ein Band pro Messwert, eine von der Uhr ausgehende Mittenspalte, Leiter chips → comboBar → jars → best und Kompression bis zur Untergrenze 0,55 (SMIL-Animation)" width="100%" />
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
 

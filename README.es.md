@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 21 SVG se redibujan.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 22 SVG existentes se redibujan y la ronda nueve añade el diagrama de bandas del HUD.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -229,6 +229,8 @@ se **informan** (`traceHud().collisions`), no se esconden.
 Además: **21 presets** ordenados por tamaño (320×480 → 3840×2160), **12
 invariantes** en `constraints.ts` — una sola lista para la suite, para
 `:check:adaptive` y para la documentación — y `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="El HUD como plan en 1.1.8 — una banda por indicador, columna central que fluye desde el reloj, escalera chips → comboBar → jars → best y compresión hasta el suelo 0.55 (animación SMIL)" width="100%" />
 
 ## 📐 Diseño adaptable — cómo el hero elige su forma
 

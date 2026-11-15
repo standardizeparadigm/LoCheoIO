@@ -37,7 +37,7 @@ This is a **single-screen action arcade** inspired by Vietnam's humble pickled v
 
 ## 🆕 What's new in v1.1.8
 
-> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, and all 21 SVGs are redrawn.
+> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, the 21 existing SVGs are redrawn — and round nine adds the HUD-band diagram.
 
 ### 📐 One unmanaged addition — and four bugs at once
 
@@ -235,6 +235,8 @@ $ npx vite-node scripts/check-adaptive.ts --explain 1280x720
 8 · board  hud ×1.029 ↳ item scale follows height
 trade-offs: none — this window gets the full layout
 ```
+
+<img src="assets/hud-bands.svg" alt="The HUD as a plan in 1.1.8 — a band per readout, a centre column flowing from the clock, the drop ladder chips → comboBar → jars → best, then compression to a floor of 0.55 (SMIL animation)" width="100%" />
 
 ## 📐 Adaptive layout — how the hero picks its shape
 
@@ -571,7 +573,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 21 SVGs — no orphans, no broken references
+$ npm run check:assets # 22 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
@@ -582,7 +584,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 21 SVGs, references checked both ways | ✅ |
+| `check-assets` | 22 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
