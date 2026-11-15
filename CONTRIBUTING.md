@@ -11,7 +11,7 @@ Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc 
 ## Quy trình
 
 1. Fork repo → tạo branch `arena/<tên>` hoặc `feat/<tên>`.
-2. `npm install` rồi `npm run check` (typecheck + 1043 tests + build) — tất cả phải xanh.
+2. `npm install` rồi `npm run check` (typecheck + 1044 tests + build) — tất cả phải xanh.
 3. Nếu sửa logic thuần (`modes.ts`, `achievements.ts`, `storage.ts`, `src/i18n/i18n.ts`): thêm/sửa test trong `tests/`.
 4. Nếu sửa gameplay/cân bằng: ghi rõ chế độ ảnh hưởng (Cổ điển / Thảnh Thơi / Ớt Lửa / Đua 60 Giây / Mùa Vàng) và đính clip trong PR.
 5. Không commit `dist/` (đã có trong `.gitignore`) — artifact release được tạo bằng `npm run build`.
@@ -26,10 +26,17 @@ Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc 
 ## Kiểm thử
 
 - `npm run typecheck` — TypeScript strict, `noUnusedLocals`.
-- `npm run test` — vitest (1043 tests / 107 file).
+- `npm run test` — vitest (1044 tests / 107 file).
 - `npm run build` — phải ra đúng 1 file `dist/index.html`.
 - `npm run smoke` — headless render smoke cho toàn bộ menu/modal.
-- `npm run check:readme` — bảo vệ README 10 ngôn ngữ khỏi lệch version (chạy trong CI).
+- `npm run check:readme` — version badge + liên kết release trên cả 10 README, và badge test
+  phải khớp số đo thật của suite (`--verify` chạy lại suite rồi so).
+- `npm run check:i18n` — 7 locale: khoá đủ, không rỗng, placeholder khớp nhau.
+- `npm run check:assets` — mọi đường dẫn `assets/` trong tài liệu trỏ tới file có thật.
+- `node scripts/check-svg.mjs` — 20 SVG: hợp lệ XML, có animation, mọi `<img>` trỏ đúng file.
+
+Mọi lệnh trên đều chạy trong CI (`.github/workflows/ci.yml`). `npm run check` gộp
+typecheck + test + build; ba script kiểm tài liệu chạy ở job riêng.
 
 Tài liệu sâu hơn: [docs/guides/](docs/guides/) (engine overview, storage keys, a11y, performance, release process, thêm locale).
 

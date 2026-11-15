@@ -85,8 +85,39 @@ describe(".github/", () => {
       "check-readme-sync.mjs",
       "check-assets.mjs",
       "check-i18n.mjs",
+      "check-svg.mjs",
     ]) {
       expect(ci, `ci.yml no longer runs ${gate}`).toContain(gate);
+    }
+  });
+
+  it("runs every checker script that exists", () => {
+    /*
+     * The list above was hand-written and had fallen one behind:
+     * `scripts/check-svg.mjs` existed, enforced three rules over 20 SVG files,
+     * was documented in `CONTRIBUTING.md` — and no workflow called it. A gate
+     * that only runs when a human remembers is not a gate.
+     *
+     * Written as a directory scan so the next checker added is wired up or
+     * fails here, rather than joining the set of scripts nobody runs.
+     */
+    /*
+     * Matched against `run:` lines only. The first version used a plain
+     * `toContain` over the whole file, so the comment above the step — which
+     * names the script it explains — kept the test green after the step itself
+     * was deleted. Prose about a gate is not the gate.
+     */
+    const ci = text(join(GITHUB, "workflows/ci.yml"));
+    const commands = ci
+      .split("\n")
+      .filter((line) => /^\s*(run:|-[ \t]*run:)/.test(line))
+      .join("\n");
+    expect(commands.length, "no run: lines parsed").toBeGreaterThan(200);
+    const checkers = readdirSync(join(ROOT, "scripts"))
+      .filter((f) => /^check-.*\.mjs$/.test(f));
+    expect(checkers.length).toBeGreaterThanOrEqual(4);
+    for (const checker of checkers) {
+      expect(commands, `ci.yml never runs scripts/${checker}`).toContain(checker);
     }
   });
 });
