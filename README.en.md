@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)](#-changelog-tiers--one-colour-per-tier)
-[![Tests](https://img.shields.io/badge/tests-1290%20%C2%B7%20130%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
+[![Tests](https://img.shields.io/badge/tests-1310%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-install--run)
@@ -200,7 +200,7 @@ The tier is **derived from SemVer** by `tierFor(version)`, never typed by hand. 
 
 <img src="assets/release-tiers.svg" alt="The three tiers MAJOR/UPDATE/PATCH with their colours and the ten-release timeline (SMIL animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1290 tests across 130 files, nine gates (SMIL animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1310 tests across 131 files, nine gates (SMIL animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
 
@@ -263,6 +263,34 @@ Also in this round: `heroBandWidth()`, **two new invariants** (12 → **14**) an
 **third corpus** — 189 snapshots (21 presets × 9 modes).
 
 <img src="assets/mode-chip.svg" alt="The mode chip before and after the v1.1.8 fix — before: centred on a mascot at the right edge, so overflow hidden cut its right half; after: aligned to the inner edge with a hard width cap, plus the label → size → ellipsis ladder (SMIL animation)" width="100%" />
+
+### Round 11 — Vietnamese tone marks are no longer clipped
+
+This screenshot was not "half the chip is gone" but **"the marks are gone"**: the
+chip read «MUỐI DƯA CỔ ĐIÊN», the **Ể** lost its circumflex while the **Ổ** kept
+its own. It was a **regression from round 10**: `truncate` does not only cut
+horizontally — `overflow: hidden` clips the **line box**, and Vietnamese stacks a
+tone mark on top of a circumflex (`Ố Ổ Ể Ấ Ự`) ~**0.35em** above the cap height.
+
+Three layers were fixed, and none of them overlaps another:
+
+| Layer | Before | After |
+| --- | --- | --- |
+| String | CSS ellipsis | `planModeChip()` cuts the string and appends `…` |
+| Line box | 1.2em | **1.5em** (`MODE_CHIP_LINE_HEIGHT`) |
+| Clip box | `truncate` on the name span | **no `overflow` at all** |
+
+Plus **`.clip-safe`** — the replacement for `truncate` on any translatable text:
+`padding-block: .24em` moves the clip box away from the ink, `margin-block: -.24em`
+gives the space back to the layout, so nothing moves and the marks survive. Six
+call sites use it now. And `chipBoxHeight()` replaces a guessed constant: the chip
+grew 3.3px, which is `heroContentHeight()`'s business, so it reads a measured
+number instead of a remembered one.
+
+Details: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
+
+<img src="assets/diacritics-clip.svg" alt="Why Vietnamese tone marks disappear — before: a clip box the size of the line box shaved the circumflex off Ể, so «CỔ ĐIỂN» read as «CỔ ĐIÊN»; after: a 1.5em line box and clip-safe padding of ±0.24em keep every mark (SMIL animation)" width="100%" />
+
 
 ## 📐 Adaptive layout — how the hero picks its shape
 
@@ -410,7 +438,7 @@ usableHeight` (252 combinations asserted).
 | 💾 **TOP 8 leaderboard** | Local storage, validated & normalised on read, auto upper-case names, highlight for freshly set records |
 | 🎨 **60fps graphics** | Canvas 2D, 460-particle budget, DPR cap 2, pre-rendered offscreen tile floor, star twinkle + menu aurora |
 | 📴 **Truly offline-first** | Self-hosted fonts (latin + vietnamese subsets, woff2), no CDN, no API — double-click `dist/index.html` and play |
-| 🧪 **Quality gates** | 1290 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
+| 🧪 **Quality gates** | 1310 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
 
@@ -473,7 +501,7 @@ npm run build      # → dist/index.html (one self-contained file)
 npm run dev        # dev server with HMR (http://localhost:5173)
 npm run preview    # serve the production build locally
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1290 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1310 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI quality gate)
 ```
 
@@ -599,18 +627,18 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 23 SVGs — no orphans, no broken references
+$ npm run check:assets # 24 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
 | Gate | Scope | 1.1.8 status |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1290 tests / 130 files** | ✅ |
+| `vitest run` | **1310 tests / 131 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 23 SVGs, references checked both ways | ✅ |
+| `check-assets` | 24 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
@@ -642,7 +670,7 @@ Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`s
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1290 tests / 130 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1310 tests / 131 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
@@ -686,7 +714,7 @@ Design notes and deeper technical docs:
 ## 🤝 Contributing
 
 1. Fork the repo, branch with the `arena/<name>` or `feat/<name>` convention.
-2. `npm run check` must be green before opening a PR (typecheck + 1290 tests + build).
+2. `npm run check` must be green before opening a PR (typecheck + 1310 tests + build).
 3. Avoid new runtime dependencies unless truly necessary — philosophy: **one file, no network, playable forever**.
 4. In your PR, note the screens/modes affected and attach a clip if gameplay changes.
 
