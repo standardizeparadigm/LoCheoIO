@@ -12,6 +12,7 @@ CornerPanel.tsx        the panel frame: uppercase title, four orange ticks, decl
 MenuItemButton.tsx     one compact row (icon · label · hint · trailing) — 5 variants
 GameMenu.tsx           GAME (bottom-left):  Play · Continue(gated) · Modes · Scores · Achievements · Settings · How to play
 InfoMenu.tsx           INFO (bottom-right): About · Changelog · Shortcuts · Quit + challenge + summary
+ModeChip.tsx           the chip under the mascot — alignment, label ladder and width cap from adaptive/chip
 MenuChrome.tsx         the absolute bottom band that carries both panels and the ticker
 StartScreen.tsx        (one level up) mounts the hero, the chrome and the modal host
 index.ts               the barrel — what `StartScreen` imports, nothing else should
