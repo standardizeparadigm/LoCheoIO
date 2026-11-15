@@ -38,5 +38,14 @@ jobs:
       - name: Assets referenced ↔ exists (no orphans)
         run: node scripts/check-assets.mjs
 
+      # The tests badge is checked by `docs-numbers.test.ts`, which reads the JSON
+      # report this script writes. CI ran neither: `npm run check` is
+      # `tsc && vitest run && vite build`, so `check:readme` — the only thing that
+      # invokes `--verify` — was never called, and the badge could drift by any
+      # amount while every job stayed green. `--verify` runs the suite, reads the
+      # report and exits non-zero on a stale badge in any of the ten READMEs.
+      - name: Tests badge matches the suite (runs it, ~40 s)
+        run: node scripts/sync-test-badge.mjs --verify
+
       - name: i18n parity (7 locales, key count printed by the script)
         run: node scripts/check-i18n.mjs

@@ -1,4 +1,6 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
@@ -60,23 +62,39 @@ describe("documented counts match the repository", () => {
     /*
      * The file count was pinned and the *test* count was not — so a badge
      * reading `tests-587 · 63 files` passed this file, because only the 63 was
-     * checked. The test count is checked now, and against the one honest
-     * source: the JSON report `sync-test-badge.mjs --verify` already produces
-     * in CI. When it is absent (a bare `vitest run`), skip rather than guess —
-     * grep cannot count `it.each` rows and would report 587 for 675.
+     * checked.
+     *
+     * The honest source is the JSON report `sync-test-badge.mjs` writes by
+     * running the suite. It was read from a literal `/tmp` path and, when
+     * absent, the test `return`ed: a silent pass. That was not theoretical —
+     * CI runs `npm run check` (`tsc && vitest run && vite build`), which never
+     * runs the badge script, so the one place meant to catch a stale badge
+     * checked nothing at all. A `return` that hides a gap is indistinguishable
+     * from a check that passed.
+     *
+     * Two things change. The path comes from `tmpdir()` on both sides, so a
+     * `TMPDIR`-sandboxed run reads its own report. And with no report the test
+     * still asserts a floor: a badge below the number of test *files* is
+     * impossible, and a badge that fails that floor is caught even under a bare
+     * `vitest run`. Exactness needs the report; the floor needs nothing.
      */
-    let report: { numTotalTests?: number } | null = null;
-    try {
-      report = JSON.parse(readFileSync("/tmp/vitest-badge.json", "utf8"));
-    } catch {
-      return; // no report this run — `check:readme` is the gate for that
+    const reportPath = join(tmpdir(), "vitest-badge.json");
+    if (!existsSync(reportPath)) {
+      const floor = currentTestFileCount();
+      for (const file of READMES) {
+        const badge = readFileSync(file, "utf8").match(/badge\/tests-(\d+)%20/);
+        expect(badge, `${file} has no tests badge`).not.toBeNull();
+        expect(Number(badge![1]), `${file} badge is below the file count`).toBeGreaterThanOrEqual(floor);
+      }
+      return;
     }
-    expect(report?.numTotalTests).toBeGreaterThan(400);
+    const total = (JSON.parse(readFileSync(reportPath, "utf8")) as { numTotalTests: number }).numTotalTests;
+    expect(total).toBeGreaterThan(400);
     for (const file of READMES) {
       const body = readFileSync(file, "utf8");
       const badge = body.match(/badge\/tests-(\d+)%20/);
       expect(badge, `${file} has no tests badge`).not.toBeNull();
-      expect(Number(badge![1]), `${file} test count is stale`).toBe(report!.numTotalTests);
+      expect(Number(badge![1]), `${file} test count is stale`).toBe(total);
     }
   });
 

@@ -27,6 +27,22 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+/**
+ * Where the JSON report lands.
+ *
+ * It used to be a literal path under /tmp, shared by every process on the
+ * machine. Two runs at once — a developer writing the badge while CI verifies
+ * it, or two worktrees — read each other's half-written report; the symptom is
+ * ten READMEs carrying the other run's numbers. `os.tmpdir()` respects `TMPDIR`,
+ * so a test can hand this process a private directory and know what it reads.
+ *
+ * `tests/docs-numbers.test.ts` reads the same path to check the badge, so the
+ * two must agree: both call `tmpdir()` rather than spelling it out.
+ */
+export const REPORT = join(tmpdir(), "vitest-badge.json");
 
 const TESTS_DIR = "tests";
 const READMES = readdirSync(".").filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
@@ -42,14 +58,14 @@ function realCounts() {
    * not this script.
    */
   try {
-    execFileSync("npx", ["vitest", "run", "--reporter=json", "--outputFile=/tmp/vitest-badge.json"], {
+    execFileSync("npx", ["vitest", "run", "--reporter=json", `--outputFile=${REPORT}`], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });
   } catch {
     /* report is written either way — see above */
   }
-  const report = JSON.parse(readFileSync("/tmp/vitest-badge.json", "utf8"));
+  const report = JSON.parse(readFileSync(REPORT, "utf8"));
   return { total: report.numTotalTests, files: report.testResults.length, report };
 }
 
