@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1250 tests / 127 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1281 tests / 129 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -48,6 +48,8 @@
 | `adaptive-resolve.test.ts` | `resolveAdaptive()` là hàm toàn phần — `scene + reserve === usableHeight`, panel vẽ đúng phần reserve trả, hero vừa band, `cssVars` khớp profile | pure |
 | `adaptive-wordmark-band.test.ts` | `lockupMaxForBand()`/`lockupAtBand()` — trần band thắng tier, `MAX_LOCKUP_PX` là nửa pixel chạm được, `limitedBy` nói cap nào thắng | pure |
 | `adaptive-fixtures.test.ts` | **corpus 1 110 cửa sổ** (`tests/fixtures/adaptive-matrix/`, một file mỗi viewport) — tính lại từng quyết định, kiểm luôn tính nhất quán nội tại của snapshot (panel + lề ≤ reserve, lockup vừa band) | fs + pure |
+| `mode-chip-fixtures.test.ts` | **corpus 189 ảnh chụp** (`tests/fixtures/mode-chips/`, một file mỗi cặp preset × chế độ) — tính lại từng ảnh, kiểm tính nhất quán nội tại (maxWidth ≤ available, `reason: full` ⇒ còn nhãn, `ellipsis` ⇒ đúng sàn 9.5px), và ghim rằng chip chỉ rộng theo *tên chế độ*, không theo cửa sổ | fs + pure |
+| `mode-chip.test.ts` | `planModeChip()`/`estimateText()` — 23 test: chip không bao giờ khai báo rộng hơn band, chỉ trạng thái `ellipsis` mới tràn, 9 tên × 7 locale × 21 preset đều không bị cắt, nhãn chỉ bị bỏ ở 3 tên dài nhất trên điện thoại 320px (ghim lại), thang bậc đơn điệu và tất định | pure |
 | `adaptive-presets.test.ts` | **21 preset** — id duy nhất, thứ tự theo kích thước, ba nhóm cỡ không chồng lấn, mỗi id xuất hiện trong hợp đồng thiết kế và trong release notes; quét 21 × 21 cặp để chắc `warningsFor()` không phải hằng số | pure + fs |
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |
