@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1290%20%C2%B7%20130%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1310%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalar--rodar)
@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, os 23 SVGs existentes são redesenhados e a nona rodada acrescenta o diagrama de faixas do HUD.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, os 24 SVGs existentes são redesenhados e a nona rodada acrescenta o diagrama de faixas do HUD.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 
@@ -247,7 +247,7 @@ O nível é **derivado do SemVer** por `tierFor(version)`, nunca escrito à mão
 
 <img src="assets/release-tiers.svg" alt="Os três níveis MAJOR/UPDATE/PATCH com as suas cores e a linha temporal de dez versões (animação SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1290 testes em 130 ficheiros, nove portões (animação SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1310 testes em 131 ficheiros, nove portões (animação SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="As seis camadas adaptativas de Lọ Chéo 1.1.8 — caixa, nível, plano e depois densidade / hero / tipografia / modal / tabuleiro, num só sentido (animação SMIL)" width="100%" />
 
@@ -303,6 +303,35 @@ Também nesta rodada: `heroBandWidth()`, **duas invariantes novas** (12 → **14
 
 <img src="assets/mode-chip.svg" alt="O chip de modo antes e depois da correção de 1.1.8 — antes: centrado num mascote no bordo direito, cortado por overflow hidden; depois: alinhado ao bordo interno com limite de largura, e a escada rótulo → tamanho → reticências (animação SMIL)" width="100%" />
 
+### Rodada 11 — os acentos vietnamitas já não são cortados
+
+Esta captura não dizia "falta a metade direita" mas **"faltam os acentos"**: o
+chip lia «MUỐI DƯA CỔ ĐIÊN», o **Ể** perdeu o circunflexo enquanto o **Ổ** ao lado
+mantinha o seu. Era uma **regressão da rodada 10**: `truncate` não corta só na
+horizontal — `overflow: hidden` recorta a **caixa de linha**, e o vietnamita
+empilha um acento tonal sobre um circunflexo (`Ố Ổ Ể Ấ Ự`) cerca de **0,35em**
+acima da altura das maiúsculas.
+
+Três camadas foram corrigidas, e nenhuma se sobrepõe:
+
+| Camada | Antes | Depois |
+| --- | --- | --- |
+| Texto | reticências do CSS | `planModeChip()` corta o texto e acrescenta `…` |
+| Caixa de linha | 1,2em | **1,5em** (`MODE_CHIP_LINE_HEIGHT`) |
+| Caixa de recorte | `truncate` no span do nome | **nenhum `overflow`** |
+
+E **`.clip-safe`** — o substituto de `truncate` em qualquer texto traduzível:
+`padding-block: .24em` afasta a caixa de recorte da tinta, `margin-block: -.24em`
+devolve esse espaço ao layout, então nada se move e os acentos sobrevivem. Seis
+locais já o usam. E `chipBoxHeight()` substitui uma constante adivinhada: o chip
+cresceu 3,3px, o que é assunto de `heroContentHeight()`, que agora lê uma medição
+em vez de uma lembrança.
+
+Detalhes: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
+
+<img src="assets/diacritics-clip.svg" alt="Por que os acentos vietnamitas desaparecem — antes: uma caixa de recorte do tamanho da caixa de linha cortava o circunflexo do Ể e «CỔ ĐIỂN» lia-se «CỔ ĐIÊN»; depois: caixa de linha de 1,5em e o preenchimento ±0,24em do clip-safe mantêm cada acento (animação SMIL)" width="100%" />
+
+
 ## 📐 Layout adaptativo — como o hero escolhe sua forma
 
 A tela inicial não usa media queries para decidir o layout. Ela **mede** a janela e escolhe entre cinco capacidades: `sideBySide`, `halo`, `badgeRow`, `mascot`, `liveBadge`.
@@ -347,7 +376,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // coluna mais alta: 192 mascote + 24 chip
 | 💾 **Ranking TOP 8** | Salvo localmente, validado e normalizado na leitura, nomes em maiúsculas, destaque para recorde recém-batido |
 | 🎨 **Gráficos 60fps** | Canvas 2D, orçamento de 460 partículas, DPR limitado a 2, chão de ladrilho pré-renderizado offscreen, estrelas cintilantes + aurora no menu |
 | 📴 **Offline-first de verdade** | Fontes auto-hospedadas (subsets latin + vietnamita, woff2), sem CDN, sem API — duplo clique em `dist/index.html` e jogue |
-| 🧪 **Portões de qualidade** | 1290 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
+| 🧪 **Portões de qualidade** | 1310 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
 
 <img src="assets/items.svg" alt="Os 14 ingredientes — conservas para pegar, poderes dourados para agarrar, perigos para desviar" width="100%" />
 
@@ -410,7 +439,7 @@ npm run build      # → dist/index.html (um arquivo autocontido)
 npm run dev        # dev server com HMR (http://localhost:5173)
 npm run preview    # serve o build de produção localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1290 testes unitários (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1310 testes unitários (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (portão de qualidade CI)
 ```
 
@@ -555,7 +584,7 @@ Duplo clique em [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Versão | Tier | Data | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1290 testes / 130 arquivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1310 testes / 131 arquivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fundo do menu sem névoa** (quatro camadas: `blur 64→22px`, vinheta de cantos em vez de tela inteira, moldura CRT 140→90px, piso 45→70%) · **changelog por níveis coloridos** · **96 itens novos** para 8 versões · datas reordenadas · `src/game/changelog/` dividido · 10 READMEs refeitos · **256 testes** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes em 6 seções** (presets · áudio · tela · idioma · backup · dados) · volumes 0–100 · intensidade do tremor · qualidade visual · pausa ao trocar de aba · idioma dentro dos Ajustes · 4 presets · exportar/importar JSON · menu multicamada animado · degradê no cartão do autor · foco preso nos modais · fix da música ao recarregar · **150 testes** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus de canto GAME/INFO** (Jogar · Continuar · Modos · Classificação · Conquistas · Ajustes / Sobre o autor · Changelog · Sair) · **salvar & retomar partida** (`locheo.run.v1`) · ajustes no jogo (SFX/música/tremor/movimento) · fix vazamento de atalhos nos modais · prefers-reduced-motion global · **113 testes** |
