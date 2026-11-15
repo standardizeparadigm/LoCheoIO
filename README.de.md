@@ -201,6 +201,32 @@ Doku — sowie `diagnose()`.
 
 <img src="assets/hud-bands.svg" alt="Das HUD als Plan in 1.1.8 — ein Band pro Messwert, eine von der Uhr ausgehende Mittenspalte, Leiter chips → comboBar → jars → best und Kompression bis zur Untergrenze 0,55 (SMIL-Animation)" width="100%" />
 
+### 1️⃣1️⃣ Zehnte Runde: der Modus-Chip behält seine rechte Seite
+
+Der Screenshot meldete, der klassische Modus „verliert seine rechte Seite". Die
+Ursache war keine falsche Zahl, sondern eine falsche **Annahme**: der Chip war
+`absolute; left: 50%; translateX(-50%)` in der Maskottchen-Spalte, ohne `max-width`.
+
+```
+SPALTEN-Layout  Maskottchen mittig  →  Chip mittig darauf  →  korrekt
+ZEILEN-Layout   Maskottchen rechts  →  halber Chip außerhalb der Band
+                                      .menu-hero { overflow: hidden }  →  ABGESCHNITTEN
+```
+
+Der längste Name — «MUỐI DƯA CỔ ĐIỂN», 19 Zeichen — war der einzige, der sichtbar
+abgeschnitten wurde; deshalb las sich der Fehler als „der klassische Modus ist
+kaputt", obwohl jeder Name ein wenig verlor.
+
+Jetzt hat der Chip **zwei getrennte Garantien**: CSS hält die Box (innenbündig im
+Zeilen-Layout, hartes `max-width`), und `planModeChip()` hält die Leiter (`full →
+label-dropped → name-shrunk → ellipsis`). Ein Schätzfehler von 6 % wählt nur einen
+kleineren Chip, nie einen abgeschnittenen.
+
+Ebenfalls in dieser Runde: `heroBandWidth()`, **zwei neue Invarianten** (12 → **14**)
+und ein **dritter Korpus** — 189 Momentaufnahmen (21 Presets × 9 Modi).
+
+<img src="assets/mode-chip.svg" alt="Der Modus-Chip vor und nach dem 1.1.8-Fix — vorher: auf einem Maskottchen am rechten Rand zentriert und von overflow hidden abgeschnitten; nachher: innenbündig mit harter Breitengrenze, dazu die Leiter Label → Größe → Auslassungspunkte (SMIL-Animation)" width="100%" />
+
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
 
 Der Startbildschirm entscheidet sein Layout nicht über Media Queries. Er **misst** das Fenster und wählt aus fünf Fähigkeiten: `sideBySide`, `halo`, `badgeRow`, `mascot`, `liveBadge`.

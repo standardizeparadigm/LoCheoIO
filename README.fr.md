@@ -39,7 +39,7 @@ C'est un **arcade d'action mono-écran** inspiré des pickles populaires vietnam
 
 ## 🆕 Nouveautés de v1.1.8
 
-> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît et les 22 SVG existants sont redessinés et le tour neuf ajoute le schéma des bandes du HUD.
+> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît et les 23 SVG existants sont redessinés et le tour neuf ajoute le schéma des bandes du HUD.
 
 ### 📐 Une addition que personne ne surveillait — et quatre bugs à la fois
 
@@ -200,6 +200,32 @@ dans `constraints.ts` — une seule liste pour la suite, `check:adaptive` et la 
 et `diagnose()`.
 
 <img src="assets/hud-bands.svg" alt="Le HUD comme plan en 1.1.8 — une bande par indicateur, colonne centrale qui coule depuis l'horloge, échelle chips → comboBar → jars → best puis compression jusqu'au plancher 0,55 (animation SMIL)" width="100%" />
+
+### 1️⃣1️⃣ Dixième tour : le chip de mode garde son côté droit
+
+La capture disait que le mode classique « perd son côté droit ». La cause n'était
+pas un chiffre faux mais une **supposition** fausse : le chip était `absolute;
+left: 50%; translateX(-50%)` dans la colonne de la mascotte, sans `max-width`.
+
+```
+disposition en COLONNE  mascotte centrée  →  chip centré dessus  →  correct
+disposition en LIGNE    mascotte à droite →  la moitié du chip hors de la bande
+                                             .menu-hero { overflow: hidden }  →  COUPÉ
+```
+
+Le nom le plus long — «MUỐI DƯA CỔ ĐIỂN», 19 caractères — était le seul assez long
+pour être visiblement coupé : d'où l'impression que « le mode classique est cassé »
+alors que tous les noms perdaient un peu.
+
+Le chip a maintenant **deux garanties séparées** : le CSS tient la boîte (aligner au
+bord intérieur en ligne, `max-width` dure) et `planModeChip()` tient l'échelle
+(`full → label-dropped → name-shrunk → ellipsis`). Une erreur de 6 % sur l'estimation
+ne choisit qu'un chip plus petit, jamais un chip coupé.
+
+Aussi : `heroBandWidth()`, **deux nouveaux invariants** (12 → **14**) et un
+**troisième corpus** — 189 instantanés (21 presets × 9 modes).
+
+<img src="assets/mode-chip.svg" alt="Le chip de mode avant et après le correctif 1.1.8 — avant : centré sur une mascotte au bord droit, coupé par overflow hidden ; après : aligné au bord intérieur avec un plafond de largeur, et l'échelle libellé → taille → points de suspension (animation SMIL)" width="100%" />
 
 ## 📐 Mise en page adaptative — comment le hero choisit sa forme
 

@@ -238,6 +238,32 @@ trade-offs: none — this window gets the full layout
 
 <img src="assets/hud-bands.svg" alt="The HUD as a plan in 1.1.8 — a band per readout, a centre column flowing from the clock, the drop ladder chips → comboBar → jars → best, then compression to a floor of 0.55 (SMIL animation)" width="100%" />
 
+### 1️⃣1️⃣ Round ten: the mode chip keeps its right side
+
+The screenshot said the classic mode "loses its right side". The cause was not a
+wrong number but a wrong assumption: the chip was `absolute; left: 50%;
+translateX(-50%)` inside the mascot column, with no `max-width`.
+
+```
+STACK layout   mascot centred in the band  →  chip centred on it  →  correct
+ROW layout     mascot at the right edge    →  half the chip outside the band
+                                            .menu-hero { overflow: hidden }  →  CUT
+```
+
+The longest name — «MUỐI DƯA CỔ ĐIỂN», 19 characters — was the only one long
+enough to be visibly cut, which is why the bug read as "the classic mode is
+broken" while every name was losing a little.
+
+The chip now has **two separate guarantees**: CSS holds the box (align to the
+inner edge in the row layout, hard `max-width`), and `planModeChip()` holds the
+ladder (`full → label-dropped → name-shrunk → ellipsis`). A 6% error in the text
+estimate only ever picks a smaller chip, never a clipped one.
+
+Also in this round: `heroBandWidth()`, **two new invariants** (12 → **14**) and a
+**third corpus** — 189 snapshots (21 presets × 9 modes).
+
+<img src="assets/mode-chip.svg" alt="The mode chip before and after the v1.1.8 fix — before: centred on a mascot at the right edge, so overflow hidden cut its right half; after: aligned to the inner edge with a hard width cap, plus the label → size → ellipsis ladder (SMIL animation)" width="100%" />
+
 ## 📐 Adaptive layout — how the hero picks its shape
 
 The start screen does not use media queries to decide its layout. It **measures** the window and chooses from five capabilities: `sideBySide`, `halo`, `badgeRow`, `mascot`, `liveBadge`.
@@ -573,7 +599,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 22 SVGs — no orphans, no broken references
+$ npm run check:assets # 23 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
@@ -584,7 +610,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 22 SVGs, references checked both ways | ✅ |
+| `check-assets` | 23 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~914 KB · gzip ~418 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.

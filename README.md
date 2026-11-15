@@ -378,6 +378,41 @@ và cho tài liệu, thay vì ba bản sao lệch nhau. Chi tiết:
 
 <img src="assets/hud-bands.svg" alt="HUD thành một kế hoạch ở 1.1.8 — mỗi readout một băng glyph, cột giữa chảy từ đồng hồ, bậc thang bỏ dần chips → comboBar → jars → best rồi nén tới sàn 0.55 (hoạt họa SMIL)" width="100%" />
 
+### 1️⃣1️⃣ Vòng mười: chip chế độ không còn mất nửa bên phải
+
+Ảnh chụp báo *"khi chọn chế độ cổ điển tự nhiên phần bên phải lại bị mất"*. Nguyên
+nhân không phải một con số sai mà một **giả định** sai: chip là `absolute; left:
+50%; translateX(-50%)` trong cột mascot và không có `max-width`.
+
+```
+bố cục CỘT   mascot ở giữa band   →  chip căn giữa mascot  →  đúng
+bố cục HÀNG  mascot ở mép phải    →  nửa chip ra ngoài band
+                                     .menu-hero { overflow: hidden }  →  CẮT
+```
+
+Tên chế độ dài nhất — «MUỐI DƯA CỔ ĐIỂN», 19 ký tự — là cái duy nhất đủ dài để
+bị cắt thấy rõ, nên lỗi đọc thành "chế độ cổ điển bị lỗi", trong khi mọi tên đều
+bị cắt ít hơn.
+
+Nay chip có **hai bảo đảm tách rời**: CSS giữ cái hộp (căn theo mép trong khi
+mascot ở phải, `max-width` cứng bằng bề rộng band) và `planModeChip()` giữ thang
+bậc (`full → label-dropped → name-shrunk → ellipsis`). Ước lượng bề rộng chữ sai
+6% cũng không sao — tầng CSS mới là thứ giữ pixel.
+
+| Band | Khả dụng | Kết quả |
+| --- | --- | --- |
+| 1088 (1280×720) | 1072 | `full` — cần 246px |
+| 288 (320×480) | 272 | `full` — còn 26px |
+| 228 | 212 | `label-dropped` |
+| 128 | 112 | `ellipsis` ở sàn 9.5px |
+
+Kèm theo: `heroBandWidth()` (bề rộng thật của hàng trong hero), **2 bất biến mới**
+(`chip-name-survives`, `chip-labelled` → hợp đồng 12 → **14**) và **corpus thứ ba**
+— 189 ảnh chụp (21 preset × 9 chế độ). Chi tiết:
+[docs/releases/v1.1.8.md §17](docs/releases/v1.1.8.md#17-vòng-10--chip-chế-độ-mất-nửa-bên-phải).
+
+<img src="assets/mode-chip.svg" alt="Chip chế độ trước và sau bản sửa v1.1.8 — trước: căn giữa trên mascot ở mép phải nên bị overflow hidden cắt mất nửa phải; sau: căn mép trong và có trần bề rộng, kèm thang bậc nhãn → cỡ chữ → ellipsis (hoạt họa SMIL)" width="100%" />
+
 ## 📐 Bố cục thích nghi — cách hero tự chọn hình dạng
 
 Màn hình bắt đầu không dùng media query để quyết định bố cục. Nó **đo** cửa sổ
@@ -733,7 +768,7 @@ Mỗi thay đổi phải qua **năm cổng** trước khi vào `main` — chạy
 $ npm run check        # typecheck + toàn bộ test
 $ npm run check:readme # 10 README đồng bộ phiên bản + liên kết release
 $ npm run check:i18n   # 7 locale × 327 khoá, không thiếu không thừa
-$ npm run check:assets # 22 SVG — không file mồ côi, không tham chiếu hỏng
+$ npm run check:assets # 23 SVG — không file mồ côi, không tham chiếu hỏng
 $ npm run smoke        # SSR smoke: mọi menu/modal render được
 ```
 
@@ -744,7 +779,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
-| `check-assets` | 22 SVG, 2 chiều tham chiếu | ✅ |
+| `check-assets` | 23 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~914 KB · gzip ~418 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1281 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.

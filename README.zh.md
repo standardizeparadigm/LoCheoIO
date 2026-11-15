@@ -268,6 +268,29 @@ size`），左右两列固定，中列从 `clockY` **顺势流动**；放不下�
 
 <img src="assets/hud-bands.svg" alt="1.1.8 的 HUD 计划 —— 每个读数一个字形带，中列从时钟顺势流动，按 chips → comboBar → jars → best 依次舍弃，再压缩到 0.55 下限（SMIL 动画）" width="100%" />
 
+### 1️⃣1️⃣ 第十轮：模式标签不再丢失右半边
+
+截图报告"选择经典模式时右侧突然消失"。原因不是数字错误，而是**假设**错误：
+标签是 `absolute; left: 50%; translateX(-50%)`，位于吉祥物列内且没有 `max-width`。
+
+```
+纵向布局  吉祥物居中  →  标签以它为中心  →  正确
+横向布局  吉祥物在最右  →  半个标签超出画面
+                          .menu-hero { overflow: hidden }  →  被裁切
+```
+
+最长的名称（「MUỐI DƯA CỔ ĐIỂN」，19 字符）是唯一被明显裁切的，所以看起来像
+"经典模式坏了"，其实每个名称都少了一点。
+
+现在标签有**两道独立保证**：CSS 守住盒子（横向布局下对齐内侧边缘、硬性
+`max-width`），`planModeChip()` 守住阶梯（`full → label-dropped → name-shrunk →
+ellipsis`）。文字宽度估算误差 6% 也没关系——真正守住像素的是 CSS。
+
+本轮还包括：`heroBandWidth()`、**两条新不变量**（12 → **14**）和**第三个语料库**
+——189 张快照（21 预设 × 9 模式）。
+
+<img src="assets/mode-chip.svg" alt="1.1.8 修复前后的模式标签 —— 修复前：以右侧吉祥物为中心，被 overflow hidden 裁掉右半；修复后：对齐内侧边缘并设宽度上限，附 标签 → 字号 → 省略号 的阶梯（SMIL 动画）" width="100%" />
+
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
 
 开始屏幕不用媒体查询决定布局。它**测量**窗口，从五种能力中挑选：`sideBySide`、`halo`、`badgeRow`、`mascot`、`liveBadge`。

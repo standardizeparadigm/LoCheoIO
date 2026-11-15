@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, os 22 SVGs existentes são redesenhados e a nona rodada acrescenta o diagrama de faixas do HUD.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai, os 23 SVGs existentes são redesenhados e a nona rodada acrescenta o diagrama de faixas do HUD.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 
@@ -276,6 +276,32 @@ Também nesta rodada: **21 presets** ordenados por tamanho (320×480 → 3840×2
 documentação — e `diagnose()`.
 
 <img src="assets/hud-bands.svg" alt="O HUD como plano em 1.1.8 — uma faixa por indicador, coluna central fluindo do relógio, escada chips → comboBar → jars → best e compressão até o piso 0,55 (animação SMIL)" width="100%" />
+
+### 1️⃣1️⃣ Décima rodada: o chip de modo mantém o lado direito
+
+A captura dizia que o modo clássico "perde o lado direito". A causa não era um
+número errado, mas uma **suposição** errada: o chip era `absolute; left: 50%;
+translateX(-50%)` dentro da coluna do mascote, sem `max-width`.
+
+```
+layout em COLUNA  mascote centrado   →  chip centrado nele  →  correto
+layout em LINHA   mascote à direita  →  metade do chip fora da faixa
+                                       .menu-hero { overflow: hidden }  →  CORTE
+```
+
+O nome mais longo — «MUỐI DƯA CỔ ĐIỂN», 19 caracteres — era o único longo o
+bastante para ser cortado de forma visível; por isso o erro parecia "o modo clássico
+quebrou", quando todos os nomes perdiam um pouco.
+
+Agora o chip tem **duas garantias separadas**: o CSS segura a caixa (alinhar à borda
+interna no layout em linha, `max-width` rígido) e `planModeChip()` segura a escada
+(`full → label-dropped → name-shrunk → ellipsis`). Um erro de 6% na estimativa só
+escolhe um chip menor, nunca um chip cortado.
+
+Também nesta rodada: `heroBandWidth()`, **duas invariantes novas** (12 → **14**) e um
+**terceiro corpus** — 189 instantâneos (21 presets × 9 modos).
+
+<img src="assets/mode-chip.svg" alt="O chip de modo antes e depois da correção de 1.1.8 — antes: centrado num mascote no bordo direito, cortado por overflow hidden; depois: alinhado ao bordo interno com limite de largura, e a escada rótulo → tamanho → reticências (animação SMIL)" width="100%" />
 
 ## 📐 Layout adaptativo — como o hero escolhe sua forma
 

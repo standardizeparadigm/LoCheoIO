@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 22 SVG existentes se redibujan y la ronda nueve añade el diagrama de bandas del HUD.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 23 SVG existentes se redibujan y la ronda nueve añade el diagrama de bandas del HUD.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -231,6 +231,32 @@ invariantes** en `constraints.ts` — una sola lista para la suite, para
 `:check:adaptive` y para la documentación — y `diagnose()`.
 
 <img src="assets/hud-bands.svg" alt="El HUD como plan en 1.1.8 — una banda por indicador, columna central que fluye desde el reloj, escalera chips → comboBar → jars → best y compresión hasta el suelo 0.55 (animación SMIL)" width="100%" />
+
+### 1️⃣1️⃣ Ronda diez: el chip de modo conserva su lado derecho
+
+La captura decía que el modo clásico "pierde el lado derecho". La causa no era un
+número equivocado sino una **suposición** equivocada: el chip era `absolute; left:
+50%; translateX(-50%)` dentro de la columna del mascota, sin `max-width`.
+
+```
+diseño en COLUMNA  mascota centrada   →  chip centrado en ella  →  correcto
+diseño en FILA     mascota a la derecha  →  medio chip fuera de la banda
+                                          .menu-hero { overflow: hidden }  →  CORTE
+```
+
+El nombre más largo —«MUỐI DƯA CỔ ĐIỂN», 19 caracteres— era el único lo bastante
+largo para verse cortado, por eso el fallo parecía "el modo clásico está roto"
+mientras todos los nombres perdían un poco.
+
+Ahora el chip tiene **dos garantías separadas**: el CSS sostiene la caja (alinear al
+borde interior en el diseño en fila, `max-width` duro) y `planModeChip()` sostiene la
+escalera (`full → label-dropped → name-shrunk → ellipsis`). Un 6% de error en la
+estimación solo elige un chip más pequeño, nunca uno cortado.
+
+También: `heroBandWidth()`, **dos invariantes nuevas** (12 → **14**) y un **tercer
+corpus** — 189 instantáneas (21 presets × 9 modos).
+
+<img src="assets/mode-chip.svg" alt="El chip de modo antes y después del arreglo de 1.1.8 — antes: centrado en una mascota en el borde derecho, cortado por overflow hidden; después: alineado al borde interior con tope de ancho, y la escalera etiqueta → tamaño → puntos suspensivos (animación SMIL)" width="100%" />
 
 ## 📐 Diseño adaptable — cómo el hero elige su forma
 
