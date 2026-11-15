@@ -11,7 +11,7 @@ Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc 
 ## Quy trình
 
 1. Fork repo → tạo branch `arena/<tên>` hoặc `feat/<tên>`.
-2. `npm install` rồi `npm run check` (typecheck + 1289 tests + build) — tất cả phải xanh.
+2. `npm install` rồi `npm run check` (typecheck + 1290 tests + build) — tất cả phải xanh.
 3. Nếu sửa logic thuần (`modes.ts`, `achievements.ts`, `storage.ts`, `src/i18n/i18n.ts`): thêm/sửa test trong `tests/`.
 4. Nếu sửa gameplay/cân bằng: ghi rõ chế độ ảnh hưởng — **cả chín**: Muối Dưa Cổ Điển · Thảnh Thơi ·
    Ớt Lửa · Đua 60 Giây · Mùa Vàng · Mưa Dưa · Gốm Mỏng · Lễ Hội Combo · Đại Tiệc Dưa.
@@ -28,7 +28,7 @@ Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc 
 ## Kiểm thử
 
 - `npm run typecheck` — TypeScript strict, `noUnusedLocals`.
-- `npm run test` — vitest (1289 tests / 130 file).
+- `npm run test` — vitest (1290 tests / 130 file).
 - `npm run build` — phải ra đúng 1 file `dist/index.html`.
 - `npm run smoke` — headless render smoke cho toàn bộ menu/modal.
 - `npm run check:readme` — version badge + liên kết release trên cả 10 README, và badge test
