@@ -8,13 +8,13 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "homepage": "https://github.com/standardizeparadigm/Lo-CheoIO",
+  "homepage": "https://github.com/standardizeparadigm/LoCheoIO",
   "repository": {
     "type": "git",
-    "url": "https://github.com/standardizeparadigm/Lo-CheoIO.git"
+    "url": "https://github.com/standardizeparadigm/LoCheoIO.git"
   },
   "bugs": {
-    "url": "https://github.com/standardizeparadigm/Lo-CheoIO/issues"
+    "url": "https://github.com/standardizeparadigm/LoCheoIO/issues"
   },
   "keywords": [
     "lo-cheo",
