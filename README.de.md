@@ -209,6 +209,29 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // höhere Spalte: 192 Maskottchen + 24 Chip
 
 `tests/menu-adaptive.test.ts` prüft **1.682 Viewports** und verlangt `heroContentHeight(layout) ≤ scene` bei jedem Sample. Beim Größenändern hören beide Hooks auf **sechs** Events und aktualisieren in einem Frame.
 
+### 🧱 Runde acht: sechs Schichten, ein Profil
+
+Runde sechs brachte dem Hero bei, sein Fenster zu messen. Der Rest riet weiter: das Modal war `86vh` **ohne Deckel**, die Game-Over-Überschrift ein festes `text-6xl`, die Panels riefen selbst `cornerRowHeight()`, und `engine.resize()` rechnete den Glasradius allein. **Sechs Leser, sechs Messungen** — und zwei Messungen können auf zwei Frames fallen.
+
+v1.1.8 bündelt sie in **einer reinen Funktion einer Box**:
+
+<img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+Die neue Invariante `Panel + Rand ≤ Reserve` scheitert bei **844×390** — ein iPhone im Querformat, die Größe aus dem Bericht. `reserveFor()` zieht 30px ab, wenn das Panel keine Fußzeile zeichnet, aber `panelHeightForPlan()` sah nur die Dichte und zeichnete die volle Höhe: ein 234px-Panel in einem 216px-Band, **18px seiner Basis außerhalb des Bild­schirms**.
+
+**Ein Korpus von 1 620 Momentaufnahmen** hält das fest: `tests/fixtures/adaptive-matrix/` (1 110 Fenster, eine Datei pro Fenster) und `tests/fixtures/hero-bands/` (510 Paare „Breite × Band"). `npm run check:adaptive` druckt 21 Zeilen und prüft sechs Invarianten — ohne Browser.
+
 ### 🌍 Die zweite Ebene: Umgebung, nicht nur Größe
 
 Die Fensterhöhe ist nicht die nutzbare Höhe. Auf einem iPhone fressen Adressleiste

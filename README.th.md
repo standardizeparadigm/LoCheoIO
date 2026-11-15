@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` กวาด **1,682 viewport** และยืนยัน `heroContentHeight(layout) ≤ scene` ทุกตัวอย่าง
 
+### 🧱 รอบที่แปด: หกชั้น หนึ่งโปรไฟล์
+
+รอบที่หกสอนให้ฮีโร่วัดหน้าต่างของตัวเอง แต่ที่เหลือยังเดาอยู่: โมดัลเป็น `86vh` **ที่ไม่มีเพดาน** หัวข้อจบเกมเป็น `text-6xl` คงที่ พาเนลเรียก `cornerRowHeight()` เอง และ `engine.resize()` คำนวณรัศมีโหลเอง **หกที่อ่านหกครั้ง** — และสองครั้งอาจตกคนละเฟรม
+
+v1.1.8 รวมทั้งหมดเป็น**ฟังก์ชันบริสุทธิ์หนึ่งตัวของกล่องหนึ่งกล่อง**:
+
+<img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+ค่าคงที่ใหม่ `พาเนล + ระยะขอบ ≤ reserve` แดงที่ **844×390** — iPhone แนวนอน ขนาดเดียวกับภาพในรายงาน `reserveFor()` หัก 30px เมื่อพาเนลไม่วาดแถบท้าย แต่ `panelHeightForPlan()` ดูแค่ความหนาแน่นแล้ววาดเต็มความสูง: พาเนล 234px ในแถบ 216px **ฐานล่าง 18px อยู่นอกจอ**
+
+**คลังภาพตัวเลข 1 620 ภาพ** ล็อกไว้: `tests/fixtures/adaptive-matrix/` (1 110 หน้าต่าง หนึ่งไฟล์ต่อหน้าต่าง) และ `tests/fixtures/hero-bands/` (510 คู่ «ความกว้าง × แถบ») `npm run check:adaptive` พิมพ์ตาราง 21 แถวและยืนยันค่าคงที่หกข้อโดยไม่ต้องใช้เบราว์เซอร์
+
 ### 🌍 ชั้นที่สอง — สภาพแวดล้อม ไม่ใช่แค่ขนาด
 
 ความสูงของหน้าต่างไม่ใช่ความสูงที่ใช้ได้ บน iPhone แถบที่อยู่และแถบโฮมกินพื้นที่

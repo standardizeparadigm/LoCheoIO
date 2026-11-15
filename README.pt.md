@@ -135,6 +135,29 @@ Uma decisão que depende de *dois eixos* não se escreve como media query de um 
 
 `tests/menu-adaptive.test.ts` varre **1.682 viewports** e exige `heroContentHeight(layout) ≤ scene` em cada amostra.
 
+### 🧱 Oitava ronda: seis camadas, um perfil
+
+A ronda seis ensinou o hero a medir a sua janela. O resto continuava a adivinhar: a modal era `86vh` **sem teto**, o título de fim de jogo era um `text-6xl` fixo, os painéis chamavam `cornerRowHeight()` por conta própria e `engine.resize()` calculava o raio do frasco sozinho. **Seis leitores, seis leituras** — e duas leituras podem cair em frames diferentes.
+
+A v1.1.8 junta tudo em **uma função pura de uma caixa**:
+
+<img src="assets/adaptive-layers.svg" alt="As seis camadas adaptativas de Lọ Chéo 1.1.8 — caixa, nível, plano e depois densidade / hero / tipografia / modal / tabuleiro, num só sentido (animação SMIL)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+O novo invariante `painel + margem ≤ reserva` falha em **844×390** — um iPhone na horizontal, o tamanho do relatório. `reserveFor()` subtrai 30px quando o painel não desenha rodapé, mas `panelHeightForPlan()` só olhava para a densidade e desenhava a altura completa: um painel de 234px numa faixa de 216px, **18px da base fora do ecrã**.
+
+**Um corpus de 1 620 instantâneos** mantém-no assim: `tests/fixtures/adaptive-matrix/` (1 110 janelas, um ficheiro por janela) e `tests/fixtures/hero-bands/` (510 pares «largura × faixa»). `npm run check:adaptive` imprime 21 linhas e afirma seis invariantes, sem navegador.
+
 ### 🌍 A segunda camada: ambiente, não apenas tamanho
 
 A altura da janela não é a altura utilizável. Num iPhone a barra de endereço e o

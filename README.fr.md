@@ -209,6 +209,29 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // colonne la plus haute : 192 mascotte + 24 puce
 
 `tests/menu-adaptive.test.ts` balaie **1 682 viewports** et vérifie `heroContentHeight(layout) ≤ scene` à chaque échantillon. Au redimensionnement, les deux hooks écoutent **six** événements et se mettent à jour dans une seule frame.
 
+### 🧱 Huitième tour : six couches, un profil
+
+Le tour six a appris au hero à mesurer sa fenêtre. Le reste devinait encore : la modale était `86vh` **sans plafond**, le titre de fin de partie un `text-6xl` fixe, les panneaux appelaient `cornerRowHeight()` eux-mêmes et `engine.resize()` calculait seul le rayon du bocal. **Six lecteurs, six lectures** — et deux lectures peuvent tomber sur deux images différentes.
+
+v1.1.8 les réunit en **une fonction pure d'une boîte** :
+
+<img src="assets/adaptive-layers.svg" alt="Les six couches adaptatives de Lọ Chéo 1.1.8 — boîte, palier, plan, puis densité / hero / typo / modale / plateau, dans un seul sens (animation SMIL)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+Le nouvel invariant `panneau + marge ≤ réserve` échoue à **844×390** — un iPhone à l'horizontale, la taille du rapport. `reserveFor()` retire 30px quand le panneau ne dessine pas de pied, mais `panelHeightForPlan()` ne regardait que la densité et dessinait toute la hauteur : un panneau de 234px dans une bande de 216px, **18px de sa base hors de l'écran**.
+
+**Un corpus de 1 620 instantanés** le verrouille : `tests/fixtures/adaptive-matrix/` (1 110 fenêtres, un fichier par fenêtre) et `tests/fixtures/hero-bands/` (510 paires « largeur × bande »). `npm run check:adaptive` imprime 21 lignes et affirme six invariants, sans navigateur.
+
 ### 🌍 La seconde couche : l'environnement, pas seulement la taille
 
 La hauteur de la fenêtre n'est pas la hauteur utilisable. Sur un iPhone, la barre

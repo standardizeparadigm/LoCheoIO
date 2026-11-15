@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` は **1,682 のビューポート** を走査し、各サンプルで `heroContentHeight(layout) ≤ scene` を検証します。
 
+### 🧱 第八ラウンド：六つの層、ひとつのプロファイル
+
+ヒーローが自分のウィンドウを測れるようになっても、ほかは依然として推測していました。モーダルは**上限のない** `86vh`、ゲームオーバーの見出しは固定の `text-6xl`、パネルは自分で `cornerRowHeight()` を呼び、`engine.resize()` は自分で瓶の半径を計算。**六か所が六回読む** —— 二回の読み取りが別のフレームに落ちることもあります。
+
+v1.1.8 はそれらを**ひとつの箱に対するひとつの純粋関数**にまとめました：
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+新しい不変条件 `panel + 余白 ≤ reserve` は **844×390**（横向きの iPhone、報告のスクリーンショットと同じ寸法）で赤になります。`reserveFor()` はフッターを描かないとき 30px を引きますが、`panelHeightForPlan()` は密度しか見ずに full の高さで描いていました —— 216px の帯に 234px のパネル、**下端 18px が画面の外**。
+
+**1 620 枚の数値スナップショット**がそれを固定します：`tests/fixtures/adaptive-matrix/`（1 110 ウィンドウ、1 ウィンドウ 1 ファイル）と `tests/fixtures/hero-bands/`（510 の「幅 × 帯」）。`npm run check:adaptive` は 21 行の表と六つの不変条件を、ブラウザなしで確認します。
+
 ### 🌍 第二の層 — サイズではなく環境
 
 ウィンドウの高さは、使える高さではありません。iPhone ではアドレスバーと

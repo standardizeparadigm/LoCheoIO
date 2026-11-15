@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` 扫描 **1,682 个视口**，并在每个样本上验证 `heroContentHeight(layout) ≤ scene`。
 
+### 🧱 第八轮：六层，一个 profile
+
+主视觉学会测量窗口之后，其余部分仍在各自猜测：模态框是**没有上限**的 `86vh`，结算标题是固定的 `text-6xl`，面板自己调用 `cornerRowHeight()`，`engine.resize()` 自己算坛子半径。**六个地方读六次** —— 两次读数可能落在两个不同的帧。
+
+v1.1.8 把它们收拢成**一个盒子的一次纯函数**：
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+新不变量 `panel + 边距 ≤ reserve` 在 **844×390**（横屏 iPhone，正是报告截图的尺寸）变红：`reserveFor()` 在没有页脚时省掉 30px，而 `panelHeightForPlan()` 只看密度，仍然画满 —— 216px 的带里放 234px 的面板，**底边 18px 在屏幕之外**。
+
+**1 620 份数字快照**把它钉住：`tests/fixtures/adaptive-matrix/`（1 110 个窗口，每个窗口一个文件）与 `tests/fixtures/hero-bands/`（510 组「宽度 × 高度带」）。`npm run check:adaptive` 打印 21 行表格并断言六条不变量，无需浏览器。
+
 ### 🌍 第二层：环境，而不只是尺寸
 
 窗口高度并不等于可用高度。在 iPhone 上，地址栏和 Home 指示条会占去一部分；

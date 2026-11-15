@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts`는 **1,682개 뷰포트**를 훑고 각 샘플에서 `heroContentHeight(layout) ≤ scene`을 확인합니다.
 
+### 🧱 여덟 번째 라운드: 여섯 층, 하나의 프로필
+
+히어로가 자기 창을 재게 된 뒤에도 나머지는 여전히 추측했습니다. 모달은 **상한 없는** `86vh`, 게임오버 제목은 고정 `text-6xl`, 패널은 스스로 `cornerRowHeight()` 를 호출했고 `engine.resize()` 는 병 반지름을 직접 계산했습니다. **여섯 곳이 여섯 번 읽는** 구조 — 두 번의 읽기가 서로 다른 프레임에 떨어질 수 있습니다.
+
+v1.1.8 은 이것을 **하나의 상자에 대한 하나의 순수 함수**로 모았습니다:
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+새 불변식 `panel + 여백 ≤ reserve` 는 **844×390**(가로 iPhone, 보고서 스크린샷의 크기)에서 빨개집니다. `reserveFor()` 는 푸터를 그리지 않을 때 30px 을 빼지만, `panelHeightForPlan()` 은 밀도만 보아 전체 높이를 그렸습니다 — 216px 대역에 234px 패널, **아래 18px 이 화면 밖**.
+
+**1 620장의 숫자 스냅샷**이 이를 고정합니다: `tests/fixtures/adaptive-matrix/`(1 110개 창, 창마다 파일 하나)와 `tests/fixtures/hero-bands/`(510개의 「너비 × 대역」). `npm run check:adaptive` 는 21행 표와 여섯 불변식을 브라우저 없이 확인합니다.
+
 ### 🌍 두 번째 층 — 크기가 아니라 환경
 
 창 높이는 곧 쓸 수 있는 높이가 아닙니다. iPhone에서는 주소창과 홈 인디케이터가

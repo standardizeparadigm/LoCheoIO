@@ -242,6 +242,29 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // columna más alta: 192 mascota + 24 chip
 
 `tests/menu-adaptive.test.ts` recorre **1.682 viewports** y verifica `heroContentHeight(layout) ≤ scene` en cada muestra. Al redimensionar, ambos hooks escuchan **seis** eventos y actualizan en un solo frame.
 
+### 🧱 Octava ronda: seis capas, un perfil
+
+La ronda seis enseñó al hero a medir su ventana. El resto seguía adivinando: la moda era `86vh` **sin techo**, el titular de fin de partida era un `text-6xl` fijo, los paneles llamaban a `cornerRowHeight()` por su cuenta y `engine.resize()` calculaba el radio del tarro solo. **Seis lectores, seis lecturas** — y dos lecturas pueden caer en fotogramas distintos.
+
+v1.1.8 las reúne en **una función pura de una caja**:
+
+<img src="assets/adaptive-layers.svg" alt="Las seis capas adaptativas de Lọ Chéo 1.1.8 — caja, nivel, plan y luego densidad / hero / tipografía / modal / tablero, en una sola dirección (animación SMIL)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+La nueva invariante `panel + margen ≤ reserva` falla en **844×390** — un iPhone en horizontal, el tamaño del informe. `reserveFor()` resta 30px cuando el panel no dibuja pie, pero `panelHeightForPlan()` solo miraba la densidad y dibujaba la altura completa: un panel de 234px en una banda de 216px, **18px de su base fuera de la pantalla**.
+
+**Un corpus de 1 620 instantáneas** lo mantiene así: `tests/fixtures/adaptive-matrix/` (1 110 ventanas, un archivo por ventana) y `tests/fixtures/hero-bands/` (510 pares «ancho × banda»). `npm run check:adaptive` imprime 21 filas y afirma seis invariantes sin navegador.
+
 ### 🌍 La segunda capa: entorno, no solo tamaño
 
 La altura de la ventana no es la altura utilizable. En un iPhone la barra de
