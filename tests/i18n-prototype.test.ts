@@ -49,7 +49,15 @@ describe("t() and the prototype chain", () => {
   it("interpolates params on a real key", () => {
     const vi = localeTable("vi");
     const withPlaceholder = Object.entries(vi).find(([, v]) => v.includes("{"))?.[0];
-    if (!withPlaceholder) return; // no placeholder keys in this build
+    /*
+     * 22 keys in `vi` interpolate something, so this branch is unreachable
+     * today. It was `if (!withPlaceholder) return;` — the shape that turns a
+     * vanished precondition into a pass. If interpolation is ever renamed
+     * (`{n}` → `%s`, or a compile step bakes the values in), this returns
+     * nothing and the suite still reads green while the interpolation path is
+     * untested.
+     */
+    expect(withPlaceholder, "no key in `vi` contains a placeholder — the assertion below would prove nothing").toBeTruthy();
     const out = t(withPlaceholder as never, { n: 7 });
     expect(out).not.toContain("{n}");
   });
