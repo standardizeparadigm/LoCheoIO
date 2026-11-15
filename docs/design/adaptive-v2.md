@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–9 — one profile, every size, every pixel
+# Adaptive, rounds 8–10 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 và vòng 9).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8, 9 và 10).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -358,12 +358,16 @@ thêm thì không ai đọc được, và mọi lần chèn đều làm hỏng p
 | 20 | `1440p` | 2560×1440 | màn hình rời |
 | 21 | `4k` | 3840×2160 | trần của hộp thoại |
 
-## 16. 12 bất biến — một định nghĩa, ba nơi dùng
+## 16. 14 bất biến — một định nghĩa, ba nơi dùng
 
 `constraints.ts` giữ danh sách; `tests/adaptive-constraints.test.ts` chạy nó trên
 21 preset, `scripts/check-adaptive.ts` chạy nó như một cổng CI, và tài liệu này
 liệt kê nó. Trước vòng 9, cổng kiểm ba bất biến còn suite kiểm chín — hai bên
 không thể đồng bộ vì chúng là hai bản sao. Giờ chỉ còn một.
+
+Hai dòng cuối (`chip-*`) đến từ vòng 10, sau khi ảnh chụp cho thấy không có lời
+hứa nào giữ chip chế độ ở trong band. Một lời hứa chỉ sống trong component là lời
+hứa không ai kiểm được ở mọi cửa sổ.
 
 | id | bất biến | bắt lỗi gì |
 | --- | --- | --- |
@@ -379,6 +383,8 @@ không thể đồng bộ vì chúng là hai bản sao. Giờ chỉ còn một.
 | `density-matches-flags` | ticker/footer theo density | density và chrome nói khác nhau |
 | `css-vars-complete` | 11 biến `--lo-*` | component đọc biến không tồn tại |
 | `numbers-finite` | mọi số hữu hạn | `NaN` từ `aspect` hoặc `dvh` |
+| `chip-name-survives` | không tên chế độ nào bị cắt bằng ellipsis | tên dài (bản dịch) tràn band |
+| `chip-labelled` | chip còn nhãn «CHẾ ĐỘ CHƠI» ở mọi cửa sổ chơi được | nhãn bị bỏ sớm hơn mức cần |
 
 ## 17. "Vì sao trông như vậy" — `diagnose()`
 
