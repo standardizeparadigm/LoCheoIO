@@ -168,4 +168,42 @@ describe("clearAllProgress", () => {
     expect(loadProgress().runs).toBe(0);
     expect(loadAchievements()).toEqual([]);
   });
+
+  it("leaves settings, language, mode and mute alone", () => {
+    /*
+     * The half of this contract that no test covered. "Xóa dữ liệu" sits in the
+     * settings modal next to a volume slider; a player who clears their scores
+     * must not also lose their volume preference, their language or whether the
+     * game was muted.
+     *
+     * `clearAllGameKeys()` exists and removes all eight — it is the settings
+     * *reset*, not the danger zone. Confusing the two would be silent: the
+     * board would empty and the volume would go back to default, and the only
+     * report would be "the game forgot my settings".
+     */
+    const mem = memStorage();
+    vi.stubGlobal("localStorage", mem);
+    mem.setItem("locheo.settings.v1", JSON.stringify({ sfx: false, musicVolume: 0.3 }));
+    mem.setItem("locheo.lang.v1", JSON.stringify("ja"));
+    mem.setItem("locheo.mode.v1", JSON.stringify("inferno"));
+    mem.setItem("locheo.muted.v1", JSON.stringify("1"));
+    const before = [
+      "locheo.settings.v1",
+      "locheo.lang.v1",
+      "locheo.mode.v1",
+      "locheo.muted.v1",
+    ].map((k) => mem.getItem(k));
+
+    clearAllProgress();
+
+    const after = [
+      "locheo.settings.v1",
+      "locheo.lang.v1",
+      "locheo.mode.v1",
+      "locheo.muted.v1",
+    ].map((k) => mem.getItem(k));
+    expect(after).toEqual(before);
+    /* Not vacuous: the four keys really are distinct from the three removed. */
+    expect(before.every((v) => v !== null)).toBe(true);
+  });
 });
