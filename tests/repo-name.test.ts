@@ -57,9 +57,25 @@ describe("the repository name", () => {
      * pattern being searched for. Excluding it by path is honest; excluding it
      * by "skip tests/" would hide a real offender next door.
      */
-    const offenders = FILES.filter(
-      (f) => !f.endsWith("tests/repo-name.test.ts") && readFileSync(f, "utf8").includes(WRONG),
-    );
+    const offenders: string[] = [];
+    for (const file of FILES) {
+      if (file.endsWith("tests/repo-name.test.ts")) continue;
+      const body = readFileSync(file, "utf8");
+      if (!body.includes(WRONG)) continue;
+      /*
+       * A *changelog entry* has to be able to quote the wrong spelling for the
+       * same reason this comment does: "the modal said `Lo-CheoIO`; the repo is
+       * `LoCheoIO`" is the record of the bug, not a recurrence of it.
+       *
+       * The allowance is deliberately narrow: in markdown a line may contain the
+       * hyphen **only if it also contains the canonical spelling** — it is
+       * contrasting the two. In code, config or an SVG there is no such line, so
+       * a hyphen there is still the bug.
+       */
+      const lines = body.split("\n").filter((line) => line.includes(WRONG));
+      const quoting = file.endsWith(".md") && lines.every((line) => line.includes("LoCheoIO"));
+      if (!quoting) offenders.push(file);
+    }
     expect(offenders, `files still saying ${WRONG}`).toEqual([]);
   });
 
