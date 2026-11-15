@@ -20,6 +20,9 @@ import { PRESETS } from "../src/components/menu/adaptive/presets";
 import { resolveForSize } from "../src/components/menu/adaptive/resolve";
 import { violations, constraintIds } from "../src/components/menu/adaptive/constraints";
 import { renderDiagnosis, warningsFor } from "../src/components/menu/adaptive/diagnostics";
+import { planModeChip } from "../src/components/menu/adaptive/chip";
+import { heroBandWidth } from "../src/components/menu/adaptive/hero";
+import { MODE_LIST } from "../src/game/modes";
 
 const pad = (v: string | number, n: number) => String(v).padEnd(n);
 const num = (v: string | number, n: number) => String(v).padStart(n);
@@ -56,16 +59,27 @@ const header =
   pad(" fit", 8) +
   pad(" hero", 7) +
   pad(" trade-offs", 22) +
+  pad(" chip", 16) +
   " window";
 
 console.log(header);
 console.log("-".repeat(header.length));
+
+/*
+ * The widest name the chip can be asked to print, in the app's own language.
+ * Using the widest one makes the column an upper bound: every other mode fits at
+ * the same size or better.
+ */
+const WIDEST = MODE_LIST.reduce((best, m) => (m.name.length > best.length ? m.name : best), "");
 
 for (const preset of PRESETS) {
   const p = resolveForSize(preset.width, preset.height);
   const trade = warningsFor(p)
     .map((w) => w.code)
     .join(",");
+  const chip = p.plan.minimal
+    ? "—"
+    : planModeChip({ heroWidth: heroBandWidth(p.box.width), side: "right", name: WIDEST, label: "CHẾ ĐỘ CHƠI" }).reason;
   console.log(
     pad(`${preset.width}×${preset.height}`, 12) +
       pad(p.tier, 5) +
@@ -77,6 +91,7 @@ for (const preset of PRESETS) {
       pad(` ${p.plan.fit}`, 8) +
       pad(` ${p.hero.sideBySide ? "row" : "stack"}`, 7) +
       pad(` ${trade || "—"}`, 22) +
+      pad(` ${chip}`, 16) +
       ` ${preset.note}`,
   );
 }
