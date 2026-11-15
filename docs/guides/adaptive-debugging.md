@@ -140,8 +140,9 @@ npm run check:adaptive                 # bảng 21 preset thật + 12 bất bi�
 npm run check:adaptive -- --explain 1280x720   # chẩn đoán một cửa sổ
 ```
 
-`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ, fit và
-**những thoả hiệp** của từng preset. Bảng đọc từ `presets.ts`, bất biến đọc từ
+`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ, fit,
+**những thoả hiệp** và **bậc thang chip** của từng preset — cột `chip` dùng tên chế
+độ dài nhất, nên nó là trần: chế độ nào khác cũng vừa bằng hoặc tốt hơn. Bảng đọc từ `presets.ts`, bất biến đọc từ
 `constraints.ts` — cùng nguồn với suite, nên không thể lệch.
 
 ### 8.1 "Vì sao trông như vậy" — `diagnose()`
