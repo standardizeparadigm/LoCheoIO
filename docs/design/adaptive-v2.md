@@ -427,3 +427,70 @@ Cách dùng:
 ```
 npx vite-node scripts/check-adaptive.ts --explain 1280x720
 ```
+
+---
+
+## 18. Vòng 10 — chip chế độ, và cái giả định đã sai
+
+Chip dưới mascot là phần tử **duy nhất** trong hero vừa tuyệt đối vừa mang chữ
+không ai kiểm soát: một bản dịch, bảy ngôn ngữ, tên dài nhất 19 ký tự.
+
+### 18.1 Hình học sai ở đâu
+
+```
+chip: position: absolute; left: 50%; transform: translateX(-50%)   /* trong cột mascot */
+.menu-hero { overflow: hidden }
+```
+
+| Bố cục | Mascot | Kết quả |
+| --- | --- | --- |
+| cột (`stack`) | giữa band | chip căn giữa mascot → **đúng** |
+| hàng (`row`, `lg+`) | cuối hàng = mép phải band | nửa phải chip ra ngoài band → **bị cắt** |
+
+Tên dài nhất bị cắt rõ nhất, nên lỗi đọc thành "chế độ cổ điển bị lỗi". Thực ra
+**mọi** tên đều mất một phần — chỉ ít hơn mức nhìn thấy.
+
+### 18.2 Hai tầng, hai bảo đảm
+
+| Tầng | Bảo đảm | Công cụ kiểm |
+| --- | --- | --- |
+| CSS | căn theo mép trong + `max-width` cứng = band − 2×8 | `tests/mode-chip-wiring.test.ts` (đọc source), `npm run smoke` (đọc HTML) |
+| Plan | thang bậc `full → label-dropped → name-shrunk → ellipsis` | `tests/mode-chip.test.ts` (thuần), `tests/mode-chip-fixtures.test.ts` (corpus) |
+
+Hai tầng độc lập có chủ đích: ước lượng bề rộng chữ có thể sai 6%, và khi sai thì
+nó chỉ chọn chip *nhỏ hơn*, không bao giờ chọn chip *bị cắt* — vì tầng CSS mới là
+thứ giữ pixel.
+
+### 18.3 `heroBandWidth()` — con số thật
+
+`heroContainerWidth()` trừ 64px ở **mọi** cỡ (giả định `px-8`), đúng cho câu hỏi
+"hàng có vừa không" vì đó là hướng thận trọng. Nhưng chip dùng con số đó làm
+`max-width`, nên 32px thận trọng sẽ bỏ nhãn «CHẾ ĐỘ CHƠI» trên **mọi** điện thoại.
+`heroBandWidth()` đọc đúng padding: `px-4` dưới `sm` (16 mỗi bên), `px-8` từ `sm`
+(32 mỗi bên).
+
+### 18.4 `estimateText()` — đo chữ khi chưa có layout
+
+React không trả lời được "chữ này rộng bao nhiêu" trong lúc render
+(`getBoundingClientRect` cần một lần vẽ), và trả lời **sau** khi vẽ thì frame đầu
+tiên đã sai — đúng frame mà ảnh chụp bắt được. Nên bề rộng được ước lượng theo
+lớp ký tự:
+
+| Lớp | em |
+| --- | --- |
+| dấu câu `. , : ; ' \| !` | 0,26 |
+| nét hẹp `i l j I [ ] ( )` | 0,33 |
+| `f r t` | 0,40 |
+| chữ thường | 0,54 |
+| chữ số | 0,58 |
+| chữ hoa (kể cả dấu tiếng Việt) | 0,68 |
+| `M W m w @ % &` | 0,87 |
+
+× 1,06 cho sai số lớn nhất đo được. Hàm **toàn phần**: `null`, `""`, `NaN` → 0.
+
+### 18.5 Corpus thứ ba
+
+`tests/fixtures/mode-chips/` — **189** ảnh chụp (21 preset × 9 chế độ), sinh bằng
+`npm run gen:chip`, kiểm bằng `--check` và bằng một suite riêng. Đây là corpus đầu
+tiên về một **component** chứ không phải một bố cục: nó ghim đúng hai đầu vào đã
+sinh ra lỗi — bề ngang band và một bản dịch dài.
