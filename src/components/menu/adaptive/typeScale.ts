@@ -130,9 +130,21 @@ export function typeScaleFor({ box, plan }: TypeInput): TypeScale {
    * allows and what the band allows. `scene` is the band; `plan.minimal` means
    * the band is already wordmark-only, so the full band is available.
    */
-  const widthCap = resolve(LO_CLAMP, box.width);
+  const widthCap = resolve(LO_CLAMP, box.width) * inflation;
   const bandCap = lockupMaxForBand(plan.scene);
-  const lo = legible(Math.min(widthCap, bandCap) * inflation, MIN_LOCKUP_PX, MAX_LOCKUP_PX);
+  /*
+   * The band wins, and it wins **last**.
+   *
+   * The first version multiplied the tier inflation into the result of
+   * `Math.min(widthCap, bandCap)` — so a 3840px window at the 140px minimal band
+   * got `min(89.6, 83.3) × 1.3 = 108px`, and 108 × 1.68 = 181px of lockup in a
+   * 140px band. That is the round-5 screenshot with a new cause. The inflation
+   * now belongs to the width side, where it cannot outvote the height.
+   *
+   * The band cap is floored to half a pixel for the same reason: rounding 83.3
+   * *up* to 83.5 gives a 140.28px lockup in a 140px band.
+   */
+  const lo = legible(Math.min(widthCap, Math.floor(bandCap * 2) / 2), MIN_LOCKUP_PX, MAX_LOCKUP_PX);
   const cheo = legible(lo * CHEO_RATIO_MAX, 1, lo);
 
   return {
