@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1290%20%C2%B7%20130%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1310%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——130ファイル1290テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——131ファイル1310テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -299,6 +299,34 @@ name-shrunk → ellipsis`）を守ります。文字幅の推定が 6% ずれて
 コーパス**（189 スナップショット、21 プリセット × 9 モード）。
 
 <img src="assets/mode-chip.svg" alt="1.1.8 で修正したモードチップの前後 —— 修正前：右端のマスコットを中心にしていたため overflow hidden で右半分が切れる／修正後：内側の縁に揃え、幅に上限、ラベル → サイズ → 省略記号の段階（SMIL アニメーション）" width="100%" />
+
+### 第 11 ラウンド —— ベトナム語の声調記号が切り取られなくなった
+
+今回のスクリーンショットは「右半分が消えた」ではなく **「記号が消えた」** でした。
+チップは «MUỐI DƯA CỔ ĐIÊN» と表示され、**Ể** のサーカムフレックスだけが失われ、
+手前の **Ổ** は残っていました。原因は **第 10 ラウンドの回帰** です。`truncate` は
+横方向だけでなく、`overflow: hidden` が **行ボックス** を切ります。ベトナム語は
+声調記号をサーカムフレックスに重ねるため（`Ố Ổ Ể Ấ Ự`）、大文字の高さより約
+**0.35em** 上にインクが出ます。
+
+三つの層を別々に直し、互いに重ならないようにしました。
+
+| 層 | 以前 | 以後 |
+| --- | --- | --- |
+| 文字列 | CSS の省略記号 | `planModeChip()` が文字列を切り `…` を付ける |
+| 行ボックス | 1.2em | **1.5em**（`MODE_CHIP_LINE_HEIGHT`） |
+| 切り取りボックス | 名前 span の `truncate` | **サブツリーに `overflow` なし** |
+
+さらに **`.clip-safe`** —— 翻訳されるテキストの `truncate` 代替です。
+`padding-block: .24em` で切り取りボックスを広げ、`margin-block: -.24em` で
+レイアウトを元に戻すので、行は動かず記号だけが残ります。6 か所を移行しました。
+`chipBoxHeight()` は推測の定数を置き換えます。チップが 3.3px 高くなったのは
+`heroContentHeight()` の関心事なので、記憶ではなく実測値を読みます。
+
+詳細：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
+
+<img src="assets/diacritics-clip.svg" alt="ベトナム語の声調記号が消える理由 —— 以前：行ボックスと同じ高さの切り取りボックスが Ể のサーカムフレックスを削り、「CỔ ĐIỂN」が「CỔ ĐIÊN」に；以後：1.5em の行ボックスと clip-safe の ±0.24em で記号が残る（SMIL アニメーション）" width="100%" />
+
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
 
