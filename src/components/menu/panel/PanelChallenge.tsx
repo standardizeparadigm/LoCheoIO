@@ -18,7 +18,7 @@ export function PanelChallenge({ line }: { line: ChallengeLine }) {
     <div className="mt-2 border-t-2 border-dashed border-jade-800 pt-2 font-body text-[9px]">
       <p className="tracking-[0.16em] text-jade-500 uppercase">{t("daily.challenge")}</p>
       <p className="mt-0.5 flex items-baseline justify-between gap-2">
-        <span className="truncate font-body text-[10px] font-semibold text-clay-100/80">
+        <span className="clip-safe font-body text-[10px] font-semibold text-clay-100/80">
           {t(line.modeKey as MessageKey)}
         </span>
         <b className="shrink-0 font-display text-[11px] text-tumeric-400 tabular-nums">
