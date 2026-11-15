@@ -23,7 +23,7 @@
 import { planMenuLayout, type MenuPlan } from "../layout/fit";
 import { planModal, type ModalPlan } from "../../ui/modalPlan";
 import { planPlayfield, type PlayfieldPlan } from "../../../game/adaptive/playfield";
-import { densityFor, metricsFor, panelHeightFor, panelWidthFor, type Density, type DensityMetrics } from "./density";
+import { densityFor, metricsFor, panelHeightForPlan, panelWidthFor, type Density, type DensityMetrics } from "./density";
 import { verticalInset, type Environment, DESKTOP_ENVIRONMENT } from "./environment";
 import { heroLayout, type HeroLayout } from "./hero";
 import { typeScaleFor, typeVars, type TypeScale } from "./typeScale";
@@ -64,7 +64,7 @@ export interface AdaptiveProfile {
   modal: ModalPlan;
   /** Canvas sizing, for the engine. */
   playfield: PlayfieldPlan;
-  /** The GAME panel's painted height, px — equal to what the plan reserved. */
+  /** The GAME panel's painted height, px — the reserve minus the ticker, margin and (absent) footer. */
   panelHeight: number;
   /** CSS custom properties, ready for a `style` prop. */
   cssVars: Record<string, string>;
@@ -82,7 +82,7 @@ export function resolveAdaptive({ box, env = DESKTOP_ENVIRONMENT, wideModal = fa
   const hero = heroLayout({ scene: plan.scene, width: box.width, minimal: plan.minimal });
   const modal = planModal(box, wideModal);
   const playfield = planPlayfield(box.width, box.height, env.dpr);
-  const panelHeight = panelHeightFor(density);
+  const panelHeight = panelHeightForPlan(plan);
 
   return {
     box,

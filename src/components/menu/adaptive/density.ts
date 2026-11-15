@@ -169,7 +169,27 @@ export function panelHeightFor(density: Density, rows = CORNER_MAX_ROWS): number
  * `MenuPlan` cannot forget a flag, because it never sees them.
  */
 export function panelHeightForPlan(plan: MenuPlan): number {
-  return panelHeightFor(densityFor(plan));
+  /*
+   * ROUND 8: the footer is part of the painter's arithmetic, not the planner's.
+   *
+   * `reserveFor()` has always subtracted `PANEL_FOOTER_HEIGHT` when
+   * `plan.footer` is false — that is how a short window buys 30px of hero. The
+   * panel, meanwhile, painted `cornerRowHeight()` unconditionally, because a
+   * panel takes a `MenuPlan` and this function only looked at the *density*.
+   *
+   * So on every window where the footer is hidden (height < 470, or minimal),
+   * the plan reserved 30px less than the panel drew: at 844×390 the panel was
+   * 234px in a 216px band and its bottom 18px sat past the edge of the screen,
+   * over the hero at the top of a 320px window. The corpus found it
+   * (`tests/fixtures/adaptive-matrix/w844-h390.json`) because the invariant
+   * `panel + margin <= reserve` is checked against the snapshot, not against
+   * the function that produced it.
+   *
+   * The fix belongs here and not in the planner: the reserve is right — the
+   * panel really does have one fewer child to draw — so the painter has to be
+   * the one that shrinks.
+   */
+  return panelHeightFor(densityFor(plan)) - (plan.footer ? 0 : PANEL_FOOTER_HEIGHT);
 }
 
 /** The full bottom reserve at a density, including the ticker and its margin. */
