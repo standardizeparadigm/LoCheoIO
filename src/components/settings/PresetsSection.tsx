@@ -43,7 +43,7 @@ export default function PresetsSection({
               <span className="block font-body text-[10px] font-extrabold tracking-wide text-clay-100">
                 {t(`settings.preset.${p.id}`)}
               </span>
-              <span className="block truncate font-body text-[8px] leading-tight text-clay-100/50">
+              <span className="block clip-safe font-body text-[8px] leading-tight text-clay-100/50">
                 {t(`settings.preset.${p.id}Desc`)}
               </span>
             </span>
