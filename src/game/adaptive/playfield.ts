@@ -43,7 +43,7 @@ export interface PlayfieldPlan {
   playerSpeed: number;
   /** Player radius, px. */
   playerRadius: number;
-  /** HUD text multiplier, `[0.85, 1.3]`. */
+  /** HUD text multiplier, `[0.72, 1.16]` — both axes, the shorter one wins. */
   hudScale: number;
   /** Background star count. */
   stars: number;
@@ -104,7 +104,16 @@ export function planPlayfield(width: unknown, height: unknown, dpr: unknown = 1)
    * covering the board on a cinema display, and the score is the one number the
    * player must be able to read while moving.
    */
-  const hudScale = clamp(small / 720, 0.85, 1.3);
+  /*
+   * Both axes, and the height decides when it is the scarce one.
+   *
+   * The HUD used to be `clamp(w / 900, 0.78, 1.16)` inside `drawHud()` — width
+   * only, so a 1920×400 window drew the score at 1.16 while the board had 400px
+   * of height, and the top-left readout covered a third of it. Taking the
+   * smaller of the two ramps keeps a 1920-wide desktop where it was and shrinks
+   * the readout exactly when the board is short.
+   */
+  const hudScale = clamp(Math.min(w / 900, h / 700), 0.72, 1.16);
 
   return {
     width: w,

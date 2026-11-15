@@ -51,13 +51,32 @@ describe("the move is a move, not a rebalance", () => {
 });
 
 describe("the new numbers", () => {
+  it("never grows past the old width-only rule", () => {
+    /*
+     * The old HUD was `clamp(w / 900, 0.78, 1.16)`. The new rule takes the min
+     * of that ramp and a height ramp, so on a tall board the two agree exactly
+     * and on a short one the HUD is smaller. It must never be *larger* — that
+     * would be a regression dressed as an improvement.
+     */
+    for (const [w, h] of [[1280, 720], [1920, 820], [1920, 1080], [2560, 1440], [3840, 2160]]) {
+      const legacy = Math.min(1.16, Math.max(0.78, w / 900));
+      expect(planPlayfield(w, h, 1).hudScale).toBeLessThanOrEqual(legacy + 0.001);
+    }
+    expect(planPlayfield(1920, 1080, 1).hudScale).toBeCloseTo(1.16, 2);
+    expect(planPlayfield(1280, 720, 1).hudScale).toBeGreaterThan(0.95);
+  });
+
+  it("shrinks the HUD when the board is short, which the width-only rule did not", () => {
+    expect(planPlayfield(1920, 400, 1).hudScale).toBeLessThan(planPlayfield(1920, 1080, 1).hudScale);
+  });
+
   it("scales the HUD with the shortest side", () => {
     expect(planPlayfield(320, 320, 1).hudScale).toBeLessThan(planPlayfield(1280, 720, 1).hudScale);
     expect(planPlayfield(1280, 720, 1).hudScale).toBeLessThan(planPlayfield(1920, 1080, 1).hudScale);
     for (const [w, h] of [[320, 320], [1280, 720], [3840, 2160]]) {
       const plan = planPlayfield(w, h, 1);
-      expect(plan.hudScale).toBeGreaterThanOrEqual(0.85);
-      expect(plan.hudScale).toBeLessThanOrEqual(1.3);
+      expect(plan.hudScale).toBeGreaterThanOrEqual(0.72);
+      expect(plan.hudScale).toBeLessThanOrEqual(1.16);
     }
   });
 
