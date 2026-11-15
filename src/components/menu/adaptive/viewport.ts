@@ -75,8 +75,18 @@ export const SQUARE_BAND = 0.04;
  * caller, not a viewport, so it falls back to the smallest honest screen.
  */
 export function saneSide(value: unknown, fallback = 1): number {
-  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return fallback;
-  return Math.min(MAX_SIDE, Math.max(1, Math.round(value)));
+  /*
+   * The fallback goes through the same clamp as a real value, and that is a fix,
+   * not tidiness: the first version returned `fallback` verbatim, so the
+   * documented "1 when unknown" was `0` whenever the caller passed `0` — and
+   * `boxOf(undefined, undefined, 0)` then produced a 0px-wide box that every
+   * `Math.max(1, …)` downstream trusted. A fallback is a value like any other.
+   */
+  const safeFallback =
+    typeof fallback === "number" && Number.isFinite(fallback) && fallback > 0 ? Math.round(fallback) : 1;
+  const base =
+    typeof value === "number" && Number.isFinite(value) && value > 0 ? Math.round(value) : safeFallback;
+  return Math.min(MAX_SIDE, Math.max(1, base));
 }
 
 /**
