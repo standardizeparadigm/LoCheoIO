@@ -215,7 +215,7 @@ này tồn tại để dứt điểm.
 | `scene + reserve === usableHeight` (trừ `crop`) | `layout-fit`, `adaptive-resolve` |
 | `type.lockupLo × 1.68 ≤ scene + 0.5` | `adaptive-type` |
 | `CHÉO < LỌ` ở mọi width × band | `adaptive-type`, `adaptive-wordmark-band` |
-| `panelHeightForPlan(plan) === cornerRowHeight(plan…)` | `adaptive-density` |
+| `panelHeightForPlan + 12 ≤ reserve` (và `+ (footer ? 0 : 30) === cornerRowHeight`) | `adaptive-density`, `panel-footer-overflow`, `adaptive-fixtures` |
 | `modal.maxWidth ≤ box.width`, `maxHeight ≤ box.height` | `adaptive-modal` |
 | `playfield.playerRadius × 2 ≤ min(w,h)` | `playfield` |
 | mọi field hữu hạn với `NaN`/`Infinity` | cả bảy file trên |
@@ -232,3 +232,61 @@ này tồn tại để dứt điểm.
 - Không thay `.menu-pane { overflow: clip }` — không cuộn vẫn là bất biến.
 - Không thêm media query mới. Nếu một quyết định cần cả hai trục, nó thuộc về
   `resolve.ts`.
+
+---
+
+## 12. Lỗi thứ tư — bất biến tự bắt lỗi của chính nó
+
+Bảng bất biến ở §10 được viết **trước** khi corpus tồn tại, và dòng mới
+`panel + lề ≤ reserve` đỏ ngay lần chạy đầu tiên, ở **844×390** — iPhone nằm
+ngang, đúng cỡ trong ảnh chụp của báo cáo.
+
+`reserveFor()` đã luôn trừ `PANEL_FOOTER_HEIGHT` khi `plan.footer` sai. Đó là
+cách một cửa sổ 390px cao mua được 30px hero: cửa sổ hẹp thì panel không vẽ dải
+thống kê, và plan không giữ chỗ cho nó. Nhưng `panelHeightForPlan()` chỉ nhận
+`density`, không nhận `footer`, nên nó vẫn trả về chiều cao **đầy đủ**:
+
+| Cửa sổ | reserve mua | panel vẽ | Hệ quả |
+| --- | --- | --- | --- |
+| 844×390 | 216px | 234px | chân panel **18px ngoài màn hình**, đỉnh đè hero |
+| 1024×320 | 216px | 234px | như trên |
+| 1280×720 | 378px | 318 + 48 + 12 | vừa khít — nên lỗi vô hình ở desktop |
+
+Hai điều đáng ghi lại:
+
+1. **Test cũ không thể bắt lỗi này.** Nó khẳng định
+   `panelHeightForPlan(plan) === cornerRowHeight(plan.dense, plan.tight, plan.compact)`.
+   Hai vế là **cùng một phép tính**; test đúng trong khi pixel sai. Câu hỏi đúng
+   là "cái hộp vẽ ra có nằm trong dải đã mua không", không phải "hai hàm có bằng
+   nhau không".
+2. **Lỗi ở tầng painter, không ở tầng planner.** reserve 216px là đúng — panel
+   thật sự có một đứa con ít hơn. Sửa ở planner (giữ chỗ cho footer không vẽ) sẽ
+   làm mất 30px hero trên mọi cửa sổ thấp, tức là chữa triệu chứng bằng cách bỏ
+   đúng cái lợi ích mà `FOOTER_HIDE_HEIGHT` tồn tại để mang lại.
+
+## 13. Corpus — 1 620 ảnh chụp số
+
+| Corpus | Số file | Trục | Sinh bởi |
+| --- | --- | --- | --- |
+| `tests/fixtures/adaptive-matrix/` | 1 110 | 45 bề ngang × 32 bề cao | `scripts/gen-adaptive-fixtures.ts` |
+| `tests/fixtures/hero-bands/` | 510 | 30 bề ngang × 17 band | `scripts/gen-hero-fixtures.ts` |
+
+Hai quyết định, cả hai đều có lý do:
+
+- **Một file mỗi mẫu, không phải một mảng trong một file.** Khi ngưỡng dịch,
+  `git diff --stat` kể tên đúng những cửa sổ đổi hành vi — thay vì "một dòng đổi
+  trong `adaptive.json`", câu trả lời không nói được cửa sổ nào bị ảnh hưởng.
+- **Sinh rồi commit, không sinh lúc chạy.** Ảnh chụp sinh lại mỗi lần khẳng định
+  code bằng chính nó. Commit ảnh chụp là thứ khiến kỳ vọng **độc lập** với code,
+  và đó là toàn bộ giá trị của nó.
+
+Cả hai script có `--check` (chỉ báo, exit 1) để CI phát hiện corpus lệch, và
+`tests/adaptive-fixtures.test.ts` / `tests/adaptive-hero-fixtures.test.ts` làm
+việc đó trong `vitest run` mà không cần bước riêng.
+
+### Vì sao band bắt đầu từ 150
+
+`TIGHT_SCENE_HEIGHT` là 140 nhưng bố cục nhỏ nhất — chỉ wordmark — cần 150px.
+Band dưới 150 là band **không plan nào tạo ra** (`check-adaptive` cho thấy sàn
+thật là 174 ở 320×480), nên lấy mẫu ở đó là khẳng định một tính chất của đầu vào
+bất khả thi. Corpus bắt đầu đúng nơi bậc thang bắt đầu.

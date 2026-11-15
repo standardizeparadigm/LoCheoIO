@@ -136,6 +136,32 @@ never sees. `tests/adaptive-density.test.ts` re-derives both numbers across
 1 600 viewports and also asserts that neither menu calls `cornerRowHeight()`
 directly.
 
+## The fourth painter bug — round 8
+
+`panelHeightForPlan()` knew the density but not `plan.footer`, while
+`reserveFor()` had always subtracted `PANEL_FOOTER_HEIGHT` when the footer is
+hidden. On every window under 470px the plan bought 30px less than the panel
+drew: at 844×390 a 234px panel sat in a 216px band, its base 18px past the bottom
+edge.
+
+The reason it survived a test is worth keeping: the assertion compared
+`panelHeightForPlan(plan)` with `cornerRowHeight(plan.dense, plan.tight,
+plan.compact)` — **two sides of the same arithmetic**. A test can only catch a
+geometry bug if one side of it is geometry. The replacement adds the 12px margin
+and compares against `plan.reserve`, and `tests/panel-footer-overflow.test.ts`
+does it on the eight short windows where the footer is off.
+
+The fix is in the painter, not the planner: the reserve is right (the panel has
+one fewer child), so the painter is what shrinks.
+
+## The corpora
+
+`tests/fixtures/adaptive-matrix/` (1 110 windows) and
+`tests/fixtures/hero-bands/` (510 width×band pairs) pin every decision this
+folder makes, one file per sample so a moved threshold names the windows it
+changed. Regenerate with `npx vite-node scripts/gen-adaptive-fixtures.ts` (or
+`gen-hero-fixtures.ts`); `--check` reports drift without writing.
+
 ## Adding a layout feature
 
 1. Add the flag to `HeroLayout`.
