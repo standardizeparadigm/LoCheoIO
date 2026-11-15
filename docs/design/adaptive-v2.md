@@ -312,14 +312,15 @@ cao 400px thì ba hàng cuối nằm ngoài bàn.
 | **compression** | sau khi bỏ hết, thu `s` từng bước `0.02` cho tới sàn `0.55` |
 | **flow** | cột giữa (combo → thanh combo → mult → chips) chạy tiếp từ `clockY` |
 
-Đo được, bằng `npx vite-node /tmp/probe*.ts` trên 1 500 bàn:
+Đo được, bằng `npx vite-node /tmp/probe*.ts` trên 1 500 bàn. Cấu hình đo là trường
+hợp nặng nhất `engine.drawHud()` gọi: combo glyph **34px**, **3 chip**, vết nứt bật:
 
 | Cửa sổ | `s` | đáy HUD | ghi chú |
 | --- | --- | --- | --- |
 | 1280×720 | 1.029 | 255px | không bỏ gì |
 | 1920×1080 | 1.16 | 283px | không bỏ gì |
-| 360×420 | 0.72 | 176px | bỏ chips |
-| 320×320 | 0.68 | — | nén + bỏ chips/thanh combo |
+| 360×420 | 0.72 | 176px | không |
+| 320×320 | 0.68 | 167px | không — chỉ nén |
 | 240×320 | — | — | *dưới* ngưỡng chơi được; báo `stamina/fill`, `stamina/clock`, `fill/clock` |
 
 Công thức cũ (nội tuyến) sinh **4 004** cặp chồng lấn trên cùng phép quét. Công

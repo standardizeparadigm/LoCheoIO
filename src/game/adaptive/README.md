@@ -49,12 +49,21 @@ HUD cũ là một chuỗi `fillText` với toạ độ cộng dồn. Nó đúng 
 
 ### Số đo tham chiếu
 
+Cấu hình đo: combo glyph 34px, 3 chip quyền năng, vết nứt bật — tức trường hợp
+nặng nhất mà `engine.drawHud()` gọi (`comboSize = clamp(18 + combo × 0.7, 18, 34)`).
+
 | Cửa sổ | `s` | đáy HUD | bỏ gì |
+| --- | --- | --- | --- |
 | --- | --- | --- | --- |
 | 1280×720 | 1.029 | 255px | không |
 | 1920×1080 | 1.16 | 283px | không |
-| 360×420 | 0.72 | 176px | chips |
-| 320×320 | 0.68 | — | chips + thanh combo |
+| 360×420 | 0.72 | 176px | không |
+| 320×320 | 0.68 | 167px | không (nén) |
+| 320×320, 8 chip | 0.68 | 249px | không — chip xếp chồng tiếp |
+
+Chip **không** bị bỏ ở các cỡ này: chúng nằm trong cột giữa chảy xuống, và cột
+giữa chỉ bị cắt khi bàn thấp hơn ngưỡng chơi được. Bậc thang tồn tại cho trường
+hợp đó — `planHud(planPlayfield(240, 320, 1))` — chứ không phải để dọn chỗ sớm.
 
 ## 3. `traceHud()` — để không phải đoán
 
