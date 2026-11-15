@@ -160,6 +160,18 @@ export function panelHeightFor(density: Density, rows = CORNER_MAX_ROWS): number
   return cornerPanelHeight(rows, m.rich, m.tight, m.compact);
 }
 
+/**
+ * The GAME panel's painted height for a plan — the one call a panel makes.
+ *
+ * Exists because the bug this module was written for was a *call*: both menus
+ * called `cornerRowHeight(plan.dense, plan.tight)` and dropped `plan.compact`,
+ * so a compact window reserved 430px and painted 458px. A painter that takes a
+ * `MenuPlan` cannot forget a flag, because it never sees them.
+ */
+export function panelHeightForPlan(plan: MenuPlan): number {
+  return panelHeightFor(densityFor(plan));
+}
+
 /** The full bottom reserve at a density, including the ticker and its margin. */
 export function reserveFor(density: Density, ticker: boolean, footer: boolean): number {
   const m = metricsFor(density);

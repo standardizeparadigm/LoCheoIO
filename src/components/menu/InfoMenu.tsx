@@ -1,7 +1,7 @@
 import { useI18n } from "../../i18n/useI18n";
 import { latestEntry, tierFor } from "../../game/changelog";
 import CornerPanel from "./CornerPanel";
-import { cornerRowHeight } from "./layout";
+import { panelHeightForPlan } from "./adaptive";
 import type { MenuPlan } from "./layout";
 import MenuItemButton from "./MenuItemButton";
 import { InfoIcon, ScrollIcon, DoorIcon, GearIcon } from "./icons";
@@ -75,7 +75,7 @@ export default function InfoMenu({
     <CornerPanel
       title={t("menu.info")}
       corner="right"
-      height={cornerRowHeight(plan.dense, plan.tight)}
+      height={panelHeightForPlan(plan)}
       width={plan.panelWidth}
       tight={plan.tight}
       compact={plan.compact}

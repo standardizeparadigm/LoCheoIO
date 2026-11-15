@@ -97,6 +97,7 @@ export {
   densityMetricsFor,
   metricsFor,
   panelHeightFor,
+  panelHeightForPlan,
   panelWidthFor,
   reserveFor,
 } from "./density";
