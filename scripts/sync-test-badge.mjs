@@ -25,7 +25,7 @@
  *   node scripts/sync-test-badge.mjs            # rewrite
  *   node scripts/sync-test-badge.mjs --verify   # report only, exit 1 if stale
  */
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -57,13 +57,39 @@ function realCounts() {
    * suite still gets its badge written; the suite itself is the gate for that,
    * not this script.
    */
+  /*
+   * The old report is deleted first, and that is the whole point.
+   *
+   * `npx vitest` downloads vitest from the registry when the project has no
+   * `node_modules` — it fetched 5.1.0 while this project pins 3.2.7 — and the
+   * run then fails for reasons unrelated to the badge. The `catch` below
+   * swallowed that, and the next line read whatever report was already on disk
+   * from an earlier run. `--verify` would print "0 README(s) ok" and exit 0 on
+   * a completely unverified tree; a clone with no dependencies could not fail
+   * this step. Removed first, a stale file cannot be mistaken for a fresh one:
+   * a failed run now throws on `readFileSync` instead of silently passing.
+   *
+   * `localBin` is also passed explicitly. `npx` resolves the registry copy
+   * whenever `node_modules/.bin/vitest` is missing, and a different major
+   * version formats its JSON differently.
+   */
+  rmSync(REPORT, { force: true });
+  const localBin = join(process.cwd(), "node_modules", ".bin", "vitest");
   try {
-    execFileSync("npx", ["vitest", "run", "--reporter=json", `--outputFile=${REPORT}`], {
+    const runner = existsSync(localBin) ? localBin : "npx vitest";
+    execFileSync(runner, ["run", "--reporter=json", `--outputFile=${REPORT}`], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
+      shell: false,
     });
   } catch {
-    /* report is written either way — see above */
+    /* a non-zero exit is expected — see above */
+  }
+  if (!existsSync(REPORT)) {
+    throw new Error(
+      "vitest produced no JSON report — is `npm ci` done? Refusing to verify " +
+        "the badge against nothing.",
+    );
   }
   const report = JSON.parse(readFileSync(REPORT, "utf8"));
   return { total: report.numTotalTests, files: report.testResults.length, report };

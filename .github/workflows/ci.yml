@@ -26,6 +26,17 @@ jobs:
       - name: SSR render smoke (menu/modal tree)
         run: npm run smoke
 
+      # The tests badge was gated by nothing. `docs-numbers.test.ts` compares it
+      # to the JSON report `sync-test-badge.mjs` writes, but the report only
+      # exists after that script runs, and no job ran it: `npm run check` is
+      # `tsc && vitest run && vite build`. The test caught the missing report and
+      # `return`ed, so a badge could drift by any amount with every job green.
+      #
+      # This must live in `check`, not `readme-sync`: the script shells out to
+      # `npx vitest`, and `readme-sync` installs no dependencies.
+      - name: Tests badge matches the suite (runs it, ~40 s)
+        run: node scripts/sync-test-badge.mjs --verify
+
   readme-sync:
     name: README sync (10 locales)
     runs-on: ubuntu-latest
@@ -37,15 +48,6 @@ jobs:
 
       - name: Assets referenced ↔ exists (no orphans)
         run: node scripts/check-assets.mjs
-
-      # The tests badge is checked by `docs-numbers.test.ts`, which reads the JSON
-      # report this script writes. CI ran neither: `npm run check` is
-      # `tsc && vitest run && vite build`, so `check:readme` — the only thing that
-      # invokes `--verify` — was never called, and the badge could drift by any
-      # amount while every job stayed green. `--verify` runs the suite, reads the
-      # report and exits non-zero on a stale badge in any of the ten READMEs.
-      - name: Tests badge matches the suite (runs it, ~40 s)
-        run: node scripts/sync-test-badge.mjs --verify
 
       - name: i18n parity (7 locales, key count printed by the script)
         run: node scripts/check-i18n.mjs
