@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1244 tests / 126 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1250 tests / 127 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -51,6 +51,7 @@
 | `adaptive-presets.test.ts` | **21 preset** — id duy nhất, thứ tự theo kích thước, ba nhóm cỡ không chồng lấn, mỗi id xuất hiện trong hợp đồng thiết kế và trong release notes; quét 21 × 21 cặp để chắc `warningsFor()` không phải hằng số | pure + fs |
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |
+| `check-adaptive-script.test.ts` | `scripts/check-adaptive.ts` không được mọc lại bảng `VIEWPORTS` riêng hay predicate nội tuyến — phải đọc `PRESETS` + `violations()`; giữ cờ `--explain` mà guide ghi, và in đủ 21 preset thay vì lấy mẫu | fs |
 | `hud-plan.test.ts` | `planHud()` — HUD **dời chứ không vẽ lại**: toạ độ nội tuyến cũ ở 1280×720 vẫn được giữ, quét cả nghìn bàn không hàng nào ra ngoài canvas, không cặp chồng lấn trên bàn chơi được, bậc thang bỏ dần `chips → comboBar → jars → best`, có sàn nén | pure |
 | `adaptive-hero-fixtures.test.ts` | **corpus 510 cặp (bề ngang, band)** (`tests/fixtures/hero-bands/`) — bậc thang hero, `needs <= scene`, hàng không tràn ngang, cờ chỉ tắt dần khi band hẹp lại | fs + pure |
 | `panel-footer-overflow.test.ts` | hồi quy 844×390 — reserve bỏ 30px footer thì panel phải thấp đi 30px, `panel + lề === reserve` ở mọi cửa sổ ngắn | pure |
