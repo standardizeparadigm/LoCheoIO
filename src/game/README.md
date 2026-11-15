@@ -19,6 +19,13 @@ Rules, storage and progression. **No React in this folder** — enforced by
 | `palette.ts` | Colour weights for the tiles |
 | `audioLevels.ts` | The volume curve |
 
+Two subfolders carry their own README and their own rules:
+
+| Folder | Owns |
+| --- | --- |
+| `adaptive/` | Where the board is and where the HUD readouts go — `planPlayfield()` and `planHud()`, both pure. See [`adaptive/README.md`](adaptive/README.md) |
+| `changelog/` | The read-only release data the menu renders |
+
 ## Layering
 
 ```

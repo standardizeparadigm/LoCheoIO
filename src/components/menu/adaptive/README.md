@@ -1,6 +1,6 @@
 # `src/components/menu/adaptive/`
 
-Nine files, one direction of dependency:
+Twelve files, one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -13,6 +13,9 @@ breakpoints.ts —                          the four thresholds hero.ts quotes
 environment.ts / useEnvironment.ts     →  safe areas, dpr, pointer, motion
 resolve.ts    Box + Environment        →  one AdaptiveProfile
 useAdaptive.ts —                          the only file that touches window
+presets.ts    —                           the 21 named windows the tables use
+constraints.ts AdaptiveProfile           →  the invariants, as data
+diagnostics.ts AdaptiveProfile           →  why the layout is shaped this way
 ```
 
 | File | Owns |
@@ -28,6 +31,9 @@ useAdaptive.ts —                          the only file that touches window
 | `useEnvironment.ts` | reads them from the browser, and `readInsets()` for the plan |
 | `resolve.ts` | `resolveAdaptive()`, `adaptiveAttributes()`, `describeAdaptive()` |
 | `useAdaptive.ts` | one subscription → one profile; `readAdaptiveInput()` for scripts |
+| `presets.ts` | `PRESETS` — 21 named windows (phone → 4K), the single source the probe, the docs and the corpus agree on |
+| `constraints.ts` | `CONSTRAINTS` — twelve invariants as `{ id, why, check }`, run by the tests and the probe |
+| `diagnostics.ts` | `diagnose()`, `warningsFor()`, `renderDiagnosis()` — the explanation, not the numbers |
 | `index.ts` | the public surface — import from here, not the modules |
 
 ## Why this existed in v1.1.8 round 6
@@ -178,3 +184,30 @@ changed. Regenerate with `npx vite-node scripts/gen-adaptive-fixtures.ts` (or
 3. Emit a `--type-*` variable from `typeVars()` so `index.css` can use it, and
    add the same name to `ADAPTIVE_CSS_VARS`.
 4. Consume it in the component, keeping the old literal as the fallback.
+
+## What round 9 adds: the contract and the explanation
+
+Rounds 6–8 built the derivation. Round 9 makes it *auditable*.
+
+**One list of invariants.** Before this round each invariant lived in three
+places — an `expect()`, an `if` in the probe, a sentence in the design doc — and
+the copy that got forgotten was always the one that mattered. `CONSTRAINTS` is the
+single list: `tests/adaptive-constraints.test.ts` runs it over the corpus,
+`scripts/check-adaptive.ts` runs it over the 21 presets, and
+`tests/adaptive-constraints.test.ts` và `tests/adaptive-presets.test.ts` đỏ nếu
+tài liệu thiết kế ngừng nêu một id.
+
+**One list of windows.** `PRESETS` replaced three copies of the same 21-row table.
+A preset carries only its size and why it exists; everything it *does* stays
+`resolveAdaptive()`'s answer.
+
+**An answer to "why".** `diagnose()` walks the eight layers in derivation order
+and pairs each value with the reason it won — the band cleared the row floor, the
+window was 30px short of floor + chrome, the panel was 448px and so under the
+560px two-column floor. `warningsFor()` is the other half: the trade-offs the
+window is living with (crop, no ticker, no footer, minimal hero, scrolling
+dialogs) stated as sentences, because a reviewer who sees a cropped hero without
+the reason files it as a bug.
+
+**Which cap won.** `typeScaleFor()` now reports `lockupLimitedBy`, so "the logo is
+small" has an answer without calling the wordmark module by hand.

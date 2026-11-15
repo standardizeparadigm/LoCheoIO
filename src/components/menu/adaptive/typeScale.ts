@@ -82,6 +82,8 @@ export interface TypeScale {
   hudLabel: number;
   /** The score on the game-over screen. */
   overScore: number;
+  /** Which cap decided `LỌ` — the band or the width. */
+  lockupLimitedBy: "band" | "width";
   /** Which tier produced this table — for the debug overlay. */
   tier: SizeTier;
 }
@@ -131,8 +133,20 @@ export function typeScaleFor({ box, plan }: TypeInput): TypeScale {
    * The band cap is floored to half a pixel for the same reason: rounding 83.3
    * *up* to 83.5 gives a 140.28px lockup in a 140px band.
    */
-  const lo = legible(Math.min(widthCap, Math.floor(bandCap * 2) / 2), MIN_LOCKUP_PX, MAX_LOCKUP_PX);
+  const bandCapFloor = Math.floor(bandCap * 2) / 2;
+  const lo = legible(Math.min(widthCap, bandCapFloor), MIN_LOCKUP_PX, MAX_LOCKUP_PX);
   const cheo = legible(lo * CHEO_RATIO_MAX, 1, lo);
+  /*
+   * Which cap won.
+   *
+   * `wordmarkAtBand()` has reported this since round 8, and it is the first
+   * question a screenshot review asks — "is the logo small because the window is
+   * narrow or because the band is short". The adaptive table could not answer it,
+   * so `docs/guides/adaptive-debugging.md` told people to call the wordmark
+   * module directly with a band they had to read off the plan. One field here
+   * removes that step, and `diagnose()` prints it.
+   */
+  const lockupLimitedBy: "band" | "width" = bandCapFloor <= widthCap ? "band" : "width";
 
   return {
     eyebrow: legible(fluid({ min: 8, max: 10.5 }, drive) * inflation, 8, 12),
@@ -158,6 +172,7 @@ export function typeScaleFor({ box, plan }: TypeInput): TypeScale {
     hudScore: legible(fluid({ min: 20, max: 34 }, drive), 20, 36),
     hudLabel: legible(fluid({ min: 9, max: 11 }, drive), 9, 12),
     overScore: legible(fluid({ min: 28, max: 56 }, drive), 28, 60),
+    lockupLimitedBy,
     tier,
   };
 }

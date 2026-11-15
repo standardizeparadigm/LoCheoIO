@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -39,7 +39,7 @@
 
 ## 🆕 สิ่งใหม่ใน v1.1.8
 
-> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาด ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก และ SVG ทั้ง 20 ถูกวาดใหม่
+> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาด ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG เดิมทั้ง 21 ถูกวาดใหม่ และรอบที่เก้าเพิ่มแผนภาพแถบ HUD
 
 ### 📐 การบวกที่ไม่ใครดูแล — และสี่บั๊กพร้อมกัน
 
@@ -152,7 +152,7 @@ v1.1.8 รวมทั้งหมดเป็น**ฟังก์ชันบ�
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 ค่าคงที่ใหม่ `พาเนล + ระยะขอบ ≤ reserve` แดงที่ **844×390** — iPhone แนวนอน ขนาดเดียวกับภาพในรายงาน `reserveFor()` หัก 30px เมื่อพาเนลไม่วาดแถบท้าย แต่ `panelHeightForPlan()` ดูแค่ความหนาแน่นแล้ววาดเต็มความสูง: พาเนล 234px ในแถบ 216px **ฐานล่าง 18px อยู่นอกจอ**
 
@@ -243,13 +243,31 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1183 เทสต์ใน 122 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1250 เทสต์ใน 127 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="แผง GAME (ล่างซ้าย) และ INFO (ล่างขวา) เลื่อนเข้ามา (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="ตั้งค่า 6 หมวด (ตั้งแต่ v1.1.6) — สวิตช์ แถบระดับ และตัวเลือก (แอนิเมชัน SMIL)" width="100%" />
+
+### 🔟 รอบที่เก้า: HUD กลายเป็นแผนงาน — และ `diagnose()` ตอบว่า*ทำไม*
+
+รอบที่แปดให้ profile กับเมนูทั้งหน้าจอ เหลือเพียง **หนึ่ง** อย่างที่ยังวาดด้วยมือ:
+HUD ใน `engine.ts` ซึ่งเป็นชุด `fillText` ที่บวกพิกัดต่อกัน ถูกเฉพาะ 1280×720
+
+`planHud()` ให้แต่ละตัวเลขมี **แถบ glyph** (`baseline − 0.72 × size` สูง `0.97 ×
+size`) ตรึงคอลัมน์ซ้าย-ขวา และปล่อยคอลัมน์กลางให้ **ไหล** จากนาฬิกา ถ้ายังไม่พอจะ
+ตัดสิ่งที่มีข้อมูลน้อยที่สุดก่อน (`chips → combo bar → jars → best`) แล้วบีบอัดทีละ
+0.02 จนถึงพื้น 0.55
+
+กวาด 1 500 กระดาน: สูตรเดิมเกิด **4 004** คู่ทับกัน แผนใหม่ได้ **0** ทุกกระดานที่เล่นได้
+ส่วนที่ต่ำกว่า `playable()` ยังเหลือ แต่ถูก **รายงาน** ผ่าน `traceHud().collisions`
+
+รวมถึงรอบนี้: **21 พรีเซ็ต** เรียงตามขนาด (320×480 → 3840×2160) และ **12 เงื่อนไข**
+ใน `constraints.ts` ที่ใช้รายการเดียวกันทั้งชุดทดสอบ `check:adaptive` และเอกสาร
+
+<img src="assets/hud-bands.svg" alt="HUD ในรูปแผนงาน 1.1.8 — แต่ละตัวเลขมีแถบ glyph คอลัมน์กลางไหลจากนาฬิกา ตัดตามลำดับ chips → comboBar → jars → best แล้วบีบถึงพื้น 0.55 (แอนิเมชัน SMIL)" width="100%" />
 
 ## 📐 เลย์เอาต์ปรับตัว — ฮีโร่เลือกทรงของตัวเองอย่างไร
 

@@ -136,3 +136,27 @@ export {
   resolveForSize,
 } from "./resolve";
 export { readAdaptiveInput, useAdaptive, useAdaptiveVars } from "./useAdaptive";
+
+/* ---- presets ---------------------------------------------------------- */
+export type { PresetGroup, ViewportPreset } from "./presets";
+export {
+  PRESETS,
+  presetFor,
+  presetSize,
+  presetTuples,
+  presetsIn,
+  presetsTallEnough,
+} from "./presets";
+
+/* ---- the contract ----------------------------------------------------- */
+export type { Constraint } from "./constraints";
+export {
+  CONSTRAINTS,
+  constraintIds,
+  firstViolation,
+  violations,
+} from "./constraints";
+
+/* ---- the explanation -------------------------------------------------- */
+export type { AdaptiveWarning, Diagnosis, DiagnosisRow } from "./diagnostics";
+export { diagnose, headline, renderDiagnosis, warningsFor } from "./diagnostics";

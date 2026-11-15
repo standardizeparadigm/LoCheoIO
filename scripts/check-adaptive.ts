@@ -1,47 +1,49 @@
 /**
- * Print the adaptive profile for 21 real viewports.
+ * Print the adaptive profile for the 21 presets, then check the contract.
  *
  * WHY A SCRIPT AND NOT A TEST
  * ---------------------------
  * The tests assert properties ("the lockup fits the band"). A person debugging a
  * screenshot needs the *table* — which tier, which density, how much band, how
- * big the type — for the window in the report. That table is what this prints.
+ * big the type, what was given up — for the window in the report. That table is
+ * what this prints.
  *
- * It imports the same `resolveAdaptive()` the app calls, so it cannot disagree
- * with what ships. Run it with:
+ * It imports the same `resolveAdaptive()` the app calls and the same `PRESETS` the
+ * docs print, so it cannot disagree with either. Since round 9 it also runs the
+ * same `CONSTRAINTS` list the tests run, which is why the gate and the suite can
+ * never drift: there is one definition of every invariant, not one per tool.
  *
  *     npm run check:adaptive
- *     npx vite-node scripts/check-adaptive.ts
+ *     npx vite-node scripts/check-adaptive.ts --explain 1280x720
  */
+import { PRESETS } from "../src/components/menu/adaptive/presets";
 import { resolveForSize } from "../src/components/menu/adaptive/resolve";
-
-/** The sizes the project is tested against, plus the ones from bug reports. */
-const VIEWPORTS: Array<[number, number, string]> = [
-  [320, 480, "iPhone 4 / smallest"],
-  [320, 568, "iPhone SE 1"],
-  [360, 640, "Android small"],
-  [375, 667, "iPhone SE 2"],
-  [390, 844, "iPhone 12"],
-  [414, 896, "iPhone 11 Pro Max"],
-  [768, 1024, "iPad portrait"],
-  [844, 390, "iPhone landscape (notched)"],
-  [900, 500, "short window"],
-  [1024, 600, "small laptop"],
-  [1024, 768, "iPad landscape"],
-  [1280, 640, "720p minus chrome"],
-  [1280, 720, "720p"],
-  [1366, 650, "1366 window"],
-  [1366, 768, "1366 laptop"],
-  [1440, 900, "MacBook Air"],
-  [1568, 677, "windowed report 1"],
-  [1920, 820, "windowed report 2"],
-  [1920, 1080, "1080p fullscreen"],
-  [2560, 1440, "1440p"],
-  [3840, 2160, "4K"],
-];
+import { violations, constraintIds } from "../src/components/menu/adaptive/constraints";
+import { renderDiagnosis, warningsFor } from "../src/components/menu/adaptive/diagnostics";
 
 const pad = (v: string | number, n: number) => String(v).padEnd(n);
-const num = (v: number, n: number) => String(v).padStart(n);
+const num = (v: string | number, n: number) => String(v).padStart(n);
+
+/*
+ * `--explain 1280x720`: the long answer for one window.
+ *
+ * The table answers "what"; a screenshot review usually needs "why". Printing the
+ * diagnosis from the same script means the person reading a bug report does not
+ * have to find the right module first.
+ */
+const explainAt = process.argv.indexOf("--explain");
+if (explainAt > -1) {
+  const [w, h] = (process.argv[explainAt + 1] ?? "").split(/[x×]/).map(Number);
+  if (!Number.isFinite(w) || !Number.isFinite(h)) {
+    console.error("usage: npx vite-node scripts/check-adaptive.ts --explain 1280x720");
+    process.exit(1);
+  }
+  const profile = resolveForSize(w, h);
+  console.log(renderDiagnosis(profile));
+  const bad = violations(profile);
+  console.log(bad.length ? `\nviolations: ${bad.map((b) => b.id).join(", ")}` : "\nviolations: none");
+  process.exit(bad.length ? 1 : 0);
+}
 
 const header =
   pad("viewport", 12) +
@@ -53,15 +55,19 @@ const header =
   num("label", 7) +
   pad(" fit", 8) +
   pad(" hero", 7) +
-  " note";
+  pad(" trade-offs", 22) +
+  " window";
 
 console.log(header);
 console.log("-".repeat(header.length));
 
-for (const [w, h, note] of VIEWPORTS) {
-  const p = resolveForSize(w, h);
+for (const preset of PRESETS) {
+  const p = resolveForSize(preset.width, preset.height);
+  const trade = warningsFor(p)
+    .map((w) => w.code)
+    .join(",");
   console.log(
-    pad(`${w}×${h}`, 12) +
+    pad(`${preset.width}×${preset.height}`, 12) +
       pad(p.tier, 5) +
       pad(p.density, 12) +
       num(p.plan.scene, 7) +
@@ -70,31 +76,26 @@ for (const [w, h, note] of VIEWPORTS) {
       num(p.type.rowLabel, 7) +
       pad(` ${p.plan.fit}`, 8) +
       pad(` ${p.hero.sideBySide ? "row" : "stack"}`, 7) +
-      ` ${note}`,
+      pad(` ${trade || "—"}`, 22) +
+      ` ${preset.note}`,
   );
 }
 
 /*
- * A tiny invariant check, so the script is a gate as well as a table. It is the
- * one promise the whole folder makes: the column fills the window, or the plan
- * says out loud that it cannot.
+ * The gate: the same twelve invariants the suite runs, over the same 21 windows.
+ * The old version checked three of them inline and the tests checked nine
+ * elsewhere, which is how two of them came to disagree.
  */
 let failures = 0;
-for (const [w, h] of VIEWPORTS) {
-  const p = resolveForSize(w, h);
-  if (p.plan.fit !== "crop" && p.plan.scene + p.plan.reserve !== h) {
+for (const preset of PRESETS) {
+  const p = resolveForSize(preset.width, preset.height);
+  for (const bad of violations(p)) {
     failures += 1;
-    console.error(`✗ ${w}×${h}: scene + reserve = ${p.plan.scene + p.plan.reserve}, expected ${h}`);
-  }
-  if (p.type.lockupLo * 1.68 > p.plan.scene + 0.5) {
-    failures += 1;
-    console.error(`✗ ${w}×${h}: lockup ${p.type.lockupLo}px does not fit a ${p.plan.scene}px band`);
-  }
-  if (p.type.lockupCheo >= p.type.lockupLo) {
-    failures += 1;
-    console.error(`✗ ${w}×${h}: CHÉO ${p.type.lockupCheo} ≥ LỌ ${p.type.lockupLo}`);
+    console.error(`✗ ${preset.width}×${preset.height} [${bad.id}] ${bad.message}`);
   }
 }
 
-console.log(failures === 0 ? "\nADAPTIVE OK — 21 viewports" : `\n${failures} problem(s)`);
+console.log("");
+console.log(`${constraintIds().length} invariants × ${PRESETS.length} presets`);
+console.log(failures === 0 ? `ADAPTIVE OK — ${PRESETS.length} viewports` : `\n${failures} problem(s)`);
 if (failures > 0) process.exit(1);

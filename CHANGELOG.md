@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, tám vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · 20 hình SVG vẽ lại · 1183 unit tests (122 file) và hai corpus 1 620 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, chín vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · 21 hình SVG vẽ lại, thêm sơ đồ HUD · 1250 unit tests (127 file) và hai corpus 1 620 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -92,6 +92,31 @@ Ngoài ra:
 - **`scripts/probe-menu-layout.tsx`** — render `StartScreen` thành HTML thật rồi kiểm **21 tính chất** trên DOM sinh ra
 - **`docs/releases/v1.1.8.md`** — mô tả phát hành đầy đủ
 - **Hai i18n key** `game.howtoHint` · `howto.goal` cho cả 7 locale — **304 key**, parity nguyên vẹn
+
+### Fixed — vòng chín (HUD)
+
+- **Chips đè lên nhãn combo** — hàng chip neo ở `clock + 20 × hudScale`, một offset tuyệt đối; khi combo lên hai chữ số, glyph cao `clamp(18 + combo × 0.7, 18, 34)` phình xuống và ăn vào hàng chip. Nay cả cột giữa **chảy** từ `clockY`, nên số combo tự đẩy hàng xuống. Phép quét cũ tìm ra **4 004** cặp chồng lấn; phép quét mới: **0** trên mọi bàn chơi được
+- **HUD vẽ ra ngoài canvas ở cửa sổ thấp** — ba hàng cuối (chip · combo · mult) không có ai kiểm tra `height`; ở 1920×400 chúng nằm dưới đáy bàn. Nay `planHud()` có bậc thang bỏ dần và nén, và `tests/hud-plan.test.ts` quét 1 500 bàn để chắc không hàng nào ra ngoài
+- **Thanh combo tách khỏi glyph combo** — thanh mờ dần từng đặt ở baseline, đúng chỗ glyph thứ hai của combo hai chữ số; nay nằm dưới hộp glyph
+- **Chữ hero cao hơn band ở 320×320** — `heroContentHeight()` đo hằng số 150px danh nghĩa thay vì hộp thật (`WORDMARK_BOX_RATIO ×` lockup), nên báo "vừa" trong khi `LỌ` đã bị cắt
+- **Hộp thoại cao hơn cửa sổ** — sàn 280×240 được áp *sau* khi tính `maxHeight`, nên với inset 100px sàn thắng cửa sổ; nay sàn được kẹp lại theo cửa sổ sau khi áp
+
+### Added — vòng chín
+
+- **`src/game/adaptive/hud.ts`** — `planHud()`, `traceHud()`, `describeHud()`, `HUD_DROP_ORDER`, `HUD_MIN_SCALE`; band = hộp glyph thật (`baseline − 0.72 × size`, cao `0.97 × size`), cột trái/phải cố định, cột giữa chảy, bậc thang `chips → comboBar → jars → best`, nén `0.02` bước tới sàn `0.55`
+- **`src/components/menu/adaptive/presets.ts`** — **21 preset** xếp theo kích thước (320×480 → 3840×2160), sáu nhóm, mỗi dòng một ghi chú; `presetFor()`, `presetGroups()`
+- **`src/components/menu/adaptive/constraints.ts`** — **12 bất biến** dạng dữ liệu (`id`, mô tả, predicate); `violations()`, `constraintIds()`; test và `check:adaptive` cùng đi qua một danh sách
+- **`src/components/menu/adaptive/diagnostics.ts`** — `diagnose()` tám lớp theo thứ tự suy ra, `warningsFor()` chỉ báo thoả hiệp, `headline()`, `renderDiagnosis()`
+- **`src/game/adaptive/README.md`** — bản đồ của thư mục sân chơi, kèm bảng số đo
+- **4 test mới** — `hud-plan` (17) · `adaptive-presets` (9) · `adaptive-constraints` (12) · `adaptive-diagnostics` (15)
+
+### Changed — vòng chín
+
+- **`engine.drawHud()` đọc kế hoạch** — ~90 dòng cộng dồn toạ độ biến mất; `comboSize` được truyền vào để kế hoạch và glyph đồng ý về bề ngang con số
+- **`typeScaleFor()` trả thêm `lockupLimitedBy`** — `"width"` khi clamp dừng trước `MAX_LOCKUP_PX`, `"band"` khi trần là band; từ 1024px trở lên **mọi** cửa sổ (kể cả 4K) báo `band`, vì 89.5px chính là cực đại của band
+- **`scripts/check-adaptive.ts`** — bỏ bảng viewport sao chép, đọc `PRESETS` và chạy cả 12 bất biến; thêm `--explain 1280x720` in chẩn đoán một cửa sổ
+- **`docs/design/adaptive-v2.md`** — mục 14–17: HUD, bảng 21 preset, 12 bất biến, `diagnose()`
+- **`diagnostics.warningsFor()` bỏ `dialog-scrolls`** — mọi hộp thoại đều bị chặn ở 86% cửa sổ, nên cảnh báo đó luôn đúng và vì thế vô nghĩa
 
 ### Added — vòng tám
 

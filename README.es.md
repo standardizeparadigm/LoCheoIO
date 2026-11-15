@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalación-y-ejecución)
@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 21 SVG se redibujan.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 22 SVG existentes se redibujan y la ronda nueve añade el diagrama de bandas del HUD.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -202,13 +202,35 @@ El nivel se **deriva del SemVer** con `tierFor(version)`, nunca se escribe a man
 
 <img src="assets/release-tiers.svg" alt="Los tres niveles MAJOR/UPDATE/PATCH con sus colores y la línea de tiempo de diez versiones (animación SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matriz de pruebas 1.1.8 — 1183 tests en 122 archivos, nueve puertas (animación SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matriz de pruebas 1.1.8 — 1250 tests en 127 archivos, nueve puertas (animación SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Las seis capas adaptativas de Lọ Chéo 1.1.8 — caja, nivel, plan y luego densidad / hero / tipografía / modal / tablero, en una sola dirección (animación SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Paneles GAME (abajo-izquierda) e INFO (abajo-derecha) deslizándose (animación SMIL)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="Ajustes en seis secciones (desde v1.1.6) — interruptores, barras de nivel y selectores (animación SMIL)" width="100%" />
+
+### 🔟 Ronda nueve: el HUD también es un plan — y `diagnose()` dice *por qué*
+
+La ronda 8 dio un perfil a todo el menú. Quedaba **una** cosa dibujada a mano: el HUD
+de `engine.ts`, una cadena de `fillText` con coordenadas acumuladas, correcta en
+1280×720 y equivocada en todo lo demás.
+
+`planHud()` da a cada indicador una **banda** (la caja real del glifo, `baseline −
+0.72 × size`) , fija las columnas izquierda y derecha, hace **fluir** la columna
+central desde el reloj y, si no cabe, retira primero lo menos informativo
+(`chips → barra de combo → jars → best`) y luego comprime en pasos de 0.02 hasta un
+suelo de 0.55.
+
+Barrido de 1 500 tableros: la fórmula antigua producía **4 004** solapamientos; el
+plan produce **0** en todo tablero jugable. Por debajo de `playable()` los que quedan
+se **informan** (`traceHud().collisions`), no se esconden.
+
+Además: **21 presets** ordenados por tamaño (320×480 → 3840×2160), **12
+invariantes** en `constraints.ts` — una sola lista para la suite, para
+`:check:adaptive` y para la documentación — y `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="El HUD como plan en 1.1.8 — una banda por indicador, columna central que fluye desde el reloj, escalera chips → comboBar → jars → best y compresión hasta el suelo 0.55 (animación SMIL)" width="100%" />
 
 ## 📐 Diseño adaptable — cómo el hero elige su forma
 
@@ -259,7 +281,7 @@ v1.1.8 las reúne en **una función pura de una caja**:
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 La nueva invariante `panel + margen ≤ reserva` falla en **844×390** — un iPhone en horizontal, el tamaño del informe. `reserveFor()` resta 30px cuando el panel no dibuja pie, pero `panelHeightForPlan()` solo miraba la densidad y dibujaba la altura completa: un panel de 234px en una banda de 216px, **18px de su base fuera de la pantalla**.
 
@@ -334,7 +356,7 @@ combinaciones comprobadas).
 | 💾 **Clasificación TOP 8** | Guardado local, validado y normalizado al leer, nombres en mayúsculas automáticas, highlight para el récord recién marcado |
 | 🎨 **Gráficos 60fps** | Canvas 2D, presupuesto de 460 partículas, DPR tope 2, suelo de losetas pre-renderizado offscreen, titileo de estrellas + aurora en el menú |
 | 📴 **Offline-first de verdad** | Fuentes auto-alojadas (subsets latin + vietnamita, woff2), sin CDN ni APIs — abre `dist/index.html` y a jugar |
-| 🧪 **Calidad** | 1183 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
+| 🧪 **Calidad** | 1250 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
 
 <img src="assets/items.svg" alt="Los 14 ingredientes — encurtidos para atrapar, poderes dorados para agarrar, peligros para esquivar" width="100%" />
 
@@ -397,7 +419,7 @@ npm run build      # → dist/index.html (un único archivo autocontenido)
 npm run dev        # servidor de desarrollo con HMR (http://localhost:5173)
 npm run preview    # sirve el build de producción localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1183 tests unitarios (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1250 tests unitarios (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (puerta de calidad CI)
 ```
 
@@ -542,7 +564,7 @@ Doble clic en [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`
 
 | Versión | Tier | Fecha | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1183 tests / 122 archivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1250 tests / 127 archivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fondo del menú sin niebla** (cuatro capas: `blur 64→22px`, viñeta de esquinas en vez de pantalla completa, marco CRT 140→90px, suelo 45→70%) · **changelog por niveles con color** · **96 viñetas nuevas** para 8 versiones · fechas reordenadas · `src/game/changelog/` dividido · 10 READMEs rehechos · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes en 6 secciones** (rápidos · audio · pantalla · idioma · copia · datos) · volúmenes 0–100 · intensidad de sacudida · calidad visual · pausa al cambiar de pestaña · idioma dentro de Ajustes · 4 preajustes · exportar/importar JSON · menú multicapa animado · degradado en la tarjeta del autor · foco atrapado en modales · fix de música al recargar · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |
@@ -586,7 +608,7 @@ Notas de diseño y documentación técnica más profunda:
 ## 🤝 Contribuir
 
 1. Haz fork, crea una rama con la convención `arena/<nombre>` o `feat/<nombre>`.
-2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 1183 tests + build).
+2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 1250 tests + build).
 3. Evita nuevas dependencias de runtime salvo necesidad real — filosofía: **un archivo, sin red, jugable para siempre**.
 4. En el PR indica las pantallas/modos afectados y adjunta un clip si cambia el gameplay.
 

@@ -106,15 +106,80 @@ planPlayfield(1920, 400, 1);   // → hudScale 0.72, không phải 1.16
 `tests/playfield.test.ts` khoá điều này: HUD không bao giờ lớn hơn quy tắc cũ
 (`clamp(w/900, .78, 1.16)`) và nhỏ hơn khi bàn chơi thấp.
 
+`hudScale` là **trần**, không phải kết quả — từ vòng 9 `planHud()` mới là thứ
+quyết định từng readout:
+
+```js
+const { planHud, traceHud, describeHud } = await import("/src/game/adaptive/hud.ts");
+const pf = planPlayfield(1280, 720, 1);
+const plan = planHud(pf, { combo: true, comboSize: 34, chips: 2 });
+plan.scale;      // 1.029 — bằng hudScale, không bị nén
+plan.bottom;     // 230 — mép dưới cùng, tính từ đỉnh
+plan.chipSlots;  // 2 — vẽ được cả hai chip
+plan.collisions; // [] — không cặp băng nào chồng nhau
+describeHud(plan);  // "hud ×1.029 · bottom 230px · full · no overlap"
+```
+
+Ba câu hỏi, ba hàm:
+
+| Hàm | Trả lời |
+| --- | --- |
+| `planHud()` | dùng cái gì (kế hoạch đã chốt) |
+| `traceHud()` | đã thử gì, bỏ gì, còn chồng lấn ở đâu |
+| `describeHud()` | một dòng cho console |
+
+Nếu một hàng biến mất khỏi HUD, `traceHud().dropped` nói hàng nào và lý do là
+bậc thang (`chips → comboBar → jars → best`) hay nén. Nếu **hai** hàng chồng
+nhau, đó là bàn dưới `playable()` — `traceHud().collisions` liệt kê đúng cặp.
+
 ## 8. Quét toàn bộ, không cần mở trình duyệt
 
 ```bash
 npx vitest run tests/adaptive-type.test.ts tests/adaptive-resolve.test.ts
-npm run check:adaptive                 # in bảng 21 viewport thật
+npm run check:adaptive                 # bảng 21 preset thật + 12 bất biến
+npm run check:adaptive -- --explain 1280x720   # chẩn đoán một cửa sổ
 ```
 
-`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ và fit cho
-từng viewport trong danh sách, để so với ảnh chụp mà không phải mở app.
+`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ, fit và
+**những thoả hiệp** của từng preset. Bảng đọc từ `presets.ts`, bất biến đọc từ
+`constraints.ts` — cùng nguồn với suite, nên không thể lệch.
+
+### 8.1 "Vì sao trông như vậy" — `diagnose()`
+
+Khi ảnh chụp không đủ, gọi thẳng hàm mà script gọi:
+
+```js
+const { diagnose, renderDiagnosis } = await import("/src/components/menu/adaptive/diagnostics.ts");
+console.log(renderDiagnosis(resolveForSize(1280, 720)));
+```
+
+Tám dòng, theo đúng thứ tự suy ra:
+
+```
+1 · box      ↳ aspect is the width over the height; everything below reads it
+2 · tier     ↳ the short side (720) crosses the 720px floor
+3 · plan     scene 342 · reserve 378
+4 · density  ↳ default chrome (window 720px)
+5 · hero     row   ↳ band 342px clears the row floor
+6 · type     89.5px ↳ lockup capped by the band
+7 · modal    448×619px · 1 col ↳ 448px is under the 560px two-column floor
+8 · board    jar 38px · hud ×1.029 ↳ item scale follows height
+trade-offs: none — this window gets the full layout
+```
+
+`warningsFor()` chỉ liệt kê **thoả hiệp** — `crop` (kèm số pixel thiếu),
+`no-ticker`, `no-footer`, `minimal`, `panels-stacked`, `jar-at-floor`,
+`dialog-compact`, `inset`. Không có cảnh báo nào là lỗi; cảnh báo **luôn đúng**
+thì đã bị xoá (xem `dialog-scrolls` ở vòng 9).
+
+### 8.2 Mười hai bất biến
+
+`constraints.ts` là danh sách duy nhất. Muốn biết một cửa sổ vi phạm gì:
+
+```js
+const { violations } = await import("/src/components/menu/adaptive/constraints.ts");
+violations(resolveForSize(844, 390));   // → []
+```
 
 ## 9. Khi nào **không** phải sửa adaptive
 

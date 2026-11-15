@@ -39,9 +39,10 @@ const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
 /*
  * A count, not a floor: an asset that silently loses its README reference is
  * the failure this guards against, and a floor would let a dead file sit there.
- * Round 8 added `adaptive-layers.svg`, the twenty-first.
+ * Round 8 added `adaptive-layers.svg`, the twenty-first; round 9 adds
+ * `hud-bands.svg`, the twenty-second.
  */
-const EXPECTED_ASSETS = 21;
+const EXPECTED_ASSETS = 22;
 if (files.length !== EXPECTED_ASSETS) {
   problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }

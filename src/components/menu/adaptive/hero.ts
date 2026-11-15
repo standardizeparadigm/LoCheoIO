@@ -193,9 +193,24 @@ export function heroLayout({ scene, width, minimal }: HeroInput): HeroLayout {
  * mechanism that already ships. This function reports the *lockup* height when
  * stacked, which is what the band must actually seat.
  */
-export function heroContentHeight(layout: HeroLayout): number {
-  if (!layout.mascot) return 150; // wordmark only
-  const lockup = 150 + (layout.badgeRow ? 40 : 0) + (layout.liveBadge ? 22 : 0);
+export function heroContentHeight(layout: HeroLayout, lockupBox: number = WORDMARK_BOX): number {
+  /*
+   * `lockupBox` is the *real* height of the two-line wordmark, which the type
+   * table knows (`lockupLo × LOCKUP_BOX_RATIO`) and this module otherwise has to
+   * assume.
+   *
+   * Round 9's contract checks `heroContentHeight ≤ scene` on every window and
+   * failed at 320×320: the band there is 140px (`TIGHT_SCENE_HEIGHT`), the plan
+   * shrinks the lockup to 83px, so the real box is 139.4px and it fits — but the
+   * measurement used a hardcoded 150 and reported a 10px overflow that did not
+   * exist. A measurement that cannot see the size the layout actually chose is a
+   * measurement that will be wrong exactly where the layout is most squeezed.
+   *
+   * The default keeps every existing caller honest: 150 is the box at the 89.5px
+   * lockup cap, which is what the arrangement thresholds were derived from.
+   */
+  if (!layout.mascot) return lockupBox; // wordmark only
+  const lockup = lockupBox + (layout.badgeRow ? 40 : 0) + (layout.liveBadge ? 22 : 0);
   /*
    * When side-by-side, the taller *column* decides: the mascot box is 176px
    * (240 with the halo, which overlaps rather than adds).
@@ -222,6 +237,9 @@ export function heroContentHeight(layout: HeroLayout): number {
     ? Math.max(lockup, layout.halo ? MASCOT_ROW_HALO : MASCOT_ROW)
     : lockup + STACK_GAP + MASCOT_STACKED + CHIP_OVERHANG;
 }
+
+/** The two-line lockup box at the 89.5px cap — the arrangement thresholds' unit. */
+export const WORDMARK_BOX = 150;
 
 /** Vertical gap between the lockup column and the mascot box when stacked. */
 export const STACK_GAP = 16;

@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)](#-changelog-tiers--one-colour-per-tier)
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
+[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-install--run)
@@ -37,7 +37,7 @@ This is a **single-screen action arcade** inspired by Vietnam's humble pickled v
 
 ## 🆕 What's new in v1.1.8
 
-> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, and all 21 SVGs are redrawn.
+> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, the 21 existing SVGs are redrawn — and round nine adds the HUD-band diagram.
 
 ### 📐 One unmanaged addition — and four bugs at once
 
@@ -200,13 +200,43 @@ The tier is **derived from SemVer** by `tierFor(version)`, never typed by hand. 
 
 <img src="assets/release-tiers.svg" alt="The three tiers MAJOR/UPDATE/PATCH with their colours and the ten-release timeline (SMIL animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1183 tests across 122 files, nine gates (SMIL animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1250 tests across 127 files, nine gates (SMIL animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Corner GAME (bottom-left) & INFO (bottom-right) panels sliding in (SMIL animation)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="Six-section settings (since v1.1.6) — switches, level bars and pickers (SMIL animation)" width="100%" />
+
+### 🔟 Round nine: the HUD becomes a plan — and `diagnose()` says *why*
+
+Round 8 gave the whole menu one profile. Exactly **one** thing was still drawn by
+hand: the HUD in `engine.ts` — a chain of `fillText` calls with accumulating
+offsets, correct at 1280×720 and wrong everywhere else.
+
+`planHud()` gives every readout a **band** (the real glyph box, `baseline −
+0.72 × size`), fixes the left and right columns, prints the centre column as a
+flow from the clock, and when it does not fit it drops the least informative item
+first — `chips → combo bar → jars → best` — then compresses the whole scale in
+0.02 steps to a floor of 0.55.
+
+A sweep of 1 500 boards: the old formula produced **4 004** overlapping pairs, the
+plan produces **0** on every playable board. Below `playable()` the remaining
+overlaps are *reported* (`traceHud().collisions`), not hidden.
+
+Also this round: **21 presets** ordered by size (320×480 → 3840×2160), **12
+invariants** in `constraints.ts` — one list for the suite, for `check:adaptive`
+and for the docs — and `diagnose()`, which answers the question a screenshot
+always brings:
+
+```
+$ npx vite-node scripts/check-adaptive.ts --explain 1280x720
+6 · type   89.5px     ↳ lockup capped by the band
+8 · board  hud ×1.029 ↳ item scale follows height
+trade-offs: none — this window gets the full layout
+```
+
+<img src="assets/hud-bands.svg" alt="The HUD as a plan in 1.1.8 — a band per readout, a centre column flowing from the clock, the drop ladder chips → comboBar → jars → best, then compression to a floor of 0.55 (SMIL animation)" width="100%" />
 
 ## 📐 Adaptive layout — how the hero picks its shape
 
@@ -261,7 +291,7 @@ v1.1.8 round eight collapses them into **one pure function of one box**:
 | 5 · Hero | `adaptive/hero.ts` | row or stack, which flags, lockup fits the band |
 | 6 · Type | `adaptive/typeScale.ts` | 17 `--type-*` vars, none below 8px |
 | 7 · Modal | `ui/modalPlan.ts` | width × height × columns, `86vh` **with** a ceiling |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale`, `hudScale`, jar radius |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · HUD bands |
 
 `resolveAdaptive()` is total: `NaN`, a 1×1 window, a 500px inset and an inverted
 range each produce a coherent profile with finite numbers. `useAdaptive()` reads
@@ -354,7 +384,7 @@ usableHeight` (252 combinations asserted).
 | 💾 **TOP 8 leaderboard** | Local storage, validated & normalised on read, auto upper-case names, highlight for freshly set records |
 | 🎨 **60fps graphics** | Canvas 2D, 460-particle budget, DPR cap 2, pre-rendered offscreen tile floor, star twinkle + menu aurora |
 | 📴 **Truly offline-first** | Self-hosted fonts (latin + vietnamese subsets, woff2), no CDN, no API — double-click `dist/index.html` and play |
-| 🧪 **Quality gates** | 1183 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
+| 🧪 **Quality gates** | 1250 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
 
@@ -417,7 +447,7 @@ npm run build      # → dist/index.html (one self-contained file)
 npm run dev        # dev server with HMR (http://localhost:5173)
 npm run preview    # serve the production build locally
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1183 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1250 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI quality gate)
 ```
 
@@ -543,19 +573,19 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 21 SVGs — no orphans, no broken references
+$ npm run check:assets # 22 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
 | Gate | Scope | 1.1.8 status |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1183 tests / 122 files** | ✅ |
+| `vitest run` | **1250 tests / 127 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 21 SVGs, references checked both ways | ✅ |
-| `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
+| `check-assets` | 22 SVGs, references checked both ways | ✅ |
+| `build` | `dist/index.html` ~914 KB · gzip ~418 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
 
@@ -586,7 +616,7 @@ Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`s
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1183 tests / 122 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1250 tests / 127 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
@@ -630,7 +660,7 @@ Design notes and deeper technical docs:
 ## 🤝 Contributing
 
 1. Fork the repo, branch with the `arena/<name>` or `feat/<name>` convention.
-2. `npm run check` must be green before opening a PR (typecheck + 1183 tests + build).
+2. `npm run check` must be green before opening a PR (typecheck + 1250 tests + build).
 3. Avoid new runtime dependencies unless truly necessary — philosophy: **one file, no network, playable forever**.
 4. In your PR, note the screens/modes affected and attach a clip if gameplay changes.
 

@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt, alle 21 SVGs sind neu gezeichnet.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt, alle 21 vorhandenen SVGs sind neu gezeichnet, dazu kommt das HUD-Bandschema aus Runde neun.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -171,13 +171,35 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1183 Tests in 122 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1250 Tests in 127 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME-Panel (unten links) & INFO-Panel (unten rechts) gleiten herein (SMIL-Animation)" width="100%" />
 
 <img src="assets/settings-sections.svg" alt="Einstellungen in sechs Abschnitten (seit v1.1.6) — Schalter, Pegelbalken und Auswahlen (SMIL-Animation)" width="100%" />
+
+### 🔟 Neunte Runde: das HUD wird ein Plan — und `diagnose()` sagt *warum*
+
+Runde 8 gab dem ganzen Menü ein Profil. Genau **eine** Sache wurde noch von Hand
+gezeichnet: das HUD in `engine.ts` — eine Kette von `fillText`-Aufrufen mit
+aufsummierten Koordinaten, korrekt bei 1280×720 und überall sonst falsch.
+
+`planHud()` gibt jedem Messwert ein **Band** (die echte Glyphenbox, `baseline −
+0.72 × size`, Höhe `0.97 × size`), fixiert die linke und rechte Spalte, lässt die
+mittlere Spalte von der Uhr aus **fließen** und entfernt, wenn es nicht passt, das
+Uninformativste zuerst (`chips → Combo-Leiste → jars → best`), bevor die ganze
+Skala in 0,02-Schritten bis zur Untergrenze 0,55 schrumpft.
+
+Ein Durchlauf über 1 500 Bretter: die alte Formel erzeugte **4 004** Überlappungen,
+der Plan **0** auf jedem spielbaren Brett. Unterhalb von `playable()` werden die
+restlichen **gemeldet** (`traceHud().collisions`) statt versteckt.
+
+Ebenfalls in dieser Runde: **21 Presets** nach Größe sortiert (320×480 → 3840×2160),
+**12 Invarianten** in `constraints.ts` — eine Liste für Suite, `check:adaptive` und
+Doku — sowie `diagnose()`.
+
+<img src="assets/hud-bands.svg" alt="Das HUD als Plan in 1.1.8 — ein Band pro Messwert, eine von der Uhr ausgehende Mittenspalte, Leiter chips → comboBar → jars → best und Kompression bis zur Untergrenze 0,55 (SMIL-Animation)" width="100%" />
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
 
@@ -226,7 +248,7 @@ v1.1.8 bündelt sie in **einer reinen Funktion einer Box**:
 | 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
 | 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
 | 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
-| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+| 8 · Board | `game/adaptive/playfield.ts` · `game/adaptive/hud.ts` | `itemScale` · `hudScale` · băng HUD |
 
 Die neue Invariante `Panel + Rand ≤ Reserve` scheitert bei **844×390** — ein iPhone im Querformat, die Größe aus dem Bericht. `reserveFor()` zieht 30px ab, wenn das Panel keine Fußzeile zeichnet, aber `panelHeightForPlan()` sah nur die Dichte und zeichnete die volle Höhe: ein 234px-Panel in einem 216px-Band, **18px seiner Basis außerhalb des Bild­schirms**.
 
@@ -302,7 +324,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1183 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1250 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -365,7 +387,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1183 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1250 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -510,7 +532,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1183 Tests / 122 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1250 Tests / 127 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -554,7 +576,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1183 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1250 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 
