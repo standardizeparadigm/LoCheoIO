@@ -7,9 +7,9 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `banner.svg` | Banner chính thức **V1.1.8** (9 chế độ · 16 thành tựu) | README ×10 đầu trang |
 | `demo.svg` | Mô phỏng gameplay (lọ CHÉO, dưa rơi) | README ×10 |
 | `items.svg` | 14 nguyên liệu (dưa, mốc, ruồi…) | README ×10, CONTRIBUTING |
-| `modes.svg` | 9 chế độ chơi | README ×10 |
+| `modes.svg` | 9 chế độ chơi | Cây thư mục ở cả 10 README — **không nhúng hình** |
 | `languages.svg` | 7 ngôn ngữ giao diện | README ×10 |
-| `new-modes.svg` | 2 chế độ mới của v1.1.4 (Lễ Hội Combo · Đại Tiệc Dưa) | README ×10 (mục what's new 1.1.4) |
+| `new-modes.svg` | 2 chế độ mới của v1.1.4 (Lễ Hội Combo · Đại Tiệc Dưa) | Cây thư mục ở cả 10 README — **không nhúng hình** |
 | `corner-menu.svg` | 2 panel góc GAME/INFO (v1.1.5) | README ×10 (mục what's new 1.1.5) |
 | `settings-sections.svg` | Tour 6 mục cài đặt (v1.1.6) | README ×10 (mục what's new 1.1.6+) |
 | `palette-ribbon.svg` | 7 dải màu palette chạy sáng luân phiên (v1.1.8) | README ×10 (hero) |
@@ -17,7 +17,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `release-tiers.svg` | 3 tầng MAJOR/UPDATE/PATCH + thời gian biểu 10 bản (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
-| `divider.svg` | Dải sparkle ngăn cách section | README ×10 |
+| `divider.svg` | Dải sparkle ngăn cách section | README ×9 (không có ở bản en) |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
 | `favicon-512.png` | Favicon raster 512px (OG/touch icon) | repo root + social preview |
