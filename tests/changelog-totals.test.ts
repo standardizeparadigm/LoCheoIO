@@ -120,3 +120,47 @@ describe("tests/README.md", () => {
     for (const t of totals) expect(Number(t)).toBe(Number(badge![1]));
   });
 });
+
+/*
+ * `CHANGELOG.md` has an exemption the in-game entries do not: it is a record,
+ * and its numbers are what those releases contained. v1.1.5 said 256 across 33
+ * files because that is what shipped, and rewriting it would be a lie about the
+ * past.
+ *
+ * The newest section is the exception, because it describes a release that has
+ * not happened yet. Its summary said "556 unit tests (54 file)" — a snapshot
+ * from the end of round six — and it ships with 1023 across 103. Nobody updates
+ * that line, because every other line above it is history that must not be
+ * updated, and the section has no marker separating "writing" from "written".
+ */
+describe("the current CHANGELOG section", () => {
+  const body = readFileSync(join(__dirname, "..", "CHANGELOG.md"), "utf8");
+  const APP = /export const APP_VERSION = "([^"]+)"/.exec(
+    readFileSync(join(__dirname, "..", "src/version.ts"), "utf8"),
+  )![1];
+  const section = body.slice(
+    body.indexOf(`## [${APP}]`),
+    body.indexOf("\n## [", body.indexOf(`## [${APP}]`) + 1),
+  );
+
+  it("is the first section and is not empty", () => {
+    expect(section.length).toBeGreaterThan(300);
+    expect(section.startsWith(`## [${APP}]`)).toBe(true);
+    expect(body.indexOf(`## [${APP}]`)).toBeLessThan(300);
+  });
+
+  it("states the suite size the badge states", () => {
+    const badge = /badge\/tests-(\d+)%20%C2%B7%20(\d+)%20files/.exec(
+      readFileSync(join(__dirname, "..", "README.md"), "utf8"),
+    )!;
+    const claim = /\b(\d{2,4}) unit tests \((\d{1,3}) file\)/.exec(section);
+    expect(claim, `${APP} summary states no suite size`).not.toBeNull();
+    expect(claim![1]).toBe(badge[1]);
+    expect(claim![2]).toBe(badge[2]);
+  });
+
+  it("leaves earlier sections' numbers alone", () => {
+    /* The exemption is real: 1.1.5 shipped 256 over 33, and still says so. */
+    expect(body).toContain("256 unit tests (33 file)");
+  });
+});
