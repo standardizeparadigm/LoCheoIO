@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1045%20%C2%B7%20107%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1046%20%C2%B7%20107%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -86,7 +86,7 @@
 src/components/menu/
 ├── layout/          metrics.ts · fit.ts · useMenuPlan.ts       ← ใหม่: ทุกตัวเลขอยู่ที่เดียว
 ├── scene/           decor.ts · DecorGlyph · HeroDecor · JarHalo ← ใหม่: ฮีโร่ที่ตกแต่งแล้ว
-├── ticker/          strings.ts · tickerTone.ts · MenuTicker     ← ใหม่: แถบเป็นโมดูลของตัวเอง
+├── ticker/          keys.ts · MenuTicker           ← ใหม่: แถบเป็นโมดูลของตัวเอง
 ├── howto/           rules.ts                                    ← ใหม่: 6 กฎ + ตารางปุ่ม
 ├── background/      layers.ts · MenuBackground                  ← 8 ชั้นพื้นหลังประกาศด้วยข้อมูล
 └── MenuChrome.tsx · HowToModal.tsx                              ← ใหม่: แถบล่าง + โมดัล
@@ -220,7 +220,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1045 เทสต์ใน 107 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1046 เทสต์ใน 107 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="แผง GAME (ล่างซ้าย) และ INFO (ล่างขวา) เลื่อนเข้ามา (แอนิเมชัน SMIL)" width="100%" />
 

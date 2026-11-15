@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1045%20%C2%B7%20107%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1046%20%C2%B7%20107%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -86,7 +86,7 @@
 src/components/menu/
 ├── layout/          metrics.ts · fit.ts · useMenuPlan.ts       ← 新規：数値を一箇所に
 ├── scene/           decor.ts · DecorGlyph · HeroDecor · JarHalo ← 新規：装飾されたヒーロー
-├── ticker/          strings.ts · tickerTone.ts · MenuTicker     ← 新規：帯を独立モジュールに
+├── ticker/          keys.ts · MenuTicker           ← 新規：帯を独立モジュールに
 ├── howto/           rules.ts                                    ← 新規：6ルール + キー表
 ├── background/      layers.ts · MenuBackground                  ← 8層の背景をデータで宣言
 └── MenuChrome.tsx · HowToModal.tsx                              ← 新規：下部の帯 + モーダル
@@ -224,7 +224,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——107ファイル1045テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——107ファイル1046テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME（左下）と INFO（右下）パネルがスライドイン（SMIL アニメーション）" width="100%" />
 
