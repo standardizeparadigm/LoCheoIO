@@ -50,7 +50,6 @@ function snapshot(width: number, height: number) {
     scene: p.plan.scene,
     reserve: p.plan.reserve,
     panelHeight: p.panelHeight,
-    footer: p.plan.footer,
     lockup: p.type.lockupLo,
     cheo: p.type.lockupCheo,
     rowLabel: p.type.rowLabel,
