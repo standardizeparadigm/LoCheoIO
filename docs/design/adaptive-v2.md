@@ -1,11 +1,13 @@
-# Adaptive, round 8 — one profile, every size
+# Adaptive, rounds 8–9 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 và vòng 9).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
 Vòng 6 trả lời **bố cục nào vừa**. Vòng 8 trả lời **mỗi thứ phải to bao nhiêu**,
-trên *cả hai trục*. Đây là bản mô tả đầy đủ của lớp thứ hai đó.
+trên *cả hai trục*. Vòng 9 trả lời hai câu còn lại: **HUD có vừa bàn chơi
+không**, và **vì sao cửa sổ này trông như vậy**. Ba lớp đó nằm trong một phép suy
+duy nhất; mục 14–17 mô tả lớp thứ ba.
 
 ---
 
@@ -290,3 +292,129 @@ việc đó trong `vitest run` mà không cần bước riêng.
 Band dưới 150 là band **không plan nào tạo ra** (`check-adaptive` cho thấy sàn
 thật là 174 ở 320×480), nên lấy mẫu ở đó là khẳng định một tính chất của đầu vào
 bất khả thi. Corpus bắt đầu đúng nơi bậc thang bắt đầu.
+
+---
+
+## 14. Vòng 9 — HUD cũng là một kế hoạch
+
+`engine.ts` từng vẽ HUD bằng một chuỗi `fillText` với toạ độ nội tuyến, mỗi toạ độ
+cộng dồn từ toạ độ trước. Nó *đúng* ở 1280×720 và sai dần ở mọi nơi khác: hàng
+chip ở `clock + 20s` chồng lên nhãn combo khi combo lên hai chữ số, và ở cửa sổ
+cao 400px thì ba hàng cuối nằm ngoài bàn.
+
+`src/game/adaptive/hud.ts` thay bằng `planHud()`, cùng triết lý với
+`planPlayfield()`:
+
+| Khái niệm | Nghĩa |
+| --- | --- |
+| **band** | hộp thật của glyph — `baseline − 0.72 × size`, cao `0.97 × size` |
+| **drop ladder** | `chips → comboBar → jars → best`, bỏ *thứ ít thông tin nhất* trước |
+| **compression** | sau khi bỏ hết, thu `s` từng bước `0.02` cho tới sàn `0.55` |
+| **flow** | cột giữa (combo → thanh combo → mult → chips) chạy tiếp từ `clockY` |
+
+Đo được, bằng `npx vite-node /tmp/probe*.ts` trên 1 500 bàn:
+
+| Cửa sổ | `s` | đáy HUD | ghi chú |
+| --- | --- | --- | --- |
+| 1280×720 | 1.029 | 255px | không bỏ gì |
+| 1920×1080 | 1.16 | 283px | không bỏ gì |
+| 360×420 | 0.72 | 176px | bỏ chips |
+| 320×320 | 0.68 | — | nén + bỏ chips/thanh combo |
+| 240×320 | — | — | *dưới* ngưỡng chơi được; báo `stamina/fill`, `stamina/clock`, `fill/clock` |
+
+Công thức cũ (nội tuyến) sinh **4 004** cặp chồng lấn trên cùng phép quét. Công
+thức mới: **0** trên mọi bàn có `w ≥ 360, h ≥ 420`, và **0** cặp chồng lấn bị che
+giấu trên bàn nhỏ hơn — chúng được *báo* qua `traceHud().collisions` và
+`describeHud()`, không bị im lặng.
+
+## 15. 21 preset — bảng duy nhất
+
+`presets.ts` là nguồn; `check-adaptive.ts`, suite và tài liệu đều đọc từ đó. Thứ
+tự là **theo kích thước**, không phải theo lúc thêm vào: một bảng xếp theo ngày
+thêm thì không ai đọc được, và mọi lần chèn đều làm hỏng phép so sánh.
+
+| # | id | cỡ | ghi chú |
+| --- | --- | --- | --- |
+| 1 | `iphone-4` | 320×480 | sàn thật của điện thoại cũ |
+| 2 | `iphone-se-1` | 320×568 | SE đời đầu |
+| 3 | `android-small` | 360×640 | phổ biến nhất ở VN |
+| 4 | `iphone-se-2` | 375×667 | SE 2/3 |
+| 5 | `iphone-12` | 390×844 | notch, tai thỏ |
+| 6 | `phone-landscape` | 844×390 | ngang — chỗ `hero` thành `minimal` |
+| 7 | `iphone-max` | 414×896 | Max/Plus |
+| 8 | `short-window` | 900×500 | cửa sổ bị ép cao |
+| 9 | `laptop-small` | 1024×600 | netbook 16:9 |
+| 10 | `720p-chrome` | 1280×640 | 720p trừ hai thanh chrome |
+| 11 | `window-1366` | 1366×650 | laptop 1366 với chrome |
+| 12 | `window-1568` | 1568×677 | MacBook 14" với chrome |
+| 13 | `720p` | 1280×720 | **mốc tham chiếu** — mọi phép so sánh bắt đầu ở đây |
+| 14 | `ipad-portrait` | 768×1024 | tablet dọc, panel xếp |
+| 15 | `ipad-landscape` | 1024×768 | tablet ngang, panel hàng |
+| 16 | `laptop-1366` | 1366×768 | laptop phổ thông |
+| 17 | `window-1920` | 1920×820 | 1080p trừ chrome |
+| 18 | `macbook-air` | 1440×900 | 16:10 |
+| 19 | `1080p` | 1920×1080 | fullscreen phổ biến |
+| 20 | `1440p` | 2560×1440 | màn hình rời |
+| 21 | `4k` | 3840×2160 | trần của hộp thoại |
+
+## 16. 12 bất biến — một định nghĩa, ba nơi dùng
+
+`constraints.ts` giữ danh sách; `tests/adaptive-constraints.test.ts` chạy nó trên
+21 preset, `scripts/check-adaptive.ts` chạy nó như một cổng CI, và tài liệu này
+liệt kê nó. Trước vòng 9, cổng kiểm ba bất biến còn suite kiểm chín — hai bên
+không thể đồng bộ vì chúng là hai bản sao. Giờ chỉ còn một.
+
+| id | bất biến | bắt lỗi gì |
+| --- | --- | --- |
+| `column-fills-window` | `scene + reserve === height` (trừ `fit: crop`) | cột không lấp hết cửa sổ, hở đáy |
+| `reserve-inside-window` | `0 ≤ reserve ≤ height` | panel cao hơn cửa sổ |
+| `panel-fits-reserve` | panel ≤ reserve, trừ `crop` | panel tràn ra ngoài reserve |
+| `hero-fits-scene` | hero ≤ band | hero cao hơn vùng nó ở |
+| `lockup-fits-scene` | `lockup × 1.68 ≤ band` | wordmark cao hơn band → cắt `LỌ` |
+| `cheo-under-lo` | `lockupCheo < lockupLo` | hai nửa wordmark đảo cỡ |
+| `type-legible` | `rowLabel ≥ 10`, `hint ≥ 9` | chữ nhỏ hơn ngưỡng đọc |
+| `dialog-fits-window` | modal ≤ `visualViewport` | dialog tràn khỏi cửa sổ |
+| `jar-fits-board` | jar ≤ board, tâm trong board | lọ ra ngoài canvas |
+| `density-matches-flags` | ticker/footer theo density | density và chrome nói khác nhau |
+| `css-vars-complete` | 11 biến `--lo-*` | component đọc biến không tồn tại |
+| `numbers-finite` | mọi số hữu hạn | `NaN` từ `aspect` hoặc `dvh` |
+
+## 17. "Vì sao trông như vậy" — `diagnose()`
+
+Một bảng số trả lời *cái gì*. Câu hỏi đến cùng ảnh chụp màn hình luôn là *vì
+sao*: vì sao không có ticker, vì sao hero thành hàng ở đây mà thành cột ở kia.
+`diagnose()` xếp tám lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
+từ chính trường đã quyết định nó:
+
+```
+1280×720 · lg · comfortable · row · fit none
+1 · box      1280×720 · 720px tall · aspect 1.7778
+             ↳ aspect is the width over the height; everything below reads it
+2 · tier     lg · laptop
+             ↳ the short side (720) crosses the 720px floor
+3 · plan     scene 342 · reserve 378
+             ↳ reserve is the header, footer and both gaps: 6 × 59 = 366, plus 12 slack
+4 · density  comfortable · rows 34px · panel 318px
+             ↳ default chrome (window 720px)
+5 · hero     row
+             ↳ band 342px clears the row floor
+6 · type     lockup 89.5px · label 11.5px · hint 9.5px
+             ↳ lockup capped by the band
+7 · modal    448×619px · 1 col
+             ↳ 448px is under the 560px two-column floor
+8 · board    1280×720 · jar 38px · hud ×1.029
+             ↳ item scale follows height (1.029), radius follows the short side
+
+trade-offs: none — this window gets the full layout
+```
+
+`warningsFor()` chỉ báo *thoả hiệp*, không báo *lỗi*: `crop` kèm số pixel thiếu,
+`no-ticker`, `no-footer`, `minimal`, `panels-stacked`, `jar-at-floor`,
+`dialog-compact`, `inset`. Một cảnh báo luôn đúng là nhiễu — đó là lý do
+`dialog-scrolls` bị bỏ ở vòng 9 (mọi dialog đều bị chặn ở 86% cửa sổ).
+
+Cách dùng:
+
+```
+npx vite-node scripts/check-adaptive.ts --explain 1280x720
+```
