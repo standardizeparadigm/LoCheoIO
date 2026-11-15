@@ -36,7 +36,7 @@ describe("the headline", () => {
 });
 
 describe("the rows", () => {
-  it("walks the eight layers in derivation order", () => {
+  it("walks the nine layers in derivation order", () => {
     const d = diagnose(resolveForSize(1280, 720));
     expect(d.rows.map((r) => r.layer)).toEqual([
       "1 · box",
@@ -46,7 +46,8 @@ describe("the rows", () => {
       "5 · hero",
       "6 · type",
       "7 · modal",
-      "8 · board",
+      "8 · chip",
+      "9 · board",
     ]);
   });
 
@@ -74,6 +75,15 @@ describe("the rows", () => {
     // even a 4K one, because the cap is the band's own maximum.
     expect(diagnose(resolveForSize(1920, 400)).rows[5].because).toContain("band");
     expect(diagnose(resolveForSize(3840, 2160)).rows[5].because).toContain("band");
+  });
+
+  it("says which rung of the chip ladder this window is on", () => {
+    // The round-10 bug, in the tool a screenshot review runs first.
+    expect(diagnose(resolveForSize(1280, 720)).rows[7].value).toContain("full");
+    expect(diagnose(resolveForSize(1280, 720)).rows[7].because).toContain("right-aligned");
+    const tiny = diagnose(resolveForSize(320, 320));
+    expect(tiny.rows[7].value).not.toMatch(/NaN|undefined/);
+    expect(diagnose(resolveForSize(200, 400)).rows[7].value).toMatch(/hidden|label-dropped|name-shrunk|ellipsis|full/);
   });
 
   it("explains the dialog's column count", () => {
