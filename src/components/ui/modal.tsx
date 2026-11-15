@@ -76,7 +76,9 @@ export function Modal({
             </svg>
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto p-4">{children}</div>
+        {/* `game-scroll` opts this box into the styled thin scrollbar; the
+            start screen deliberately uses `.menu-scroll` with no bar at all. */}
+        <div className="game-scroll min-h-0 flex-1 overflow-y-auto p-4">{children}</div>
       </Panel>
     </div>
   );

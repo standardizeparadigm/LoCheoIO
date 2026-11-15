@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.6 — released 2026-11-10 — tier: PATCH
+ * v1.1.6 — released 2026-11-13 — tier: PATCH
  *
  * Đại tu cài đặt thành 6 mục, ngôn ngữ dời hẳn vào Settings, nền menu nhiều lớp, 11 lỗi thật được sửa
  *

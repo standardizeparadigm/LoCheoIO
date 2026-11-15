@@ -1,6 +1,6 @@
 /* Tiny WebAudio synth — all sound is generated, no assets. */
 
-import { MASTER_GAIN, musicBusGain, sfxPeak, unit } from "./audioLevels";
+import { MASTER_GAIN, musicBusGain, rampPeak, unit } from "./audioLevels";
 
 export type SfxName =
   | "catch"
@@ -115,7 +115,17 @@ class AudioEngine {
     osc.frequency.setValueAtTime(Math.max(20, opts.freq), t0);
     if (opts.to) osc.frequency.exponentialRampToValueAtTime(Math.max(20, opts.to), t0 + dur);
     if (opts.detune) osc.detune.setValueAtTime(opts.detune, t0);
-    const peak = sfxPeak(opts.gain ?? 0.22, this.sfxVolume);
+    /*
+     * `exponentialRampToValueAtTime` rejects `0` with a `RangeError` — and `0` is
+     * exactly what `sfxPeak` returns when the player drags the SFX slider to
+     * zero, so *every* sound threw instead of being silent. A muted player got
+     * `Uncaught RangeError` in the console on each catch.
+     *
+     * `FLOOR_GAIN` is the standard workaround: ramp to a value that rounds to
+     * nothing instead of to zero. Do not "fix" this by skipping the ramp — the
+     * ramp is what stops the click.
+     */
+    const peak = rampPeak(opts.gain ?? 0.22, this.sfxVolume);
     g.gain.setValueAtTime(0.0001, t0);
     g.gain.exponentialRampToValueAtTime(peak, t0 + Math.min(0.02, dur * 0.3));
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
@@ -137,7 +147,8 @@ class AudioEngine {
     filt.frequency.exponentialRampToValueAtTime(Math.max(80, (opts.freq ?? 1200) * 0.35), t0 + dur);
     filt.Q.value = opts.q ?? 1.1;
     const g = this.ctx.createGain();
-    g.gain.setValueAtTime(sfxPeak(opts.gain ?? 0.2, this.sfxVolume), t0);
+    // Same zero-peak problem as `tone()`: a muted player hits `RangeError` here.
+    g.gain.setValueAtTime(rampPeak(opts.gain ?? 0.2, this.sfxVolume), t0);
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     src.connect(filt);
     filt.connect(g);

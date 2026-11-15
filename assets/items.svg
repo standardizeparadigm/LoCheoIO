@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 250" role="img" aria-label="The 14 ingredients — pickles to catch, gold powers to grab, hazards to dodge">
   <defs>
+    <filter id="it-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="itemsBg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0e3a35"/>
       <stop offset="1" stop-color="#061a1a"/>
@@ -14,6 +19,12 @@
   </defs>
 
   <rect width="1200" height="250" rx="16" fill="url(#itemsBg)"/>
+  <!-- Bloom under the heading: the same radial falloff the
+       banner uses, at a fifth of the size. It is what stops a
+       dark-on-dark diagram from looking printed rather than lit. -->
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#f5a81c" opacity="0.10">
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+  </ellipse>
   <text x="600" y="30" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700"
     font-size="12" letter-spacing="6" fill="#2bb48c">— 14 INGREDIENTS · 3 GROUPS —</text>
 

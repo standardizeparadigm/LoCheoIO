@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.1 — released 2026-10-31 — tier: PATCH
+ * v1.1.1 — released 2026-10-30 — tier: PATCH
  *
  * Quét lỗi toàn dự án, i18n trong game (Việt · English · 中文), build một file, README 7 ngôn ngữ
  *
@@ -11,7 +11,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_1: ChangelogEntry = {
   version: "1.1.1",
-  date: "2026-10-31",
+  date: "2026-10-30",
   kind: "fix",
   vi: "Quét lỗi toàn dự án, i18n trong game (Việt · English · 中文), build một file, README 7 ngôn ngữ",
   en: "A project-wide bug sweep, in-game i18n (Việt · English · 中文), single-file build, READMEs in seven languages",

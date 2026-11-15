@@ -43,9 +43,28 @@ describe("settings → runtime wiring (v1.1.6)", () => {
   });
 
   it("GameCanvas gates auto-pause on the setting", () => {
+    /*
+     * ROUND 6 changed the shape of this guard, and the old assertion failed
+     * against the new code — correctly, because it pinned a string rather than
+     * the behaviour.
+     *
+     * The guard used to be an early `return` at the top of the visibility
+     * handler. That made it a guard over the *whole handler*, which is how the
+     * input release was lost: turning auto-pause off also turned off the key
+     * release, so the jar kept moving on a hidden tab.
+     *
+     * Now the release is unconditional and only the *pause* is gated. The
+     * setting still does its job; it just no longer covers something that was
+     * never a preference.
+     */
     const canvas = read("src/components/GameCanvas.tsx");
     expect(canvas).toContain("autoPauseOnBlur");
-    expect(canvas).toContain("if (!cb.current.autoPauseOnBlur) return;");
+
+    // The pause is still gated on the setting …
+    expect(canvas).toContain("if (cb.current.autoPauseOnBlur && game.phase === \"playing\")");
+
+    // … and the setting no longer short-circuits the input release.
+    expect(canvas).not.toContain("if (!cb.current.autoPauseOnBlur) return;");
   });
 
   it("reduced motion reaches both the engine and the canvas DOM attribute", () => {

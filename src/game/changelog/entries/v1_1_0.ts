@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.0 — released 2026-10-29 — tier: MINOR
+ * v1.1.0 — released 2026-10-30 — tier: MINOR
  *
  * Ba chế độ chơi, nguyên liệu mới, thành tựu đầu tiên, menu aurora, font tự host, README 3 ngôn ngữ
  *

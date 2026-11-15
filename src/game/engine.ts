@@ -342,8 +342,22 @@ export class LoCheoGame {
   /* -------------------------------------------------------------- setup */
 
   resize(w: number, h: number) {
-    const cw = Math.max(240, Math.floor(w));
-    const ch = Math.max(320, Math.floor(h));
+    /*
+     * `Math.max(240, Math.floor(w))` clamps a *negative* width and lets `NaN`
+     * and `Infinity` straight through — the same shape as the six other clamps
+     * in this release. It only looked safe because negatives were the case
+     * anyone thought to try.
+     *
+     * The damage here is worse than a bad number in a variable: `canvas.width =
+     * NaN` makes the browser reset the backing store to its default 300×150, so
+     * the game keeps running at a size nothing else in the app knows about, and
+     * `this.w` stays `NaN` for every subsequent collision check.
+     *
+     * Zero is a real value a hidden/mounting canvas reports, so it falls back to
+     * the CSS defaults below rather than being treated as corrupt.
+     */
+    const cw = Math.max(240, Math.floor(Number.isFinite(w) && w > 0 ? w : 240));
+    const ch = Math.max(320, Math.floor(Number.isFinite(h) && h > 0 ? h : 320));
     this.dpr = clamp(window.devicePixelRatio || 1, 1, 2);
     this.canvas.width = Math.floor(cw * this.dpr);
     this.canvas.height = Math.floor(ch * this.dpr);
@@ -604,12 +618,28 @@ export class LoCheoGame {
     const maxCracks = MODES[this.mode].maxCracks ?? 3;
     this.cracks = clamp(Math.round(saved.cracks), 0, maxCracks);
     this.stamina = clamp(saved.stamina, 0, 1);
-    this.frenzy = saved.frenzy;
-    this.slow = saved.slow;
-    this.shield = Math.max(0, Math.round(saved.shield));
-    this.slamCd = Math.max(0, saved.slamCd);
-    this.combo = Math.max(0, Math.round(saved.combo));
-    this.comboT = Math.max(0, saved.comboT);
+    /*
+     * ROUND 6: these six fields were the last unvalidated path from disk into
+     * the simulation.
+     *
+     * `runSave.ts` already rejects a save whose `stats.score` is not finite,
+     * so the *stats* object is trustworthy. The body fields are not covered by
+     * that check: `Math.max(0, Infinity)` is `Infinity`, and `Math.max` on NaN
+     * is `NaN`. A save with `"shield": 1e999` (valid JSON!) restored an
+     * infinite shield, and a NaN `comboT` made the combo timer never expire.
+     *
+     * `finiteOr()` is the same discipline as `runSave`'s `nonNegInt`, applied
+     * at the layer that would otherwise trust its caller.
+     */
+    const finiteOr = (v: unknown, fallback: number): number =>
+      typeof v === "number" && Number.isFinite(v) ? v : fallback;
+
+    this.frenzy = finiteOr(saved.frenzy, 0);
+    this.slow = finiteOr(saved.slow, 0);
+    this.shield = Math.max(0, Math.round(finiteOr(saved.shield, 0)));
+    this.slamCd = Math.max(0, finiteOr(saved.slamCd, 0));
+    this.combo = Math.max(0, Math.round(finiteOr(saved.combo, 0)));
+    this.comboT = Math.max(0, finiteOr(saved.comboT, 0));
     this.px = clamp(saved.px || this.w / 2, this.pr, this.w - this.pr);
     this.py = clamp(saved.py || this.h * 0.72, this.pr, this.h - this.pr);
     this.invuln = 1.2; // brief grace while the player re-finds the jar

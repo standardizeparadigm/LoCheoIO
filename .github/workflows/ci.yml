@@ -26,6 +26,25 @@ jobs:
       - name: SSR render smoke (menu/modal tree)
         run: npm run smoke
 
+      # The tests badge was gated by nothing. `docs-numbers.test.ts` compares it
+      # to the JSON report `sync-test-badge.mjs` writes, but the report only
+      # exists after that script runs, and no job ran it: `npm run check` is
+      # `tsc && vitest run && vite build`. The test caught the missing report and
+      # `return`ed, so a badge could drift by any amount with every job green.
+      #
+      # This must live in `check`, not `readme-sync`: the script shells out to
+      # `npx vitest`, and `readme-sync` installs no dependencies.
+      - name: Tests badge matches the suite (runs it, ~40 s)
+        run: node scripts/sync-test-badge.mjs --verify
+
+      # The other half of the same problem: the badge only covers the number of
+      # tests. Thirteen documents also state how many SVGs, i18n keys and
+      # directories the repo has, and those were written by
+      # `sync-prose-counts.mjs` and never read back by anything. `--verify`
+      # re-measures and exits 1 on any stale sentence.
+      - name: Prose counts (SVG · keys · dirs) match the repo
+        run: node scripts/sync-prose-counts.mjs --verify
+
   readme-sync:
     name: README sync (10 locales)
     runs-on: ubuntu-latest
@@ -38,5 +57,13 @@ jobs:
       - name: Assets referenced ↔ exists (no orphans)
         run: node scripts/check-assets.mjs
 
-      - name: i18n parity (7 locales × 296 keys)
+      # `scripts/check-svg.mjs` existed and ran nowhere. It checks the things XML
+      # validity does not: that every SVG animates (a file can be perfectly valid
+      # and dead), that each `<img>` in the docs points at a file that exists, and
+      # that the 20 files are all referenced. `docs/assets.md` and the README
+      # illustrations depend on all three.
+      - name: SVG well-formed · animated · referenced
+        run: node scripts/check-svg.mjs
+
+      - name: i18n parity (7 locales, key count printed by the script)
         run: node scripts/check-i18n.mjs

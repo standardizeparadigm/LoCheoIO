@@ -19,6 +19,8 @@ const vi = {
   /* brand */
   "brand.badge": "HŨ DƯA ĐẠI CHIẾN",
   "app.wordmark": "LỌ CHÉO",
+  "app.wordmarkLo": "LỌ",
+  "app.wordmarkCheo": "CHÉO",
 
   /* start screen */
   "menu.best": "kỷ lục hiện tại:",
@@ -31,6 +33,8 @@ const vi = {
   "menu.howtoClose": "Bớt lại",
   "menu.achievements": "Thành tựu",
   "menu.orPress": "hoặc nhấn",
+  "daily.challenge": "THỬ THÁCH HÔM NAY",
+  "daily.rule": "LUẬT CHƠI",
   "touch.drag": "KÉO NGÓN TAY — lọ trượt theo",
   "touch.diagonal": "KÉO XÉO 45° — chém mốc",
   "touch.slam": "NÚT LẮC — dọn sạch",
@@ -282,10 +286,27 @@ const vi = {
   "game.achievementsHint": "{n}/{total} đã mở khóa",
   "game.settings": "CÀI ĐẶT",
   "game.settingsHint": "Âm thanh · nhạc · rung · chuyển động",
-  "info.about": "GIỚI THIỆU TÁC GIẢ",
-  "info.aboutHint": "Standardize Paradigm",
+  "game.howtoHint": "luật · phím · mục tiêu",
+  "howto.goal": "Mục tiêu: hứng đầy hũ dưa trước khi gốm nứt làm ba — chỉ đi được đường chéo.",
+  "info.about": "GIỚI THIỆU",
+  "info.aboutHint": "về trò chơi & tác giả",
   "info.changelog": "CHANGELOG",
   "info.quit": "THOÁT",
+  "shortcuts.title": "PHÍM TẮT",
+  "shortcuts.intro": "Điều khiển",
+  "shortcuts.move": "Di chuyển",
+  "shortcuts.slam": "Đập (slam)",
+  "shortcuts.pause": "Tạm dừng",
+  "shortcuts.mute": "Tắt/bật âm",
+  "shortcuts.touch": "Chạm & kéo",
+  "shortcuts.start": "Khởi động",
+  "shortcuts.restart": "Chơi lại ngay",
+  "shortcuts.footer": "Mọi phím đều dùng được ở cả bàn phím và tay cầm ảo trên điện thoại.",
+  "info.shortcuts": "PHÍM TẮT",
+  "info.shortcutsHint": "Điều khiển",
+  "summary.modes": "CHẾ ĐỘ",
+  "summary.ingredients": "NGUYÊN LIỆU",
+  "summary.achievements": "THÀNH TỰU",
   "close.aria": "Đóng",
 
   /* mode select screen */
@@ -311,6 +332,11 @@ const vi = {
 
   /* about author panel */
   "about.title": "GIỚI THIỆU TÁC GIẢ",
+  "about.introHeading": "GIỚI THIỆU",
+  "about.intro":
+    "Cái lọ này chỉ chịu đi đường chéo. Lượn xiên để tăng tốc và chém tan mốc, ruồi, sâu rau; hứng trọn cà pháo, tỏi, ớt cho đầy hũ trước khi gốm nứt làm ba.",
+  "about.craftHeading": "VỀ DỰ ÁN",
+  "about.thanksHeading": "LỜI CẢM ƠN",
   "about.role": "Nhà phát triển độc lập — Standardize Paradigm",
   "about.craft": "Lọ Chéo là dự án đam mê: một game arcade muối dưa chạy hoàn toàn trong trình duyệt, một file HTML duy nhất, không cần mạng, không cần server. Vẽ tay, code tay, chép tay từng dấu tiếng Việt.",
   "about.contact": "Liên hệ: standardizeparadigm@donuco.com",

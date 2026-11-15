@@ -33,7 +33,20 @@ export const LANGUAGE_META_MAP: Record<Language, LanguageMeta> = Object.fromEntr
   LANGUAGE_META.map((m) => [m.code, m]),
 ) as Record<Language, LanguageMeta>;
 
-/** Look up display metadata for a language code (never throws). */
+/**
+ * Look up display metadata for a language code (never throws, never returns a
+ * non-meta value).
+ *
+ * `LANGUAGE_META_MAP` is built by `Object.fromEntries`, so it is a plain object
+ * and inherits from `Object.prototype`. `metaFor("toString")` therefore read
+ * back `Object.prototype.toString` — a function — and `??` did not catch it
+ * because a function is not `undefined`. The caller then rendered
+ * `meta.flag` / `meta.native` off a function and got `undefined` in the UI.
+ *
+ * A language code reaches here from storage and from `?lang=`, so it is not
+ * guaranteed to be one of the seven even though the type says it is.
+ */
 export function metaFor(code: Language): LanguageMeta {
-  return LANGUAGE_META_MAP[code] ?? LANGUAGE_META[0];
+  const own = Object.prototype.hasOwnProperty;
+  return own.call(LANGUAGE_META_MAP, code) ? LANGUAGE_META_MAP[code] : LANGUAGE_META[0];
 }

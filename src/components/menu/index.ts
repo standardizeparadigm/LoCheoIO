@@ -10,3 +10,6 @@ export { default as AchievementsModal } from "./AchievementsModal";
 export { default as AboutModal } from "./AboutModal";
 export { default as ChangelogModal } from "./ChangelogModal";
 export { default as QuitModal } from "./QuitModal";
+export { MenuChrome } from "./MenuChrome";
+export { default as HowToModal } from "./HowToModal";
+export { default as ShortcutsModal } from "./ShortcutsModal";

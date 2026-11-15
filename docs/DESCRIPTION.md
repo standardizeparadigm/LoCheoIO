@@ -6,9 +6,9 @@
 
 Đếm ký tự: xấp xỉ (UTF-8).
 
-## 🇬🇧 English (376 chars)
+## 🇬🇧 English (377 chars)
 
-> Lọ Chéo — Pickle Jar Showdown: a pickle-jar arcade running 100% in the browser, bundled as one single HTML file, offline-first — no CDN, no server. The little clay jar only moves diagonally: hold two keys to swerve, speed up and slash through moulds, flies and caterpillars before the ceramic cracks. 9 modes, 14 ingredients, 16 achievements, a TOP-8 board, UI in 7 languages.
+> Lọ Chéo — Pickled Jar Showdown: a pickle-jar arcade running 100% in the browser, bundled as one single HTML file, offline-first — no CDN, no server. The little clay jar only moves diagonally: hold two keys to swerve, speed up and slash through moulds, flies and caterpillars before the ceramic cracks. 9 modes, 14 ingredients, 16 achievements, a TOP-8 board, UI in 7 languages.
 
 ## 🇨🇳 中文 (135 字符)
 
@@ -37,11 +37,11 @@
 | `package.json` → `description` | npm registry / GitHub detected description |
 | GitHub repo → About (ô mô tả góc phải trên trang repo) | hiển thị dưới tên repo & trên tìm kiếm |
 | `README.md` + 9 bản dịch | khối "Về dự án / About / 关于项目 / …" |
-| `docs/releases/v1.1.7.md` → mục "Mô tả dự án" | phần mô tả đính kèm release notes (mới nhất) |
+| `docs/releases/v1.1.8.md` → tiêu đề | nhãn `Lọ Chéo — Hũ Dưa Đại Chiến · v1.1.8` trên release notes; **không** phải toàn văn bản mô tả |
 
 ## Ghi chú sử dụng cho GitHub About
 
 Nếu cần bản ngắn hơn ~160 ký tự (một dòng, không xuống dòng) cho SEO:
 
 > Arcade muối dưa offline-first trong một file HTML: giữ 2 phím để CHÉO, chém mốc ruồi và hứng đầy hũ. 9 chế độ, 14 nguyên liệu, 16 thành tựu, TOP 8, UI 7 ngôn ngữ.
-> (164 ký tự)
+> (162 ký tự)

@@ -31,7 +31,9 @@ export default function BackupSection({
   };
 
   const doImport = () => {
-    const next = importSettings(blob, settings.language);
+    // `settings` is the third argument on purpose: keys absent from the backup
+    // keep their current value instead of snapping back to the defaults.
+    const next = importSettings(blob, settings.language, settings);
     if (!next) {
       setStatus("bad");
       return;

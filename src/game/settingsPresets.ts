@@ -58,8 +58,18 @@ export const PRESET_LIST: readonly SettingsPreset[] = [
   PRESETS.speedrun,
 ];
 
-/** Apply a preset to the live settings without ever touching `language`. */
+/**
+ * Apply a preset to the live settings without ever touching `language`.
+ *
+ * The id is validated first. `PRESETS[id].patch` with an id that is not in the
+ * table but *is* on `Object.prototype` reads back `undefined` (or a function's
+ * `.patch`, also `undefined`), and spreading `undefined` is a silent no-op —
+ * the button appears to do nothing. An unknown id returns the settings
+ * unchanged, which is the same visible outcome but for a stated reason and
+ * without depending on spread's tolerance for `undefined`.
+ */
 export function applyPreset(current: GameSettings, id: PresetId): GameSettings {
+  if (!Object.prototype.hasOwnProperty.call(PRESETS, id)) return current;
   return { ...current, ...PRESETS[id].patch, language: current.language };
 }
 

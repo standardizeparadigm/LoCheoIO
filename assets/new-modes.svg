@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 230" role="img" aria-label="New in v1.1.4 — Combo Festival (combo window ×2) and Grand Feast (jar bonus ×2.5)">
   <defs>
+    <filter id="nm-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <radialGradient id="nmGlowA" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0" stop-color="#ff8ad4" stop-opacity="0.4"/>
       <stop offset="1" stop-color="#ff8ad4" stop-opacity="0"/>
@@ -11,6 +16,12 @@
   </defs>
   <rect width="1200" height="230" rx="16" fill="#061a1a"/>
   <rect width="1200" height="230" rx="16" fill="none" stroke="#123f38" stroke-width="2"/>
+  <!-- Bloom under the heading: the same radial falloff the
+       banner uses, at a fifth of the size. It is what stops a
+       dark-on-dark diagram from looking printed rather than lit. -->
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#e63b2e" opacity="0.10">
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+  </ellipse>
   <text x="600" y="26" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="11" letter-spacing="6" fill="#2bb48c">— NEW IN v1.1.4 · 2 NEW MODES —</text>
 
   <!-- Combo Festival card -->

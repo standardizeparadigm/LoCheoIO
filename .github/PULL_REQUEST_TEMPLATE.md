@@ -8,7 +8,7 @@
 
 ## Checklist
 
-- [ ] `npm run check` xanh (typecheck + 222 tests + build)
+- [ ] `npm run check` xanh (typecheck + toàn bộ test + build)
 - [ ] i18n: thêm key mới → **cả 7 locale** (`npm run check:i18n` ép đồng bộ)
 - [ ] Version bump (nếu release): package.json + lock + `src/version.ts` + banner + README ×10 + launcher
 - [ ] CHANGELOG.md có mục `[x.y.z]`

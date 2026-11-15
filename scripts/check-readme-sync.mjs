@@ -27,7 +27,7 @@ if (!match) {
   console.error("✗ src/version.ts does not export a literal APP_VERSION");
   process.exit(1);
 }
-/** Current release, e.g. "1.1.7" — never hardcoded below. */
+/** Current release, e.g. "1.1.8" — never hardcoded below. */
 const VERSION = match[1];
 const BADGE = `version-${VERSION}-`;
 const RELEASE_DOC = `docs/releases/v${VERSION}.md`;

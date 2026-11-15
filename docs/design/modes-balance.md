@@ -9,14 +9,14 @@ công thức trong `src/game/modeMath.ts` · test `tests/modes.test.ts` & `tests
 | # | Chế độ | `id` | score | speed | hazard | spawn | knob riêng |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | MUỐI DƯA CỔ ĐIỂN | `classic` | ×1.0 | ×1.0 | ×1.0 | ×1.0 | — |
-| 2 | THẢNH THƠI | `zen` | ×0.5 | ×0.8 | ×0 | ×1.1 | hazard tắt hẳn |
+| 2 | THẢNH THƠI | `zen` | ×0.5 | ×0.8 | ×0 | ×1.08 | hazard tắt hẳn |
 | 3 | ỚT LỬA | `inferno` | ×1.5 | ×1.35 | ×1.8 | ×0.85 | — |
 | 4 | ĐUA 60 GIÂY | `blitz` | ×1.25 | ×1.12 | ×1.2 | ×0.9 | `timeLimit: 60` |
-| 5 | MÙA VÀNG | `goldrush` | ×1.0 | ×1.0 | ×1.0 | ×1.0 | `goldMult: 2.6` |
+| 5 | MÙA VÀNG | `goldrush` | ×1.0 | ×1.0 | ×1.0 | ×0.95 | `goldMult: 2.6` |
 | 6 | MƯA DƯA | `storm` | ×0.75 | ×0.88 | ×1.5 | ×0.72 | — |
 | 7 | GỐM MỎNG | `hardcore` | ×2.0 | ×1.1 | ×1.3 | ×0.95 | `maxCracks: 1` |
-| 8 | LỄ HỘI COMBO | `combo` | ×1.15 | ×1.0 | ×1.0 | ×1.0 | `comboWindowMult: 2` |
-| 9 | ĐẠI TIỆC DƯA | `feast` | ×0.6 | ×1.0 | ×1.0 | ×0.5 | `jarBonusMult: 2.5` |
+| 8 | LỄ HỘI COMBO | `combo` | ×1.15 | ×1.05 | ×1.25 | ×0.92 | `comboWindowMult: 2` |
+| 9 | ĐẠI TIỆC DƯA | `feast` | ×0.6 | ×0.78 | ×1.15 | ×0.6 | `jarBonusMult: 2.5` |
 
 > Bảng này **phải khớp** `src/game/modes/*.ts`; `tests/modes-split.test.ts` khoá sự tồn tại và
 > thứ tự, `tests/modes-balance.test.ts` khoá các con số. Khi chỉnh cân bằng, sửa file record —
@@ -30,9 +30,27 @@ fall speed      = (186 + level × 18) × S × def.speed × speedMult × (frenzy 
 hazard weight   = def.weight(level) × hazardMult × (level < requiredLevel ? 0 : 1)
 gold weight     = def.weight(level) × (goldMult ?? 1)        (nếu def.power || def.fillBoost)
 score           = round(def.pts × comboMult(combo, frenzy) × scoreMult)
-jar bonus       = jarBonusFor(level) × (jarBonusMult ?? 1)
-combo window    = COMBO_WINDOW (2.7s) × (comboWindowMult ?? 1)
+jar bonus       = jarBonusFor(level, mode)      ← 200 + level×50, rồi × multOf(mode, jarBonusMult)
+combo window    = comboWindowFor(mode)          ← COMBO_WINDOW (2.7s) × multOf(mode, comboWindowMult)
 ```
+
+## Hệ số: `multOf()`, không phải `?? 1`
+
+Dòng công thức cũ ghi `(jarBonusMult ?? 1)` — và đó **chính là mã cũ**, trước khi
+sửa. `?? 1` chỉ chặn `undefined` và `null`:
+
+| Giá trị `jarBonusMult` | `?? 1` cho | `multOf()` cho | Vì sao |
+| --- | --- | --- | --- |
+| `undefined` | 1 | 1 | đúng cả hai |
+| `0` | **1** | **0** | chế độ "không thưởng hũ" là thiết kế hợp lệ |
+| `Infinity` | **Infinity** | 1 | thưởng hũ vô hạn |
+| `NaN` | **NaN** | 1 | `NaN` lan vào điểm |
+| `-2` | **-2** | 1 | thưởng âm |
+| `"2"` (chuỗi) | **"2"** | 1 | phép nhân với chuỗi vẫn ra số, nhưng không phải hệ số |
+
+Và `comboWindowFor("không-tồn-tại")` còn ném `TypeError` **trong vòng tick của
+engine** trước khi sửa — xem `multOf()` trong `src/game/modeMath.ts` và
+`tests/mode-multiplier.test.ts` (12 test).
 
 ## Triết lý thiết kế
 

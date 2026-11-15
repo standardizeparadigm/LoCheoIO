@@ -186,7 +186,13 @@ export default function App() {
     setShowOver(false);
   }, []);
 
-  // Wipe every locally persisted byte (settings danger zone)
+  /*
+   * The settings danger zone: scores, progress, achievements and the suspended
+   * run — four keys, not eight. Settings, language, mode and muted survive, on
+   * purpose: a player clearing their scores should not lose their volume
+   * preference. `clearAllGameKeys()` is the hammer that takes all eight, and it
+   * is not what this button calls.
+   */
   const clearAllData = useCallback(() => {
     clearAllProgress();
     clearSavedRun();

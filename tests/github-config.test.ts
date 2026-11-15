@@ -1,0 +1,154 @@
+/**
+ * `.github/` is the one directory every contributor reads and no test looked at.
+ *
+ * Two numbers were wrong in it:
+ *
+ *   `.github/PULL_REQUEST_TEMPLATE.md`   "typecheck + 222 tests + build"
+ *   `.github/workflows/ci.yml`          "i18n parity (7 locales × 296 keys)"
+ *
+ * The template is copied into every pull request, so 222 was printed on every
+ * PR opened since the suite passed that number. The CI step name is what shows
+ * on the checks tab of every build. Neither is read at runtime, neither is in
+ * the repository root, and the sweep only ever opened READMEs — which is the
+ * entire reason they survived.
+ *
+ * The rule: a file under `.github/` may state a version or a small fixed count
+ * (7 locales, 10 READMEs, 9 modes), but not a number that moves — the suite
+ * total or the key total. Those have exactly one honest source each, and it is
+ * not a workflow file.
+ */
+import { describe, expect, it } from "vitest";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+const ROOT = join(__dirname, "..");
+const GITHUB = join(ROOT, ".github");
+
+function files(dir: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    statSync(p).isDirectory() ? files(p, out) : out.push(p);
+  }
+  return out;
+}
+
+const ALL = files(GITHUB);
+const text = (p: string) => readFileSync(p, "utf8");
+
+describe(".github/", () => {
+  it("exists and is not empty", () => {
+    expect(ALL.length).toBeGreaterThanOrEqual(5);
+    expect(ALL.some((f) => f.endsWith("ci.yml"))).toBe(true);
+    expect(ALL.some((f) => f.endsWith("PULL_REQUEST_TEMPLATE.md"))).toBe(true);
+  });
+
+  it("states no test total", () => {
+    /*
+     * "222 tests", "1007 tests", "556 tests" — any of them. A template cannot
+     * know the number, and a workflow should not try: `npm run check` runs them
+     * all, whatever they are.
+     */
+    const offenders: string[] = [];
+    for (const f of ALL) {
+      for (const m of text(f).matchAll(/\b\d{2,4}\s*(?:unit\s+)?tests?\b/gi)) {
+        offenders.push(`${f.replace(ROOT + "/", "")}: ${m[0]}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("states no i18n key total", () => {
+    /*
+     * The key count is measured by `npm run check:i18n` and printed by
+     * `sync-prose-counts.mjs`. In a step name it is decoration that goes stale,
+     * which is how "296 keys" outlived the three hundred keys that replaced it.
+     */
+    const offenders: string[] = [];
+    for (const f of ALL) {
+      for (const m of text(f).matchAll(/\b\d{1,4}\s*(?:i18n\s+)?(?:keys?|khoá)\b/gi)) {
+        offenders.push(`${f.replace(ROOT + "/", "")}: ${m[0]}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("still runs every gate it claims", () => {
+    /*
+     * The other half of the problem: a workflow that stops calling a gate is
+     * as bad as one that names a stale number, and the name is the only place
+     * the gate is documented.
+     */
+    const ci = text(join(GITHUB, "workflows/ci.yml"));
+    for (const gate of [
+      "npm run check",
+      "npm run smoke",
+      "check-readme-sync.mjs",
+      "check-assets.mjs",
+      "check-i18n.mjs",
+      "check-svg.mjs",
+    ]) {
+      expect(ci, `ci.yml no longer runs ${gate}`).toContain(gate);
+    }
+  });
+
+  it("runs every checker script that exists", () => {
+    /*
+     * The list above was hand-written and had fallen one behind:
+     * `scripts/check-svg.mjs` existed, enforced three rules over 20 SVG files,
+     * was documented in `CONTRIBUTING.md` — and no workflow called it. A gate
+     * that only runs when a human remembers is not a gate.
+     *
+     * Written as a directory scan so the next checker added is wired up or
+     * fails here, rather than joining the set of scripts nobody runs.
+     */
+    /*
+     * Matched against `run:` lines only. The first version used a plain
+     * `toContain` over the whole file, so the comment above the step — which
+     * names the script it explains — kept the test green after the step itself
+     * was deleted. Prose about a gate is not the gate.
+     */
+    const ci = text(join(GITHUB, "workflows/ci.yml"));
+    const commands = ci
+      .split("\n")
+      .filter((line) => /^\s*(run:|-[ \t]*run:)/.test(line))
+      .join("\n");
+    expect(commands.length, "no run: lines parsed").toBeGreaterThan(200);
+    const checkers = readdirSync(join(ROOT, "scripts"))
+      .filter((f) => /^check-.*\.mjs$/.test(f));
+    expect(checkers.length).toBeGreaterThanOrEqual(4);
+    for (const checker of checkers) {
+      expect(commands, `ci.yml never runs scripts/${checker}`).toContain(checker);
+    }
+  });
+
+  it("runs every script that can verify itself", () => {
+    /*
+     * `sync-prose-counts.mjs` measures the SVG/key/directory counts quoted in
+     * thirteen documents and can rewrite them, and it has a `--verify` mode that
+     * exits 1 when any sentence is stale. Nothing called that mode: not
+     * `package.json`, not the workflow. The counts were generated by a script
+     * and checked by a human reading the diff, which is the arrangement the
+     * script exists to replace.
+     *
+     * Any script that grows a `--verify` now has to be wired somewhere that
+     * runs, or this fails.
+     */
+    /* Same rule as above: only `run:` lines count, and so do package scripts. */
+    const ci = text(join(GITHUB, "workflows/ci.yml"))
+      .split("\n")
+      .filter((line) => /^\s*run:/.test(line))
+      .join("\n");
+    const pkg = (JSON.parse(text(join(ROOT, "package.json"))) as {
+      scripts: Record<string, string>;
+    }).scripts;
+    const pkgCommands = Object.values(pkg).join("\n");
+    const vetters = readdirSync(join(ROOT, "scripts"))
+      .filter((f) => f.endsWith(".mjs"))
+      .filter((f) => text(join(ROOT, "scripts", f)).includes('"--verify"'));
+    expect(vetters.length).toBeGreaterThanOrEqual(2);
+    for (const vetter of vetters) {
+      const used = ci.includes(vetter) || pkgCommands.includes(vetter);
+      expect(used, `${vetter} has a --verify mode that nothing runs`).toBe(true);
+    }
+  });
+});

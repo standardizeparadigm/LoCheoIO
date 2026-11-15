@@ -34,6 +34,25 @@ export function lerp(a: number, b: number, t: number): number {
  */
 export function damp(current: number, target: number, rate: number, dt: number): number {
   if (!(rate > 0) || !(dt > 0)) return current;
+  /*
+   * A non-finite *target* used to leak straight through.
+   *
+   * `rate` and `dt` were both guarded, and `k` was clamped to 0..1 — but the
+   * multiplication `lerp(current, target, k)` was not. With `target` infinite,
+   * `a + (b − a) × k` is infinite for any `k > 0`, and `damp()` returned
+   * Infinity on the very first frame. The value then reaches a draw call,
+   * where a non-finite coordinate silently blanks the shape (canvas ignores
+   * the path) — a "the player disappeared" bug with no error anywhere.
+   *
+   * Reachable from `restoreRun()`: the loader validates stats but the *body*
+   * fields (`px`, `py`, `shield`, `combo`) went through `Math.max(0, …)`,
+   * which passes Infinity. A corrupted `locheo.run.v1` was enough.
+   *
+   * Returning `current` is the right answer rather than clamping to a bound:
+   * `damp` has no idea what the legal range is, and holding the previous
+   * value is the same thing it does for a bad rate.
+   */
+  if (!Number.isFinite(target)) return current;
   const k = 1 - Math.exp(-rate * dt);
   return lerp(current, target, clamp01(Number.isFinite(k) ? k : 1));
 }

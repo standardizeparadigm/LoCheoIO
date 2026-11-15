@@ -42,7 +42,17 @@ export default function GameOverScreen({
   useEffect(() => {
     setDone(false);
     setName("");
-    if (isHigh) window.setTimeout(() => inputRef.current?.focus(), 420);
+    /*
+     * The focus is deferred so it lands after the screen has finished animating
+     * in. The timer is cancelled on unmount: a player can press "menu" inside
+     * those 420ms, and the callback would then run against a component that no
+     * longer exists — harmless with the optional chain, but it also means the
+     * effect's cleanup does not match its setup, which is the shape that turns
+     * into a real leak the next time someone touches this.
+     */
+    if (!isHigh) return;
+    const id = window.setTimeout(() => inputRef.current?.focus(), 420);
+    return () => window.clearTimeout(id);
   }, [isHigh, stats.score]);
 
   const submit = () => {

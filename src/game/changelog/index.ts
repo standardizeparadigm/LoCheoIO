@@ -9,6 +9,7 @@
 import type { ChangelogEntry, ReleaseTier } from "./types";
 import { tierFor } from "./tiers";
 
+import { V1_1_8 } from "./entries/v1_1_8";
 import { V1_1_7 } from "./entries/v1_1_7";
 import { V1_1_6 } from "./entries/v1_1_6";
 import { V1_1_5 } from "./entries/v1_1_5";
@@ -24,6 +25,7 @@ export { copyFor } from "./types";
 export { tierFor, TIER_ORDER, TIER_LABEL_KEY } from "./tiers";
 
 export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
+  V1_1_8,
   V1_1_7,
   V1_1_6,
   V1_1_5,

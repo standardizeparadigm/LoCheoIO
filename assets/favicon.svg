@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lọ Chéo favicon — a slanted pickled jar with gold lid">
   <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="fv-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="tileBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0d3030"/>
       <stop offset="1" stop-color="#061a1a"/>

@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1740 232" role="img" aria-label="Lọ Chéo — 9 game modes: Classic, Zen, Inferno, 60-Second Rush, Gold Rush, Pickle Rain, Thin Ceramic, Combo Festival, Grand Feast">
   <defs>
+    <filter id="md-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
     <linearGradient id="mBg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0e3a35"/>
       <stop offset="1" stop-color="#061a1a"/>
@@ -7,6 +12,12 @@
   </defs>
   <rect width="1740" height="232" rx="16" fill="url(#mBg)"/>
   <rect width="1740" height="232" rx="16" fill="none" stroke="#123f38" stroke-width="2"/>
+  <!-- Bloom under the heading: the same radial falloff the
+       banner uses, at a fifth of the size. It is what stops a
+       dark-on-dark diagram from looking printed rather than lit. -->
+  <ellipse cx="240" cy="40" rx="200" ry="34" fill="#e63b2e" opacity="0.10">
+    <animate attributeName="opacity" values="0.06;0.14;0.06" dur="6s" repeatCount="indefinite"/>
+  </ellipse>
   <text x="870" y="26" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="11" letter-spacing="5" fill="#2bb48c">— 9 GAME MODES · 9 CHẾ ĐỘ CHƠI —</text>
   <g transform="translate(40 46)">
     <rect width="172" height="150" rx="12" fill="#241d05" stroke="#f5a81c" stroke-width="3"/>

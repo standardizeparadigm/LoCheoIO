@@ -19,3 +19,6 @@ Thumbs.db
 coverage/
 .vite/
 .vitest/
+
+# Per-file test counts, written by `npm run sync:badge` (a build output).
+tests/.counts.json

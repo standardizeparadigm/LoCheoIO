@@ -1,9 +1,9 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.7 — released 2026-11-12 — tier: PATCH
+ * v1.1.7 — released 2026-11-13 — tier: PATCH
  *
- * Bản vá cuối trước 1.2.0 — nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ
+ * Nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ
  *
  * 9 bullets (vi) / 9 (en). Keep the two lists the same length:
  * tests/changelog-tiers.test.ts asserts it, and the panel would show an
@@ -13,8 +13,8 @@ export const V1_1_7: ChangelogEntry = {
   version: "1.1.7",
   date: "2026-11-12",
   kind: "fix",
-  vi: "Bản vá cuối trước 1.2.0 — nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ",
-  en: "The last patch before 1.2.0 — the foggy menu background is gone, the changelog gains release tiers and full descriptions for all 8 older releases, every README rebuilt",
+  vi: "Nền menu hết mờ, changelog có tầng bản phát hành và mô tả đầy đủ cho cả 8 bản cũ, README làm mới toàn bộ",
+  en: "The foggy menu background is gone, the changelog gains release tiers and full descriptions for all 8 older releases, every README rebuilt",
   itemsVi: [
     "FIX NỀN MENU: ba lớp phủ chồng nhau biến cả scene thành một mảng xám — tinh vân blur 64px→22px và hạ đỉnh xuống 0.80, vignette toàn màn hình 0.42/0.88/1.0 → vignette góc 0.30/0.62, khung CRT 140px@0.9 → 90px@0.55",
     "FIX NỀN MENU: sàn gạch nâng từ 45% lên 70% opacity — dưới vignette cũ thì sàn gần như vô hình",

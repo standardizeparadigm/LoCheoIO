@@ -50,8 +50,20 @@ export function exportSettings(settings: GameSettings, now: Date = new Date()): 
  * Parse a backup (envelope or bare object) into normalised settings.
  * Returns `null` for anything that is not usable — callers show an error
  * instead of silently overwriting the player's configuration.
+ *
+ * `current` is what a key **absent from the backup** becomes. Pass the live
+ * settings when importing in-app: a backup is a partial document by nature (it
+ * may predate a field, or be a hand-written snippet), and filling the gaps with
+ * `DEFAULT_SETTINGS` turns "restore my old config" into "restore my old config
+ * and silently reset everything I have changed since". Omit it for
+ * `looksLikeSettingsBackup()`, where defaults are the right answer because the
+ * question is only "is this shape a backup?".
  */
-export function importSettings(raw: string, languageFallback?: string): GameSettings | null {
+export function importSettings(
+  raw: string,
+  languageFallback?: string,
+  current?: GameSettings,
+): GameSettings | null {
   if (typeof raw !== "string" || raw.trim().length === 0) return null;
   let parsed: unknown;
   try {
@@ -73,7 +85,7 @@ export function importSettings(raw: string, languageFallback?: string): GameSett
   ];
   const hasKnown = known.some((k) => Object.prototype.hasOwnProperty.call(candidate, k));
   if (!hasKnown) return null;
-  return normalizeSettings(candidate, languageFallback);
+  return normalizeSettings(candidate, languageFallback, current);
 }
 
 /** True when the string looks like a Lọ Chéo settings backup. */

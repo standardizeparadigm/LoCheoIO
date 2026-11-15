@@ -1,0 +1,112 @@
+/*
+ * The `LỌ / CHÉO` lockup — everything about how the wordmark is painted.
+ *
+ * Pulled out of `index.css` in round 4, together with `menu/wordmark/`, which
+ * owns *what size* each line is. This file owns *how it looks*: the gold fill,
+ * the hard shadow that gives it depth, and the descender room that keeps the
+ * `nặng` under `Ọ` from being overlapped by the line below.
+ *
+ * THE RULE THAT MATTERS MOST
+ * --------------------------
+ * Nothing may be painted behind these letters. Round 2 put a gradient band in
+ * a `::before` pseudo-element; on screen it read as a rectangle around the word
+ * («cái phần vuông vuông xung quanh chữ chéo nhìn siêu xấu»), and its top edge
+ * also covered the `nặng`. A gradient cannot follow glyph outlines, so the only
+ * honest way to add light to a word is a shadow — and a shadow has no edges.
+ */
+
+.text-shimmer {
+  position: relative;
+  display: block;
+  /*
+   * The h1's `leading-[0.9]` covers the lockup, but this line is the taller of
+   * the two glyph runs at most widths, and inheriting `normal` from a font
+   * whose ascent/descent are generous added ~20px to the band. Pinned here so
+   * the two line boxes are decided by one number.
+   */
+  line-height: 0.9;
+  /*
+   * THE BAND BEHIND THE WORD IS GONE.
+   *
+   * Round 2 painted a gold gradient strip behind `CHÉO` through a `::before`
+   * pseudo-element and swept it horizontally. On screen it reads as a
+   * rectangle sitting behind the letters — the report's «cái phần vuông vuông
+   * xung quanh chữ chéo nhìn siêu xấu». A gradient cannot be a shape that
+   * follows glyph edges; it is a box, and a box behind a word is a box.
+   *
+   * So the box is deleted. What is left is what a wordmark actually needs: a
+   * solid gold fill and a hard drop shadow, with the light moving *through the
+   * shadow* instead of through a plate behind it. `lc-gold-breathe` already did
+   * that, and it survives — it animates `text-shadow`, which has no edge.
+   *
+   * This also removes the last thing that could ever cover the `nặng` under
+   * `LỌ`: there is no longer any element painted above the baseline of the
+   * line above.
+   */
+  color: #f5a81c;
+  /* Deep hard shadow, then a warm rim — depth without a plate. */
+  text-shadow:
+    4px 4px 0 #b81f22,
+    8px 8px 0 rgba(6, 26, 26, 0.55);
+  animation: lc-gold-breathe 3.4s ease-in-out infinite;
+}
+
+/* The moving highlight that passes *over* the letters. A shadow, not a clip:
+ * a shadow can never eat a diacritic. */
+@keyframes lc-gold-breathe {
+  0%,
+  100% {
+    text-shadow:
+      4px 4px 0 #b81f22,
+      8px 8px 0 rgba(6, 26, 26, 0.55);
+  }
+  50% {
+    text-shadow:
+      4px 4px 0 #b81f22,
+      8px 8px 0 rgba(6, 26, 26, 0.55),
+      0 0 18px rgba(255, 243, 196, 0.45);
+  }
+}
+
+/*
+ * ---- wordmark line boxes ------------------------------------------------
+ *
+ * A tight line-height (0.9) is what makes the two lines of the wordmark read as
+ * one stacked lockup rather than two paragraphs. It also makes each line box
+ * *shorter than its own glyphs*, so a descending mark — the dot under `Ọ` in
+ * `LỌ`, which is a full 0.18em below the baseline — hangs outside the box.
+ *
+ * Anything painted by the next line then lands on top of it. In the v1.1.8
+ * report that "anything" was the gold band behind `CHÉO`, and the nặng went
+ * missing on screen.
+ *
+ * `.wordmark-lo` gives the bottom line the descender room it needs *inside*
+ * its own box: the text is pulled up by `padding-bottom` instead of by a
+ * negative margin, so the box grows downward and the accent stays inside it.
+ * Nothing above moves, so the tight lockup is preserved.
+ */
+.wordmark-lo {
+  /*
+   * The gap between the two lines used to be a negative margin on the *lower*
+   * line (`-mt-1`), which overlaps the two boxes. A little padding on the
+   * upper line's own box makes the same visual gap without the overlap.
+   */
+  display: block;
+  padding-bottom: 0.1em;
+}
+.wordmark-lo > span {
+  display: block;
+  line-height: 0.92;
+}
+
+/* The wordmark is the whole hero. Centre it in the band and let it use the
+ * full width, since there is no mascot beside it any more. */
+.menu-hero[data-hero="minimal"] {
+  justify-content: center;
+}
+.menu-hero[data-hero="minimal"] .wordmark {
+  margin-top: 0;
+}
+.menu-hero[data-hero="minimal"] .wordmark-lo {
+  padding-bottom: 0;
+}

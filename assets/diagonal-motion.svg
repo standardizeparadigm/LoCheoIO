@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img" aria-label="Cơ chế CHÉO của Lọ Chéo — giữ hai phím, lọ tăng tốc theo đường xiên, chém tan đồ hư; ba trạng thái thường, tăng tốc và phá huỷ (hoạt họa SMIL)">
+  <defs>
+    <!-- Round 6: one reusable bloom. Every asset now has a light source —
+         before this, twelve of the twenty had gradients but not a single
+         filter, so the highlights were flat fills pretending to glow. -->
+    <filter id="dg-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="dmBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a2422"/><stop offset="1" stop-color="#071e1c"/>
+    </linearGradient>
+    <radialGradient id="dmTrail"><stop offset="0" stop-color="#8cc63f" stop-opacity="0.45"/><stop offset="1" stop-color="#8cc63f" stop-opacity="0"/></radialGradient>
+    <linearGradient id="dmSlash" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c" stop-opacity="0"/><stop offset="0.5" stop-color="#fff3c4"/><stop offset="1" stop-color="#e63b2e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#dmBg)"/>
+  <rect x="1" y="1" width="1198" height="338" rx="14" fill="none" stroke="#123f38" stroke-width="2"/>
+  <text x="34" y="32" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="15" letter-spacing="3" fill="#fdf3e0">CƠ CHẾ CHÉO</text>
+  <text x="34" y="50" font-family="system-ui,sans-serif" font-size="9" fill="#7d9d94">lọ chỉ đi được đường xiên — giữ hai phím để hợp nhất, thả ra thì dừng</text>
+
+  <!-- three stages -->
+  <g>
+    <!-- stage 1: idle -->
+    <g transform="translate(34,70)">
+      <rect width="356" height="212" rx="8" fill="#0b2a28" stroke="#166153" stroke-width="1.4"/>
+      <text x="14" y="20" font-family="system-ui,sans-serif" font-size="8" letter-spacing="2" fill="#3f8177">01 · ĐỨNG YÊN</text>
+      <!-- diagonal ticks: short, explicit, and entirely inside the card.
+           A long clipped grid kept escaping the rounded corner in resvg, and a
+           decorative element that only clips in *some* renderers is a bug. -->
+      <g stroke="#14453e" stroke-width="1.5" stroke-linecap="round">
+        <line x1="216" y1="40" x2="240" y2="64"/>
+        <line x1="240" y1="40" x2="264" y2="64"/>
+        <line x1="264" y1="40" x2="288" y2="64"/>
+        <line x1="288" y1="40" x2="312" y2="64"/>
+        <line x1="312" y1="40" x2="336" y2="64"/>
+        <line x1="30" y1="52" x2="54" y2="76"/>
+        <line x1="54" y1="52" x2="78" y2="76"/>
+        <line x1="30" y1="172" x2="54" y2="196"/>
+        <line x1="54" y1="172" x2="78" y2="196"/>
+      </g>
+      <!-- keys -->
+      <g transform="translate(60,120)">
+        <rect width="30" height="30" rx="4" fill="#0f3d36" stroke="#2bb48c" stroke-width="1.4"/>
+        <text x="15" y="20" text-anchor="middle" font-family="'Arial Black',sans-serif" font-size="10" fill="#8cc63f">W</text>
+        <rect x="38" y="0" width="30" height="30" rx="4" fill="#0f3d36" stroke="#2bb48c" stroke-width="1.4"/>
+        <text x="53" y="20" text-anchor="middle" font-family="'Arial Black',sans-serif" font-size="10" fill="#8cc63f">A</text>
+      </g>
+      <!-- jar -->
+      <g transform="translate(240,116)">
+        <ellipse rx="24" ry="27" fill="#f7f2e4" stroke="#0b2a28" stroke-width="2"/>
+        <rect x="-24" y="-8" width="48" height="35" rx="11" fill="#8cc63f" opacity="0.5"/>
+        <circle cx="-8" cy="3" r="4" fill="#0b2a28"/><circle cx="8" cy="3" r="4" fill="#0b2a28"/>
+        <path d="M-6 14 Q0 20 6 14" stroke="#0b2a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- stage 2: boost -->
+    <g transform="translate(404,70)">
+      <rect width="356" height="212" rx="8" fill="#0b2a28" stroke="#2bb48c" stroke-width="1.6"/>
+      <text x="14" y="20" font-family="system-ui,sans-serif" font-size="8" letter-spacing="2" fill="#2bb48c">02 · GIỮ 2 PHÍM → TĂNG TỐC</text>
+      <rect x="0" y="34" width="356" height="178" fill="url(#dmTrail)" opacity="0.5"/>
+      <!-- motion trail: stops short of the jar, so the streak reads as speed
+           left *behind* the jar rather than as lines drawn through it -->
+      <g stroke="#8cc63f" stroke-width="2" stroke-linecap="round">
+        <line x1="34" y1="196" x2="150" y2="80" opacity="0.7">
+          <animate attributeName="x1" values="26;44;26" dur="1.6s" repeatCount="indefinite"/>
+          <animate attributeName="y1" values="204;188;204" dur="1.6s" repeatCount="indefinite"/>
+        </line>
+        <line x1="64" y1="196" x2="180" y2="80" opacity="0.45">
+          <animate attributeName="x1" values="56;74;56" dur="1.6s" repeatCount="indefinite"/>
+          <animate attributeName="y1" values="204;188;204" dur="1.6s" repeatCount="indefinite"/>
+        </line>
+        <line x1="94" y1="196" x2="210" y2="80" opacity="0.28">
+          <animate attributeName="x1" values="86;104;86" dur="1.6s" repeatCount="indefinite"/>
+          <animate attributeName="y1" values="204;188;204" dur="1.6s" repeatCount="indefinite"/>
+        </line>
+      </g>
+      <g transform="translate(258,116)">
+        <animateTransform attributeName="transform" type="translate" values="256,116;270,104;256,116" dur="1.8s" repeatCount="indefinite"/>
+        <circle r="34" fill="url(#dmTrail)"/>
+        <ellipse rx="24" ry="27" fill="#f7f2e4" stroke="#0b2a28" stroke-width="2"/>
+        <rect x="-24" y="-8" width="48" height="35" rx="11" fill="#8cc63f" opacity="0.6"/>
+        <circle cx="-8" cy="3" r="4" fill="#0b2a28"/><circle cx="8" cy="3" r="4" fill="#0b2a28"/>
+        <path d="M-8 15 Q0 22 8 15" stroke="#0b2a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- speed chevrons -->
+      <g fill="#f5a81c">
+        <path d="M40 150 l10 -7 v14 z"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" repeatCount="indefinite"/></path>
+        <path d="M62 132 l10 -7 v14 z"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" begin="0.2s" repeatCount="indefinite"/></path>
+        <path d="M84 114 l10 -7 v14 z"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" begin="0.4s" repeatCount="indefinite"/></path>
+      </g>
+    </g>
+
+    <!-- stage 3: slash -->
+    <g transform="translate(774,70)">
+      <rect width="392" height="212" rx="8" fill="#0b2a28" stroke="#f5a81c" stroke-width="1.6"/>
+      <text x="14" y="20" font-family="system-ui,sans-serif" font-size="8" letter-spacing="2" fill="#f5a81c">03 · CHÉM TAN ĐỒ HƯ</text>
+      <!-- target: mould -->
+      <g transform="translate(286,116)">
+        <circle r="26" fill="#6b2d5c" opacity="0.85"/>
+        <circle cx="-8" cy="-6" r="4" fill="#b98cae"/><circle cx="7" cy="2" r="3" fill="#b98cae"/>
+        <circle cx="-3" cy="10" r="3.5" fill="#b98cae"/>
+        <animate attributeName="opacity" values="1;1;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.62;0.72"/>
+        <animateTransform attributeName="transform" type="translate" values="286,116;286,116;286,116" dur="2.4s" repeatCount="indefinite"/>
+      </g>
+      <!-- slash -->
+      <rect x="120" y="108" width="180" height="5" rx="2.5" fill="url(#dmSlash)" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.58;0.64;0.8"/>
+      </rect>
+      <!-- jar lunging -->
+      <g transform="translate(170,116)">
+        <circle r="30" fill="url(#dmTrail)"/>
+        <ellipse rx="23" ry="26" fill="#f7f2e4" stroke="#0b2a28" stroke-width="2"/>
+        <rect x="-23" y="-8" width="46" height="34" rx="10" fill="#8cc63f" opacity="0.6"/>
+        <circle cx="-7" cy="4" r="4" fill="#0b2a28"/><circle cx="9" cy="4" r="4" fill="#0b2a28"/>
+        <path d="M-7 14 Q0 20 7 14" stroke="#0b2a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <animateTransform attributeName="transform" type="translate" values="150,116;176,104;150,116" dur="2.4s" repeatCount="indefinite"/>
+      </g>
+      <!-- ring that expands as the mould dies -->
+      <circle cx="286" cy="116" r="26" fill="none" stroke="#f5a81c" stroke-width="1.4" opacity="0">
+        <animate attributeName="r" values="24;44;44" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.7;1"/>
+        <animate attributeName="opacity" values="0;0;0.9;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.6;0.7;0.95"/>
+      </circle>
+      <!-- three shards -->
+      <g fill="#6b2d5c" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.66;0.72;0.95"/>
+        <path d="M276 108 l9 -5 3 9 z"><animateTransform attributeName="transform" type="translate" values="0,0;-16,-14;-16,-14" dur="2.4s" repeatCount="indefinite"/></path>
+        <path d="M294 104 l8 6 -7 5 z"><animateTransform attributeName="transform" type="translate" values="0,0;14,-16;14,-16" dur="2.4s" repeatCount="indefinite"/></path>
+        <path d="M282 126 l10 4 -4 7 z"><animateTransform attributeName="transform" type="translate" values="0,0;-6,18;-6,18" dur="2.4s" repeatCount="indefinite"/></path>
+      </g>
+      <!-- target caption -->
+      <text x="286" y="176" text-anchor="middle" font-family="system-ui,sans-serif" font-size="7.5" fill="#7d9d94">MỐC · RUỒI · SÂU RAU</text>
+      <text x="286" y="188" text-anchor="middle" font-family="system-ui,sans-serif" font-size="7" fill="#3f8177">chém trúng = hũ không nứt thêm</text>
+      <!-- score popup -->
+      <text x="288" y="88" text-anchor="middle" font-family="'Arial Black',sans-serif" font-size="13" fill="#8cc63f" opacity="0">
+        +40
+        <animate attributeName="opacity" values="0;0;1;0" dur="2.4s" repeatCount="indefinite" keyTimes="0;0.62;0.7;0.95"/>
+        <animate attributeName="y" values="96;76;76" dur="2.4s" repeatCount="indefinite"/>
+      </text>
+    </g>
+  </g>
+
+  <g font-family="system-ui,sans-serif" font-size="8" fill="#7d9d94">
+    <text x="34" y="308">trạng thái đứng yên đọc đúng phím đang giữ — W+A, S+D, W+D hoặc S+A đều cho một đường xiên</text>
+    <text x="1166" y="308" text-anchor="end" fill="#166153">src/game/engine.ts · comboWindowFor() · multiplierForCombo()</text>
+  </g>
+  <text x="34" y="326" font-family="system-ui,sans-serif" font-size="7" fill="#2bb48c">chém tan đồ hư giữa lúc tăng tốc là cách duy nhất để giữ hũ nguyên vẹn</text>
+</svg>
