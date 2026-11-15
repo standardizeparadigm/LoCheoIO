@@ -11,8 +11,8 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1059%20%C2%B7%20109%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
-[![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
 [![Single File](https://img.shields.io/badge/single--file-HTML-8cc63f.svg?style=for-the-badge)](#プロダクションビルド)
@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts` は **1,682 のビューポート** を走査し、各サンプルで `heroContentHeight(layout) ≤ scene` を検証します。
 
+### 🧱 第八ラウンド：六つの層、ひとつのプロファイル
+
+ヒーローが自分のウィンドウを測れるようになっても、ほかは依然として推測していました。モーダルは**上限のない** `86vh`、ゲームオーバーの見出しは固定の `text-6xl`、パネルは自分で `cornerRowHeight()` を呼び、`engine.resize()` は自分で瓶の半径を計算。**六か所が六回読む** —— 二回の読み取りが別のフレームに落ちることもあります。
+
+v1.1.8 はそれらを**ひとつの箱に対するひとつの純粋関数**にまとめました：
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+新しい不変条件 `panel + 余白 ≤ reserve` は **844×390**（横向きの iPhone、報告のスクリーンショットと同じ寸法）で赤になります。`reserveFor()` はフッターを描かないとき 30px を引きますが、`panelHeightForPlan()` は密度しか見ずに full の高さで描いていました —— 216px の帯に 234px のパネル、**下端 18px が画面の外**。
+
+**1 620 枚の数値スナップショット**がそれを固定します：`tests/fixtures/adaptive-matrix/`（1 110 ウィンドウ、1 ウィンドウ 1 ファイル）と `tests/fixtures/hero-bands/`（510 の「幅 × 帯」）。`npm run check:adaptive` は 21 行の表と六つの不変条件を、ブラウザなしで確認します。
+
 ### 🌍 第二の層 — サイズではなく環境
 
 ウィンドウの高さは、使える高さではありません。iPhone ではアドレスバーと
@@ -224,7 +247,9 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——109ファイル1059テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——122ファイル1183テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME（左下）と INFO（右下）パネルがスライドイン（SMIL アニメーション）" width="100%" />
 
@@ -482,7 +507,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 
 | バージョン | Tier | 日付 | ノート |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 テスト / 48 ファイル** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 テスト / 48 ファイル** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **メニュー背景のかすみ除去**（四層の重なり：`blur 64→22px`、全画面ヴィネットを四隅のみに、CRT 枠 140→90px、床 45→70%）· **階層別カラー履歴** · 旧八版に **96 項目の説明** · 日付再整列 · `src/game/changelog/` 分割 · README 10 本刷新 · **256 テスト** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6セクション設定**（プリセット · サウンド · 表示 · 言語 · バックアップ · データ）· 音量 0–100 · 揺れの強さ · 画質 · タブ切替で自動停止 · 言語を設定へ移設 · 4プリセット · JSON 入出力 · 多層アニメのメニュー · 作者カードの流れるグラデーション · モーダルのフォーカス封じ込め · 再読込後の音楽バグ修正 · **150テスト** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **四隅 GAME/INFO メニュー**（プレイ · つづきから · モード · ランキング · 実績 · 設定 / 作者について · 更新履歴 · 終了）· **中断ランの保存＆再開**（`locheo.run.v1`）· ゲーム内設定（効果音/BGM/揺れ/動作を減らす）· モーダル越しショートカット修正 · prefers-reduced-motion 完全対応 · **113テスト** |

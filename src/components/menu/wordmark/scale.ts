@@ -144,3 +144,64 @@ export function toClass(clamp: Clamp): string {
 function round1(n: number): number {
   return Math.round(n * 10) / 10;
 }
+
+/* =====================================================================
+   Fitting the lockup to a *band*, not only to a width
+   ===================================================================== */
+
+/**
+ * The ratio of the lockup's total height to one line's font size.
+ *
+ * Measured from the shipped component, not guessed: `LỌ` at 89.6px with
+ * `leading-[0.9]` and a 0.82 ratio gives a two-line box of 150px, and
+ * `150 / 89.6 = 1.674…`. Rounding up to 1.68 leaves a sliver of slack so the
+ * `nặng` under `Ọ` cannot touch the badge row.
+ *
+ * WHY IT LIVES HERE AND NOT IN `adaptive/typeScale.ts`
+ * ----------------------------------------------------
+ * The wordmark is the one element whose size the eye notices first, so its
+ * arithmetic has to live next to the clamp it caps. `typeScale.ts` imports this
+ * value; it does not own a second copy of it.
+ */
+export const LOCKUP_BOX_RATIO = 1.68;
+
+/** The smallest the wordmark may shrink to, px. */
+export const MIN_LOCKUP_PX = 22;
+
+/**
+ * The largest the wordmark may grow to, px — the 5.6rem cap, quantised.
+ *
+ * 5.6rem is 89.6px and every adaptive size is rounded to half a pixel, so the
+ * cap is stated as the largest reachable half pixel rather than as a number the
+ * rounding can never produce.
+ */
+export const MAX_LOCKUP_PX = 89.5;
+
+/** Largest `LỌ` that fits a band of `bandHeight`, px. */
+export function lockupMaxForBand(bandHeight: unknown): number {
+  const h = typeof bandHeight === "number" && Number.isFinite(bandHeight) ? Math.max(0, bandHeight) : 0;
+  const raw = h / LOCKUP_BOX_RATIO;
+  const bounded = Math.min(MAX_LOCKUP_PX, Math.max(MIN_LOCKUP_PX, raw));
+  // Round *down* to half a pixel: rounding up 83.3 to 83.5 puts a 140.28px
+  // lockup in a 140px band.
+  return Math.floor(bounded * 2) / 2;
+}
+
+/**
+ * The two sizes, fitted to a width **and** a band.
+ *
+ * `limitedBy` says which cap won, which is what a diagnostic screenshot needs:
+ * "the logo is small because the window is 500px wide" and "because the band is
+ * 140px tall" are different bugs and used to be indistinguishable.
+ */
+export function lockupAtBand(
+  viewportWidth: number,
+  bandHeight: number,
+): { lo: number; cheo: number; ratio: number; safe: boolean; limitedBy: "band" | "width" } {
+  const widthSize = resolve(LO_CLAMP, viewportWidth);
+  const bandSize = lockupMaxForBand(bandHeight);
+  const limitedBy = bandSize < widthSize ? "band" : "width";
+  const lo = Math.floor(Math.min(widthSize, bandSize) * 2) / 2;
+  const cheo = Math.floor(lo * CHEO_RATIO_MAX * 2) / 2;
+  return { lo, cheo, ratio: lo === 0 ? 0 : cheo / lo, safe: cheo < lo, limitedBy };
+}

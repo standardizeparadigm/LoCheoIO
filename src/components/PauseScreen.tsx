@@ -6,6 +6,7 @@ import { fmtNum } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/i18n";
 import { GameButton, Keycap, Panel, Stat } from "./ui";
 import { fmtCountdown, fmtTime } from "../utils/time";
+import { useAdaptive } from "./menu/adaptive";
 
 export default function PauseScreen({
   stats,
@@ -25,6 +26,8 @@ export default function PauseScreen({
   onToggleMute: () => void;
 }) {
   const { t, lang } = useI18n();
+  // Sized from the window, not from two Tailwind breakpoints (see GameOverScreen).
+  const { type } = useAdaptive();
   const timeLimit = MODES[mode].timeLimit;
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center overflow-y-auto px-4 py-6">
@@ -36,8 +39,8 @@ export default function PauseScreen({
               {t("pause.kicker")}
             </span>
             <h2
-              className="font-display text-4xl leading-none text-tumeric-400 sm:text-5xl"
-              style={{ textShadow: "4px 4px 0 #061a1a" }}
+              className="font-display leading-none text-tumeric-400"
+              style={{ fontSize: Math.round(type.overScore * 0.85 * 2) / 2, textShadow: "4px 4px 0 #061a1a" }}
             >
               {t("pause.title")}
             </h2>

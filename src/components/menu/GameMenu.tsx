@@ -4,7 +4,7 @@ import { MODE_LIST } from "../../game/modes";
 import { fmtNum } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/i18n";
 import CornerPanel from "./CornerPanel";
-import { cornerRowHeight } from "./layout";
+import { panelHeightForPlan } from "./adaptive";
 import MenuItemButton from "./MenuItemButton";
 import { PlayIcon, ContinueIcon, ModesIcon, TrophyIcon, MedalIcon, GearIcon, ScrollIcon } from "./icons";
 import type { MenuPlan } from "./layout";
@@ -53,7 +53,7 @@ export default function GameMenu({
     <CornerPanel
       title={t("menu.game")}
       corner="left"
-      height={cornerRowHeight(plan.dense, plan.tight)}
+      height={panelHeightForPlan(plan)}
       width={plan.panelWidth}
       tight={plan.tight}
       compact={plan.compact}

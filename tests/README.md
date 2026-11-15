@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1059 tests / 109 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1183 tests / 122 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -39,6 +39,19 @@
 | `layout-metrics.test.ts` | bảy hằng số không có assertion nào — mỗi cái là một số hạng trong `cornerPanelHeight()`; khẳng định **hai lần**: như tổng các số hạng của chính nó, và như số cụ thể (458/430) vì một đẳng thức vẫn đúng khi cả hai vế đều sai | pure |
 | `layout-readme-table.test.ts` | bảng bảy viewport trong `layout/README.md` được **tính lại** từ `planMenuLayout()` — đọc từng hàng và so `reserve`/`scene`, cộng hai khối số học (458/430, 518/490) và bất biến `scene + reserve === height` | fs + pure |
 | `adaptive-readme.test.ts` | bốn ngưỡng và năm số đo mà `adaptive/README.md` in ra, đối chiếu hằng số thật; đồng thời khẳng định README **vẫn còn** đoạn tự thừa nhận rằng các số đo đến từ class name của component chứ không từ thư mục này | fs |
+| `adaptive-viewport.test.ts` | `boxOf()`/`describeBox()`/`aspectClassOf()`/`roomDriver()` — kẹp NaN/âm/1×1, phân loại khung (tall→panoramic), tín hiệu `room` 0..1 | pure |
+| `adaptive-tiers.test.ts` | `tierFor()`/`deviceClass()` — sáu ngưỡng, giá trị biên, đầu vào rác, thiết bị suy ra từ tier | pure |
+| `adaptive-scale.test.ts` | `scaled()`/`legible()`/`quantise()` — không cap là `Infinity` chứ không phải `lo`, fallback của `saneSide`, làm tròn nửa pixel | pure |
+| `adaptive-density.test.ts` | `densityFor()` gộp ba cờ thành năm trạng thái + bảng `metricsFor()` **tính lại** bằng `cornerRowHeight()`, quét 1 600 viewport, cấm menu gọi thẳng `cornerRowHeight(` | pure + fs |
+| `adaptive-type.test.ts` | `typeScaleFor()`/`typeVars()` — 17 biến `--type-*`, thứ tự lớn↔nhỏ theo density, kẹp theo band, không biến nào dưới 8px | pure |
+| `adaptive-modal.test.ts` | `planModal()`/`modalStyle()` — hộp thoại vừa cửa sổ ở 390×844 và 3840×2160, `maxHeight` theo 86vh **có** trần, số cột theo bề ngang | pure |
+| `adaptive-resolve.test.ts` | `resolveAdaptive()` là hàm toàn phần — `scene + reserve === usableHeight`, panel vẽ đúng phần reserve trả, hero vừa band, `cssVars` khớp profile | pure |
+| `adaptive-wordmark-band.test.ts` | `lockupMaxForBand()`/`lockupAtBand()` — trần band thắng tier, `MAX_LOCKUP_PX` là nửa pixel chạm được, `limitedBy` nói cap nào thắng | pure |
+| `adaptive-fixtures.test.ts` | **corpus 1 110 cửa sổ** (`tests/fixtures/adaptive-matrix/`, một file mỗi viewport) — tính lại từng quyết định, kiểm luôn tính nhất quán nội tại của snapshot (panel + lề ≤ reserve, lockup vừa band) | fs + pure |
+| `adaptive-hero-fixtures.test.ts` | **corpus 510 cặp (bề ngang, band)** (`tests/fixtures/hero-bands/`) — bậc thang hero, `needs <= scene`, hàng không tràn ngang, cờ chỉ tắt dần khi band hẹp lại | fs + pure |
+| `panel-footer-overflow.test.ts` | hồi quy 844×390 — reserve bỏ 30px footer thì panel phải thấp đi 30px, `panel + lề === reserve` ở mọi cửa sổ ngắn | pure |
+| `playfield.test.ts` | `planPlayfield()`/`playable()` — sân chơi theo `min(w,h)`, `hudScale`, sàn 240×320, DPR, đầu vào rác | pure |
+| `repo-name.test.ts` | tên repo viết đúng một kiểu — không file nào chứa bản có gạch nối, `about.source` đủ 7 locale, `package.json` + 10 badge + ≥10 link tag trong CHANGELOG | fs |
 | `panel-readme-table.test.ts` | bảng **bốn chế độ** panel trong `panel/README.md` — mỗi ô so với `cornerPanelHeight()`; bảng này phải viết lại lần hai vì bản đầu bịa bốn trong tám số bằng cách nội suy giữa hai số đúng | fs + pure |
 | `catalogue-counts.test.ts` | ba con số **9 · 14 · 16** mà mười tài liệu in ra — đếm trực tiếp từ `MODE_LIST`, `KINDS`, `ACHIEVEMENTS`, và khẳng định id là duy nhất để một bản trùng không làm số đếm sai | pure |
 | `key-count-docs.test.ts` | **327 key** — số trong bảng i18n; kiểm cả bảy locale cùng độ dài, và cấm 306/307 như một **tuyên bố hiện tại** trong hai hướng dẫn, trong khi vẫn giữ dòng so sánh lịch sử của release doc | fs + i18n |
@@ -110,7 +123,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 20 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 21 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |

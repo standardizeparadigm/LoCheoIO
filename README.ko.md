@@ -11,8 +11,8 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1059%20%C2%B7%20109%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
-[![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
 [![Single File](https://img.shields.io/badge/single--file-HTML-8cc63f.svg?style=for-the-badge)](#프로덕션-빌드)
@@ -135,6 +135,29 @@ src/components/menu/
 
 `tests/menu-adaptive.test.ts`는 **1,682개 뷰포트**를 훑고 각 샘플에서 `heroContentHeight(layout) ≤ scene`을 확인합니다.
 
+### 🧱 여덟 번째 라운드: 여섯 층, 하나의 프로필
+
+히어로가 자기 창을 재게 된 뒤에도 나머지는 여전히 추측했습니다. 모달은 **상한 없는** `86vh`, 게임오버 제목은 고정 `text-6xl`, 패널은 스스로 `cornerRowHeight()` 를 호출했고 `engine.resize()` 는 병 반지름을 직접 계산했습니다. **여섯 곳이 여섯 번 읽는** 구조 — 두 번의 읽기가 서로 다른 프레임에 떨어질 수 있습니다.
+
+v1.1.8 은 이것을 **하나의 상자에 대한 하나의 순수 함수**로 모았습니다:
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
+
+| | | |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w · h · inset · dpr` |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` |
+| 3 · Plan | `layout/fit.ts` | `scene · reserve · fit` |
+| 4 · Density | `adaptive/density.ts` | 54/34/26px · 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row / stack · lockup |
+| 6 · Type | `adaptive/typeScale.ts` | 17 × `--type-*` |
+| 7 · Modal | `ui/modalPlan.ts` | w × h × columns |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale · hudScale` |
+
+새 불변식 `panel + 여백 ≤ reserve` 는 **844×390**(가로 iPhone, 보고서 스크린샷의 크기)에서 빨개집니다. `reserveFor()` 는 푸터를 그리지 않을 때 30px 을 빼지만, `panelHeightForPlan()` 은 밀도만 보아 전체 높이를 그렸습니다 — 216px 대역에 234px 패널, **아래 18px 이 화면 밖**.
+
+**1 620장의 숫자 스냅샷**이 이를 고정합니다: `tests/fixtures/adaptive-matrix/`(1 110개 창, 창마다 파일 하나)와 `tests/fixtures/hero-bands/`(510개의 「너비 × 대역」). `npm run check:adaptive` 는 21행 표와 여섯 불변식을 브라우저 없이 확인합니다.
+
 ### 🌍 두 번째 층 — 크기가 아니라 환경
 
 창 높이는 곧 쓸 수 있는 높이가 아닙니다. iPhone에서는 주소창과 홈 인디케이터가
@@ -224,7 +247,9 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——109개 파일 1059 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——122개 파일 1183 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+
+<img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="GAME(왼쪽 아래)과 INFO(오른쪽 아래) 패널이 슬라이드 인 (SMIL 애니메이션)" width="100%" />
 
@@ -482,7 +507,7 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 
 | 버전 | Tier | 날짜 | 노트 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 테스트 / 48 파일** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 테스트 / 48 파일** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **메뉴 배경 안개 제거**(네 겹 중첩: `blur 64→22px`, 전체 화면 비네트를 모서리만으로, CRT 프레임 140→90px, 바닥 45→70%) · **계층별 컬러 이력** · 예전 8개 버전에 **설명 96개** · 날짜 재정렬 · `src/game/changelog/` 분리 · README 10개 재작성 · **256 테스트** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6개 섹션 설정**(프리셋 · 사운드 · 화면 · 언어 · 백업 · 데이터) · 0–100 음량 · 흔들림 세기 · 그래픽 품질 · 탭 전환 자동 일시정지 · 언어를 설정으로 이동 · 프리셋 4종 · JSON 내보내기/가져오기 · 다층 애니메이션 메뉴 · 제작자 카드 그라데이션 · 모달 포커스 가둠 · 새로고침 후 음악 버그 수정 · **150개 테스트** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **모서리 GAME/INFO 메뉴**（플레이 · 이어하기 · 모드 · 랭킹 · 업적 · 설정 / 제작자 · 변경 이력 · 종료）· **중단한 판 저장 & 이어하기**（`locheo.run.v1`）· 게임 내 설정（효과음/음악/흔들림/동작 줄이기）· 모달 단축키 누출 수정 · prefers-reduced-motion 전면 적용 · **113개 테스트** |

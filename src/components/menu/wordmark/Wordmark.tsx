@@ -32,10 +32,22 @@ export function Wordmark({
   cheo,
   /** The screen-reader label for the whole lockup. */
   label,
+  /**
+   * Sizes in px, when the adaptive profile has already fitted the lockup to the
+   * band the hero was given.
+   *
+   * Optional on purpose: without it the component falls back to the CSS
+   * `clamp()` pair, which is width-only. That fallback is what the SSR smoke
+   * test renders and what a caller outside the start screen would get, and it
+   * is the *previous* behaviour rather than a broken one — the adaptive sizes
+   * are strictly better, not a precondition.
+   */
+  size,
 }: {
   lo: string;
   cheo: string;
   label: string;
+  size?: { lo: number; cheo: number };
 }) {
   return (
     <h1
@@ -68,11 +80,14 @@ export function Wordmark({
       */}
       <span
         className="wordmark-lo text-clay-100"
-        style={{ fontSize: toClass(LO_CLAMP), textShadow: "5px 5px 0 #b81f22, 10px 10px 0 rgba(6,26,26,0.55)" }}
+        style={{
+          fontSize: size ? `${size.lo}px` : toClass(LO_CLAMP),
+          textShadow: "5px 5px 0 #b81f22, 10px 10px 0 rgba(6,26,26,0.55)",
+        }}
       >
         <span>{lo}</span>
       </span>
-      <span className="text-shimmer block pl-[0.06em]" style={{ fontSize: toClass(CHEO_CLAMP) }}>
+      <span className="text-shimmer block pl-[0.06em]" style={{ fontSize: size ? `${size.cheo}px` : toClass(CHEO_CLAMP) }}>
         {cheo}
       </span>
     </h1>

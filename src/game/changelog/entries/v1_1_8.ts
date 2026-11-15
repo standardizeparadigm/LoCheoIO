@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.8 — released 2026-11-13 — tier: PATCH
+ * v1.1.8 — released 2026-11-15 — tier: PATCH
  *
  * Bản vá cuối cùng trước 1.2.0. Bốn lỗi trong ảnh chụp màn hình bắt nguồn từ
  * một phép cộng sai, và cả bốn đã được sửa bằng cách khai báo chiều cao thay
@@ -13,7 +13,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_8: ChangelogEntry = {
   version: "1.1.8",
-  date: "2026-11-13",
+  date: "2026-11-15",
   kind: "fix",
   vi: "Bản vá cuối trước 1.2.0 — màn hình bắt đầu hết tràn, dấu sắc của CHÉO được cứu, panel THÔNG TIN hết bị chia cắt, thanh cuộn biến mất, «Cách chơi» vào menu GAME và hero được trang trí",
   en: "The final patch before 1.2.0 — the start screen no longer overflows, the acute on CHÉO is preserved, the INFO panel stops spreading its rows, the scrollbar is gone, how-to-play moves into the GAME menu, and the hero is decorated",

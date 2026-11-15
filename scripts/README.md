@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1059 tests / 109 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1183 tests / 122 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -180,7 +180,7 @@ Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn tr�
 
 ## `check-svg.mjs`
 
-Validator cho 20 file SVG trong `assets/`. Không có trình render SVG trong CI,
+Validator cho 21 file SVG trong `assets/`. Không có trình render SVG trong CI,
 nên nó kiểm đúng những cách một SVG **hỏng trên trình duyệt mà vẫn hợp lệ XML**:
 
 1. `url(#id)` trỏ tới `id` không tồn tại — gradient biến mất, hình phẳng.
@@ -194,7 +194,7 @@ animation SMIL và một filter.
 
 ```bash
 node scripts/check-svg.mjs
-# → ASSETS OK — 20 SVG, all references resolve, all animated.
+# → ASSETS OK — 21 SVG, all references resolve, all animated.
 ```
 
 > **Vì sao có sàn:** trước vòng 6, 12/20 file có gradient và animation nhưng
@@ -214,3 +214,52 @@ npx vite-node scripts/probe-menu-layout.tsx
 Khác `smoke-ssr.tsx`: smoke chỉ trả lời "render có ném lỗi không"; probe trả lời
 "bố cục có đúng ở cỡ này không". Nó là cổng duy nhất bắt được lỗi hình học, vì
 `tsc` không thấy số và test đọc-source không thấy DOM.
+
+## `check-svg.mjs` — qua `npm run check:svg`
+
+Cùng script ở trên, nay có alias npm và nằm trong chuỗi `npm run check`. Trước
+vòng 8 nó chỉ chạy khi có người nhớ gõ; nay nó là một mắt xích của cổng.
+
+## `check-adaptive.ts`
+
+Cổng của hệ adaptive: in bảng **21 viewport** (bề ngang, bề cao, tier, density,
+scene, reserve, lockup, cỡ chữ, chế độ fit, hero, thiết bị) rồi khẳng định sáu
+bất biến trên từng dòng — `scene + reserve === usableHeight`, lockup vừa band,
+`CHÉO < LỌ`, panel + lề ≤ reserve, hộp thoại vừa cửa sổ, jar ≤ cạnh ngắn.
+
+```bash
+npm run check:adaptive
+# → bảng 21 dòng … ADAPTIVE OK — 21 viewports
+```
+
+Khác `probe-menu-layout.tsx` (đọc DOM thật): script này chỉ tính số, nên chạy
+được trong CI không cần trình duyệt và không cần `jsdom`. Hai cổng bổ sung nhau —
+một cái bắt số sai, một cái bắt số đúng nhưng DOM vẽ khác.
+
+## `gen-adaptive-fixtures.ts`
+
+Sinh `tests/fixtures/adaptive-matrix/` — **1 110** file JSON, mỗi cửa sổ một
+file, ghi lại tier / density / scene / reserve / fit / hero / cỡ chữ / hộp thoại
+/ sân chơi.
+
+```bash
+npx vite-node scripts/gen-adaptive-fixtures.ts           # ghi
+npx vite-node scripts/gen-adaptive-fixtures.ts --check   # chỉ báo, exit 1 nếu lệch
+```
+
+Một file mỗi cửa sổ là chủ ý: khi một ngưỡng dịch, `git diff --stat` kể tên
+đúng những cửa sổ đổi hành vi, thay vì báo "một dòng đổi trong một file to".
+
+## `gen-hero-fixtures.ts`
+
+Sinh `tests/fixtures/hero-bands/` — **510** cặp (bề ngang, band), ghi lại bố cục
+hero chọn được, chiều cao nó cần, và cỡ lockup kèm `limitedBy`.
+
+```bash
+npx vite-node scripts/gen-hero-fixtures.ts           # ghi
+npx vite-node scripts/gen-hero-fixtures.ts --check   # chỉ báo
+```
+
+Corpus thứ hai vì hai ảnh chụp trong báo cáo — 1920×1080 và 1920×820 — **cùng bề
+ngang, cách nhau 260px band**. Corpus cửa sổ chỉ lấy được những band mà cửa sổ
+tình cờ tạo ra; corpus này đi thẳng từng bậc.

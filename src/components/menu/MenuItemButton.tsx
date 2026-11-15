@@ -74,7 +74,7 @@ export default function MenuItemButton({
           {label}
         </span>
         {rich && hint && (
-          <span className="mt-0.5 block truncate font-body text-[9px] leading-snug opacity-75">{hint}</span>
+          <span className="menu-row-hint mt-0.5 block truncate font-body text-[9px] leading-snug opacity-75">{hint}</span>
         )}
       </span>
       {trailing && <span className="shrink-0">{trailing}</span>}

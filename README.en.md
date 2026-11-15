@@ -11,8 +11,8 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)](#-changelog-tiers--one-colour-per-tier)
-[![Tests](https://img.shields.io/badge/tests-1059%20%C2%B7%20109%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
-[![CI](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/Lo-CheoIO/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-1183%20%C2%B7%20122%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
+[![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-install--run)
 [![Single File](https://img.shields.io/badge/single--file-HTML-8cc63f.svg?style=for-the-badge)](#production-build)
@@ -37,7 +37,7 @@ This is a **single-screen action arcade** inspired by Vietnam's humble pickled v
 
 ## 🆕 What's new in v1.1.8
 
-> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, and all 20 SVGs are redrawn.
+> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, and all 21 SVGs are redrawn.
 
 ### 📐 One unmanaged addition — and four bugs at once
 
@@ -200,7 +200,9 @@ The tier is **derived from SemVer** by `tierFor(version)`, never typed by hand. 
 
 <img src="assets/release-tiers.svg" alt="The three tiers MAJOR/UPDATE/PATCH with their colours and the ten-release timeline (SMIL animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1059 tests across 109 files, nine gates (SMIL animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1183 tests across 122 files, nine gates (SMIL animation)" width="100%" />
+
+<img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
 
 <img src="assets/corner-menu.svg" alt="Corner GAME (bottom-left) & INFO (bottom-right) panels sliding in (SMIL animation)" width="100%" />
 
@@ -237,6 +239,51 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // taller column: 192 mascot + 24 chip + padding
 ```
 
 `tests/menu-adaptive.test.ts` sweeps **1,682 viewports** and asserts `heroContentHeight(layout) ≤ scene` at every sample — so a wrong threshold is a red test, not something a player finds. On resize, both hooks listen for **six** events and update in one animation frame.
+
+### 🧱 Round eight: six layers, one profile
+
+Round six taught the hero to measure its own window. Everything else still
+guessed: the modal was `86vh` with no cap, the game-over headline was a fixed
+`text-6xl`, the panels called `cornerRowHeight()` themselves, and
+`engine.resize()` computed the jar radius on its own. **Six readers, six reads** —
+and two reads can land on two different frames.
+
+v1.1.8 round eight collapses them into **one pure function of one box**:
+
+<img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
+
+| Layer | File | Decides |
+| --- | --- | --- |
+| 1 · Box | `adaptive/viewport.ts` | `w, h, inset, dpr` — clamps `NaN`, 1×1, inverted range |
+| 2 · Tier | `adaptive/tiers.ts` | `xs`…`xxl` from the short side; `handset`…`cinema` |
+| 3 · Plan | `layout/fit.ts` | `scene`, `reserve`, `fit`, four economies |
+| 4 · Density | `adaptive/density.ts` | five pixel tables: rows 54/34/26px, panels 318/458→234 |
+| 5 · Hero | `adaptive/hero.ts` | row or stack, which flags, lockup fits the band |
+| 6 · Type | `adaptive/typeScale.ts` | 17 `--type-*` vars, none below 8px |
+| 7 · Modal | `ui/modalPlan.ts` | width × height × columns, `86vh` **with** a ceiling |
+| 8 · Board | `game/adaptive/playfield.ts` | `itemScale`, `hudScale`, jar radius |
+
+`resolveAdaptive()` is total: `NaN`, a 1×1 window, a 500px inset and an inverted
+range each produce a coherent profile with finite numbers. `useAdaptive()` reads
+the window **once** per frame and every consumer reads fields of the same object,
+so they cannot disagree.
+
+**The eighth bug, caught by this round itself:** the new invariant
+`panel + margin ≤ reserve` fails at `844×390` — an iPhone in landscape, the size
+from the report. `reserveFor()` subtracts 30px when the panel draws no footer,
+but `panelHeightForPlan()` only looked at the density and drew the full height:
+a 234px panel in a 216px band, **18px of its base off the bottom of the screen**.
+
+**A corpus of 1 620 snapshots** keeps it that way:
+
+| Corpus | Size | Answers |
+| --- | --- | --- |
+| `tests/fixtures/adaptive-matrix/` | **1 110** windows (45 × 32), one file each | what this window is given |
+| `tests/fixtures/hero-bands/` | **510** (width, band) pairs | what the hero does with exactly N pixels |
+
+One file per window is deliberate: when a threshold moves, `git diff --stat`
+**names** the windows whose behaviour changed. And `npm run check:adaptive`
+prints a 21-row table and asserts six invariants — no browser required.
 
 ### 🌍 The second layer: environment, not just size
 
@@ -307,7 +354,7 @@ usableHeight` (252 combinations asserted).
 | 💾 **TOP 8 leaderboard** | Local storage, validated & normalised on read, auto upper-case names, highlight for freshly set records |
 | 🎨 **60fps graphics** | Canvas 2D, 460-particle budget, DPR cap 2, pre-rendered offscreen tile floor, star twinkle + menu aurora |
 | 📴 **Truly offline-first** | Self-hosted fonts (latin + vietnamese subsets, woff2), no CDN, no API — double-click `dist/index.html` and play |
-| 🧪 **Quality gates** | 1059 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
+| 🧪 **Quality gates** | 1183 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
 
@@ -370,7 +417,7 @@ npm run build      # → dist/index.html (one self-contained file)
 npm run dev        # dev server with HMR (http://localhost:5173)
 npm run preview    # serve the production build locally
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1059 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1183 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI quality gate)
 ```
 
@@ -496,18 +543,18 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 20 SVGs — no orphans, no broken references
+$ npm run check:assets # 21 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
 | Gate | Scope | 1.1.8 status |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1059 tests / 109 files** | ✅ |
+| `vitest run` | **1183 tests / 122 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 20 SVGs, references checked both ways | ✅ |
+| `check-assets` | 21 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~867 KB · gzip ~399 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
@@ -539,7 +586,7 @@ Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`s
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-13 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1059 tests / 109 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1183 tests / 122 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
@@ -583,7 +630,7 @@ Design notes and deeper technical docs:
 ## 🤝 Contributing
 
 1. Fork the repo, branch with the `arena/<name>` or `feat/<name>` convention.
-2. `npm run check` must be green before opening a PR (typecheck + 1059 tests + build).
+2. `npm run check` must be green before opening a PR (typecheck + 1183 tests + build).
 3. Avoid new runtime dependencies unless truly necessary — philosophy: **one file, no network, playable forever**.
 4. In your PR, note the screens/modes affected and attach a clip if gameplay changes.
 

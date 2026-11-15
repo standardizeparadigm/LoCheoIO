@@ -1,7 +1,7 @@
 import { useI18n } from "../../i18n/useI18n";
 import { latestEntry, tierFor } from "../../game/changelog";
 import CornerPanel from "./CornerPanel";
-import { cornerRowHeight } from "./layout";
+import { panelHeightForPlan } from "./adaptive";
 import type { MenuPlan } from "./layout";
 import MenuItemButton from "./MenuItemButton";
 import { InfoIcon, ScrollIcon, DoorIcon, GearIcon } from "./icons";
@@ -25,7 +25,7 @@ import { KINDS } from "../../game/engine";
  * v1.1.7: the changelog hint used to print the same version number as the
  * title-lockup badge right above it, so it carried no information. It now
  * reads the newest entry from the changelog data and shows its tier and date
- * — e.g. "PATCH · 2026-11-13" — which is what a player actually wants to know
+ * — e.g. "PATCH · 2026-11-15" — which is what a player actually wants to know
  * before opening the panel. `latestEntry()` guarantees it tracks APP_VERSION
  * without a second hardcoded string.
  */
@@ -75,7 +75,7 @@ export default function InfoMenu({
     <CornerPanel
       title={t("menu.info")}
       corner="right"
-      height={cornerRowHeight(plan.dense, plan.tight)}
+      height={panelHeightForPlan(plan)}
       width={plan.panelWidth}
       tight={plan.tight}
       compact={plan.compact}

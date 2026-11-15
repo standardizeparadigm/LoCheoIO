@@ -16,6 +16,8 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useI18n } from "../../i18n/useI18n";
 import { useFocusTrap } from "../../utils/useFocusTrap";
+import { useAdaptive } from "../menu/adaptive/useAdaptive";
+import { modalStyle } from "./modalPlan";
 import { Panel } from "./panel";
 
 export function Modal({
@@ -30,6 +32,17 @@ export function Modal({
   wide?: boolean;
 }) {
   const { t } = useI18n();
+  /*
+   * The dialog's box comes from the window it opens in.
+   *
+   * It used to be two constants: `max-w-md` / `max-w-2xl` and `max-h-[86vh]`.
+   * On a 390px phone `max-w-md` (448px) is wider than the screen, and `86vh`
+   * ignores the on-screen keyboard — the settings footer scrolled out of reach.
+   * `useAdaptive()` resolves both from the same box the rest of the screen uses,
+   * and `planModal()` is the pure function underneath it.
+   */
+  const { modal } = useAdaptive(wide);
+  const dialogStyle = modalStyle(modal);
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(panelRef, true);
   useEffect(() => {
@@ -61,10 +74,17 @@ export function Modal({
       />
       <Panel
         panelRef={panelRef}
-        className={`anim-pop relative flex max-h-[86vh] w-full flex-col ${wide ? "max-w-2xl" : "max-w-md"}`}
+        className="anim-pop relative flex flex-col"
+        style={dialogStyle}
+        data-modal-columns={modal.columns}
       >
         <div className="flex shrink-0 items-center justify-between gap-3 border-b-2 border-jade-800 px-4 py-2.5">
-          <h2 className="font-display text-xs tracking-[0.22em] text-tumeric-400 uppercase">{title}</h2>
+          <h2
+            className="font-display tracking-[0.22em] text-tumeric-400 uppercase"
+            style={{ fontSize: modal.titleSize }}
+          >
+            {title}
+          </h2>
           <button
             type="button"
             onClick={onClose}
@@ -78,7 +98,12 @@ export function Modal({
         </div>
         {/* `game-scroll` opts this box into the styled thin scrollbar; the
             start screen deliberately uses `.menu-scroll` with no bar at all. */}
-        <div className="game-scroll min-h-0 flex-1 overflow-y-auto p-4">{children}</div>
+        <div
+          className="game-scroll min-h-0 flex-1 overflow-y-auto"
+          style={{ padding: modal.padding, fontSize: modal.bodySize }}
+        >
+          {children}
+        </div>
       </Panel>
     </div>
   );

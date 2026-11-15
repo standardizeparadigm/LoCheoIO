@@ -56,11 +56,10 @@ import {
   ChangelogModal,
   QuitModal,
 } from "./menu";
-import { useMenuPlan, useViewportWidth } from "./menu/layout/useMenuPlan";
+import { adaptiveAttributes, useAdaptive } from "./menu/adaptive";
 import { Wordmark } from "./menu/wordmark";
 import { TICKER_KEYS } from "./menu/ticker/keys";
 import { MenuTicker } from "./menu/ticker/MenuTicker";
-import { heroLayout } from "./menu/adaptive";
 import { HeroDecor } from "./menu/scene/HeroDecor";
 import { JarHalo } from "./menu/scene/JarHalo";
 import { JarLogo } from "./ui";
@@ -113,19 +112,33 @@ export default function StartScreen({
   const { t, lang } = useI18n();
   const [modal, setModal] = useState<ModalId>("none");
   const closeModal = () => setModal("none");
-  const plan = useMenuPlan();
-  const viewportWidth = useViewportWidth();
   /*
-   * The hero's layout comes from the plan, not from a media query — see
-   * `menu/adaptive/hero.ts` for why. Both inputs are live: `plan` re-plans on
-   * resize/orientationchange/visualViewport resize, and `viewportWidth` is the
-   * width the same re-plan read, so the two can never describe different
-   * windows.
+   * ONE profile, instead of a plan plus a width.
+   *
+   * `useAdaptive()` reads the window once per animation frame and resolves the
+   * layout, the hero flags, every font size, the dialog plan and the canvas plan
+   * from the same box. The previous version called two hooks — a plan and a
+   * width — which subscribe separately and can commit on different frames, so
+   * one render could hold a hero planned for 1920×820 beside a width read at
+   * 1920×800. See `menu/adaptive/useAdaptive.ts`.
    */
-  const hero = heroLayout({ scene: plan.scene, width: viewportWidth, minimal: plan.minimal });
+  const profile = useAdaptive();
+  const { plan, hero, type } = profile;
 
   return (
-    <div className="absolute inset-0 z-40 overflow-hidden">
+    <div
+      className="absolute inset-0 z-40 overflow-hidden"
+      /*
+        The profile's CSS custom properties and data attributes land here, on the
+        one element that contains both the hero and the chrome. `--type-*` is
+        read by `index.css` for the elements this release did not rewrite inside
+        (`panel-head`, row labels, the stat strip); `--adaptive-*` carries the
+        band, the reserve, the panel box and the density so a screenshot can be
+        diagnosed from the DOM alone.
+      */
+      style={profile.cssVars}
+      {...adaptiveAttributes(profile)}
+    >
       {/* ------- ambient background layers (see background/layers.ts) ------- */}
       <MenuBackground />
 
@@ -198,11 +211,17 @@ export default function StartScreen({
                 <div className={`mb-2 flex flex-wrap items-center justify-center gap-2 ${hero.sideBySide ? "lg:justify-start" : ""}${hero.liveBadge ? "" : " hidden"}`}>
                   <span className="flex items-center gap-1.5 border border-chili-500/50 bg-chili-500/10 px-2 py-0.5">
                     <span className="anim-flicker h-2 w-2 rounded-full bg-chili-500" />
-                    <span className="font-body text-[9px] font-extrabold tracking-[0.4em] text-chili-400 uppercase">
+                    <span
+                    className="font-body text-[9px] font-extrabold tracking-[0.4em] text-chili-400 uppercase"
+                    style={{ fontSize: type.liveBadge }}
+                  >
                       {t("live.badge")}
                     </span>
                   </span>
-                  <span className="font-body text-[9px] font-bold tracking-[0.3em] text-jade-500 uppercase">
+                  <span
+                    className="font-body text-[9px] font-bold tracking-[0.3em] text-jade-500 uppercase"
+                    style={{ fontSize: type.eyebrow }}
+                  >
                     {t("menu.arcade")} · v{APP_VERSION}
                   </span>
                 </div>
@@ -214,7 +233,12 @@ export default function StartScreen({
                   `CHÉO`), and a named component with its own scale module and
                   test file is easier to keep honest than 30 inline lines.
                 */}
-                <Wordmark lo={t("app.wordmarkLo")} cheo={t("app.wordmarkCheo")} label={t("app.wordmark")} />
+                <Wordmark
+                  lo={t("app.wordmarkLo")}
+                  cheo={t("app.wordmarkCheo")}
+                  label={t("app.wordmark")}
+                  size={{ lo: type.lockupLo, cheo: type.lockupCheo }}
+                />
 
                 {hero.badgeRow && (
                   <div
@@ -222,12 +246,17 @@ export default function StartScreen({
                       hero.sideBySide ? " lg:justify-start" : ""
                     }`}
                   >
-                    <span className="inline-block -rotate-2 border-[3px] border-jade-950 bg-chili-500 px-3 py-1 font-display text-[11px] tracking-[0.2em] text-clay-100 hard-shadow-sm sm:text-xs">
+                    <span
+                      className="inline-block -rotate-2 border-[3px] border-jade-950 bg-chili-500 px-3 py-1 font-display text-[11px] tracking-[0.2em] text-clay-100 hard-shadow-sm sm:text-xs"
+                      style={{ fontSize: type.badgePlate }}
+                    >
                       {t("brand.badge")}
                     </span>
                     <span className="font-body text-xs font-semibold tracking-wide text-brine-300">
                       {t("menu.best")}{" "}
-                      <b className="font-display text-sm text-tumeric-400 tabular-nums">{fmtNum(best, lang)}</b>
+                      <b className="font-display text-sm text-tumeric-400 tabular-nums" style={{ fontSize: type.record }}>
+                        {fmtNum(best, lang)}
+                      </b>
                     </span>
                   </div>
                 )}

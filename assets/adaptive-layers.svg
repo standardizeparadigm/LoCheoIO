@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-label="Sáu lớp adaptive của Lọ Chéo v1.1.8 — từ hộp cửa sổ qua tier và plan tới density, hero, type, modal và playfield, kèm xung chạy một chiều (hoạt họa SMIL)">
+  <defs>
+    <filter id="al-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="alBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2422"/>
+      <stop offset="1" stop-color="#051717"/>
+    </linearGradient>
+
+    <linearGradient id="alBox" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff5fb0"/>
+      <stop offset="1" stop-color="#f5a81c"/>
+    </linearGradient>
+
+    <linearGradient id="alPlan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/>
+      <stop offset="1" stop-color="#2bb48c"/>
+    </linearGradient>
+
+    <linearGradient id="alLeaf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9d6bff" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#9d6bff" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="560" rx="18" fill="url(#alBg)"/>
+  <rect x="1" y="1" width="1198" height="558" rx="18" fill="none" stroke="#123f38" stroke-width="2"/>
+
+  <!-- bloom: what keeps a dark diagram looking lit rather than printed -->
+  <ellipse cx="600" cy="44" rx="330" ry="42" fill="#2bb48c" opacity="0.09">
+    <animate attributeName="opacity" values="0.05;0.13;0.05" dur="6.5s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <text x="600" y="40" text-anchor="middle" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="20" letter-spacing="4" fill="#fdf3e0">SÁU LỚP ADAPTIVE <tspan fill="#f5a81c">v1.1.8</tspan></text>
+  <text x="600" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" letter-spacing="3" fill="#2bb48c">MỘT CỬA SỔ VÀO · MỘT PROFILE RA · KHÔNG CONSUMER NÀO TỰ ĐO</text>
+
+  <g font-family="'Courier New',monospace" font-weight="700" letter-spacing="1.2">
+
+    <!-- 1. the box -->
+    <g>
+      <rect x="40" y="92" width="250" height="96" rx="12" fill="url(#alBox)" fill-opacity="0.16" stroke="#ff5fb0" stroke-width="1.8"/>
+      <text x="60" y="118" font-size="12" fill="#ffb3da">1 · BOX</text>
+      <text x="60" y="138" font-size="9" fill="#fdf3e0" fill-opacity="0.8">width · height · inset · dpr</text>
+      <text x="60" y="156" font-size="9" fill="#fdf3e0" fill-opacity="0.55">viewport.ts — kẹp NaN, 1×1, đảo</text>
+      <text x="60" y="174" font-size="9" fill="#fdf3e0" fill-opacity="0.55">range trước mọi phép chia</text>
+      <animate attributeName="fill-opacity" values="0.12;0.24;0.12" dur="4s" repeatCount="indefinite"/>
+    </g>
+
+    <line x1="290" y1="140" x2="366" y2="140" stroke="#2bb48c" stroke-width="2" stroke-dasharray="5 7">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="1.4s" repeatCount="indefinite"/>
+    </line>
+    <circle r="3.2" fill="#fff3c4" filter="url(#al-glow)">
+      <animateMotion dur="1.7s" repeatCount="indefinite" path="M290 140 L366 140"/>
+    </circle>
+
+    <!-- 2. tier -->
+    <g>
+      <rect x="366" y="92" width="200" height="96" rx="12" fill="#123f38" stroke="#f5a81c" stroke-width="1.8"/>
+      <text x="384" y="118" font-size="12" fill="#ffd98a">2 · TIER</text>
+      <text x="384" y="138" font-size="9" fill="#fdf3e0" fill-opacity="0.8">xs · sm · md · lg · xl · xxl</text>
+      <text x="384" y="156" font-size="9" fill="#fdf3e0" fill-opacity="0.55">tiers.ts — theo cạnh ngắn,</text>
+      <text x="384" y="174" font-size="9" fill="#fdf3e0" fill-opacity="0.55">sáu ngưỡng đều suy ra</text>
+      <rect x="384" y="180" width="164" height="2" fill="#123f38">
+        <animate attributeName="width" values="30;164;30" dur="3.4s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <line x1="566" y1="140" x2="642" y2="140" stroke="#2bb48c" stroke-width="2" stroke-dasharray="5 7">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="1.4s" repeatCount="indefinite"/>
+    </line>
+    <circle r="3.2" fill="#fff3c4" filter="url(#al-glow)">
+      <animateMotion dur="1.7s" begin="0.4s" repeatCount="indefinite" path="M566 140 L642 140"/>
+    </circle>
+
+    <!-- 3. plan -->
+    <g>
+      <rect x="642" y="92" width="518" height="96" rx="12" fill="url(#alPlan)" fill-opacity="0.14" stroke="#2bb48c" stroke-width="1.8"/>
+      <text x="662" y="118" font-size="12" fill="#b6e07a">3 · MENU PLAN — scene · reserve · fit · economy</text>
+      <text x="662" y="138" font-size="9" fill="#fdf3e0" fill-opacity="0.8">layout/fit.ts: planMenuLayout() — hàm thuần, không DOM</text>
+      <text x="662" y="156" font-size="9" fill="#fdf3e0" fill-opacity="0.55">bất biến: scene + reserve === usableHeight (trừ nhánh crop)</text>
+      <text x="662" y="174" font-size="9" fill="#fdf3e0" fill-opacity="0.55">bốn nền kinh tế: tight → compact → ticker → footer → hero tối thiểu</text>
+      <text x="662" y="192" font-size="8.5" fill="#2bb48c" fill-opacity="0.9">cut = hero bị cắt, không phải cột cao hơn cửa sổ</text>
+    </g>
+
+    <!-- trunk down to the five readers -->
+    <line x1="901" y1="188" x2="901" y2="236" stroke="#2bb48c" stroke-width="2" stroke-dasharray="5 7">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="1.4s" repeatCount="indefinite"/>
+    </line>
+    <line x1="150" y1="236" x2="1050" y2="236" stroke="#123f38" stroke-width="2"/>
+    <circle r="3.2" fill="#fff3c4" filter="url(#al-glow)">
+      <animateMotion dur="2.2s" begin="0.8s" repeatCount="indefinite" path="M901 188 L901 236 L1050 236"/>
+    </circle>
+
+    <!-- 4..7. the readers -->
+    <g>
+      <rect x="40" y="252" width="232" height="112" rx="12" fill="url(#alLeaf)" stroke="#9d6bff" stroke-width="1.5"/>
+      <text x="56" y="276" font-size="11" fill="#c39bff">4 · DENSITY</text>
+      <text x="56" y="296" font-size="8.5" fill="#fdf3e0" fill-opacity="0.75">spacious → minimal</text>
+      <text x="56" y="312" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">hàng 54/34/26px, cách 6/3px</text>
+      <text x="56" y="328" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">panel 318/458 → 234, footer −30</text>
+      <text x="56" y="350" font-size="8" fill="#9d6bff" fill-opacity="0.85">density.ts</text>
+    </g>
+
+    <g>
+      <rect x="288" y="252" width="232" height="112" rx="12" fill="url(#alLeaf)" stroke="#9d6bff" stroke-width="1.5"/>
+      <text x="304" y="276" font-size="11" fill="#c39bff">5 · HERO</text>
+      <text x="304" y="296" font-size="8.5" fill="#fdf3e0" fill-opacity="0.75">row hay stack, cờ nào bật</text>
+      <text x="304" y="312" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">lockup vừa band, không vượt</text>
+      <text x="304" y="328" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">trần 89.5px · CHÉO ≤ 0.82 LỌ</text>
+      <text x="304" y="350" font-size="8" fill="#9d6bff" fill-opacity="0.85">hero.ts · wordmark/scale.ts</text>
+    </g>
+
+    <g>
+      <rect x="536" y="252" width="232" height="112" rx="12" fill="url(#alLeaf)" stroke="#9d6bff" stroke-width="1.5"/>
+      <text x="552" y="276" font-size="11" fill="#c39bff">6 · TYPE</text>
+      <text x="552" y="296" font-size="8.5" fill="#fdf3e0" fill-opacity="0.75">17 biến --type-*</text>
+      <text x="552" y="312" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">eyebrow → overScore</text>
+      <text x="552" y="328" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">không biến nào dưới 8px</text>
+      <text x="552" y="350" font-size="8" fill="#9d6bff" fill-opacity="0.85">typeScale.ts</text>
+    </g>
+
+    <g>
+      <rect x="784" y="252" width="232" height="112" rx="12" fill="url(#alLeaf)" stroke="#9d6bff" stroke-width="1.5"/>
+      <text x="800" y="276" font-size="11" fill="#c39bff">7 · MODAL</text>
+      <text x="800" y="296" font-size="8.5" fill="#fdf3e0" fill-opacity="0.75">rộng × cao × số cột</text>
+      <text x="800" y="312" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">86vh có trần, 2 cột khi rộng</text>
+      <text x="800" y="328" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">390×844 → 4K: luôn vừa</text>
+      <text x="800" y="350" font-size="8" fill="#9d6bff" fill-opacity="0.85">ui/modalPlan.ts</text>
+    </g>
+
+    <g>
+      <rect x="1032" y="252" width="128" height="112" rx="12" fill="url(#alLeaf)" stroke="#9d6bff" stroke-width="1.5"/>
+      <text x="1046" y="276" font-size="11" fill="#c39bff">8 · BOARD</text>
+      <text x="1046" y="296" font-size="8.5" fill="#fdf3e0" fill-opacity="0.75">itemScale</text>
+      <text x="1046" y="312" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">hudScale</text>
+      <text x="1046" y="328" font-size="8.5" fill="#fdf3e0" fill-opacity="0.55">bán kính lọ</text>
+      <text x="1046" y="350" font-size="8" fill="#9d6bff" fill-opacity="0.85">playfield.ts</text>
+    </g>
+
+    <!-- the corpus strip -->
+    <g>
+      <rect x="40" y="392" width="1120" height="70" rx="12" fill="#0d2b28" stroke="#f5a81c" stroke-width="1.4"/>
+      <text x="60" y="416" font-size="11" fill="#ffd98a">CORPUS — 1 620 ảnh chụp số, một file mỗi cửa sổ</text>
+      <text x="60" y="436" font-size="9" fill="#fdf3e0" fill-opacity="0.7">adaptive-matrix/ 1 110 cửa sổ (45 × 32) · hero-bands/ 510 cặp (bề ngang, band)</text>
+      <text x="60" y="452" font-size="9" fill="#fdf3e0" fill-opacity="0.5">ngưỡng dịch → git diff --stat kể tên đúng những cửa sổ đổi hành vi</text>
+
+      <!-- a row of ticks: one per sampled width -->
+      <g fill="#f5a81c" fill-opacity="0.5">
+        <rect x="890" y="404" width="4" height="10"/><rect x="902" y="404" width="4" height="18"/>
+        <rect x="914" y="404" width="4" height="26"/><rect x="926" y="404" width="4" height="14"/>
+        <rect x="938" y="404" width="4" height="22"/><rect x="950" y="404" width="4" height="30"/>
+        <rect x="962" y="404" width="4" height="18"/><rect x="974" y="404" width="4" height="26"/>
+        <rect x="986" y="404" width="4" height="34"/><rect x="998" y="404" width="4" height="22"/>
+        <rect x="1010" y="404" width="4" height="30"/><rect x="1022" y="404" width="4" height="38"/>
+        <rect x="1034" y="404" width="4" height="26"/><rect x="1046" y="404" width="4" height="34"/>
+        <rect x="1058" y="404" width="4" height="42"/><rect x="1070" y="404" width="4" height="30"/>
+        <rect x="1082" y="404" width="4" height="38"/><rect x="1094" y="404" width="4" height="46"/>
+        <rect x="1106" y="404" width="4" height="34"/><rect x="1118" y="404" width="4" height="42"/>
+        <rect x="1130" y="404" width="4" height="50"/>
+        <animate attributeName="fill-opacity" values="0.25;0.75;0.25" dur="2.6s" repeatCount="indefinite"/>
+      </g>
+    </g>
+
+    <!-- the gate -->
+    <g>
+      <rect x="40" y="486" width="1120" height="48" rx="10" fill="#123f38" stroke="#2bb48c" stroke-width="1.4"/>
+      <text x="60" y="508" font-size="10" fill="#b6e07a">npm run check:adaptive</text>
+      <text x="60" y="524" font-size="9" fill="#fdf3e0" fill-opacity="0.6">21 viewport + sáu bất biến, không cần trình duyệt</text>
+      <text x="1140" y="512" text-anchor="end" font-size="10" fill="#2bb48c" filter="url(#al-glow)">ADAPTIVE OK · 21</text>
+      <circle cx="1100" cy="510" r="4" fill="#2bb48c">
+        <animate attributeName="opacity" values="0.25;1;0.25" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+</svg>

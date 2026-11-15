@@ -4,6 +4,7 @@ import type { SavedRun } from "./runSave";
 import { clamp, damp, lerp } from "../utils/math";
 import { CANVAS_COLORS } from "./palette";
 import { weightedPick } from "./spawn";
+import { planPlayfield, type PlayfieldPlan } from "./adaptive/playfield";
 import {
   MODES,
   comboWindowFor,
@@ -254,6 +255,16 @@ export class LoCheoGame {
   private dpr = 1;
   private S = 1;
   private SP = 1;
+  /**
+   * The canvas plan the current size produced.
+   *
+   * `S`, `SP`, `pr` and `hudScale` all come from this object, so the background
+   * tile, the star count, the HUD and the collisions describe one board rather
+   * than four independent readings of the same `resize()` arguments.
+   */
+  private pf: PlayfieldPlan = planPlayfield(800, 600, 1);
+  /** HUD text multiplier — see `adaptive/playfield.ts`. */
+  private hudScale = 1;
 
   phase: Phase = "menu";
   stats: RunStats = { score: 0, catches: 0, bestCombo: 0, level: 1, jars: 0, sliced: 0, time: 0 };
@@ -356,21 +367,33 @@ export class LoCheoGame {
      * Zero is a real value a hidden/mounting canvas reports, so it falls back to
      * the CSS defaults below rather than being treated as corrupt.
      */
-    const cw = Math.max(240, Math.floor(Number.isFinite(w) && w > 0 ? w : 240));
-    const ch = Math.max(320, Math.floor(Number.isFinite(h) && h > 0 ? h : 320));
-    this.dpr = clamp(window.devicePixelRatio || 1, 1, 2);
-    this.canvas.width = Math.floor(cw * this.dpr);
-    this.canvas.height = Math.floor(ch * this.dpr);
-    this.canvas.style.width = `${cw}px`;
-    this.canvas.style.height = `${ch}px`;
-    this.w = cw;
-    this.h = ch;
-    this.S = clamp(ch / 700, 0.62, 1.45);
+    /*
+     * One plan for the whole board.
+     *
+     * The five numbers below used to be computed here, inline, with the same
+     * clamps written out five times. They are now a pure function of the canvas
+     * (`game/adaptive/playfield.ts`) so the HUD, the background tile and the
+     * tests can all ask the same question without constructing an engine.
+     *
+     * `window.devicePixelRatio` is read here, not in the plan: `planPlayfield()`
+     * is pure, so it takes the raw number and applies its own `[1, 2]` clamp.
+     */
+    const pf = planPlayfield(w, h, typeof window === "undefined" ? 1 : window.devicePixelRatio);
+    this.pf = pf;
+    this.dpr = pf.dpr;
+    this.canvas.width = Math.floor(pf.width * this.dpr);
+    this.canvas.height = Math.floor(pf.height * this.dpr);
+    this.canvas.style.width = `${pf.width}px`;
+    this.canvas.style.height = `${pf.height}px`;
+    this.w = pf.width;
+    this.h = pf.height;
+    this.S = pf.itemScale;
     // player speed blends width + height so phones and ultrawides both feel right
-    this.SP = clamp((cw / 1000 + ch / 700) / 2, 0.6, 1.25);
-    this.pr = clamp(Math.min(cw, ch) * 0.055, 21, 38);
-    this.px = clamp(this.px || cw / 2, this.pr, cw - this.pr);
-    this.py = clamp(this.py || ch * 0.72, this.pr, ch - this.pr);
+    this.SP = pf.playerSpeed;
+    this.pr = pf.playerRadius;
+    this.hudScale = pf.hudScale;
+    this.px = clamp(this.px || pf.width / 2, this.pr, pf.width - this.pr);
+    this.py = clamp(this.py || pf.height * 0.72, this.pr, pf.height - this.pr);
     this.buildBackground();
     this.seedBubbles();
     this.seedStars();
@@ -378,7 +401,7 @@ export class LoCheoGame {
 
   private seedStars() {
     this.stars = [];
-    const n = Math.round(clamp((this.w * this.h) / 26000, 18, 46));
+    const n = this.pf.stars;
     for (let i = 0; i < n; i++) {
       this.stars.push({
         x: rnd(0, this.w),
@@ -392,7 +415,7 @@ export class LoCheoGame {
 
   private seedBubbles() {
     this.bubbles = [];
-    const n = Math.round(clamp((this.w * this.h) / 42000, 10, 26));
+    const n = this.pf.decor;
     for (let i = 0; i < n; i++) {
       this.bubbles.push({
         x: rnd(0, this.w),
@@ -423,8 +446,8 @@ export class LoCheoGame {
     g.fillStyle = base;
     g.fillRect(0, 0, W, H);
 
-    // gạch bông (cement tile) motif
-    const cell = Math.round(72 * this.S);
+    // gạch bông (cement tile) motif — the plan's tile, not `72 × S` again
+    const cell = this.pf.tile;
     g.lineWidth = 1.4;
     for (let y = 0; y < H + cell; y += cell) {
       for (let x = 0; x < W + cell; x += cell) {
@@ -2136,7 +2159,12 @@ export class LoCheoGame {
     ctx.globalAlpha = a;
     ctx.textBaseline = "alphabetic";
     const pad = Math.round(clamp(this.w * 0.022, 14, 26));
-    const s = clamp(this.w / 900, 0.78, 1.16);
+    /*
+     * The HUD multiplier comes from the canvas plan, which reads both axes.
+     * It used to be `clamp(this.w / 900, 0.78, 1.16)` — width only, so a short
+     * wide window drew a desktop-sized readout over a 400px board.
+     */
+    const s = this.hudScale;
 
     // ---- score (top-left)
     ctx.textAlign = "left";

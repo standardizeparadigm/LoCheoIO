@@ -58,15 +58,34 @@ describe("the dimension clamp", () => {
 });
 
 describe("the engine still calls it", () => {
-  it("guards both dimensions with Number.isFinite", () => {
+  it("delegates every canvas dimension to the playfield plan", () => {
+    /*
+     * v1.1.8 round 8 moved the five inline clamps out of `resize()` and into
+     * `game/adaptive/playfield.ts`, which is pure and tested on its own. The
+     * guard is still required — it just lives one call deeper, so this asserts
+     * the *call* rather than the arithmetic:
+     *
+     *   · `resize()` must build one plan from the raw numbers and its dpr
+     *   · every field it then uses (`w`, `h`, `S`, `SP`, `pr`, `hudScale`)
+     *     must come from that plan, not from a second expression
+     */
     const at = engine.indexOf("resize(w: number, h: number)");
     expect(at).toBeGreaterThan(-1);
-    // Up to the end of the method: `buildBackground()` is the last call in it.
     const body = engine.slice(at, engine.indexOf("buildBackground()", at));
-    // Two guards, one per dimension — a fix applied to `w` only would still
-    // leave a NaN height.
-    expect(body.match(/Number\.isFinite/g)?.length).toBeGreaterThanOrEqual(2);
-    expect(body).toContain("Math.floor(");
+    expect(body).toContain("planPlayfield(");
+    for (const field of ["pf.width", "pf.height", "pf.itemScale", "pf.playerSpeed", "pf.playerRadius", "pf.hudScale"]) {
+      expect(body, `${field} is not read from the plan`).toContain(field);
+    }
+    expect(body).toContain("Math.floor(pf.width * this.dpr)");
+    expect(body).toContain("Math.floor(pf.height * this.dpr)");
+  });
+
+  it("keeps the finite guards in the plan it delegates to", () => {
+    // The tests in `tests/playfield.test.ts` prove the behaviour; this one keeps
+    // the *source* of the guarantee where a reader of the engine will find it.
+    const plan = readFileSync("src/game/adaptive/playfield.ts", "utf8");
+    expect(plan.match(/Number\.isFinite/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(plan).toContain("saneCanvasSide");
   });
 
   it("does not assign a raw dimension to the canvas", () => {

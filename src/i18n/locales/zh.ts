@@ -308,7 +308,7 @@ const zh: Record<MessageKey, string> = {
   "about.role": "独立开发者 — Standardize Paradigm",
   "about.craft": "Lọ Chéo 是一个热情项目：一个完全在浏览器中运行的腌罐街机，单个 HTML 文件，无网络、无服务器。手绘、手写代码 —— 每个越南语声调都在。",
   "about.contact": "联系：standardizeparadigm@donuco.com",
-  "about.source": "源代码：github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "源代码：github.com/standardizeparadigm/LoCheoIO",
   "about.license": "许可证：AGPL-3.0-only © 2026",
   "about.fonts": "字体：Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "感谢你来腌菜小厨房！🫙",

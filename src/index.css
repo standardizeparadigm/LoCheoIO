@@ -822,3 +822,70 @@
     animation: none !important;
   }
 }
+
+/* =====================================================================
+   Adaptive typography (v1.1.8, round 8)
+
+   `menu/adaptive/typeScale.ts` resolves every size from the window and the
+   band the plan gave the hero; `StartScreen` puts those numbers on the root as
+   `--type-*` custom properties. The rules below are the consumers this round
+   did **not** rewrite in JSX — the panel header, the row label and hint, the
+   stat strip, the ticker. One variable per element, each with the literal
+   fallback the stylesheet used before, so a screen rendered without a profile
+   (an SSR smoke test, a storybook page) is byte-identical to v1.1.7.
+
+   Why CSS and not a prop: a class cannot carry a computed number, and threading
+   a font size through `CornerPanel → GameMenu → MenuItemButton × 7` would put
+   the plan's decision in six components. A custom property puts it in one place
+   and inherits down the tree for free.
+   ===================================================================== */
+
+.panel-head {
+  font-size: var(--type-panel-head, 10px);
+}
+
+.menu-row-label {
+  font-size: var(--type-row-label, 11px);
+}
+
+.menu-row-hint {
+  font-size: var(--type-row-hint, 9px);
+}
+
+.panel-footer {
+  font-size: var(--type-stat, 8px);
+}
+
+.ticker-strip {
+  font-size: var(--type-ticker, 11px);
+}
+
+.ticker-foot {
+  font-size: var(--type-ticker-foot, 8px);
+}
+
+/*
+ * The two line boxes have to follow their font size, or a 10.5px label in a
+ * 26px row with `leading-tight` (1.25) leaves 13px of line and 13px of padding
+ * that no rule declared. `calc()` keeps them proportional without a second
+ * variable.
+ */
+.menu-row-label,
+.menu-row-hint,
+.panel-head {
+  line-height: 1.2;
+}
+
+/*
+ * A very short band (`fit: "crop"`) clips the hero rather than scrolling it —
+ * that is the documented behaviour. What must not happen is the *last* line of
+ * a shrunken label being sliced by the row's own `overflow: hidden`: at 8px a
+ * descender is inside the line box, and at 7px it is not. The floor in
+ * `typeScale.ts` is what keeps this rule unnecessary, and this comment records
+ * why the floor exists.
+ */
+.menu-row-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

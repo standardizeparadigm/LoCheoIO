@@ -3,14 +3,14 @@
 blank_issues_enabled: false
 contact_links:
   - name: 📖 Đọc tài liệu trước (VI)
-    url: https://github.com/standardizeparadigm/Lo-CheoIO/blob/main/docs/README.md
+    url: https://github.com/standardizeparadigm/LoCheoIO/blob/main/docs/README.md
     about: Cài đặt, phím tắt, lưu dữ liệu, xử lý sự cố — phần lớn câu hỏi đã có đáp án ở đây.
   - name: 🎮 Troubleshooting — màn hình đen, không có tiếng, «Chơi tiếp»
-    url: https://github.com/standardizeparadigm/Lo-CheoIO/blob/main/docs/guides/troubleshooting.md
+    url: https://github.com/standardizeparadigm/LoCheoIO/blob/main/docs/guides/troubleshooting.md
     about: Sự cố thường gặp và cách khắc phục trước khi mở issue.
   - name: 🔐 Báo lỗi bảo mật (private)
-    url: https://github.com/standardizeparadigm/Lo-CheoIO/security/advisories/new
+    url: https://github.com/standardizeparadigm/LoCheoIO/security/advisories/new
     about: Đừng mở issue công khai cho lỗ hổng bảo mật — xem SECURITY.md.
   - name: 💬 Thảo luận mở
-    url: https://github.com/standardizeparadigm/Lo-CheoIO/discussions
+    url: https://github.com/standardizeparadigm/LoCheoIO/discussions
     about: Ý tưởng chưa thành yêu cầu cụ thể, hoặc muốn khoe điểm cao.

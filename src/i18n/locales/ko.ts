@@ -314,7 +314,7 @@ const ko: Record<MessageKey, string> = {
   "about.role": "인디 개발자 — Standardize Paradigm",
   "about.craft": "Lọ Chéo는 열정 프로젝트입니다: 브라우저에서만 돌아가는 절임 항아리 아케이드, 완결형 단일 HTML 파일, 네트워크도 서버도 없습니다. 손수 그리고 손수 코딩 — 베트남어 음성 기호 하나까지 담았습니다.",
   "about.contact": "문의: standardizeparadigm@donuco.com",
-  "about.source": "소스: github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "소스: github.com/standardizeparadigm/LoCheoIO",
   "about.license": "라이선스: AGPL-3.0-only © 2026",
   "about.fonts": "폰트: Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "절임 부엌에 와줘서 고마워요! 🫙",

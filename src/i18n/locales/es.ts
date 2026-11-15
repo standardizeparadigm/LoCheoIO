@@ -314,7 +314,7 @@ const es: Record<MessageKey, string> = {
   "about.role": "Desarrollador independiente — Standardize Paradigm",
   "about.craft": "Lọ Chéo es un proyecto de pasión: un arcade de encurtidos que corre entero en el navegador, un único HTML autocontenido, sin red ni servidor. Dibujado a mano, programado a mano — hasta el último diacrítico vietnamita.",
   "about.contact": "Contacto: standardizeparadigm@donuco.com",
-  "about.source": "Código: github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "Código: github.com/standardizeparadigm/LoCheoIO",
   "about.license": "Licencia: AGPL-3.0-only © 2026",
   "about.fonts": "Fuentes: Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "¡Gracias por pasar por la cocina de encurtidos! 🫙",

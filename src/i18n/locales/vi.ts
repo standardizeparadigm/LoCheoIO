@@ -340,7 +340,7 @@ const vi = {
   "about.role": "Nhà phát triển độc lập — Standardize Paradigm",
   "about.craft": "Lọ Chéo là dự án đam mê: một game arcade muối dưa chạy hoàn toàn trong trình duyệt, một file HTML duy nhất, không cần mạng, không cần server. Vẽ tay, code tay, chép tay từng dấu tiếng Việt.",
   "about.contact": "Liên hệ: standardizeparadigm@donuco.com",
-  "about.source": "Mã nguồn: github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "Mã nguồn: github.com/standardizeparadigm/LoCheoIO",
   "about.license": "Giấy phép: AGPL-3.0-only © 2026",
   "about.fonts": "Fonts: Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "Cảm ơn bạn đã ghé bếp muối dưa! 🫙",

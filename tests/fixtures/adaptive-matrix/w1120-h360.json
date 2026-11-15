@@ -1,0 +1,26 @@
+{
+ "viewport": [
+  1120,
+  360
+ ],
+ "tier": "sm",
+ "density": "minimal",
+ "fit": "squeeze",
+ "hero": "stack",
+ "minimal": true,
+ "ticker": false,
+ "footer": false,
+ "scene": 144,
+ "reserve": 216,
+ "panelHeight": 204,
+ "lockup": 85.5,
+ "cheo": 70,
+ "rowLabel": 11,
+ "rowHint": 8.5,
+ "modalWidth": 448,
+ "modalHeight": 310,
+ "modalColumns": 1,
+ "itemScale": 0.62,
+ "playerRadius": 21,
+ "hudScale": 0.72
+}
