@@ -20,7 +20,7 @@ import { PRESETS } from "../src/components/menu/adaptive/presets";
 import { resolveForSize } from "../src/components/menu/adaptive/resolve";
 import { violations, constraintIds } from "../src/components/menu/adaptive/constraints";
 import { renderDiagnosis, warningsFor } from "../src/components/menu/adaptive/diagnostics";
-import { planModeChip } from "../src/components/menu/adaptive/chip";
+import { chipBoxHeight, planModeChip } from "../src/components/menu/adaptive/chip";
 import { heroBandWidth } from "../src/components/menu/adaptive/hero";
 import { MODE_LIST } from "../src/game/modes";
 
@@ -60,6 +60,7 @@ const header =
   pad(" hero", 7) +
   pad(" trade-offs", 22) +
   pad(" chip", 16) +
+  num("box", 5) +
   " window";
 
 console.log(header);
@@ -77,9 +78,18 @@ for (const preset of PRESETS) {
   const trade = warningsFor(p)
     .map((w) => w.code)
     .join(",");
-  const chip = p.plan.minimal
-    ? "—"
-    : planModeChip({ heroWidth: heroBandWidth(p.box.width), side: "right", name: WIDEST, label: "CHẾ ĐỘ CHƠI" }).reason;
+  const chipPlan = p.plan.minimal
+    ? null
+    : planModeChip({ heroWidth: heroBandWidth(p.box.width), side: "right", name: WIDEST, label: "CHẾ ĐỘ CHƠI" });
+  const chip = chipPlan?.reason ?? "—";
+  /*
+   * The chip's outer height, in the same table as the reason.
+   *
+   * Round 11 raised the line box from 1.2 to 1.5 and the chip grew 3.3px; the
+   * gate below now refuses a chip taller than the mascot it hangs from, which is
+   * the neighbour that change could have broken.
+   */
+  const box = chipPlan ? chipBoxHeight(chipPlan) : 0;
   console.log(
     pad(`${preset.width}×${preset.height}`, 12) +
       pad(p.tier, 5) +
@@ -92,6 +102,7 @@ for (const preset of PRESETS) {
       pad(` ${p.hero.sideBySide ? "row" : "stack"}`, 7) +
       pad(` ${trade || "—"}`, 22) +
       pad(` ${chip}`, 16) +
+      num(box, 5) +
       ` ${preset.note}`,
   );
 }
@@ -104,6 +115,18 @@ for (const preset of PRESETS) {
 let failures = 0;
 for (const preset of PRESETS) {
   const p = resolveForSize(preset.width, preset.height);
+  /*
+   * The chip may not be taller than the mascot it is pinned to. Not one of the
+   * adaptive invariants — `chipBoxHeight` is a component number, not a window
+   * number — but it is the check this round needed and nothing had.
+   */
+  if (!p.plan.minimal) {
+    const h = chipBoxHeight(planModeChip({ heroWidth: heroBandWidth(p.box.width), side: "right", name: WIDEST, label: "CHẾ ĐỘ CHƠI" }));
+    if (h > 128) {
+      failures += 1;
+      console.error(`✗ ${preset.width}×${preset.height} [chip-box] chip is ${h}px, taller than the 128px mascot`);
+    }
+  }
   for (const bad of violations(p)) {
     failures += 1;
     console.error(`✗ ${preset.width}×${preset.height} [${bad.id}] ${bad.message}`);

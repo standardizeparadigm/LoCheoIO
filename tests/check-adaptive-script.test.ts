@@ -56,4 +56,15 @@ describe("the adaptive check script", () => {
     expect(script).not.toMatch(/slice\(0,\s*\d+\)/);
     expect(script).toContain("PRESETS.length");
   });
+
+  it("prints the chip's own box and refuses one taller than the mascot", () => {
+    /*
+     * Round 11's lesson, kept as a gate. The line box went from 1.2 to 1.5 and
+     * the chip grew 3.3px; the hero's reserve for it was a guessed constant, so
+     * nothing noticed. The column is the measurement; the gate is the neighbour.
+     */
+    expect(script).toContain("chipBoxHeight");
+    expect(script).toContain('num("box", 5)');
+    expect(script).toContain("[chip-box]");
+  });
 });
