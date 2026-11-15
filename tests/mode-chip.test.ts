@@ -16,9 +16,13 @@ import { describe, expect, it } from "vitest";
 
 import { charsThatFit, estimateText } from "../src/components/menu/adaptive/chip/measure";
 import {
+  chipBoxHeight,
   describeModeChip,
   planModeChip,
+  CHIP_BORDER,
+  CHIP_PAD_Y,
   MODE_CHIP_FLOOR,
+  MODE_CHIP_LINE_HEIGHT,
   MODE_CHIP_NAME_FLOOR,
 } from "../src/components/menu/adaptive/chip/modeChip";
 import { PRESETS } from "../src/components/menu/adaptive/presets";
@@ -285,5 +289,55 @@ describe("describeModeChip", () => {
       expect(line).not.toMatch(/NaN|undefined/);
       expect(line.length).toBeGreaterThan(20);
     }
+  });
+});
+
+/*
+ * The line box, and the neighbour it moves.
+ *
+ * Round 11's whole lesson: changing one box changes the numbers around it. The
+ * chip's height is now a function, so the things that depend on it — the hero's
+ * reserve, the diagnostics row — read it instead of guessing.
+ */
+describe("chipBoxHeight", () => {
+  const plan = (band: number) => planModeChip({ heroWidth: band, side: "right", name: "MUỐI DƯA CỔ ĐIỂN", label: LABEL });
+
+  it("is zero for a chip that is not drawn", () => {
+    expect(chipBoxHeight(plan(40))).toBe(0);
+  });
+
+  it("is border + padding + one line, in every rung", () => {
+    for (const band of [200, 240, 288, 320, 1088]) {
+      const p = plan(band);
+      const line = Math.max(8, p.nameSize * p.lineHeight);
+      expect(chipBoxHeight(p), `band ${band}`).toBe(Math.ceil(2 * CHIP_BORDER + 2 * CHIP_PAD_Y + line));
+    }
+  });
+
+  it("fits inside the mascot it is pinned to, on every preset", () => {
+    // The chip is `absolute -bottom-1` inside a 128px stacked mascot box. A box
+    // taller than that would poke out of the hero's clip the same way the name
+    // used to poke out of its right edge.
+    for (const preset of PRESETS) {
+      if (preset.height < 480) continue; // chips are not drawn in the crop economy
+      const h = chipBoxHeight(plan(heroBandWidth(preset.width)));
+      expect(h, `${preset.id}`).toBeLessThanOrEqual(128);
+    }
+  });
+
+  it("leaves room for a stacked tone mark above the cap height", () => {
+    // 1.5em of line box at 11px is 16.5px. Bungee's caps are 0.78em (8.6px), so
+    // 3.9px of the line box sits above them — more than the ~0.35em (3.85px) a
+    // circumflex-plus-acute mark needs. Below 1.5 the tips are the first thing a
+    // clip takes.
+    expect(MODE_CHIP_LINE_HEIGHT).toBeGreaterThanOrEqual(1.45);
+    const above = 11 * MODE_CHIP_LINE_HEIGHT - 11 * 0.78;
+    expect(above).toBeGreaterThanOrEqual(11 * 0.35);
+  });
+
+  it("reports its own height in describeModeChip", () => {
+    const p = plan(1088);
+    expect(describeModeChip(p)).toContain(`box ${chipBoxHeight(p)}px`);
+    expect(describeModeChip(p)).toContain(`/${MODE_CHIP_LINE_HEIGHT}`);
   });
 });
