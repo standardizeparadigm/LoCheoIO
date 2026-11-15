@@ -120,3 +120,37 @@ describe("the GitHub About short form", () => {
     expect(Math.abs(real - claimed), `claims ${claimed}, text is ${real}`).toBeLessThanOrEqual(1);
   });
 });
+
+/*
+ * The project has a name in two languages, and one of them drifted by a single
+ * letter.
+ *
+ *     README.{en,de,pt,th}.md    "Pickled Jar Showdown"   (banner alt + About)
+ *     docs/DESCRIPTION.md        "Pickle Jar Showdown"
+ *
+ * Seven places said "Pickled", one said "Pickle". The English README opens with
+ * the phrase inside the `<img alt>` of the banner and again in the About block,
+ * so a reader sees "Pickled" first and "Pickle" — if they ever opened the
+ * description document at all — as a typo in a document they trust less. Names
+ * are the kind of string nobody spell-checks because it looks like branding.
+ */
+describe("the project's English name", () => {
+  it("is spelled the same way everywhere", () => {
+    const CANON = "Pickled Jar Showdown";
+    const files = [
+      "docs/DESCRIPTION.md",
+      "README.en.md",
+      "README.de.md",
+      "README.pt.md",
+      "README.th.md",
+    ];
+    const wrong: string[] = [];
+    for (const f of files) {
+      const body = readFileSync(join(ROOT, f), "utf8");
+      for (const m of body.matchAll(/Pickle(?!d) Jar Showdown/g)) wrong.push(`${f}: ${m[0]}`);
+      /* It must appear at all, or "no mismatches" means "nothing was checked". */
+      expect(body, `${f} never names the project`).toContain(CANON);
+    }
+    expect(wrong).toEqual([]);
+  });
+});

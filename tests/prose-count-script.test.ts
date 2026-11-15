@@ -27,7 +27,20 @@ const READMES = readdirSync(ROOT).filter((f) => /^README(\.[a-z]{2})?\.md$/.test
 /** The suite total the badge advertises — the number that leaked into the tree. */
 const FILE_COUNT = Number(/tests-(\d+)%20%C2%B7%20(\d+)%20files/.exec(readFileSync(join(ROOT, "README.md"), "utf8"))?.[2]);
 
-/** Run the sync script inside a throwaway copy of the repo's READMEs. */
+/**
+ * Run the sync script inside a throwaway copy of the repo's READMEs.
+ *
+ * COST, AND WHY THE TIMEOUT IS LONG
+ * ---------------------------------
+ * The script measures the suite by *running* it. So every call here spawns a
+ * second vitest — 1023 tests — from inside a vitest that is already running,
+ * and on a loaded machine that takes longer than the default 5 s. One full-suite
+ * run failed on the first assertion of this file for exactly that reason and
+ * passed on the next two, which is the definition of flaky.
+ *
+ * The timeout is set on each test rather than globally: this is the only file
+ * that pays the cost, and a suite-wide 60 s would hide a genuine hang elsewhere.
+ */
 function runInCopy(mutate: (dir: string) => void): { status: number; dir: string } {
   const dir = mkdtempSync(join(tmpdir(), "prose-"));
   mkdirSync(join(dir, "scripts"));
@@ -112,7 +125,7 @@ describe("sync-prose-counts guards", () => {
     expect(quoted.length).toBeGreaterThan(0);
     // The paragraph is a list of historical numbers; not one may be modernised.
     expect(quoted.every((q) => q.includes("520") || q.includes("501"))).toBe(true);
-  });
+  }, 120_000);
 
   it("still fixes a stale count that is not quoted", () => {
     /*
@@ -173,7 +186,7 @@ describe("sync-prose-counts refuses to write nonsense", () => {
      * Order matters: the rmSync must come before the execFileSync, or the stale
      * file is only cleared after the run it was supposed to not influence.
      */
-    const rm = SRC.indexOf('rmSync("/tmp/vitest-prose.json")');
+    const rm = SRC.indexOf("rmSync(REPORT)");
     const run = SRC.indexOf('execFileSync("npx"');
     expect(rm).toBeGreaterThan(-1);
     expect(run).toBeGreaterThan(-1);
@@ -201,8 +214,18 @@ describe("sync-prose-counts refuses to write nonsense", () => {
      * what the stale-file bug looked like, and the script must exit non-zero on
      * it rather than trusting the numbers in it.
      */
+    /*
+     * This test writes a fake report to the path the script reads. Doing that
+     * at the real `/tmp/vitest-prose.json` makes it a race with every other
+     * concurrent run of this file — and with the suite the script itself
+     * spawns — which is what made this file flaky under a full parallel run
+     * while passing on its own and then passing twice more. `TMPDIR` is
+     * redirected per test so the sabotage stays inside the sandbox it is
+     * testing.
+     */
     const { dir } = runInCopy(() => {});
-    const report = join(tmpdir(), "vitest-prose.json");
+    const sandbox = mkdtempSync(join(tmpdir(), "prose-tmp-"));
+    const report = join(sandbox, "vitest-prose.json");
     const before = readFileSync(join(dir, "README.md"), "utf8");
     writeFileSync(report, JSON.stringify({ numTotalTests: 0, testResults: [] }));
     let status = 0;
@@ -210,6 +233,7 @@ describe("sync-prose-counts refuses to write nonsense", () => {
       execFileSync(process.execPath, [join(dir, "scripts/sync-prose-counts.mjs")], {
         cwd: dir,
         stdio: "pipe",
+        env: { ...process.env, TMPDIR: sandbox },
       });
     } catch (err) {
       status = (err as { status?: number }).status ?? 1;

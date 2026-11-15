@@ -39,6 +39,20 @@
  */
 import { readFileSync, writeFileSync, readdirSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+/*
+ * Through `os.tmpdir()`, not a literal "/tmp".
+ *
+ * Two instances of this script used to share one fixed path, so a run that
+ * failed to write could read the other's report — and a test that planted a
+ * fake report at that path could corrupt an unrelated run. `TMPDIR` is the
+ * standard way to give a process its own scratch space, and honouring it is
+ * what lets the test that exercises the stale-report guard run in parallel with
+ * everything else.
+ */
+const REPORT = join(tmpdir(), "vitest-prose.json");
 
 /** The real numbers, measured the same way the badge script measures them. */
 function realCounts() {
@@ -51,12 +65,12 @@ function realCounts() {
    * from a file whose mtime nobody checked.
    */
   try {
-    rmSync("/tmp/vitest-prose.json");
+    rmSync(REPORT);
   } catch {
     /* absent is the normal case */
   }
   try {
-    execFileSync("npx", ["vitest", "run", "--reporter=json", "--outputFile=/tmp/vitest-prose.json"], {
+    execFileSync("npx", ["vitest", "run", "--reporter=json", `--outputFile=${REPORT}`], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -72,7 +86,7 @@ function realCounts() {
    */
   let raw;
   try {
-    raw = readFileSync("/tmp/vitest-prose.json", "utf8");
+    raw = readFileSync(REPORT, "utf8");
   } catch {
     console.error(
       "sync-prose-counts: vitest wrote no report — the suite did not run.\n" +

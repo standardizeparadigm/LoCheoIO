@@ -6,9 +6,9 @@
 
 Đếm ký tự: xấp xỉ (UTF-8).
 
-## 🇬🇧 English (376 chars)
+## 🇬🇧 English (377 chars)
 
-> Lọ Chéo — Pickle Jar Showdown: a pickle-jar arcade running 100% in the browser, bundled as one single HTML file, offline-first — no CDN, no server. The little clay jar only moves diagonally: hold two keys to swerve, speed up and slash through moulds, flies and caterpillars before the ceramic cracks. 9 modes, 14 ingredients, 16 achievements, a TOP-8 board, UI in 7 languages.
+> Lọ Chéo — Pickled Jar Showdown: a pickle-jar arcade running 100% in the browser, bundled as one single HTML file, offline-first — no CDN, no server. The little clay jar only moves diagonally: hold two keys to swerve, speed up and slash through moulds, flies and caterpillars before the ceramic cracks. 9 modes, 14 ingredients, 16 achievements, a TOP-8 board, UI in 7 languages.
 
 ## 🇨🇳 中文 (135 字符)
 
