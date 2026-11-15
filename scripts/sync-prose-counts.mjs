@@ -37,11 +37,24 @@
  *   node scripts/sync-prose-counts.mjs            # rewrite
  *   node scripts/sync-prose-counts.mjs --verify   # report only
  */
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
 /** The real numbers, measured the same way the badge script measures them. */
 function realCounts() {
+  /*
+   * Delete any previous report first. Without this, a run where vitest could
+   * not start at all — `node_modules` missing, `vite.config.ts` broken — leaves
+   * whatever an earlier run wrote, and the script happily recopies that. It
+   * happened: the suite did not run, the report from a previous invocation was
+   * still on disk, and thirteen files were rewritten with "0 tests / 0 files"
+   * from a file whose mtime nobody checked.
+   */
+  try {
+    rmSync("/tmp/vitest-prose.json");
+  } catch {
+    /* absent is the normal case */
+  }
   try {
     execFileSync("npx", ["vitest", "run", "--reporter=json", "--outputFile=/tmp/vitest-prose.json"], {
       encoding: "utf8",
@@ -50,8 +63,41 @@ function realCounts() {
   } catch {
     /* the report is written either way */
   }
-  const report = JSON.parse(readFileSync("/tmp/vitest-prose.json", "utf8"));
-  return { total: report.numTotalTests, files: report.testResults.length };
+  /*
+   * If vitest could not start — a missing `node_modules`, a broken
+   * `vite.config.ts` — it writes no report, and the raw failure was
+   * `ENOENT: no such file or directory, open '/tmp/vitest-prose.json'`, which
+   * names the temp file rather than the cause. Anyone reading that goes looking
+   * for a wiped `/tmp` instead of the missing dependency it actually is.
+   */
+  let raw;
+  try {
+    raw = readFileSync("/tmp/vitest-prose.json", "utf8");
+  } catch {
+    console.error(
+      "sync-prose-counts: vitest wrote no report — the suite did not run.\n" +
+        "Run `npx vitest run` on its own and fix what it reports first.\n" +
+        "This script counts tests; it cannot guess how many there are.",
+    );
+    process.exit(2);
+  }
+  const report = JSON.parse(raw);
+  const total = report.numTotalTests;
+  const files = report.testResults.length;
+  /*
+   * A second line of defence: a suite of this size cannot be 0, and writing 0
+   * into thirteen documents is far worse than refusing to run. This is the
+   * check that would have caught the stale-report bug even if the rmSync above
+   * were removed.
+   */
+  if (!Number.isFinite(total) || total < 100 || files < 10) {
+    console.error(
+      `sync-prose-counts: refusing to write ${total} tests / ${files} files — ` +
+        "the report looks like a failed run, not a measurement.",
+    );
+    process.exit(2);
+  }
+  return { total, files };
 }
 
 const { total, files } = realCounts();
@@ -266,6 +312,13 @@ const READMES = [
    * a file the sweep opened.
    */
   "docs/README.md",
+  /*
+   * `CONTRIBUTING.md` tells a new contributor what `npm run test` prints —
+   * "256 tests / 33 file" when the suite was 1011 across 102. Like
+   * `scripts/README.md`, it is a procedure rather than a record: the number is
+   * an instruction about what you should see, not what you once saw.
+   */
+  "CONTRIBUTING.md",
 ];
 const verify = process.argv.includes("--verify");
 let changed = 0;

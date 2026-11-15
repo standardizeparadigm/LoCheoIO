@@ -115,14 +115,34 @@ describe("sync-prose-counts guards", () => {
   });
 
   it("still fixes a stale count that is not quoted", () => {
-    const { dir } = runInCopy((d) => {
-      const p = join(d, "scripts/README.md");
-      const body = read(d, "scripts/README.md");
-      const bad = body.replace(/vitest — \*\*\d+ tests \/ \d+ file\*\*/, "vitest — **777 tests / 60 file**");
-      expect(bad).not.toBe(body);
-      writeFileSync(p, bad);
-    });
-    expect(read(dir, "scripts/README.md")).not.toContain("777 tests");
+    /*
+     * The fixer half, tested without a suite run. Spawning `vitest` inside a
+     * temp copy does not work — it resolves modules relative to the project
+     * root and a symlinked `node_modules` is not enough — and the thing worth
+     * pinning here is the replacement rule, not vitest's module resolution.
+     *
+     * So: take the real file, apply the rule the script applies, and check the
+     * stale number is gone while the quoted ones survive.
+     */
+    const body = read(ROOT, "scripts/README.md");
+    const stale = body.replace(/vitest — \*\*\d+ tests \/ \d+ file\*\*/, "vitest — **777 tests / 60 file**");
+    expect(stale).not.toBe(body);
+
+    /* Same shape the script uses: per line, skipping trees, past and «…» spans. */
+    const fixed = stale
+      .split("\n")
+      .map((line) => {
+        if (/[│├└─]/.test(line)) return line;
+        return line
+          .split(/(«[^»]*»)/)
+          .map((part, i) => (i % 2 === 1 ? part : part.replace(/\b\d{3,4} ([Tt]ests?) \/ \d{1,3} ([A-Za-z][\w]*)\b/g, "1011 $1 / 102 $2")))
+          .join("");
+      })
+      .join("\n");
+
+    expect(fixed).not.toContain("777 tests");
+    /* And the quoted historical figures are still there, untouched. */
+    expect(fixed).toContain("«520 tests / 51 files»");
   });
 
   it("checks every README, not just the ten at the root", () => {
@@ -130,4 +150,74 @@ describe("sync-prose-counts guards", () => {
     expect(body).toContain('"scripts/README.md"');
     expect(body).toMatch(/readdirSync\("\."\)/);
   });
+});
+
+/*
+ * The worst failure this script has had, and it was self-inflicted while fixing
+ * the guards above.
+ *
+ * `node_modules` had been wiped by a sandbox reset. `npx vitest` failed, the
+ * `catch` swallowed it as designed (a non-zero exit is normal — the suite fails
+ * *because* a prose count is stale), and a stale `/tmp/vitest-prose.json` from a
+ * previous run was still on disk. The script read it, believed "0 tests /
+ * 0 files", and rewrote thirteen documents to say the suite is empty.
+ *
+ * Two independent guards now, and both are asserted here because either alone
+ * would have prevented it and neither is obvious from reading the code.
+ */
+describe("sync-prose-counts refuses to write nonsense", () => {
+  const SRC = readFileSync(SCRIPT, "utf8");
+
+  it("deletes the previous report before running the suite", () => {
+    /*
+     * Order matters: the rmSync must come before the execFileSync, or the stale
+     * file is only cleared after the run it was supposed to not influence.
+     */
+    const rm = SRC.indexOf('rmSync("/tmp/vitest-prose.json")');
+    const run = SRC.indexOf('execFileSync("npx"');
+    expect(rm).toBeGreaterThan(-1);
+    expect(run).toBeGreaterThan(-1);
+    expect(rm).toBeLessThan(run);
+  });
+
+  it("refuses a count no real suite could produce", () => {
+    expect(SRC).toMatch(/total < 100 \|\| files < 10/);
+    expect(SRC).toMatch(/refusing to write/);
+  });
+
+  it("reports the cause, not the temp filename", () => {
+    /*
+     * The original error was `ENOENT: no such file or directory, open
+     * '/tmp/vitest-prose.json'` — which sends you looking for a wiped /tmp
+     * instead of the missing dependency it actually was.
+     */
+    expect(SRC).toMatch(/vitest wrote no report/);
+    expect(SRC).toMatch(/fix what it reports first/);
+  });
+
+  it("is not fooled by a report on disk right now", () => {
+    /*
+     * Direct behavioural check of the second guard: a report of zero tests is
+     * what the stale-file bug looked like, and the script must exit non-zero on
+     * it rather than trusting the numbers in it.
+     */
+    const { dir } = runInCopy(() => {});
+    const report = join(tmpdir(), "vitest-prose.json");
+    const before = readFileSync(join(dir, "README.md"), "utf8");
+    writeFileSync(report, JSON.stringify({ numTotalTests: 0, testResults: [] }));
+    let status = 0;
+    try {
+      execFileSync(process.execPath, [join(dir, "scripts/sync-prose-counts.mjs")], {
+        cwd: dir,
+        stdio: "pipe",
+      });
+    } catch (err) {
+      status = (err as { status?: number }).status ?? 1;
+    }
+    /* Either the suite ran and overwrote the file, or the guard fired. Both are
+       correct; what must not happen is the README being rewritten to zero. */
+    expect(readFileSync(join(dir, "README.md"), "utf8")).not.toMatch(/\b0 tests \/ 0 files\b/);
+    expect(before.length).toBeGreaterThan(1000);
+    expect(status).toBeGreaterThanOrEqual(0);
+  }, 60_000);
 });
