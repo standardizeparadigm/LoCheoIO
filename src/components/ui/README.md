@@ -9,13 +9,34 @@ reusable and what keeps this folder from growing into a second `menu/`.
 | --- | --- | --- |
 | `button.tsx` | 44 | the three press states and the `hard-shadow` that makes them read |
 | `panel.tsx` | 37 | `relative` + four corner ticks; callers pass `panelRef` for the trap |
-| `modal.tsx` | 85 | dialog semantics, Escape, the hotkey swallow, the focus trap |
+| `modal.tsx` | 118 | dialog semantics, Escape, the hotkey swallow, the focus trap, an adaptive box |
+| `modalPlan.ts` | 130 | `planModal()` — the dialog's max width, max height, padding, columns and type, from the window |
 | `switch.tsx` | 52 | `role="switch"` with the full keyboard contract |
 | `jar.tsx` | 66 | the mascot jar as SVG, sized by prop, no state |
 | `scoreboard.tsx` | 74 | a sorted table with one highlighted row |
 | `keycap.tsx` | 22 | `<kbd>` styling used by every shortcut surface |
 | `stat.tsx` | 31 | a label/value pair; **not** the panel footer (`menu/panel/stat.ts`) |
 | `index.ts` | — | the barrel: the eight primitives and their prop types |
+
+## `modalPlan.ts` — why a dialog is not `max-h-[86vh]`
+
+`86vh` is a percentage of the *layout* viewport. On a 390×844 phone with the
+keyboard open there are about 300px of usable height, and `86vh` is 726px — the
+settings footer is simply unreachable. `max-w-md` (448px) is wider than the
+390px screen, so the panel is clipped by the display rather than fitted to it.
+
+`planModal(box, wide)` returns numbers instead:
+
+| | phone 390×844 | laptop 1280×720 | cinema 3840×2160 |
+| --- | --- | --- | --- |
+| `maxWidth` | 374 | 448 / 672 | 448 / 672 |
+| `maxHeight` | 726 → 300 with a keyboard | 619 | 1857 |
+| `padding` | 10 | 14 | 20 |
+| `columns` | 1 | 1 / 2 | 1 / 2 |
+
+`wide` is a *request*: on a phone the two-column changelog becomes one column
+instead of squeezing 2 × 180px. `tests/adaptive-modal.test.ts` sweeps 1 200
+windows and asserts the panel never exceeds the window.
 
 ## `modal.tsx` is the only file with behaviour worth explaining
 

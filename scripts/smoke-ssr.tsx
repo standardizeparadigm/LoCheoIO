@@ -81,17 +81,39 @@ const html = renderToString(
 {
   const lo = html.match(/wordmark-lo[^>]*style="([^"]*)"/i);
   const cheo = html.match(/class="[^"]*text-shimmer[^"]*"[^>]*style="([^"]*)"/i);
-  const loMin = lo && lo[1].match(/clamp\(([\d.]+)rem/);
-  const cheoMin = cheo && cheo[1].match(/clamp\(([\d.]+)rem/);
-  const ratio = loMin && cheoMin ? Number(cheoMin[1]) / Number(loMin[1]) : NaN;
+
+  /*
+   * The size arrives in one of two forms, and both are legitimate:
+   *
+   *   px            the adaptive profile fitted the lockup to the band
+   *                 (`menu/adaptive/typeScale.ts`); this is what the app ships
+   *   clamp(…rem…)  the width-only fallback, used when no profile exists
+   *
+   * The probe used to read only the second, so the moment the component started
+   * carrying the better of the two it failed with "ratio NaN" — a gate that
+   * rejects an improvement is worse than no gate, because the fix is to delete
+   * the assertion.
+   */
+  const sizeOf = (style: string | undefined): number => {
+    if (!style) return NaN;
+    const px = style.match(/font-size:\s*([\d.]+)px/);
+    if (px) return Number(px[1]);
+    const rem = style.match(/font-size:\s*clamp\(([\d.]+)rem/);
+    if (rem) return Number(rem[1]);
+    const bare = style.match(/font-size:\s*([\d.]+)rem/);
+    return bare ? Number(bare[1]) : NaN;
+  };
+  const loSize = sizeOf(lo?.[1]);
+  const cheoSize = sizeOf(cheo?.[1]);
+  const ratio = loSize > 0 && cheoSize > 0 ? cheoSize / loSize : NaN;
 
   const check = (name: string, pass: boolean, detail = "") => {
     if (!pass) throw new Error(`wordmark probe failed: ${name} ${detail}`);
     console.log("ok", name, detail);
   };
-  check("wordmark LỌ has an inline font-size", Boolean(lo));
-  check("wordmark CHÉO has an inline font-size", Boolean(cheo));
-  check("CHÉO floor is below LỌ floor", ratio < 1, `ratio ${ratio.toFixed(2)}`);
+  check("wordmark LỌ has an inline font-size", Boolean(lo) && Number.isFinite(loSize));
+  check("wordmark CHÉO has an inline font-size", Boolean(cheo) && Number.isFinite(cheoSize));
+  check("CHÉO is smaller than LỌ", ratio < 1, `ratio ${ratio.toFixed(2)}`);
   check("nothing is painted behind the wordmark", !/text-shimmer::before/.test(html));
 }
 
