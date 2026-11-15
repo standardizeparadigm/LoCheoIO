@@ -2,7 +2,7 @@
 
 Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc đóng góp ngắn gọn.
 
-## Nguyên tắc vàng
+## Nguyên tắc
 
 1. **Một file — không mạng — chơi được mãi mãi.** Không thêm dependency runtime nếu không thực sự cần thiết. Game phải chạy offline 100% từ `dist/index.html`.
 2. **Đúng hồn Việt mộc mạc**: ngôn ngữ gốc của game là tiếng Việt (mọi chuỗi hiển thị đi qua `src/i18n/`, không hardcode), giao diện theo phong cách gạch bông/ẩm thực miền Nam, màu chủ đạo ngọc bích – nghệ – ớt.
