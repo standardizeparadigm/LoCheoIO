@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1290%20%C2%B7%20130%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1310%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1290 เทสต์ใน 130 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1310 เทสต์ใน 131 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -292,6 +292,33 @@ name-shrunk → ellipsis`) ประมาณความกว้างผิ�
 — 189 ภาพ (21 พรีเซ็ต × 9 โหมด)
 
 <img src="assets/mode-chip.svg" alt="ชิปโหมดก่อนและหลังการแก้ใน 1.1.8 — ก่อน: จัดกลางบนมาสคอตที่ขอบขวา จึงถูก overflow hidden ตัดครึ่งขวา; หลัง: ชิดขอบในและมีเพดานความกว้าง พร้อมขั้นบันได ป้าย → ขนาด → จุดไข่ปลา (แอนิเมชัน SMIL)" width="100%" />
+
+### รอบที่ 11 —— เครื่องหมายวรรณยุกต์เวียดนามไม่ถูกตัดอีกต่อไป
+
+ภาพหน้าจอครั้งนี้ไม่ใช่ "ขาดครึ่งขวา" แต่เป็น **"เครื่องหมายหาย"**: ชิปอ่านว่า
+«MUỐI DƯA CỔ ĐIÊN» โดย **Ể** เสียรูปวงแหวน (circumflex) ขณะที่ **Ổ** ก่อนหน้ายังอยู่
+ครบ สาเหตุคือ **การถอยหลังของรอบที่ 10**: `truncate` ไม่ได้ตัดแค่แนวนอน —
+`overflow: hidden` ตัด **กล่องบรรทัด** และภาษาเวียดนามซ้อนวรรณยุกต์บน circumflex
+(`Ố Ổ Ể Ấ Ự`) สูงกว่าความสูงตัวพิมพ์ใหญ่ราว **0.35em**
+
+แก้สามชั้นแยกกัน ไม่ทับซ้อนกัน:
+
+| ชั้น | ก่อน | หลัง |
+| --- | --- | --- |
+| สตริง | จุดไข่ปลาจาก CSS | `planModeChip()` ตัดสตริงแล้วต่อ `…` |
+| กล่องบรรทัด | 1.2em | **1.5em** (`MODE_CHIP_LINE_HEIGHT`) |
+| กล่องตัด | `truncate` บน span ชื่อ | **ไม่มี `overflow` เลย** |
+
+พร้อม **`.clip-safe`** —— ตัวแทนของ `truncate` สำหรับข้อความที่แปลได้ทุกจุด:
+`padding-block: .24em` ดันกล่องตัดออกจากหมึก และ `margin-block: -.24em` คืนพื้นที่
+ให้เลย์เอาต์ จึงไม่มีบรรทัดไหนขยับ แต่เครื่องหมายยังอยู่ หกจุดเปลี่ยนมาใช้แล้ว และ
+`chipBoxHeight()` แทนค่าคงที่ที่เดา: ชิปสูงขึ้น 3.3px ซึ่งเป็นเรื่องของ
+`heroContentHeight()` จึงต้องอ่านค่าที่วัดได้ ไม่ใช่ค่าที่จำไว้
+
+รายละเอียด: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
+
+<img src="assets/diacritics-clip.svg" alt="ทำไมวรรณยุกต์เวียดนามจึงหาย —— ก่อน: กล่องตัดขนาดเท่ากล่องบรรทัดตัดยอด circumflex ของ Ể ทำให้ «CỔ ĐIỂN» อ่านเป็น «CỔ ĐIÊN»; หลัง: กล่องบรรทัด 1.5em กับ padding ±0.24em ของ clip-safe ทำให้เครื่องหมายอยู่ครบ (แอนิเมชัน SMIL)" width="100%" />
+
 
 ## 📐 เลย์เอาต์ปรับตัว — ฮีโร่เลือกทรงของตัวเองอย่างไร
 
