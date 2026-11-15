@@ -314,7 +314,7 @@ const ja: Record<MessageKey, string> = {
   "about.role": "インディー開発者 — Standardize Paradigm",
   "about.craft": "Lọ Chéoは情熱プロジェクト：ブラウザだけで動く漬物アーケード、自己完結した1つのHTMLファイル、ネットワーク不要・サーバー不要。手描き・手書きコード —— ベトナム語の声調も一つ残らず。",
   "about.contact": "連絡先：standardizeparadigm@donuco.com",
-  "about.source": "ソース：github.com/standardizeparadigm/Lo-CheoIO",
+  "about.source": "ソース：github.com/standardizeparadigm/LoCheoIO",
   "about.license": "ライセンス：AGPL-3.0-only © 2026",
   "about.fonts": "フォント：Be Vietnam Pro & Bungee — SIL Open Font License 1.1",
   "about.thanks": "漬物キッチンへようこそ、ありがとう！🫙",
