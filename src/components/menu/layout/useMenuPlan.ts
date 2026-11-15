@@ -46,7 +46,7 @@ export const REFERENCE_VIEWPORT: Viewport = { width: 1280, height: 720 };
  * browser cannot say how big the window is, the honest answer is the size this
  * layout was designed against, not a number invented from a broken one.
  */
-function readViewport(): Viewport {
+export function readViewport(): Viewport {
   if (typeof window === "undefined") return REFERENCE_VIEWPORT;
   const vv = window.visualViewport;
   const rawW = vv?.width ?? window.innerWidth;
