@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1250 tests / 127 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1281 tests / 129 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -263,3 +263,18 @@ npx vite-node scripts/gen-hero-fixtures.ts --check   # chỉ báo
 Corpus thứ hai vì hai ảnh chụp trong báo cáo — 1920×1080 và 1920×820 — **cùng bề
 ngang, cách nhau 260px band**. Corpus cửa sổ chỉ lấy được những band mà cửa sổ
 tình cờ tạo ra; corpus này đi thẳng từng bậc.
+
+## `gen-mode-chip-fixtures.ts`
+
+Sinh `tests/fixtures/mode-chips/` — **189** ảnh chụp, một file mỗi cặp
+(preset, chế độ): band, `showLabel`, `nameSize`, `maxWidth`, `needed`, `reason`.
+
+```bash
+npx vite-node scripts/gen-mode-chip-fixtures.ts           # ghi
+npx vite-node scripts/gen-mode-chip-fixtures.ts --check   # chỉ báo
+```
+
+Corpus thứ ba là corpus đầu tiên về một **component** chứ không phải một bố cục:
+nó ghim đúng hai đầu vào đã sinh ra lỗi ở vòng 10 — bề ngang band và một bản dịch
+dài 19 ký tự. Dùng tên tiếng Việt trong `MODE_LIST` vì đó là tập rộng nhất; bảy
+ngôn ngữ được phủ riêng trong `tests/mode-chip.test.ts`.
