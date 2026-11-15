@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1281 tests / 129 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1289 tests / 130 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -49,6 +49,7 @@
 | `adaptive-wordmark-band.test.ts` | `lockupMaxForBand()`/`lockupAtBand()` — trần band thắng tier, `MAX_LOCKUP_PX` là nửa pixel chạm được, `limitedBy` nói cap nào thắng | pure |
 | `adaptive-fixtures.test.ts` | **corpus 1 110 cửa sổ** (`tests/fixtures/adaptive-matrix/`, một file mỗi viewport) — tính lại từng quyết định, kiểm luôn tính nhất quán nội tại của snapshot (panel + lề ≤ reserve, lockup vừa band) | fs + pure |
 | `mode-chip-fixtures.test.ts` | **corpus 189 ảnh chụp** (`tests/fixtures/mode-chips/`, một file mỗi cặp preset × chế độ) — tính lại từng ảnh, kiểm tính nhất quán nội tại (maxWidth ≤ available, `reason: full` ⇒ còn nhãn, `ellipsis` ⇒ đúng sàn 9.5px), và ghim rằng chip chỉ rộng theo *tên chế độ*, không theo cửa sổ | fs + pure |
+| `mode-chip-wiring.test.ts` | đọc `ModeChip.tsx` + `StartScreen.tsx` như văn bản: khoá chuỗi `style={{ maxWidth: plan.maxWidth }}`, nhánh căn `end`/`center` có điều kiện, ba attribute `data-mode-chip*`, `if (!plan.visible) return null`, và việc StartScreen truyền `heroBandWidth(...)` + `hero.sideBySide ? "right" : "center"` — lỗi vòng 10 nằm ở **wiring**, không ở planner | fs |
 | `mode-chip.test.ts` | `planModeChip()`/`estimateText()` — 23 test: chip không bao giờ khai báo rộng hơn band, chỉ trạng thái `ellipsis` mới tràn, 9 tên × 7 locale × 21 preset đều không bị cắt, nhãn chỉ bị bỏ ở 3 tên dài nhất trên điện thoại 320px (ghim lại), thang bậc đơn điệu và tất định | pure |
 | `adaptive-presets.test.ts` | **21 preset** — id duy nhất, thứ tự theo kích thước, ba nhóm cỡ không chồng lấn, mỗi id xuất hiện trong hợp đồng thiết kế và trong release notes; quét 21 × 21 cặp để chắc `warningsFor()` không phải hằng số | pure + fs |
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
@@ -130,7 +131,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 22 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 23 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |
