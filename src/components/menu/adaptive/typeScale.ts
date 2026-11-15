@@ -32,8 +32,15 @@
  * and finiteness for all of them.
  */
 
-import { resolve } from "../wordmark/scale";
-import { CHEO_RATIO_MAX, LO_CLAMP } from "../wordmark/scale";
+import {
+  CHEO_RATIO_MAX,
+  LOCKUP_BOX_RATIO,
+  MAX_LOCKUP_PX,
+  MIN_LOCKUP_PX,
+  lockupMaxForBand,
+  resolve,
+  LO_CLAMP,
+} from "../wordmark/scale";
 import type { MenuPlan } from "../layout/fit";
 import { fluid, legible } from "./scale";
 import { tierFor, tierScale, type SizeTier } from "./tiers";
@@ -85,39 +92,13 @@ export interface TypeInput {
   plan: MenuPlan;
 }
 
-/**
- * The ratio of the lockup's **total** height to one line's font size.
- *
- * Measured from the shipped component, not guessed: `LỌ` at 89.6px with
- * `leading-[0.9]` and a 0.82 ratio gives a two-line box of 150px, and
- * `150 / 89.6 = 1.674…`. Rounding up to 1.68 leaves a sliver of slack so the
- * descender under `Ọ` cannot touch the badge row.
+/*
+ * `LOCKUP_BOX_RATIO`, `MIN_LOCKUP_PX`, `MAX_LOCKUP_PX` and `lockupMaxForBand()`
+ * are re-exported from `wordmark/scale.ts` — the module that owns the clamp the
+ * cap belongs to. They are imported above and exported below so the adaptive
+ * barrel keeps one import path for consumers.
  */
-export const LOCKUP_BOX_RATIO = 1.68;
-
-/** The smallest the wordmark is allowed to get, px. */
-export const MIN_LOCKUP_PX = 22;
-
-/**
- * The largest the wordmark is allowed to get, px — the 5.6rem cap, quantised.
- *
- * 5.6rem is 89.6px, and every size this module returns is rounded to half a
- * pixel (`legible`), so the cap is stated as the largest reachable half pixel
- * rather than as a value the rounding can never produce.
- */
-export const MAX_LOCKUP_PX = 89.5;
-
-/**
- * The largest `LỌ` font size that fits a band, before the width cap.
- *
- * Exported because `Wordmark.tsx` uses it directly and a test asserts the
- * component and this file agree — the wordmark is the one element whose size the
- * eye notices first, so it must not be computed twice.
- */
-export function lockupMaxForBand(bandHeight: unknown): number {
-  const h = typeof bandHeight === "number" && Number.isFinite(bandHeight) ? bandHeight : 0;
-  return legible(h / LOCKUP_BOX_RATIO, MIN_LOCKUP_PX, MAX_LOCKUP_PX);
-}
+export { LOCKUP_BOX_RATIO, MAX_LOCKUP_PX, MIN_LOCKUP_PX, lockupMaxForBand };
 
 /**
  * Build the table.
