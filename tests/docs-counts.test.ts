@@ -70,7 +70,19 @@ describe("no current-facing document understates the suite", () => {
        * lines that mark the number as an example: a quoted phrase, a `→`, or
        * an explicit "cũ"/"old"/"used to".
        */
-      const claimed = [...body.matchAll(/(\d{3})\s*(?:tests?|test)\b/g)]
+      /*
+       * `\d{3,5}`, not `\d{3}`.
+       *
+       * The suite crossed a thousand in round 8 and this test immediately
+       * reported that `scripts/README.md` "states 183 tests": the unanchored
+       * three-digit group matched the tail of `1183`, and 183 < 600 tripped the
+       * floor. A stale-count check that mangles a correct count is worse than
+       * no check — it fails on the number that is *right*.
+       *
+       * `tests/docs-numbers.test.ts` pins the exact figure; this one only has to
+       * read the number it is given.
+       */
+      const claimed = [...body.matchAll(/\b(\d{3,5})\s*(?:tests?|test)\b/g)]
         .map((m) => Number(m[1]))
         .filter((n) => n > 100);
       for (const n of claimed) {
@@ -114,7 +126,12 @@ describe("no current-facing document understates the suite", () => {
 
 describe("the scripts README describes every script", () => {
   const scriptsReadme = readFileSync("scripts/README.md", "utf8");
-  const scripts = readdirSync("scripts").filter((f) => /\.(mjs|tsx|sh|command|bat)$/.test(f));
+  /*
+   * `.ts` joined the list in round 8: `check-adaptive.ts` and the two fixture
+   * generators are runnable scripts, and the old pattern silently exempted them
+   * — so `scripts/README.md` could describe five of eight scripts and pass.
+   */
+  const scripts = readdirSync("scripts").filter((f) => /\.(mjs|ts|tsx|sh|command|bat)$/.test(f));
 
   it("mentions each runnable script by name", () => {
     for (const s of scripts) {

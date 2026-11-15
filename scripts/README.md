@@ -214,3 +214,52 @@ npx vite-node scripts/probe-menu-layout.tsx
 Khác `smoke-ssr.tsx`: smoke chỉ trả lời "render có ném lỗi không"; probe trả lời
 "bố cục có đúng ở cỡ này không". Nó là cổng duy nhất bắt được lỗi hình học, vì
 `tsc` không thấy số và test đọc-source không thấy DOM.
+
+## `check-svg.mjs` — qua `npm run check:svg`
+
+Cùng script ở trên, nay có alias npm và nằm trong chuỗi `npm run check`. Trước
+vòng 8 nó chỉ chạy khi có người nhớ gõ; nay nó là một mắt xích của cổng.
+
+## `check-adaptive.ts`
+
+Cổng của hệ adaptive: in bảng **21 viewport** (bề ngang, bề cao, tier, density,
+scene, reserve, lockup, cỡ chữ, chế độ fit, hero, thiết bị) rồi khẳng định sáu
+bất biến trên từng dòng — `scene + reserve === usableHeight`, lockup vừa band,
+`CHÉO < LỌ`, panel + lề ≤ reserve, hộp thoại vừa cửa sổ, jar ≤ cạnh ngắn.
+
+```bash
+npm run check:adaptive
+# → bảng 21 dòng … ADAPTIVE OK — 21 viewports
+```
+
+Khác `probe-menu-layout.tsx` (đọc DOM thật): script này chỉ tính số, nên chạy
+được trong CI không cần trình duyệt và không cần `jsdom`. Hai cổng bổ sung nhau —
+một cái bắt số sai, một cái bắt số đúng nhưng DOM vẽ khác.
+
+## `gen-adaptive-fixtures.ts`
+
+Sinh `tests/fixtures/adaptive-matrix/` — **1 110** file JSON, mỗi cửa sổ một
+file, ghi lại tier / density / scene / reserve / fit / hero / cỡ chữ / hộp thoại
+/ sân chơi.
+
+```bash
+npx vite-node scripts/gen-adaptive-fixtures.ts           # ghi
+npx vite-node scripts/gen-adaptive-fixtures.ts --check   # chỉ báo, exit 1 nếu lệch
+```
+
+Một file mỗi cửa sổ là chủ ý: khi một ngưỡng dịch, `git diff --stat` kể tên
+đúng những cửa sổ đổi hành vi, thay vì báo "một dòng đổi trong một file to".
+
+## `gen-hero-fixtures.ts`
+
+Sinh `tests/fixtures/hero-bands/` — **510** cặp (bề ngang, band), ghi lại bố cục
+hero chọn được, chiều cao nó cần, và cỡ lockup kèm `limitedBy`.
+
+```bash
+npx vite-node scripts/gen-hero-fixtures.ts           # ghi
+npx vite-node scripts/gen-hero-fixtures.ts --check   # chỉ báo
+```
+
+Corpus thứ hai vì hai ảnh chụp trong báo cáo — 1920×1080 và 1920×820 — **cùng bề
+ngang, cách nhau 260px band**. Corpus cửa sổ chỉ lấy được những band mà cửa sổ
+tình cờ tạo ra; corpus này đi thẳng từng bậc.
