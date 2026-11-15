@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1041 tests / 107 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1043 tests / 107 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -100,6 +100,18 @@
 | `mode-multiplier.test.ts` | chín hệ số nhân khớp bảng công bố trong docs | pure |
 | `storage-normalise.test.ts` | chuẩn hoá bản ghi — làm tròn, cắt tên, kẹp ngày, không NaN | `memStorage()` |
 | `input-release.test.ts` | lỗi "hũ tự đi" — `releaseAllInput()` phải xoá **cả bảy** trường, và phải được gọi từ cả `blur` lẫn `visibilitychange`; đọc mã nguồn nên không cần DOM | fs |
+
+| `storage-split.test.ts` | `storage.ts` → `storage/` (v1.1.8): mọi ký hiệu cũ vẫn re-export, và chín module con không import vòng | fs |
+| `markdown-tables.test.ts` | mọi bảng Markdown trong docs cùng số cột mỗi hàng — sai lệch cột không báo lỗi, nó chỉ hiển thị sai | fs |
+| `prose-count-script.test.ts` | `sync-prose-counts.mjs` là thứ duy nhất tự sửa tài liệu, nên nó được kiểm bằng cách cho nó chạy trên bản sao | spawn |
+| `release-table-counts.test.ts` | bảng §6.8 của `docs/releases/v1.1.8.md` phải khớp số ca thật của từng file | fs / `it(` |
+| `changelog-totals.test.ts` | changelog trong game không được nêu tổng số test; mục `CHANGELOG.md` của bản đang viết thì phải khớp badge | fs |
+| `github-config.test.ts` | `.github/`: `ci.yml` gọi đủ `check` · `smoke` · ba script kiểm; số cố định được phép, số động thì không | fs |
+| `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
+| `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
+| `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 20 SVG | fs |
+| `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 
 ## Thêm test mới
 

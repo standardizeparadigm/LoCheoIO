@@ -164,3 +164,33 @@ describe("the current CHANGELOG section", () => {
     expect(body).toContain("256 unit tests (33 file)");
   });
 });
+
+/*
+ * `tests/README.md` opens by stating the suite size and then lists what every
+ * file covers. The list had fallen eleven behind — six of them files added
+ * during this round, five older — and nothing could notice: the header count was
+ * checked, so the document was "verified", while the catalogue underneath it
+ * described an older suite.
+ *
+ * A reader uses this table to find out whether a file already covers what they
+ * are about to write. A missing row answers "no" to that question and invites a
+ * duplicate test.
+ */
+describe("tests/README.md, the catalogue", () => {
+  const dir = join(__dirname);
+  const body = readFileSync(join(dir, "README.md"), "utf8");
+  const files = readdirSync(dir).filter((f) => f.endsWith(".test.ts"));
+
+  it("lists every test file", () => {
+    const missing = files.filter((f) => !body.includes(`\`${f}\``));
+    expect(missing, "test files with no row in the catalogue").toEqual([]);
+  });
+
+  it("lists nothing that is not a test file", () => {
+    const rows = [...body.matchAll(/^\| `([\w.-]+\.test\.ts)` \|/gm)].map((m) => m[1]);
+    const ghost = rows.filter((f) => !files.includes(f));
+    expect(ghost).toEqual([]);
+    /* Not vacuous: the table has a row per file. */
+    expect(rows.length).toBe(files.length);
+  });
+});
