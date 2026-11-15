@@ -1,0 +1,17 @@
+{
+ "preset": "iphone-4",
+ "window": "320×480",
+ "mode": "zen",
+ "name": "THẢNH THƠI",
+ "band": 288,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 272,
+ "needed": 205,
+ "available": 272,
+ "truncated": false,
+ "reason": "full"
+}

@@ -1,0 +1,17 @@
+{
+ "preset": "laptop-small",
+ "window": "1024×600",
+ "mode": "combo",
+ "name": "LỄ HỘI COMBO",
+ "band": 960,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 944,
+ "needed": 220,
+ "available": 944,
+ "truncated": false,
+ "reason": "full"
+}

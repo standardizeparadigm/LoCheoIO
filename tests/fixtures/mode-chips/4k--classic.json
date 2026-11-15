@@ -1,0 +1,17 @@
+{
+ "preset": "4k",
+ "window": "3840×2160",
+ "mode": "classic",
+ "name": "MUỐI DƯA CỔ ĐIỂN",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 246,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

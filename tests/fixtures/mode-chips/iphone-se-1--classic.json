@@ -1,0 +1,17 @@
+{
+ "preset": "iphone-se-1",
+ "window": "320×568",
+ "mode": "classic",
+ "name": "MUỐI DƯA CỔ ĐIỂN",
+ "band": 288,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 272,
+ "needed": 246,
+ "available": 272,
+ "truncated": false,
+ "reason": "full"
+}

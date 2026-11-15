@@ -1,0 +1,17 @@
+{
+ "preset": "ipad-portrait",
+ "window": "768×1024",
+ "mode": "storm",
+ "name": "MƯA DƯA",
+ "band": 704,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 688,
+ "needed": 185,
+ "available": 688,
+ "truncated": false,
+ "reason": "full"
+}
