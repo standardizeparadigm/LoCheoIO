@@ -181,7 +181,50 @@ const { violations } = await import("/src/components/menu/adaptive/constraints.t
 violations(resolveForSize(844, 390));   // → []
 ```
 
-## 9. Khi nào **không** phải sửa adaptive
+## 9. "Chip chế độ mất nửa bên phải"
+
+Lỗi vòng 10. Chip là phần tử **tuyệt đối** căn trên một **cột hẹp** (mascot), trong
+khi hero là `overflow: hidden`:
+
+```
+bố cục CỘT   mascot giữa band    →  chip căn giữa mascot  →  đúng
+bố cục HÀNG  mascot mép phải     →  nửa chip ra ngoài band →  bị cắt
+```
+
+Kiểm trong 5 giây bằng ba attribute trên chính cái nút:
+
+```js
+const chip = document.querySelector("[data-mode-chip]");
+chip.dataset.modeChip;        // full | label-dropped | name-shrunk | ellipsis
+chip.dataset.modeChipAlign;   // center | end   ← end khi mascot ở phải
+chip.dataset.modeChipName;    // 11 (px) …
+chip.getBoundingClientRect(); // so right với band: phải ≤ band
+```
+
+Nếu `align` là `center` mà mascot đang ở mép phải, lỗi đã quay lại — đó là điều
+`tests/mode-chip-wiring.test.ts` chặn ở tầng source.
+
+Ba trạng thái và ý nghĩa:
+
+| `data-mode-chip` | Nghĩa | Có phải lỗi? |
+| --- | --- | --- |
+| `full` | nhãn + tên ở cỡ chuẩn | không |
+| `label-dropped` | chỉ còn chấm + tên (nút vẫn có `title`/`aria-label`) | không, nếu band < 272px |
+| `name-shrunk` | tên nhỏ hơn 11px nhưng ≥ 9.5px | không, band rất hẹp |
+| `ellipsis` | tên bị cắt bằng `…` | **có** — dưới 128px band, tức dưới ngưỡng chơi được |
+
+Ở 320×480 (cửa sổ nhỏ nhất hỗ trợ) cả 9 tên tiếng Việt vẫn `full`; ba tên bản dịch
+dài rơi xuống `label-dropped`, và danh sách đó được ghim trong test.
+
+Sửa gì khi nó sai:
+
+```bash
+npm run gen:chip          # ghi lại 189 ảnh chụp của corpus
+npm run gen:chip -- --check   # xem cái nào lệch
+npx vitest run tests/mode-chip.test.ts tests/mode-chip-fixtures.test.ts
+```
+
+## 10. Khi nào **không** phải sửa adaptive
 
 - Ảnh chụp ở 320×480: `crop` là câu trả lời đúng, không phải lỗi.
 - Chữ nhỏ hơn ở cửa sổ 900×500 so với 1280×720: đúng, cạnh ngắn là 500.
