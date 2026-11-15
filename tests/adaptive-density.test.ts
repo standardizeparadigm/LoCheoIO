@@ -15,7 +15,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { planMenuLayout } from "../src/components/menu/layout";
-import { cornerPanelHeight, cornerRowHeight } from "../src/components/menu/layout/metrics";
+import { PANEL_FOOTER_HEIGHT, cornerPanelHeight, cornerRowHeight } from "../src/components/menu/layout/metrics";
 import type { MenuPlan } from "../src/components/menu/layout";
 import {
   airier,
@@ -67,8 +67,13 @@ describe("the table and the planner agree", () => {
         const plan = planMenuLayout({ width: w, height: h });
         const density = densityFor(plan);
         expect(reserveFor(density, plan.ticker, plan.footer), `${w}×${h}`).toBe(plan.reserve);
+        /*
+         * The painter is `cornerRowHeight` minus the footer it will not draw.
+         * Asserting plain equality here is what let the 30px overflow ship: the
+         * plan reserved 30px less and this test said the two matched.
+         */
         expect(panelHeightForPlan(plan), `${w}×${h}`).toBe(
-          cornerRowHeight(plan.dense, plan.tight, plan.compact),
+          cornerRowHeight(plan.dense, plan.tight, plan.compact) - (plan.footer ? 0 : PANEL_FOOTER_HEIGHT),
         );
       }
     }

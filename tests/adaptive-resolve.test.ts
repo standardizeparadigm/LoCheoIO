@@ -18,7 +18,7 @@ import {
 import { boxOf } from "../src/components/menu/adaptive/viewport";
 import { DESKTOP_ENVIRONMENT } from "../src/components/menu/adaptive/environment";
 import { planMenuLayout, usableHeight } from "../src/components/menu/layout";
-import { cornerRowHeight } from "../src/components/menu/layout/metrics";
+import { CORNER_ROW_MARGIN, PANEL_FOOTER_HEIGHT, cornerRowHeight } from "../src/components/menu/layout/metrics";
 import { heroContentHeight } from "../src/components/menu/adaptive/hero";
 
 const SIZES: Array<[number, number]> = [
@@ -57,10 +57,20 @@ describe("the profile is internally consistent", () => {
   });
 
   it("paints the panel the reserve paid for", () => {
+    /*
+     * The assertion used to be `panelHeight === cornerRowHeight(...)`, which is
+     * the bug said out loud: the reserve subtracts the 30px footer when the
+     * plan hides it, and the panel drew those 30px anyway. Comparing the two
+     * numbers to each other cannot catch that — both sides were the same
+     * function. What matters is that the *painted* box plus its margin fits the
+     * band the reserve bought.
+     */
     for (const [w, h] of SIZES) {
       const profile = resolveForSize(w, h);
-      const plan = profile.plan;
-      expect(profile.panelHeight, `${w}×${h}`).toBe(cornerRowHeight(plan.dense, plan.tight, plan.compact));
+      const { plan } = profile;
+      const painted = profile.panelHeight + (plan.footer ? 0 : PANEL_FOOTER_HEIGHT);
+      expect(painted, `${w}×${h}`).toBe(cornerRowHeight(plan.dense, plan.tight, plan.compact));
+      expect(profile.panelHeight + CORNER_ROW_MARGIN, `${w}×${h}`).toBeLessThanOrEqual(plan.reserve);
     }
   });
 
