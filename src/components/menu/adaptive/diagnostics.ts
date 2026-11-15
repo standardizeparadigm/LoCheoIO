@@ -26,7 +26,7 @@
 import type { AdaptiveProfile } from "./resolve";
 import { describeTier } from "./tiers";
 import { heroBandWidth } from "./hero";
-import { planModeChip } from "./chip";
+import { chipBoxHeight, planModeChip } from "./chip";
 import { MODE_LIST } from "../../../game/modes";
 import { describeBox } from "./viewport";
 
@@ -159,7 +159,12 @@ function chipValue(p: AdaptiveProfile): string {
   if (p.plan.minimal) return "hidden · hero is wordmark-only";
   const band = heroBandWidth(p.box.width);
   const plan = planModeChip({ heroWidth: band, side: "right", name: CHIP_WIDEST_NAME, label: CHIP_LABEL });
-  return `band ${band}px · needs ${plan.needed}px · ${plan.reason}`;
+  /*
+   * The box height is part of the answer now. Round 11 changed the line box and
+   * the chip grew by 3px without anybody noticing; a number the tool prints is a
+   * number that has to be re-checked when the box changes.
+   */
+  return `band ${band}px · needs ${plan.needed}px · ${plan.reason} · box ${chipBoxHeight(plan)}px`;
 }
 
 function chipReason(p: AdaptiveProfile): string {
