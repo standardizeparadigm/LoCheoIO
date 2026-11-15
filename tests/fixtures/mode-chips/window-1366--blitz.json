@@ -1,0 +1,17 @@
+{
+ "preset": "window-1366",
+ "window": "1366×650",
+ "mode": "blitz",
+ "name": "ĐUA 60 GIÂY",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 207,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

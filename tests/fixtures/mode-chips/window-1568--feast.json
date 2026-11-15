@@ -1,0 +1,17 @@
+{
+ "preset": "window-1568",
+ "window": "1568×677",
+ "mode": "feast",
+ "name": "ĐẠI TIỆC DƯA",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 214,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

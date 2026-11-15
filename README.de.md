@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -171,7 +171,7 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1250 Tests in 127 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1311 Tests in 131 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
@@ -200,6 +200,61 @@ Ebenfalls in dieser Runde: **21 Presets** nach Größe sortiert (320×480 → 38
 Doku — sowie `diagnose()`.
 
 <img src="assets/hud-bands.svg" alt="Das HUD als Plan in 1.1.8 — ein Band pro Messwert, eine von der Uhr ausgehende Mittenspalte, Leiter chips → comboBar → jars → best und Kompression bis zur Untergrenze 0,55 (SMIL-Animation)" width="100%" />
+
+### 1️⃣1️⃣ Zehnte Runde: der Modus-Chip behält seine rechte Seite
+
+Der Screenshot meldete, der klassische Modus „verliert seine rechte Seite". Die
+Ursache war keine falsche Zahl, sondern eine falsche **Annahme**: der Chip war
+`absolute; left: 50%; translateX(-50%)` in der Maskottchen-Spalte, ohne `max-width`.
+
+```
+SPALTEN-Layout  Maskottchen mittig  →  Chip mittig darauf  →  korrekt
+ZEILEN-Layout   Maskottchen rechts  →  halber Chip außerhalb der Band
+                                      .menu-hero { overflow: hidden }  →  ABGESCHNITTEN
+```
+
+Der längste Name — «MUỐI DƯA CỔ ĐIỂN», 19 Zeichen — war der einzige, der sichtbar
+abgeschnitten wurde; deshalb las sich der Fehler als „der klassische Modus ist
+kaputt", obwohl jeder Name ein wenig verlor.
+
+Jetzt hat der Chip **zwei getrennte Garantien**: CSS hält die Box (innenbündig im
+Zeilen-Layout, hartes `max-width`), und `planModeChip()` hält die Leiter (`full →
+label-dropped → name-shrunk → ellipsis`). Ein Schätzfehler von 6 % wählt nur einen
+kleineren Chip, nie einen abgeschnittenen.
+
+Ebenfalls in dieser Runde: `heroBandWidth()`, **zwei neue Invarianten** (12 → **14**)
+und ein **dritter Korpus** — 189 Momentaufnahmen (21 Presets × 9 Modi).
+
+<img src="assets/mode-chip.svg" alt="Der Modus-Chip vor und nach dem 1.1.8-Fix — vorher: auf einem Maskottchen am rechten Rand zentriert und von overflow hidden abgeschnitten; nachher: innenbündig mit harter Breitengrenze, dazu die Leiter Label → Größe → Auslassungspunkte (SMIL-Animation)" width="100%" />
+
+### Runde 11 — vietnamesische Tonzeichen werden nicht mehr abgeschnitten
+
+Dieser Screenshot hieß nicht „die rechte Hälfte fehlt", sondern **„die Zeichen
+fehlen"**: Der Chip las sich «MUỐI DƯA CỔ ĐIÊN», dem **Ể** fehlte der Zirkumflex,
+während das **Ổ** davor seinen behielt. Es war eine **Regression aus Runde 10**:
+`truncate` schneidet nicht nur waagerecht — `overflow: hidden` beschneidet die
+**Zeilenbox**, und Vietnamesisch stapelt ein Tonzeichen auf einen Zirkumflex
+(`Ố Ổ Ể Ấ Ự`), etwa **0,35em** über der Versalhöhe.
+
+Drei Schichten wurden getrennt repariert, keine überlappt die andere:
+
+| Schicht | Vorher | Nachher |
+| --- | --- | --- |
+| Zeichenkette | CSS-Ellipse | `planModeChip()` kürzt und hängt `…` an |
+| Zeilenbox | 1,2em | **1,5em** (`MODE_CHIP_LINE_HEIGHT`) |
+| Beschnittbox | `truncate` am Namens-Span | **kein `overflow` mehr** |
+
+Dazu **`.clip-safe`** — der Ersatz für `truncate` bei jedem übersetzbaren Text:
+`padding-block: .24em` rückt die Beschnittbox von der Tinte weg, `margin-block:
+-.24em` gibt den Platz dem Layout zurück; nichts verschiebt sich, die Zeichen
+bleiben. Sechs Stellen nutzen es. Und `chipBoxHeight()` ersetzt eine geratene
+Konstante: Der Chip wuchs um 3,3px, und das ist Sache von `heroContentHeight()`,
+das jetzt eine Messung liest statt einer Erinnerung.
+
+Details: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
+
+<img src="assets/diacritics-clip.svg" alt="Warum vietnamesische Tonzeichen verschwinden — vorher: eine Beschnittbox in Größe der Zeilenbox schnitt den Zirkumflex von Ể ab, «CỔ ĐIỂN» las sich als «CỔ ĐIÊN»; nachher: 1,5em Zeilenbox und ±0,24em clip-safe-Padding erhalten jedes Zeichen (SMIL-Animation)" width="100%" />
+
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
 
@@ -324,7 +379,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1250 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1311 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -387,7 +442,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1250 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1311 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -532,7 +587,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1250 Tests / 127 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1311 Tests / 131 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -576,7 +631,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1250 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1311 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 

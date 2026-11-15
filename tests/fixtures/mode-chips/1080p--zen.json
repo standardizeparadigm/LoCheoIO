@@ -1,0 +1,17 @@
+{
+ "preset": "1080p",
+ "window": "1920×1080",
+ "mode": "zen",
+ "name": "THẢNH THƠI",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 205,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

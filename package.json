@@ -54,6 +54,7 @@
     "sync:badge": "node scripts/sync-test-badge.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:assets": "node scripts/check-assets.mjs",
+    "gen:chip": "vite-node scripts/gen-mode-chip-fixtures.ts",
     "check:adaptive": "vite-node scripts/check-adaptive.ts",
     "check:svg": "node scripts/check-svg.mjs"
   },

@@ -1,0 +1,17 @@
+{
+ "preset": "iphone-max",
+ "window": "414×896",
+ "mode": "blitz",
+ "name": "ĐUA 60 GIÂY",
+ "band": 382,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 366,
+ "needed": 207,
+ "available": 366,
+ "truncated": false,
+ "reason": "full"
+}

@@ -1,0 +1,17 @@
+{
+ "preset": "phone-landscape",
+ "window": "844×390",
+ "mode": "combo",
+ "name": "LỄ HỘI COMBO",
+ "band": 780,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 764,
+ "needed": 220,
+ "available": 764,
+ "truncated": false,
+ "reason": "full"
+}

@@ -300,6 +300,30 @@ export function heroContainerWidth(width: number): number {
   return Math.max(0, Math.min(w, 1152) - 64);
 }
 
+/** `px-4` below `sm`, `px-8` from `sm` up — the hero container's own padding. */
+export const HERO_PAD_NARROW = 16;
+export const HERO_PAD_WIDE = 32;
+/** The `sm` breakpoint, above which the container uses the wider padding. */
+export const HERO_PAD_SWITCH = 640;
+
+/**
+ * The width the hero's inner row actually offers, in px.
+ *
+ * `heroContainerWidth()` above assumes the wide padding at every size, which is
+ * the conservative answer for the *row-fit* question it was written for: if the
+ * row fits with 64px of padding, it also fits with 32.
+ *
+ * The mode chip needs the honest number instead, because it uses this value as a
+ * hard `max-width`. Being 32px short there would drop the «CHẾ ĐỘ CHƠI» label on
+ * every phone — a visible regression dressed up as caution. So this one reads
+ * the real padding: `px-4` under `sm`, `px-8` above it.
+ */
+export function heroBandWidth(width: number): number {
+  const w = Number.isFinite(width) ? Math.max(1, Math.trunc(width)) : 1;
+  const pad = w >= HERO_PAD_SWITCH ? HERO_PAD_WIDE : HERO_PAD_NARROW;
+  return Math.max(0, Math.min(w, 1152) - 2 * pad);
+}
+
 /** Does a row layout fit the width it was given? */
 export function heroRowFits(layout: HeroLayout, width: number): boolean {
   if (!layout.sideBySide) return true;

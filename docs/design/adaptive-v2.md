@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–9 — one profile, every size, every pixel
+# Adaptive, rounds 8–10 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 và vòng 9).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8, 9 và 10).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -358,12 +358,16 @@ thêm thì không ai đọc được, và mọi lần chèn đều làm hỏng p
 | 20 | `1440p` | 2560×1440 | màn hình rời |
 | 21 | `4k` | 3840×2160 | trần của hộp thoại |
 
-## 16. 12 bất biến — một định nghĩa, ba nơi dùng
+## 16. 14 bất biến — một định nghĩa, ba nơi dùng
 
 `constraints.ts` giữ danh sách; `tests/adaptive-constraints.test.ts` chạy nó trên
 21 preset, `scripts/check-adaptive.ts` chạy nó như một cổng CI, và tài liệu này
 liệt kê nó. Trước vòng 9, cổng kiểm ba bất biến còn suite kiểm chín — hai bên
 không thể đồng bộ vì chúng là hai bản sao. Giờ chỉ còn một.
+
+Hai dòng cuối (`chip-*`) đến từ vòng 10, sau khi ảnh chụp cho thấy không có lời
+hứa nào giữ chip chế độ ở trong band. Một lời hứa chỉ sống trong component là lời
+hứa không ai kiểm được ở mọi cửa sổ.
 
 | id | bất biến | bắt lỗi gì |
 | --- | --- | --- |
@@ -379,13 +383,15 @@ không thể đồng bộ vì chúng là hai bản sao. Giờ chỉ còn một.
 | `density-matches-flags` | ticker/footer theo density | density và chrome nói khác nhau |
 | `css-vars-complete` | 11 biến `--lo-*` | component đọc biến không tồn tại |
 | `numbers-finite` | mọi số hữu hạn | `NaN` từ `aspect` hoặc `dvh` |
+| `chip-name-survives` | không tên chế độ nào bị cắt bằng ellipsis | tên dài (bản dịch) tràn band |
+| `chip-labelled` | chip còn nhãn «CHẾ ĐỘ CHƠI» ở mọi cửa sổ chơi được | nhãn bị bỏ sớm hơn mức cần |
 
 ## 17. "Vì sao trông như vậy" — `diagnose()`
 
 Một bảng số trả lời *cái gì*. Câu hỏi đến cùng ảnh chụp màn hình luôn là *vì
 sao*: vì sao không có ticker, vì sao hero thành hàng ở đây mà thành cột ở kia.
-`diagnose()` xếp tám lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
-từ chính trường đã quyết định nó:
+`diagnose()` xếp **chín** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
+từ chính trường đã quyết định nó — lớp 8 là chip chế độ, thêm ở vòng 10:
 
 ```
 1280×720 · lg · comfortable · row · fit none
@@ -403,7 +409,9 @@ từ chính trường đã quyết định nó:
              ↳ lockup capped by the band
 7 · modal    448×619px · 1 col
              ↳ 448px is under the 560px two-column floor
-8 · board    1280×720 · jar 38px · hud ×1.029
+8 · chip     band 1088px · needs 246px · full
+             ↳ right-aligned to the mascot's inner edge, 246px of 1072px used
+9 · board    1280×720 · jar 38px · hud ×1.029
              ↳ item scale follows height (1.029), radius follows the short side
 
 trade-offs: none — this window gets the full layout
@@ -419,3 +427,149 @@ Cách dùng:
 ```
 npx vite-node scripts/check-adaptive.ts --explain 1280x720
 ```
+
+---
+
+## 18. Vòng 10 — chip chế độ, và cái giả định đã sai
+
+Chip dưới mascot là phần tử **duy nhất** trong hero vừa tuyệt đối vừa mang chữ
+không ai kiểm soát: một bản dịch, bảy ngôn ngữ, tên dài nhất 19 ký tự.
+
+### 18.1 Hình học sai ở đâu
+
+```
+chip: position: absolute; left: 50%; transform: translateX(-50%)   /* trong cột mascot */
+.menu-hero { overflow: hidden }
+```
+
+| Bố cục | Mascot | Kết quả |
+| --- | --- | --- |
+| cột (`stack`) | giữa band | chip căn giữa mascot → **đúng** |
+| hàng (`row`, `lg+`) | cuối hàng = mép phải band | nửa phải chip ra ngoài band → **bị cắt** |
+
+Tên dài nhất bị cắt rõ nhất, nên lỗi đọc thành "chế độ cổ điển bị lỗi". Thực ra
+**mọi** tên đều mất một phần — chỉ ít hơn mức nhìn thấy.
+
+### 18.2 Hai tầng, hai bảo đảm
+
+| Tầng | Bảo đảm | Công cụ kiểm |
+| --- | --- | --- |
+| CSS | căn theo mép trong + `max-width` cứng = band − 2×8 | `tests/mode-chip-wiring.test.ts` (đọc source), `npm run smoke` (đọc HTML) |
+| Plan | thang bậc `full → label-dropped → name-shrunk → ellipsis` | `tests/mode-chip.test.ts` (thuần), `tests/mode-chip-fixtures.test.ts` (corpus) |
+
+Hai tầng độc lập có chủ đích: ước lượng bề rộng chữ có thể sai 6%, và khi sai thì
+nó chỉ chọn chip *nhỏ hơn*, không bao giờ chọn chip *bị cắt* — vì tầng CSS mới là
+thứ giữ pixel.
+
+### 18.3 `heroBandWidth()` — con số thật
+
+`heroContainerWidth()` trừ 64px ở **mọi** cỡ (giả định `px-8`), đúng cho câu hỏi
+"hàng có vừa không" vì đó là hướng thận trọng. Nhưng chip dùng con số đó làm
+`max-width`, nên 32px thận trọng sẽ bỏ nhãn «CHẾ ĐỘ CHƠI» trên **mọi** điện thoại.
+`heroBandWidth()` đọc đúng padding: `px-4` dưới `sm` (16 mỗi bên), `px-8` từ `sm`
+(32 mỗi bên).
+
+### 18.4 `estimateText()` — đo chữ khi chưa có layout
+
+React không trả lời được "chữ này rộng bao nhiêu" trong lúc render
+(`getBoundingClientRect` cần một lần vẽ), và trả lời **sau** khi vẽ thì frame đầu
+tiên đã sai — đúng frame mà ảnh chụp bắt được. Nên bề rộng được ước lượng theo
+lớp ký tự:
+
+| Lớp | em |
+| --- | --- |
+| dấu câu `. , : ; ' \| !` | 0,26 |
+| nét hẹp `i l j I [ ] ( )` | 0,33 |
+| `f r t` | 0,40 |
+| chữ thường | 0,54 |
+| chữ số | 0,58 |
+| chữ hoa (kể cả dấu tiếng Việt) | 0,68 |
+| `M W m w @ % &` | 0,87 |
+
+× 1,06 cho sai số lớn nhất đo được. Hàm **toàn phần**: `null`, `""`, `NaN` → 0.
+
+### 18.5 Corpus thứ ba
+
+`tests/fixtures/mode-chips/` — **189** ảnh chụp (21 preset × 9 chế độ), sinh bằng
+`npm run gen:chip`, kiểm bằng `--check` và bằng một suite riêng. Đây là corpus đầu
+tiên về một **component** chứ không phải một bố cục: nó ghim đúng hai đầu vào đã
+sinh ra lỗi — bề ngang band và một bản dịch dài.
+
+## 19. Vòng 11 — chữ có dấu không được để CSS cắt
+
+### 19.1 Một thuộc tính, ba tác dụng, một cái phá
+
+`truncate` trong Tailwind là ba khai báo. Hai cái đầu ai cũng biết
+(`text-overflow`, `white-space`); cái thứ ba — `overflow: hidden` — là cái **cắt**,
+và nó cắt theo cả hai trục. Trục dọc mới là vấn đề: hộp dòng của một span một
+dòng được tính từ `font-size × line-height`, không từ **mực**.
+
+Tiếng Việt có mực ngoài hộp đó:
+
+| Dấu | Ví dụ | Vị trí mực |
+| --- | --- | --- |
+| dấu thanh dưới | `Ạ Ụ Ợ` | dưới đường chân chữ, trong hộp |
+| dấu thanh giữa | `À Ả` | trên in hoa, vẫn trong hộp 1.5em |
+| **chồng hai dấu** | `Ố Ổ Ể Ấ Ự` | **~0.35em trên chiều cao in hoa** |
+| móc | `Ư Ơ` | gắn vào thân chữ, không vượt trần |
+
+Chỉ hàng thứ ba vượt ra, và nó là hàng mà bảng chữ Latin không có. Với Bungee
+(in hoa 0.78em) và một hộp dòng 1.5em: chỗ phía trên in hoa là
+`1.5 − 0.78 = 0.72em`, chia hai bên theo `half-leading` → ~0.36em — **vừa đủ**. Với
+1.2em thì còn ~0.21em, và với `leading-none` là **0**. Đó là toàn bộ lý do
+`MODE_CHIP_LINE_HEIGHT = 1.5` và con số `.24em` trong `.clip-safe`.
+
+### 19.2 Luật, không phải mẹo
+
+1. **Chữ dịch được thì không `truncate`.** Dùng `.clip-safe` (`overflow` + nới
+   `padding-block` + bù `margin-block`). Nếu phải cắt *chuỗi* thì cắt trong code,
+   như `planModeChip()` làm.
+2. **`line-height` của chữ hiển thị ≥ 1.3.** Ngoại lệ duy nhất là wordmark
+   (`leading-[0.9]`), và nó không bao giờ bị cắt — quyết định từ vòng 2 vì hộp
+   glyph của `CHÉO` được căn theo `LOCKUP_BOX_RATIO`.
+3. **Không `overflow` trên cây của một component đã có planner.** Nếu chip cần
+   nhỏ hơn, planner trả về chuỗi nhỏ hơn.
+4. **Hộp nào có hàng xóm thì hộp đó phải có hàm đo.** `chipBoxHeight(plan)` thay
+   cho hằng số `14` đoán mò của `heroContentHeight()`.
+
+### 19.3 Cùng một con số, ba chỗ đọc
+
+| Chỗ | In ra | Test khoá |
+| --- | --- | --- |
+| `describeModeChip()` | `… · box 35px` | `mode-chip.test.ts` |
+| `diagnose()` lớp 8 | `… · box 35px` | `adaptive-diagnostics.test.ts` |
+| `check:adaptive` | cột `box` + cổng `chip-box` ≤ 128px | `check-adaptive-script.test.ts` |
+
+`chip-box` **không** phải một bất biến của hợp đồng adaptive: `chipBoxHeight()`
+là con số của một component, không phải của một cửa sổ. Nó là một cổng trong
+công cụ, đúng chỗ mà hàng xóm bị ảnh hưởng.
+
+### 19.4 `diagnose()` lớp 8 in thêm chiều cao hộp
+
+```
+8 · chip   band 452px · needs 246px · full · box 35px
+```
+
+Ba số, ba câu hỏi khác nhau: band là chỗ được cấp, `needs` là chỗ nó muốn,
+`box` là chiều cao nó chiếm. Vòng 11 đổi cái thứ ba mà không đổi hai cái đầu —
+nên nó là cái phải hiện ra.
+
+### 19.5 Vì sao test component không bắt được
+
+Không có DOM, không có `getComputedStyle`, và `overflow: hidden` không làm thay
+đổi `textContent`. Cái duy nhất nhìn thấy được là **pixel**, và repo này không có
+trình duyệt trong CI. Nên lớp bảo vệ là **đọc file**: `tests/diacritics-clip.test.ts`
+khẳng định `.clip-safe` tồn tại với `padding`/`margin` cân nhau, không còn
+`truncate` nào trong `src/`, và chip không có `overflow` nào trong cây. Thô, nhưng
+nó bắt đúng thứ đã ship sai hai lần.
+
+### 19.6 Hàng xóm của sửa đổi này
+
+| Hàng xóm | Ảnh hưởng | Xử lý |
+| --- | --- | --- |
+| `heroContentHeight()` | chip cao thêm 3.3px | `chipBoxHeight()` + test ≤ mascot 128px |
+| `.menu-row-label` 1.2 | chỗ dấu chỉ vừa khít | nâng 1.35, chiều cao hàng không đổi |
+| 6 call site `truncate` | mất ellipsis | `.clip-safe` — cùng hành vi, khác hộp cắt |
+| `menu-row.test.ts` | ghim `truncate` | sửa thành `clip-safe` |
+| `mode-chip-wiring.test.ts` | ghim `min-w-0 truncate` | sửa thành "không tự cắt chữ" |
+| `assets/` 23 hình | tài liệu trực quan | thêm `diacritics-clip.svg` (24) |

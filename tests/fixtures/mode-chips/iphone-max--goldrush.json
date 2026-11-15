@@ -1,0 +1,17 @@
+{
+ "preset": "iphone-max",
+ "window": "414×896",
+ "mode": "goldrush",
+ "name": "MÙA VÀNG",
+ "band": 382,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 366,
+ "needed": 194,
+ "available": 366,
+ "truncated": false,
+ "reason": "full"
+}

@@ -61,7 +61,7 @@ export default function AchievementsPanel({
                 {owned ? a.glyph : "?"}
               </span>
               <span className="min-w-0">
-                <span className="block truncate font-body text-[9px] font-extrabold tracking-[0.08em]">
+                <span className="block clip-safe font-body text-[9px] font-extrabold tracking-[0.08em]">
                   {owned ? t(`ach.${a.id}.name` as MessageKey) : t("ach.locked")}
                 </span>
                 <span className="block font-body text-[8px] leading-snug text-clay-100/45">

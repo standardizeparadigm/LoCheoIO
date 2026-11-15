@@ -36,7 +36,6 @@ import { APP_VERSION } from "../version";
 import { MenuBackground } from "./menu/background";
 import { fmtNum } from "../i18n/i18n";
 import { useI18n } from "../i18n/useI18n";
-import type { MessageKey } from "../i18n/i18n";
 import type { ModeId } from "../game/modes";
 import type { ScoreEntry } from "../game/storage";
 import { ACHIEVEMENTS } from "../game/achievements";
@@ -55,8 +54,9 @@ import {
   AboutModal,
   ChangelogModal,
   QuitModal,
+  ModeChip,
 } from "./menu";
-import { adaptiveAttributes, useAdaptive } from "./menu/adaptive";
+import { adaptiveAttributes, heroBandWidth, useAdaptive } from "./menu/adaptive";
 import { Wordmark } from "./menu/wordmark";
 import { TICKER_KEYS } from "./menu/ticker/keys";
 import { MenuTicker } from "./menu/ticker/MenuTicker";
@@ -326,21 +326,17 @@ export default function StartScreen({
                   {hero.halo && <JarHalo />}
                   <JarLogo className="anim-bob anim-breathe jar-glow relative z-10 h-32 w-auto sm:h-40 xl:h-48" mood="happy" />
                 </div>
+                {/*
+                 * The chip's own layout, not three Tailwind classes.
+
+                 * It is centred on the mascot, and in the ROW layout the mascot
+                 * is the last item of the row — so a centred chip of a long mode
+                 * name reached past the hero's `overflow: hidden` and lost its
+                 * right edge. `planModeChip()` decides alignment, the label
+                 * ladder and a hard width cap; see `menu/adaptive/chip/`.
+                 */}
                 {!plan.minimal && (
-                <button
-                  type="button"
-                  onClick={() => setModal("modes")}
-                  title={t("game.modes")}
-                  className="press hard-shadow-sm group absolute -bottom-1 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 border-[3px] border-jade-700 bg-jade-950/90 px-3 py-1.5 whitespace-nowrap transition-colors hover:border-tumeric-500"
-                >
-                  <span className="h-2 w-2 rounded-full bg-tumeric-500 transition-transform group-hover:scale-125" aria-hidden="true" />
-                  <span className="font-body text-[8px] font-extrabold tracking-[0.2em] text-jade-500 uppercase">
-                    {t("game.modes")}
-                  </span>
-                  <span className="font-display text-[11px] tracking-[0.06em] text-tumeric-400">
-                    {t(`mode.${mode}.name` as MessageKey)}
-                  </span>
-                </button>
+                  <ModeChip mode={mode} bandWidth={heroBandWidth(profile.box.width)} side={hero.sideBySide ? "right" : "center"} onOpen={() => setModal("modes")} />
                 )}
               </div>
             </div>

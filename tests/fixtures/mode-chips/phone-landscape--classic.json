@@ -1,0 +1,17 @@
+{
+ "preset": "phone-landscape",
+ "window": "844×390",
+ "mode": "classic",
+ "name": "MUỐI DƯA CỔ ĐIỂN",
+ "band": 780,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 764,
+ "needed": 246,
+ "available": 764,
+ "truncated": false,
+ "reason": "full"
+}

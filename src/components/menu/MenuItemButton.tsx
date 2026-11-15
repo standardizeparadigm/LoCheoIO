@@ -70,11 +70,11 @@ export default function MenuItemButton({
     >
       <span className={`menu-row-icon flex ${iconBox} shrink-0 items-center justify-center`}>{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="menu-row-label block truncate font-display text-[11px] leading-tight tracking-[0.14em]">
+        <span className="menu-row-label clip-safe block font-display text-[11px] leading-tight tracking-[0.14em]">
           {label}
         </span>
         {rich && hint && (
-          <span className="menu-row-hint mt-0.5 block truncate font-body text-[9px] leading-snug opacity-75">{hint}</span>
+          <span className="menu-row-hint clip-safe mt-0.5 block font-body text-[9px] leading-snug opacity-75">{hint}</span>
         )}
       </span>
       {trailing && <span className="shrink-0">{trailing}</span>}

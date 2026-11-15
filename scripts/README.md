@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1250 tests / 127 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1311 tests / 131 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -180,7 +180,7 @@ Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn tr�
 
 ## `check-svg.mjs`
 
-Validator cho 22 file SVG trong `assets/`. Không có trình render SVG trong CI,
+Validator cho 24 file SVG trong `assets/`. Không có trình render SVG trong CI,
 nên nó kiểm đúng những cách một SVG **hỏng trên trình duyệt mà vẫn hợp lệ XML**:
 
 1. `url(#id)` trỏ tới `id` không tồn tại — gradient biến mất, hình phẳng.
@@ -194,7 +194,7 @@ animation SMIL và một filter.
 
 ```bash
 node scripts/check-svg.mjs
-# → ASSETS OK — 22 SVG, all references resolve, all animated.
+# → ASSETS OK — 24 SVG, all references resolve, all animated.
 ```
 
 > **Vì sao có sàn:** trước vòng 6, 12/20 file có gradient và animation nhưng
@@ -263,3 +263,18 @@ npx vite-node scripts/gen-hero-fixtures.ts --check   # chỉ báo
 Corpus thứ hai vì hai ảnh chụp trong báo cáo — 1920×1080 và 1920×820 — **cùng bề
 ngang, cách nhau 260px band**. Corpus cửa sổ chỉ lấy được những band mà cửa sổ
 tình cờ tạo ra; corpus này đi thẳng từng bậc.
+
+## `gen-mode-chip-fixtures.ts`
+
+Sinh `tests/fixtures/mode-chips/` — **189** ảnh chụp, một file mỗi cặp
+(preset, chế độ): band, `showLabel`, `nameSize`, `maxWidth`, `needed`, `reason`.
+
+```bash
+npx vite-node scripts/gen-mode-chip-fixtures.ts           # ghi
+npx vite-node scripts/gen-mode-chip-fixtures.ts --check   # chỉ báo
+```
+
+Corpus thứ ba là corpus đầu tiên về một **component** chứ không phải một bố cục:
+nó ghim đúng hai đầu vào đã sinh ra lỗi ở vòng 10 — bề ngang band và một bản dịch
+dài 19 ký tự. Dùng tên tiếng Việt trong `MODE_LIST` vì đó là tập rộng nhất; bảy
+ngôn ngữ được phủ riêng trong `tests/mode-chip.test.ts`.

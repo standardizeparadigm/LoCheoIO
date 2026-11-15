@@ -39,8 +39,14 @@ describe("the row height is declared, never measured", () => {
 });
 
 describe("the label truncates instead of growing the row", () => {
-  it("the label is truncated", () => {
-    expect(src).toMatch(/menu-row-label[^"]*truncate/);
+  it("the label is clipped with `clip-safe`, never a bare `truncate`", () => {
+    // Round 11: `truncate` is `overflow: hidden`, and a Vietnamese stacked mark
+    // (`Ổ`, `Ấ`, `Ự`) rises ~0.35em above the cap height. Clipping at the line
+    // box shaves the tips off — the mode chip shipped that bug. `clip-safe`
+    // clips at a padded box instead, so the ink survives and the layout does not
+    // move. See `tests/diacritics-clip.test.ts`.
+    expect(src).toMatch(/menu-row-label[^"]*clip-safe/);
+    expect(src).not.toMatch(/menu-row-label[^"]*truncate/);
   });
 
   it("the label's wrapper can shrink below its content", () => {
@@ -54,8 +60,9 @@ describe("the label truncates instead of growing the row", () => {
     expect(src).toMatch(/menu-row[^"]*overflow-hidden/);
   });
 
-  it("the hint line truncates too, in rich density", () => {
-    expect(src).toMatch(/block truncate font-body text-\[9px\]/);
+  it("the hint line clips the same way, in rich density", () => {
+    expect(src).toMatch(/menu-row-hint[^"]*clip-safe/);
+    expect(src).not.toMatch(/menu-row-hint[^"]*truncate/);
   });
 });
 

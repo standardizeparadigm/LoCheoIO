@@ -1,0 +1,17 @@
+{
+ "preset": "android-small",
+ "window": "360×640",
+ "mode": "hardcore",
+ "name": "GỐM MỎNG",
+ "band": 328,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 312,
+ "needed": 196,
+ "available": 312,
+ "truncated": false,
+ "reason": "full"
+}

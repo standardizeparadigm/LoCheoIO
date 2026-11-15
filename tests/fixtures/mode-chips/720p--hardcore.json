@@ -1,0 +1,17 @@
+{
+ "preset": "720p",
+ "window": "1280×720",
+ "mode": "hardcore",
+ "name": "GỐM MỎNG",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 196,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

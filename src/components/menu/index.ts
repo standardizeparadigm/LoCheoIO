@@ -2,6 +2,7 @@
 export { default as CornerPanel } from "./CornerPanel";
 export { default as MenuItemButton } from "./MenuItemButton";
 export { default as GameMenu } from "./GameMenu";
+export { default as ModeChip } from "./ModeChip";
 export { default as InfoMenu } from "./InfoMenu";
 export { default as ModeSelectModal } from "./ModeSelectModal";
 export { default as SettingsModal } from "../settings/SettingsModal";

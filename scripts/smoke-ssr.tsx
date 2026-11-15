@@ -7,6 +7,7 @@
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
 import StartScreen from "../src/components/StartScreen";
+import ModeChip from "../src/components/menu/ModeChip";
 import GameMenu from "../src/components/menu/GameMenu";
 import InfoMenu from "../src/components/menu/InfoMenu";
 import ModeSelectModal from "../src/components/menu/ModeSelectModal";
@@ -115,6 +116,50 @@ const html = renderToString(
   check("wordmark CHÉO has an inline font-size", Boolean(cheo) && Number.isFinite(cheoSize));
   check("CHÉO is smaller than LỌ", ratio < 1, `ratio ${ratio.toFixed(2)}`);
   check("nothing is painted behind the wordmark", !/text-shimmer::before/.test(html));
+}
+
+/*
+ * ---- mode chip probe -------------------------------------------------------
+ *
+ * The chip's bug was a class name, so this gate reads the class name. Three bands
+ * cover the three things that can go wrong: alignment in the row layout, the
+ * width cap, and the early return below the floor.
+ */
+{
+  const chip = (band: number) =>
+    renderToString(createElement(ModeChip as never, { mode: "classic", bandWidth: band, side: "right", onOpen: noop } as never));
+  const check = (name: string, pass: boolean, detail = "") => {
+    if (!pass) throw new Error(`mode chip probe failed: ${name} ${detail}`);
+    console.log("ok", name, detail);
+  };
+
+  const wide = chip(1088);
+  const tight = chip(200);
+  const tiny = chip(60);
+
+  check("chip right-aligns in the row layout", wide.includes("right-0") && !wide.includes("-translate-x-1/2"));
+  check("chip carries the plan's width cap", wide.includes("max-width:1072px"));
+  check("chip keeps its label where it fits", wide.includes('data-mode-chip="full"'));
+  check("chip drops the label before the name", tight.includes('data-mode-chip="label-dropped"') && tight.includes("MUỐI DƯA CỔ ĐIỂN"));
+  check("chip draws nothing under the floor", tiny === "");
+
+  /*
+   * Round 11: the chip must never clip its own text, so the SSR markup may not
+   * contain an ellipsis class or a hidden overflow — and the marks must be in the
+   * string, not shaved off it.
+   */
+  const clipped = /truncate|overflow-hidden/.test(wide + tight);
+  check("chip never clips its own text", !clipped, clipped ? "(found truncate/overflow-hidden)" : "");
+  check("chip paints every tone mark of the classic mode", wide.includes("MUỐI DƯA CỔ ĐIỂN"));
+  /*
+   * The label is upper-cased by CSS (`uppercase`), but `aria-label` is the raw
+   * translation — so the check uses the string the component was given.
+   */
+  check("chip keeps the full name for screen readers", wide.includes("CH\u1ebe \u0110\u1ed8 CH\u01a0I: MU\u1ed0I D\u01afA C\u1ed4 \u0110I\u1ec2N"));
+  check(
+    "chip declares the planner's 1.5em line box",
+    wide.includes("line-height:1.5"),
+  );
 }
 
 console.log("StartScreen html length:", html.length, html.includes("LỌ") || html.includes("L") ? "contains title" : "TITLE MISSING?");

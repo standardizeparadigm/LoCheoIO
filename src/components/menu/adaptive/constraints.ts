@@ -29,7 +29,9 @@
 
 import { CORNER_ROW_MARGIN, PANEL_FOOTER_HEIGHT } from "../layout/metrics";
 import { usableHeight } from "../layout/fit";
-import { heroContentHeight } from "./hero";
+import { heroBandWidth, heroContentHeight } from "./hero";
+import { planModeChip } from "./chip";
+import { MODE_LIST } from "../../../game/modes";
 import { densityFor } from "./density";
 import { LOCKUP_BOX_RATIO } from "../wordmark/scale";
 import { ADAPTIVE_CSS_VARS, type AdaptiveProfile } from "./resolve";
@@ -190,10 +192,70 @@ export const CONSTRAINTS: readonly Constraint[] = [
   },
 ];
 
+/*
+ * The two chip invariants below are the ones the round-10 screenshot broke.
+ *
+ * They are contract-level on purpose. The bug was not "the chip is 20px too
+ * wide" — it was that nothing in the app promised the chip would stay inside the
+ * band, so a centred absolute element was free to leave it. A promise that lives
+ * only in a component is a promise nobody can test at every window.
+ */
+const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+
+/** The band the chip lives in, for this profile. */
+function chipBand(p: AdaptiveProfile): number {
+  return heroBandWidth(p.box.width);
+}
+
+/** Every mode name the chip may print, in the app's own language. */
+function modeNames(): string[] {
+  return MODE_LIST.map((m) => m.name);
+}
+
+const CHIP_CONSTRAINTS: readonly Constraint[] = [
+  /*
+   * Only two chip invariants: the other candidate — "maxWidth ≤ available" — was
+   * true by construction, and a constraint that cannot fail is a comment with a
+   * function signature. The width guarantee is asserted as a property in
+   * `tests/mode-chip.test.ts`, where it can be swept over every band.
+   */
+  {
+    id: "chip-name-survives",
+    why: "no mode name is ellipsised at a window the app can be played in.",
+    check: (p) => {
+      if (p.plan.minimal) return null;
+      const band = chipBand(p);
+      for (const name of modeNames()) {
+        const plan = planModeChip({ heroWidth: band, side: "right", name, label: CHIP_LABEL });
+        if (plan.visible && plan.truncated) return `«${name}» needs an ellipsis in a ${band}px band`;
+      }
+      return null;
+    },
+  },
+  {
+    id: "chip-labelled",
+    why: "the chip keeps its «CHẾ ĐỘ CHƠI» label on every playable window.",
+    check: (p) => {
+      /*
+       * The label is the first rung of the ladder, and the ladder exists for
+       * windows this contract does not cover — the crop economy, where the band
+       * is the bare floor. Everywhere else the label is part of the design.
+       */
+      if (p.plan.minimal || p.plan.fit === "crop") return null;
+      const band = chipBand(p);
+      for (const name of modeNames()) {
+        const plan = planModeChip({ heroWidth: band, side: "right", name, label: CHIP_LABEL });
+        if (plan.visible && !plan.showLabel) return `«${name}» loses the label in a ${band}px band`;
+      }
+      return null;
+    },
+  },
+];
+
 /** Every violation for one profile. */
 export function violations(profile: AdaptiveProfile): Array<{ id: string; message: string }> {
   const out: Array<{ id: string; message: string }> = [];
-  for (const c of CONSTRAINTS) {
+  for (const c of [...CONSTRAINTS, ...CHIP_CONSTRAINTS]) {
     const message = c.check(profile);
     if (message) out.push({ id: c.id, message });
   }
@@ -207,5 +269,5 @@ export function firstViolation(profile: AdaptiveProfile): { id: string; message:
 
 /** The ids, in order — used by the docs test to check the guide names them all. */
 export function constraintIds(): string[] {
-  return CONSTRAINTS.map((c) => c.id);
+  return [...CONSTRAINTS, ...CHIP_CONSTRAINTS].map((c) => c.id);
 }

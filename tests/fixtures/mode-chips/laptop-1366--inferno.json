@@ -1,0 +1,17 @@
+{
+ "preset": "laptop-1366",
+ "window": "1366×768",
+ "mode": "inferno",
+ "name": "ỚT LỬA",
+ "band": 1088,
+ "visible": true,
+ "align": "end",
+ "showLabel": true,
+ "nameSize": 11,
+ "labelSize": 8,
+ "maxWidth": 1072,
+ "needed": 174,
+ "available": 1072,
+ "truncated": false,
+ "reason": "full"
+}

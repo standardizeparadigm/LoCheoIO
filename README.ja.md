@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1250%20%C2%B7%20127%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——127ファイル1250テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——131ファイル1311テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -274,6 +274,59 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 そしてスクリーンショットの疑問に答える `diagnose()`。
 
 <img src="assets/hud-bands.svg" alt="1.1.8 の HUD 計画 —— 表示ごとのグリフ帯、時計から流れる中央列、chips → comboBar → jars → best の順に外し、0.55 の下限まで圧縮（SMIL アニメーション）" width="100%" />
+
+### 1️⃣1️⃣ 第10ラウンド：モードチップが右側を失わなくなった
+
+スクリーンショットの報告は「クラシックを選ぶと右側が消える」。原因は数値の誤り
+ではなく**前提**の誤りでした。チップは `absolute; left: 50%; translateX(-50%)`
+でマスコット列の中にあり、`max-width` が無かったのです。
+
+```
+縦レイアウト  マスコットは中央  →  チップも中央  →  正しい
+横レイアウト  マスコットは右端  →  チップの半分が枠外
+                                  .menu-hero { overflow: hidden }  →  切られる
+```
+
+最も長い名前「MUỐI DƯA CỔ ĐIỂN」（19 文字）だけがはっきり切れたため「クラシック
+が壊れた」ように見えましたが、実際はすべての名前が少しずつ欠けていました。
+
+今は**二つの独立した保証**があります。CSS が箱を守り（横レイアウトでは内側の縁に
+揃え、`max-width` を hard に）、`planModeChip()` が段階（`full → label-dropped →
+name-shrunk → ellipsis`）を守ります。文字幅の推定が 6% ずれても、選ばれるのは
+小さいチップだけで、切れたチップにはなりません。
+
+今回さらに：`heroBandWidth()`、**新しい不変条件 2 件**（12 → **14**）、**第三の
+コーパス**（189 スナップショット、21 プリセット × 9 モード）。
+
+<img src="assets/mode-chip.svg" alt="1.1.8 で修正したモードチップの前後 —— 修正前：右端のマスコットを中心にしていたため overflow hidden で右半分が切れる／修正後：内側の縁に揃え、幅に上限、ラベル → サイズ → 省略記号の段階（SMIL アニメーション）" width="100%" />
+
+### 第 11 ラウンド —— ベトナム語の声調記号が切り取られなくなった
+
+今回のスクリーンショットは「右半分が消えた」ではなく **「記号が消えた」** でした。
+チップは «MUỐI DƯA CỔ ĐIÊN» と表示され、**Ể** のサーカムフレックスだけが失われ、
+手前の **Ổ** は残っていました。原因は **第 10 ラウンドの回帰** です。`truncate` は
+横方向だけでなく、`overflow: hidden` が **行ボックス** を切ります。ベトナム語は
+声調記号をサーカムフレックスに重ねるため（`Ố Ổ Ể Ấ Ự`）、大文字の高さより約
+**0.35em** 上にインクが出ます。
+
+三つの層を別々に直し、互いに重ならないようにしました。
+
+| 層 | 以前 | 以後 |
+| --- | --- | --- |
+| 文字列 | CSS の省略記号 | `planModeChip()` が文字列を切り `…` を付ける |
+| 行ボックス | 1.2em | **1.5em**（`MODE_CHIP_LINE_HEIGHT`） |
+| 切り取りボックス | 名前 span の `truncate` | **サブツリーに `overflow` なし** |
+
+さらに **`.clip-safe`** —— 翻訳されるテキストの `truncate` 代替です。
+`padding-block: .24em` で切り取りボックスを広げ、`margin-block: -.24em` で
+レイアウトを元に戻すので、行は動かず記号だけが残ります。6 か所を移行しました。
+`chipBoxHeight()` は推測の定数を置き換えます。チップが 3.3px 高くなったのは
+`heroContentHeight()` の関心事なので、記憶ではなく実測値を読みます。
+
+詳細：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
+
+<img src="assets/diacritics-clip.svg" alt="ベトナム語の声調記号が消える理由 —— 以前：行ボックスと同じ高さの切り取りボックスが Ể のサーカムフレックスを削り、「CỔ ĐIỂN」が「CỔ ĐIÊN」に；以後：1.5em の行ボックスと clip-safe の ±0.24em で記号が残る（SMIL アニメーション）" width="100%" />
+
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
 

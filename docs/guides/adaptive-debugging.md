@@ -140,8 +140,9 @@ npm run check:adaptive                 # bảng 21 preset thật + 12 bất bi�
 npm run check:adaptive -- --explain 1280x720   # chẩn đoán một cửa sổ
 ```
 
-`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ, fit và
-**những thoả hiệp** của từng preset. Bảng đọc từ `presets.ts`, bất biến đọc từ
+`scripts/check-adaptive.ts` in tier, density, scene, reserve, cỡ chữ, fit,
+**những thoả hiệp** và **bậc thang chip** của từng preset — cột `chip` dùng tên chế
+độ dài nhất, nên nó là trần: chế độ nào khác cũng vừa bằng hoặc tốt hơn. Bảng đọc từ `presets.ts`, bất biến đọc từ
 `constraints.ts` — cùng nguồn với suite, nên không thể lệch.
 
 ### 8.1 "Vì sao trông như vậy" — `diagnose()`
@@ -153,7 +154,7 @@ const { diagnose, renderDiagnosis } = await import("/src/components/menu/adaptiv
 console.log(renderDiagnosis(resolveForSize(1280, 720)));
 ```
 
-Tám dòng, theo đúng thứ tự suy ra:
+Chín dòng, theo đúng thứ tự suy ra:
 
 ```
 1 · box      ↳ aspect is the width over the height; everything below reads it
@@ -163,7 +164,9 @@ Tám dòng, theo đúng thứ tự suy ra:
 5 · hero     row   ↳ band 342px clears the row floor
 6 · type     89.5px ↳ lockup capped by the band
 7 · modal    448×619px · 1 col ↳ 448px is under the 560px two-column floor
-8 · board    jar 38px · hud ×1.029 ↳ item scale follows height
+8 · chip     band 1088px · needs 246px · full
+             ↳ right-aligned to the mascot's inner edge
+9 · board    jar 38px · hud ×1.029 ↳ item scale follows height
 trade-offs: none — this window gets the full layout
 ```
 
@@ -181,7 +184,75 @@ const { violations } = await import("/src/components/menu/adaptive/constraints.t
 violations(resolveForSize(844, 390));   // → []
 ```
 
-## 9. Khi nào **không** phải sửa adaptive
+## 9. "Chip chế độ mất nửa bên phải"
+
+Lỗi vòng 10. Chip là phần tử **tuyệt đối** căn trên một **cột hẹp** (mascot), trong
+khi hero là `overflow: hidden`:
+
+```
+bố cục CỘT   mascot giữa band    →  chip căn giữa mascot  →  đúng
+bố cục HÀNG  mascot mép phải     →  nửa chip ra ngoài band →  bị cắt
+```
+
+Kiểm trong 5 giây bằng ba attribute trên chính cái nút:
+
+```js
+const chip = document.querySelector("[data-mode-chip]");
+chip.dataset.modeChip;        // full | label-dropped | name-shrunk | ellipsis
+chip.dataset.modeChipAlign;   // center | end   ← end khi mascot ở phải
+chip.dataset.modeChipName;    // 11 (px) …
+chip.getBoundingClientRect(); // so right với band: phải ≤ band
+```
+
+Nếu `align` là `center` mà mascot đang ở mép phải, lỗi đã quay lại — đó là điều
+`tests/mode-chip-wiring.test.ts` chặn ở tầng source.
+
+Ba trạng thái và ý nghĩa:
+
+| `data-mode-chip` | Nghĩa | Có phải lỗi? |
+| --- | --- | --- |
+| `full` | nhãn + tên ở cỡ chuẩn | không |
+| `label-dropped` | chỉ còn chấm + tên (nút vẫn có `title`/`aria-label`) | không, nếu band < 272px |
+| `name-shrunk` | tên nhỏ hơn 11px nhưng ≥ 9.5px | không, band rất hẹp |
+| `ellipsis` | tên bị cắt bằng `…` | **có** — dưới 128px band, tức dưới ngưỡng chơi được |
+
+Ở 320×480 (cửa sổ nhỏ nhất hỗ trợ) cả 9 tên tiếng Việt vẫn `full`; ba tên bản dịch
+dài rơi xuống `label-dropped`, và danh sách đó được ghim trong test.
+
+Sửa gì khi nó sai:
+
+```bash
+npm run gen:chip          # ghi lại 189 ảnh chụp của corpus
+npm run gen:chip -- --check   # xem cái nào lệch
+npx vitest run tests/mode-chip.test.ts tests/mode-chip-fixtures.test.ts
+```
+
+## 10. "Chữ mất dấu" — dấu tiếng Việt bị cắt
+
+Triệu chứng: một chữ đọc sai mà **không** có cảnh báo nào. «CỔ ĐIỂN» thành «CỔ
+ĐIÊN». Nhìn kỹ mới thấy thiếu đúng phần **đỉnh** dấu, không thiếu chữ.
+
+Nguyên nhân gần như luôn là một trong hai:
+
+| Thấy gì | Nguyên nhân | Sửa |
+| --- | --- | --- |
+| mất đỉnh mũ/sắc, chữ vẫn đủ | `overflow: hidden` từ `truncate` trên chữ có dấu | `.clip-safe` |
+| mất đỉnh ở **mọi** chỗ cùng lúc | `leading-none` / `leading-[0.85]` trên chữ dịch được | `line-height` ≥ 1.3 |
+| mất cả dấu ở wordmark | mask glyph chỉ giữ chữ gốc | không đụng `É` — dùng `text-shadow` |
+
+Kiểm nhanh, không cần trình duyệt:
+
+```bash
+npx vitest run tests/diacritics-clip.test.ts   # 15 test, đọc file
+grep -rn truncate src --include=*.tsx          # phải rỗng
+node -e "console.log(require('fs').readFileSync('src/index.css','utf8').match(/\.clip-safe[^}]*}/)[0])"
+```
+
+Và nếu đã đổi chiều cao của một hộp có hàng xóm: chạy
+`npx vitest run tests/mode-chip.test.ts` — nó khoá `chipBoxHeight()` nhỏ hơn
+mascot, và `describeModeChip()` in ra con số để so với `diagnose()` lớp 8.
+
+## 11. Khi nào **không** phải sửa adaptive
 
 - Ảnh chụp ở 320×480: `crop` là câu trả lời đúng, không phải lỗi.
 - Chữ nhỏ hơn ở cửa sổ 900×500 so với 1280×720: đúng, cạnh ngắn là 500.

@@ -32,7 +32,7 @@ function broken(profile: AdaptiveProfile, patch: (p: AdaptiveProfile) => void): 
 
 describe("the list itself", () => {
   it("has twelve uniquely named invariants", () => {
-    expect(CONSTRAINTS.length).toBe(12);
+    expect(constraintIds().length).toBe(14);
     const ids = constraintIds();
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id, id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
@@ -112,6 +112,19 @@ describe("the contract is not vacuous", () => {
   it("catches a dialog wider than the window", () => {
     const p = broken(base, (x) => { x.modal.maxWidth = x.box.width + 1; });
     expect(violations(p).map((v) => v.id)).toContain("dialog-fits-window");
+  });
+
+  it("catches a mode chip that would lose its name", () => {
+    // 160px of window leaves the chip a 128px band: the name no longer fits at
+    // the floor size, so the chip would have to ellipsise it.
+    const p = broken(base, (x) => { x.box.width = 160; });
+    expect(violations(p).map((v) => v.id)).toContain("chip-name-survives");
+  });
+
+  it("catches a mode chip that would lose its label", () => {
+    // A 200px window is still a phone, and there the label must survive.
+    const p = broken(base, (x) => { x.box.width = 200; });
+    expect(violations(p).map((v) => v.id)).toContain("chip-labelled");
   });
 
   it("catches a jar wider than the board", () => {

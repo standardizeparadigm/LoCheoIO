@@ -25,6 +25,9 @@
 
 import type { AdaptiveProfile } from "./resolve";
 import { describeTier } from "./tiers";
+import { heroBandWidth } from "./hero";
+import { chipBoxHeight, planModeChip } from "./chip";
+import { MODE_LIST } from "../../../game/modes";
 import { describeBox } from "./viewport";
 
 /** One decision and the reason it went the way it did. */
@@ -130,7 +133,12 @@ export function diagnose(p: AdaptiveProfile): Diagnosis {
       because: modalReason(p),
     },
     {
-      layer: "8 · board",
+      layer: "8 · chip",
+      value: chipValue(p),
+      because: chipReason(p),
+    },
+    {
+      layer: "9 · board",
       value: `${p.playfield.width}×${p.playfield.height} · jar ${p.playfield.playerRadius}px · hud ×${p.playfield.hudScale}`,
       because: `item scale follows height (${p.playfield.itemScale}), radius follows the short side`,
     },
@@ -138,6 +146,41 @@ export function diagnose(p: AdaptiveProfile): Diagnosis {
 
   return { headline: headline(p), rows, warnings: warningsFor(p) };
 }
+
+/**
+ * The chip row.
+ *
+ * It is the newest layer and the one that produced a screenshot bug, so it earns
+ * a line of its own: the band it was given, the width it needed, and which rung of
+ * the ladder it landed on — read from the same planner the component calls, so the
+ * diagnosis cannot disagree with the pixels.
+ */
+function chipValue(p: AdaptiveProfile): string {
+  if (p.plan.minimal) return "hidden · hero is wordmark-only";
+  const band = heroBandWidth(p.box.width);
+  const plan = planModeChip({ heroWidth: band, side: "right", name: CHIP_WIDEST_NAME, label: CHIP_LABEL });
+  /*
+   * The box height is part of the answer now. Round 11 changed the line box and
+   * the chip grew by 3px without anybody noticing; a number the tool prints is a
+   * number that has to be re-checked when the box changes.
+   */
+  return `band ${band}px · needs ${plan.needed}px · ${plan.reason} · box ${chipBoxHeight(plan)}px`;
+}
+
+function chipReason(p: AdaptiveProfile): string {
+  if (p.plan.minimal) return "no mascot, so no chip — the mode is still in GAME → Modes";
+  const band = heroBandWidth(p.box.width);
+  const plan = planModeChip({ heroWidth: band, side: "right", name: CHIP_WIDEST_NAME, label: CHIP_LABEL });
+  if (plan.reason === "full") return `right-aligned to the mascot's inner edge, ${plan.needed}px of ${plan.available}px used`;
+  if (plan.reason === "label-dropped") return "the label goes before the name does — the name is the information";
+  if (plan.reason === "name-shrunk") return `the name shrinks to ${plan.nameSize}px, still above the legible floor`;
+  if (plan.reason === "ellipsis") return "the name is ellipsised: the band is below what a name needs";
+  return "hidden: the band is under the chip floor";
+}
+
+/** The label the chip prints, and the widest mode name it can be asked to print. */
+const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+const CHIP_WIDEST_NAME = MODE_LIST.reduce((best, m) => (m.name.length > best.length ? m.name : best), "");
 
 /** The one-line summary, with the parts a screenshot review always needs. */
 export function headline(p: AdaptiveProfile): string {
