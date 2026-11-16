@@ -140,6 +140,8 @@ Ngoài ra:
 - **`isFiniteProfile()` quá hẹp** — chỉ kiểm `type`, `plan` và `hudScale`; `NaN` trong `playfield`/`modal` vẫn "hữu hạn". Nay kiểm cả `modal.*` và `playfield.*`
 - **`slackOf()` lệch 0.05px so với `constraints.ts`** — hai chỗ làm tròn khác nhau trên cùng một hộp lockup; nay cùng một phép làm tròn
 - **Bậc `crop` là một lối cụt** — 25 / 578 cửa sổ có `fit: "crop"`, cả 25 ở 320px cao; ba bất biến miễn trừ bậc này (đúng, không có cách bố trí nào vừa) nhưng `overflow: clip` làm phần cột vượt cửa sổ **không tới được** — mất đáy panel và nút START, và không bất biến nào lên tiếng. Nay `[data-adaptive-fit="crop"] .menu-pane` cuộn dọc; `data-adaptive-fit` vốn là hook chết từ vòng 12
+- **Hộp lockup có ba định nghĩa** — `lockupLo × LOCKUP_BOX_RATIO` viết tay ở ba nơi với ba kiểu làm tròn khác nhau (lệch tới 0.05px, đủ để đảo thứ hạng). Nay `lockupBoxOf()` là định nghĩa duy nhất
+- **"Mọi số trong profile" có hai định nghĩa** — `numbers-finite` đi đệ quy còn `isFiniteProfile()` giữ danh sách viết tay; hai danh sách đã lệch nhau nên một profile có thể hỏng khi chấm điểm mà không vi phạm gì. Nay cả hai gọi `profileNumbers()`
 - **Cảnh báo `crop` nói sai hộp** — "hero is cropped" trong khi hero giữ đúng sàn 140px và **đáy chrome** mới là thứ bị cắt
 - **`chip/` README, `tests/README.md`, `scripts/README.md`** thiếu tệp mới; badge và prose 10 README lệch sau khi thêm 1 tệp test
 
