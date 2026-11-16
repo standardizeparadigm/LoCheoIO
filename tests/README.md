@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1578 tests / 146 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1588 tests / 147 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -74,6 +74,7 @@
 | `svg-counts.test.ts` | số trong **mọi** SVG — «308 / 36» từng nằm trong `test-matrix.svg` dưới một badge đúng, và không ai diff được một tấm ảnh; quét cả 20 file tìm ba dạng tuyên bố (test/file/khoá) | fs |
 | `menu-decor.test.ts` | 14 món trang trí hero — số lượng, toạ độ trong khung, không chồng lên chữ, id duy nhất, hai dải trên/dưới | pure |
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
+| `menu-scene-motion.test.ts` | bảng chuyển động của scene đối chiếu với stylesheet — tám lớp đúng thứ tự, chu kỳ đọc từ `src/index.css` khớp từng con số, mọi `lc-*` được nhắc đều có `@keyframes`, sàn gạch **tĩnh** ở cả code lẫn tài liệu, README nền lặp đúng con số ấy, và hai khối giảm chuyển động phủ đủ lớp có animation | fs + pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
 | `modes-split.test.ts` | sau khi tách `modes/`: 9 id đúng thứ tự, MODE_LIST ↔ MODES 1:1, mỗi record tự khai đúng id, đủ trường bắt buộc, knob tuỳ chọn hợp lệ, `isModeId` từ chối `"Classic"` | pure |
 | `panel-summary.test.ts` | `summaryLines`/`summaryText`/`challengeLine` của panel INFO — kẹp NaN/±Infinity/âm, đúng ba dòng, và **sanitise mode id** (id rỗng hay lạ không được sinh key `mode..name`) | pure |
