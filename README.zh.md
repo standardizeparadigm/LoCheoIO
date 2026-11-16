@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 新特性
 
-> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 任何尺寸下都不滚动、不裁切。甲板横条被移除，21 张 SVG 全部重绘，第九轮再加一张 HUD 分带示意图。
+> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 任何尺寸下都不滚动、不裁切。甲板横条被移除，SVG 共 25 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告），另加第四个语料库（事故窗口）与六层自动修复阶梯。
 
 ### 📐 一次没人管的加法——同时造成四个错误
 
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——131 个文件 1311 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——134 个文件 1366 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -314,6 +314,40 @@ ellipsis`）。文字宽度估算误差 6% 也没关系——真正守住像素�
 详见：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
 
 <img src="assets/diacritics-clip.svg" alt="越南语声调符为何消失 —— 之前：与行框同高的裁剪框把 Ể 的扬抑符切掉，「CỔ ĐIỂN」读成「CỔ ĐIÊN」；之后：1.5em 行框配合 clip-safe 的 ±0.24em 内边距，声调符完整保留（SMIL 动画）" width="100%" />
+
+### 第 12 轮 —— 审计整个窗口空间，并加上自动修复阶梯
+
+前三轮各加了**一个**语料库，但都没有回答维护者在发版前会问的问题：*在**所有**可玩
+窗口中，布局做了什么、做了多少次、有没有坏的地方？*
+
+现在用 `npm run audit:adaptive`：**578** 个窗口（21 个预设 + 围绕每个断点的 25 × 23
+网格，去重），一次解析，汇总成一个 `AuditReport`。
+
+| | |
+| --- | --- |
+| 窗口 | **578** |
+| 违反契约 | **0** —— 每个窗口都跑完 14 条不变量 |
+| 只剩 LỌ CHÉO | 101（17%） |
+| Hero 横排 / 竖排 | 170 / 408 |
+| Scene | 140px（320×320）… 1 642px（3840×2160） |
+
+`docs/adaptive-audit.md` 是该报告的**自动生成**副本，`audit:adaptive --check` 已加入
+`npm run check` —— 改动一个断点或字号下限，**会在造成它的同一个 commit 里**变成一份
+diff。这就是“升级一处必须检查周围”的原则，交给机器提醒。
+
+同时新增**自动修复阶梯** `repair/`：六层 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`。顺序就是原则：**字号最后**，
+因为 8px 下限是承诺。应用在全部 578 个窗口都停在第 0 层；阶梯存在是为了**能够**用，
+测试传入更严的契约来证明它真的会往下走。
+
+还有**第四个语料库**：14 个曾经出现在截图报告里的窗口（第 1 轮到第 12 轮），每个文件
+带 `symptom`（症状）与 `guard`（必须保持的东西），所以失败时读起来是一句关于游戏的
+话，而不是两个数字。
+
+详见：[docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+指南：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 自适应审计 —— 578 个窗口、0 处契约违反、契合与尺寸档的直方图，以及六层自动修复阶梯（SMIL 动画）" width="100%" />
 
 
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
