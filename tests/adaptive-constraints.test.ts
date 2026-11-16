@@ -34,8 +34,8 @@ function broken(profile: AdaptiveProfile, patch: (p: AdaptiveProfile) => void): 
 }
 
 describe("the list itself", () => {
-  it("has twelve uniquely named invariants", () => {
-    expect(constraintIds().length).toBe(14);
+  it("has fifteen uniquely named invariants", () => {
+    expect(constraintIds().length).toBe(15);
     const ids = constraintIds();
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id, id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
