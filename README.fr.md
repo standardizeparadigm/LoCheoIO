@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installation--exécution)
@@ -39,7 +39,7 @@ C'est un **arcade d'action mono-écran** inspiré des pickles populaires vietnam
 
 ## 🆕 Nouveautés de v1.1.8
 
-> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît et les 24 SVG existants sont redessinés et le tour neuf ajoute le schéma des bandes du HUD.
+> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles, sans défilement ni coupure. La bande du deck disparaît ; les 25 SVG comptent les schémas de bandes du HUD (tour neuf) et le rapport d'audit (tour douze), plus un quatrième corpus d'incidents et une échelle de réparation à six barreaux.
 
 ### 📐 Une addition que personne ne surveillait — et quatre bugs à la fois
 
@@ -171,7 +171,7 @@ Le niveau est **déduit du SemVer** par `tierFor(version)`, jamais tapé à la m
 
 <img src="assets/release-tiers.svg" alt="Les trois niveaux MAJOR/UPDATE/PATCH avec leurs couleurs et la chronologie de dix versions (animation SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matrice de tests 1.1.8 — 1311 tests sur 131 fichiers, neuf portes (animation SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matrice de tests 1.1.8 — 1366 tests sur 134 fichiers, neuf portes (animation SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Les six couches adaptatives de Lọ Chéo 1.1.8 — boîte, palier, plan, puis densité / hero / typo / modale / plateau, dans un seul sens (animation SMIL)" width="100%" />
 
@@ -254,6 +254,46 @@ mesure au lieu d'un souvenir.
 Détails : [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
 
 <img src="assets/diacritics-clip.svg" alt="Pourquoi les accents vietnamiens disparaissent — avant : une boîte de rognage de la taille de la boîte de ligne coupait le circonflexe de Ể, « CỔ ĐIỂN » se lisait « CỔ ĐIÊN » ; après : boîte de ligne de 1,5em et le rembourrage ±0,24em de clip-safe gardent chaque accent (animation SMIL)" width="100%" />
+
+### Tour 12 — tout l'espace de fenêtres, audité — et une échelle de réparation
+
+Chacun des trois tours précédents a ajouté **un** corpus. Aucun ne répondait à la
+question qu'on se pose avant de publier : *sur **toutes** les fenêtres jouables,
+que fait la mise en page, à quelle fréquence, et y a-t-il quelque chose de cassé ?*
+
+Désormais `npm run audit:adaptive` répond : **578** fenêtres (21 presets plus une
+grille 25 × 23 autour de chaque point de rupture, dédoublonnée), résolues une fois
+et réunies en un seul `AuditReport`.
+
+| | |
+| --- | --- |
+| Fenêtres | **578** |
+| Violations du contrat | **0** — chaque fenêtre exécute les 14 invariants |
+| LỌ CHÉO seul | 101 (17 %) |
+| Hero ligne / colonne | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md` est la copie **générée** de ce rapport, et
+`audit:adaptive --check` tourne dans `npm run check` : déplacer un point de rupture
+ou un plancher typographique **apparaît en diff** dans le commit qui l'a causé.
+C'est la règle « améliorer une chose, c'est vérifier son entourage », confiée à une
+machine.
+
+À côté, une **échelle de réparation** dans `repair/` : six barreaux —
+`as-planned → ignore-inset → compact-hud → single-column → smaller-type →
+smallest-type`. L'ordre est le principe : **le texte en dernier**, car le plancher
+de 8px est une promesse. L'application s'arrête au barreau 0 sur les 578 fenêtres ;
+l'échelle existe pour *pouvoir* servir, et le test lui confie un contrat plus strict
+pour prouver qu'elle descend vraiment.
+
+Et un **quatrième corpus** : 14 fenêtres qui ont chacune fait l'objet d'un rapport
+avec capture, du tour 1 au tour 12, chaque fichier portant `symptom` et `guard`,
+pour qu'un échec se lise comme une phrase sur la boutique et non comme deux nombres.
+
+Détails : [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+guide : [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="Audit adaptive de v1.1.8 — 578 fenêtres, 0 violation du contrat, histogrammes d'ajustement et de niveau, et l'échelle de réparation à six barreaux (animation SMIL)" width="100%" />
 
 
 ## 📐 Mise en page adaptative — comment le hero choisit sa forme
@@ -379,7 +419,7 @@ l'invariant qui tient : dans *une* économie, `scene + reserve === usableHeight`
 | 💾 **TOP 8** | Sauvegarde locale, validée et normalisée à la lecture, noms en majuscules automatiques, surbrillance pour le record tout frais |
 | 🎨 **60fps** | Canvas 2D, budget de 460 particules, DPR plafonné à 2, sol à carreaux pré-rendu offscreen, scintillement d'étoiles + aurore dans le menu |
 | 📴 **Vraiment offline-first** | Polices auto-hébergées (sous-ensembles latin + vietnamien, woff2), aucun CDN ni API — ouvrez `dist/index.html` et jouez |
-| 🧪 **Qualité** | 1311 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
+| 🧪 **Qualité** | 1366 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
 
 <img src="assets/items.svg" alt="Les 14 ingrédients — les pickles à attraper, les pouvoirs dorés à saisir, les dangers à éviter" width="100%" />
 
@@ -442,7 +482,7 @@ npm run build      # → dist/index.html (un seul fichier auto-suffisant)
 npm run dev        # serveur de dev avec HMR (http://localhost:5173)
 npm run preview    # sert le build de production en local
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1311 tests unitaires (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1366 tests unitaires (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (porte qualité CI)
 ```
 
@@ -587,7 +627,7 @@ Double-clique sur [`scripts/play-mac.command`](scripts/play-mac.command) (macOS)
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1311 tests / 131 fichiers** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1366 tests / 134 fichiers** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fond du menu débrumé** (quatre couches : `blur 64→22px`, vignette de coins au lieu du plein écran, cadre CRT 140→90px, sol 45→70%) · **changelog par niveaux colorés** · **96 puces neuves** pour 8 versions · dates réordonnées · `src/game/changelog/` découpé · 10 READMEs refaits · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Réglages en 6 sections** (rapides · audio · affichage · langue · sauvegarde · données) · volumes 0–100 · intensité des secousses · qualité visuelle · pause au changement d'onglet · langue dans les Réglages · 4 préréglages · export/import JSON · menu multicouche animé · dégradé sur la carte auteur · focus piégé dans les modales · fix musique après rechargement · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus d'angle GAME/INFO** (Jouer · Reprendre · Modes · Classement · Succès · Réglages / À propos · Changelog · Quitter) · **sauvegarde & reprise de partie** (`locheo.run.v1`) · réglages en jeu (SFX/musique/tremblement/animations) · fix raccourcis à travers les modales · prefers-reduced-motion partout · **113 tests** |
@@ -631,7 +671,7 @@ Notes de conception et documentation technique approfondie :
 ## 🤝 Contribuer
 
 1. Fork le repo, branche avec la convention `arena/<nom>` ou `feat/<nom>`.
-2. `npm run check` doit être au vert avant d'ouvrir une PR (typecheck + 1311 tests + build).
+2. `npm run check` doit être au vert avant d'ouvrir une PR (typecheck + 1366 tests + build).
 3. Évite les nouvelles dépendances runtime sauf nécessité réelle — philosophie : **un seul fichier, hors réseau, jouable pour toujours**.
 4. Dans la PR, indique les écrans/modes touchés et joins un clip si le gameplay change.
 
