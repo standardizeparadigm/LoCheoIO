@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos, sem rolagem nem corte. A faixa do deck sai; os 26 SVGs incluem os diagramas de faixas do HUD (rodada nove) e o relatório de auditoria (rodada doze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos que têm solução (a partir de 356px), sem rolagem nem corte. A faixa do deck sai; os 26 SVGs incluem os diagramas de faixas do HUD (rodada nove) e o relatório de auditoria (rodada doze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 

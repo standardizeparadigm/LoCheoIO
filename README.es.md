@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece, los 26 SVG incluyen los diagramas de bandas del HUD (ronda nueve) y el informe de auditoría (ronda doce), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 26 SVG incluyen los diagramas de bandas del HUD (ronda nueve) y el informe de auditoría (ronda doce), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
