@@ -1,10 +1,10 @@
 # `adaptive/audit/` — kiểm toán toàn bộ không gian cửa sổ
 
-Thư mục này trả lời **một** câu hỏi mà ba corpus trước không trả lời được:
+Thư mục này trả lời **một** câu hỏi mà bốn corpus trước không trả lời được:
 
 > Trên *mọi* cửa sổ ứng dụng có thể chạy, bố cục làm gì, bao nhiêu lần, và có gì hỏng?
 
-Trước vòng 12, câu trả lời nằm rải ở ba tệp test, một bảng trong `check-adaptive.ts`
+Trước vòng 12, câu trả lời nằm rải ở bốn tệp test, một bảng trong `check-adaptive.ts`
 và một mục trong tài liệu thiết kế. Bốn chỗ, bốn con số có thể lệch nhau. Nay nó là
 **một giá trị** — `AuditReport` — tính từ chính `resolveAdaptive()` mà ứng dụng dùng
 để vẽ, nên không thể nói khác pixel.
