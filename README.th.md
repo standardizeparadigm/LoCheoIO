@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1418%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -39,7 +39,7 @@
 
 ## 🆕 สิ่งใหม่ใน v1.1.8
 
-> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาด ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG ทั้งหมด 25 ภาพ (แผนภาพแถบ HUD ของรอบที่เก้า และรายงานตรวจสอบของรอบที่ 12) พร้อมคอร์ปัสที่สี่ (เหตุการณ์) และบันไดซ่อมหกขั้น
+> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาดที่มีทางออก (356px ขึ้นไป) ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG ทั้งหมด 25 ภาพ (แผนภาพแถบ HUD ของรอบที่เก้า และรายงานตรวจสอบของรอบที่ 12) พร้อมคอร์ปัสที่สี่ (เหตุการณ์) และบันไดซ่อมหกขั้น
 
 ### 📐 การบวกที่ไม่ใครดูแล — และสี่บั๊กพร้อมกัน
 
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1412 เทสต์ใน 137 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1418 เทสต์ใน 137 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -399,6 +399,13 @@ npm run audit:adaptive -- --select
 คู่มือ: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)
 
 <img src="assets/adaptive-select.svg" alt="เลือกขั้นที่ถูกที่สุด —— v1.1.8 รอบที่ 13: หกตัวเลือกของบันได เจ็ดพจน์แบบพจนานุกรม และ 578 จาก 578 หน้าต่างเลือก as-planned (แอนิเมชัน SMIL)" width="100%" />
+
+จุดที่สาม รูปแบบเดียวกัน: **ขั้น `crop` เป็นทางตัน** 25 จาก 578 หน้าต่างของ audit ให้
+`fit: "crop"` (ทั้ง 25 ที่ความสูง 320px) มีสามค่าคงที่ที่ยกเว้นขั้นนี้ — ถูกต้อง เพราะไม่มี
+การจัดวางใดพอดี — แต่ `.menu-pane` เป็น `overflow: clip` ส่วนที่ล้นออกมาจึง**ไปไม่ถึง**:
+ด้านล่างของทั้งสองแผงและปุ่ม START โดยไม่มีค่าคงที่ใดเอ่ยถึง ตอนนี้
+`[data-adaptive-fit="crop"] .menu-pane` เป็นพื้นที่เลื่อนแนวตั้งเพียงแห่งเดียวในเมนู และทุก
+หน้าต่างตั้งแต่ **356px** ขึ้นไปยังพอดีถึงพิกเซล
 
 ### รอบที่ 14 —— แก้บั๊ก: สัญญาของ chip ต้องนับทั้งเจ็ดภาษา
 
