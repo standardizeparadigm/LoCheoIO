@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -39,7 +39,7 @@
 
 ## 🆕 สิ่งใหม่ใน v1.1.8
 
-> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาด ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG เดิมทั้ง 21 ถูกวาดใหม่ และรอบที่เก้าเพิ่มแผนภาพแถบ HUD
+> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาด ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG ทั้งหมด 25 ภาพ (แผนภาพแถบ HUD ของรอบที่เก้า และรายงานตรวจสอบของรอบที่ 12) พร้อมคอร์ปัสที่สี่ (เหตุการณ์) และบันไดซ่อมหกขั้น
 
 ### 📐 การบวกที่ไม่ใครดูแล — และสี่บั๊กพร้อมกัน
 
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1311 เทสต์ใน 131 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1366 เทสต์ใน 134 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -318,6 +318,41 @@ name-shrunk → ellipsis`) ประมาณความกว้างผิ�
 รายละเอียด: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
 
 <img src="assets/diacritics-clip.svg" alt="ทำไมวรรณยุกต์เวียดนามจึงหาย —— ก่อน: กล่องตัดขนาดเท่ากล่องบรรทัดตัดยอด circumflex ของ Ể ทำให้ «CỔ ĐIỂN» อ่านเป็น «CỔ ĐIÊN»; หลัง: กล่องบรรทัด 1.5em กับ padding ±0.24em ของ clip-safe ทำให้เครื่องหมายอยู่ครบ (แอนิเมชัน SMIL)" width="100%" />
+
+### รอบที่ 12 —— ตรวจสอบทั้งพื้นที่หน้าต่าง และบันไดซ่อมอัตโนมัติ
+
+สามรอบก่อนหน้าเพิ่ม **หนึ่ง** คอร์ปัสต่อรอบ แต่ไม่มีอันใดตอบคำถามที่คนดูแลโปรเจกต์ถาม
+ก่อนออกเวอร์ชัน: *ใน **ทุก** หน้าต่างที่เล่นได้ เลย์เอาต์ทำอะไร บ่อยแค่ไหน และมีอะไรพัง?*
+
+ตอนนี้ `npm run audit:adaptive` ตอบ: **578** หน้าต่าง (21 พรีเซ็ต + กริด 25 × 23 รอบ
+เบรกพอยต์ทุกจุด ลบรายการซ้ำ) แก้ครั้งเดียวแล้วรวบเป็น `AuditReport` เดียว
+
+| | |
+| --- | --- |
+| หน้าต่าง | **578** |
+| การละเมิดสัญญา | **0** —— ทุกหน้าต่างรันครบ 14 เงื่อนไข |
+| เหลือแต่ LỌ CHÉO | 101 (17%) |
+| Hero แนวนอน / แนวตั้ง | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md` คือสำเนาที่ **สร้างอัตโนมัติ** ของรายงานนั้น และ
+`audit:adaptive --check` อยู่ใน `npm run check` — ย้ายเบรกพอยต์หรือพื้นขนาดตัวอักษร
+**จะปรากฏเป็น diff** ในคอมมิตที่ทำให้เกิดมันเอง นี่คือหลัก "ปรับปรุงสิ่งใดต้องตรวจ
+ผลกระทบรอบข้าง" ที่มอบให้เครื่องเตือน
+
+พร้อม **บันไดซ่อม** ใน `repair/` หกขั้น —— `as-planned → ignore-inset → compact-hud →
+single-column → smaller-type → smallest-type` ลำดับคือหลักการ: **ตัวอักษรสุดท้าย**
+เพราะพื้น 8px คือคำสัญญา แอปหยุดที่ขั้น 0 ในทั้ง 578 หน้าต่าง บันไดมีอยู่เพื่อ *ให้ใช้ได้*
+และเทสต์ส่งสัญญาที่เข้มกว่าเข้าไปเพื่อพิสูจน์ว่ามันลงจริง
+
+และ **คอร์ปัสที่สี่**: 14 หน้าต่างที่เคยเป็นหัวข้อของรายงานพร้อมภาพหน้าจอ ตั้งแต่รอบ 1 ถึง
+รอบ 12 แต่ละไฟล์มี `symptom` และ `guard` ดังนั้นเมื่อแดง มันอ่านเป็นประโยคเกี่ยวกับร้าน
+ไม่ใช่ตัวเลขสองตัว
+
+รายละเอียด: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+คู่มือ: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)
+
+<img src="assets/adaptive-audit.svg" alt="การตรวจสอบ adaptive ของ v1.1.8 —— 578 หน้าต่าง ไม่มีการละเมิดสัญญา ฮิสโตแกรมความพอดีและระดับ และบันไดซ่อมหกขั้น (แอนิเมชัน SMIL)" width="100%" />
 
 
 ## 📐 เลย์เอาต์ปรับตัว — ฮีโร่เลือกทรงของตัวเองอย่างไร
