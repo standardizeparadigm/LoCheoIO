@@ -475,12 +475,71 @@
   }
 }
 
-/* In-game reduced motion (settings.reducedMotion) — mirrors the OS preference
-   for the canvas scene so the toggle has a visible effect beyond flash/shake. */
-[data-reduced-motion="true"] .anim-flicker,
+/*
+ * In-game reduced motion (settings.reducedMotion).
+ *
+ * Round 5 put this on the canvas only, because the canvas was the only element
+ * that carried the attribute. Round 15 resolves the player's switch into the
+ * adaptive profile, so the menu root carries `data-reduced-motion="true"` too —
+ * and the list below now covers the same decorative layers as the OS media query
+ * above, which is the set a player expects "reduce motion" to mean. Before this,
+ * turning the switch on stopped three class names out of twenty-seven.
+ */
+[data-reduced-motion="true"] .aurora-bg,
+[data-reduced-motion="true"] .text-shimmer,
+[data-reduced-motion="true"] .anim-spin-slow,
+[data-reduced-motion="true"] .anim-breathe,
 [data-reduced-motion="true"] .anim-bob,
-[data-reduced-motion="true"] .anim-breathe {
+[data-reduced-motion="true"] .anim-flicker,
+[data-reduced-motion="true"] .anim-marquee,
+[data-reduced-motion="true"] .anim-pop,
+[data-reduced-motion="true"] .anim-slide,
+[data-reduced-motion="true"] .anim-cta,
+[data-reduced-motion="true"] .anim-badge-pop,
+[data-reduced-motion="true"] .anim-corner-left,
+[data-reduced-motion="true"] .anim-corner-right,
+[data-reduced-motion="true"] .tile-floor,
+[data-reduced-motion="true"] .scanlines,
+[data-reduced-motion="true"] .sheen::after,
+[data-reduced-motion="true"] .nebula-a,
+[data-reduced-motion="true"] .nebula-b,
+[data-reduced-motion="true"] .star-field,
+[data-reduced-motion="true"] .star-field-far,
+[data-reduced-motion="true"] .light-ray,
+[data-reduced-motion="true"] .glow-ring,
+[data-reduced-motion="true"] .jar-glow,
+[data-reduced-motion="true"] .about-card,
+[data-reduced-motion="true"] .about-chip,
+[data-reduced-motion="true"] .cta-shine::after,
+[data-reduced-motion="true"] .decor-item,
+[data-reduced-motion="true"] .halo-ring-1,
+[data-reduced-motion="true"] .halo-ring-2,
+[data-reduced-motion="true"] .halo-ring-3,
+[data-reduced-motion="true"] .halo-glow {
   animation: none !important;
+  transition: none !important;
+}
+
+/*
+ * The contrast preference, from the same profile (round 15).
+ *
+ * `App.tsx` already writes `data-contrast="more"` on the document root when the OS
+ * asks for it; the accelerated borders below are the menu's own contribution, so a
+ * screenshot can tell "reduced" from "normal" without reading `matchMedia`. The
+ * rules are additive: they only ever raise an opacity that already exists.
+ */
+/* The corner panels are the one large bordered surface in the menu: their 3px
+ * border is `border-jade-700/90`, which reads as a dark line on a dark ground. */
+[data-adaptive-contrast="more"] .corner-panel,
+[data-contrast="more"] .corner-panel {
+  border-color: rgba(143, 208, 184, 0.95);
+}
+[data-adaptive-contrast="more"] .panel-head,
+[data-contrast="more"] .panel-head {
+  color: #ffd884;
+}
+[data-adaptive-contrast="more"] .divider-gold {
+  background: linear-gradient(90deg, transparent, rgba(255, 201, 74, 0.95), transparent);
 }
 
 /* OS high-contrast request (prefers-contrast: more) — App sets data-contrast.
