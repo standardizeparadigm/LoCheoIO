@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1311 tests / 131 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1366 tests / 134 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -81,6 +81,9 @@
 | `menu-adaptive.test.ts` | quét **1 682 viewport** và khẳng định `heroContentHeight(layout) ≤ scene` ở từng mẫu | pure |
 | `menu-panel.test.ts` | panel góc — chiều cao 318/458, bảy hàng, `cornerRowReserve`, co theo `compact` | pure |
 | `diacritics-clip.test.ts` | **lỗi vòng 11** — dấu tiếng Việt không được để CSS cắt: `.clip-safe` tồn tại và bù đúng `padding-block`/`margin-block` bằng nhau, không còn `truncate` nào trong `src/`, chip in `plan.text` với `lineHeight: plan.lineHeight`, và ba dòng chữ hiển thị có hộp dòng ≥ 1.3 | đọc file qua `node:fs` |
+| `adaptive-audit.test.ts` | **kiểm toán toàn không gian** (vòng 12) — 578 cửa sổ, 0 vi phạm, histogram khít/mật độ/tầng/chip cộng đúng bằng số cửa sổ, mọi preset có mặt và mọi breakpoint có mẫu hai bên, report khớp byte với `docs/adaptive-audit.md` | pure + `node:fs` |
+| `adaptive-repair.test.ts` | **thang tự sửa** (vòng 12) — 6 bậc đơn điệu, chữ cuối cùng, mỗi bậc tự nó hợp lệ trên 21 preset, app không bao giờ cần dùng, và thang **thật sự bước** khi hợp đồng bị làm chặt hơn nhờ `validator` | pure |
+| `adaptive-regressions.test.ts` | **corpus sự cố** (vòng 12) — 14 cửa sổ từng bị báo lỗi (vòng 1 → 12), mỗi file mang triệu chứng + điều phải giữ, snapshot khớp lại, và các guard riêng của từng vụ | `node:fs` + pure |
 | `menu-row.test.ts` | hàng panel — nhãn, icon, trạng thái khoá, không tràn khi nhãn dài nhất; nhãn và hint dùng `clip-safe` chứ không `truncate` | pure |
 | `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
