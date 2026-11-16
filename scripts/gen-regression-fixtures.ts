@@ -33,14 +33,19 @@ import { violations } from "../src/components/menu/adaptive/constraints";
 import { warningsFor } from "../src/components/menu/adaptive/diagnostics";
 import { heroBandWidth } from "../src/components/menu/adaptive/hero";
 import { chipRungFor } from "../src/components/menu/adaptive/audit";
-import { chipBoxHeight, planModeChip } from "../src/components/menu/adaptive/chip";
+import { chipBoxHeight, planModeChip, widestChipLabel, widestChipName } from "../src/components/menu/adaptive/chip";
 import { REGRESSIONS, type RegressionWindow } from "../src/components/menu/adaptive/regressions";
 
 export const CORPUS = join("tests", "fixtures", "regressions");
 
-/** The widest mode name, so the chip snapshot is an upper bound. */
-const CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN";
-const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+/*
+ * The chip snapshot is an upper bound, so both strings are the widest the app can
+ * print — across all seven languages, not the Vietnamese ones. `MUỐI DƯA CỔ ĐIỂN`
+ * (19) and «CHẾ ĐỘ CHƠI» (11) were typed here as literals and are the *shortest*
+ * end of the table: Spanish needs 21 and fourteen.
+ */
+const CHIP_NAME = widestChipName();
+const CHIP_LABEL = widestChipLabel();
 
 /** The snapshot: the numbers a reviewer would have wanted in the bug report. */
 export function snapshot(window: RegressionWindow) {
