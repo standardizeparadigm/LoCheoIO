@@ -18,6 +18,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `adaptive-layers.svg` | sáu lớp adaptive + hai corpus + cổng 21 viewport (v1.1.8 vòng 8) | README ×10 (ngay dưới ma trận test) |
 | `mode-chip.svg` | **chip chế độ**: trước (căn giữa trên mascot ở mép phải → `overflow: hidden` cắt) và sau (căn mép trong + trần bề rộng), kèm thang bậc `full → label-dropped → name-shrunk → ellipsis` (v1.1.8 vòng 10) | README ×10 (mục vòng mười) |
 | `adaptive-select.svg` | **chọn bậc rẻ nhất**: sáu ứng viên của thang, bảy hạng tử theo thứ tự, và 578 / 578 cửa sổ chọn `as-planned` (v1.1.8 vòng 13) | README ×10 (mục vòng mười ba) |
+| `adaptive-stability.svg` | **ổn định và sở thích**: ray hysteresis giữ bậc trong ±2px, thang sáu bậc với `0 · as-planned · 578/578`, công tắc hai sở thích gộp **OR** từ ba nguồn (v1.1.8 vòng 15) | README ×10 (mục vòng mười lăm) |
 | `adaptive-audit.svg` | **kiểm toán cả không gian**: 578 cửa sổ · 0 vi phạm · histogram kiểu khít và tầng kích thước · thang tự sửa 6 bậc (v1.1.8 vòng 12) | README ×10 (mục vòng mười hai) |
 | `diacritics-clip.svg` | **dấu tiếng Việt bị CSS cắt**: bên trái `truncate` cắt đỉnh mũ của `Ể` («CỔ ĐIỂN» → «CỔ ĐIÊN»), bên phải `clip-safe` nới hộp cắt ±0.24em nên dấu còn nguyên (v1.1.8 vòng 11) | README ×10 (mục vòng mười một) |
 | `hud-bands.svg` | **HUD thành kế hoạch**: băng glyph cho từng readout, cột giữa chảy từ đồng hồ, bậc thang `chips → comboBar → jars → best`, rồi nén 1.029 → sàn 0.55 (v1.1.8 vòng 9) | README ×10 (mục vòng chín) |
@@ -54,4 +55,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
-| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` |
+| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` · `adaptive-stability.svg` |
