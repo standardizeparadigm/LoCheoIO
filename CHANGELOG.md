@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, mười lăm vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · 21 hình SVG vẽ lại, thêm năm sơ đồ · 1458 unit tests (139 file) và năm corpus 1 835 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười sáu vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · 22 hình SVG vẽ lại, thêm sáu sơ đồ · 1518 unit tests (142 file) và năm corpus 1 835 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -130,6 +130,23 @@ Ngoài ra:
 - **2 tệp test** — `adaptive-select` (23) · `adaptive-selection-corpus` (9)
 - **`assets/adaptive-select.svg`** — hình thứ **26**
 - **`docs/guides/adaptive-selection.md`** — đọc bảy hạng tử, khi nào được sửa `SCORE_ORDER`, bốn lỗi đã từng xảy ra ở đúng chỗ này
+
+### Added — vòng mười sáu (dải 2px nói được lý do, audit đi theo đường)
+
+- **`hysteresis/band.ts`** — `explainHold()` trả `HoldVerdict` với **sáu lý do** (`first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`), kèm `dw`/`dh`, trục giữ và hai bậc; `shouldHold()` chỉ còn là `verdict.hold`, nên hook, `diagnose()` và test dùng chung một quyết định
+- **`profile.held` + `data-adaptive-held`** — trường runtime thứ hai (sau `repair`): trễ có chủ ý từ nay phân biệt được với cập nhật, bằng mắt và bằng công cụ
+- **`diagnose()` lớp `12 · hold`** — in **cả hai** bậc: `held lg · comfortable instead of sm · compact`, vì "held" một mình không nói được nó trễ so với cái gì
+- **`adaptive/audit/drag.ts` + `dragReport.ts` + `scripts/audit-drag.ts`** — kiểm toán **đường kéo**: 21 preset × 241 bước (**4 600** cửa sổ), mỗi bước chạy hai lần (raw và qua `stabilize()`); `docs/adaptive-drag.md` sinh tự động, `npm run audit:drag -- --check` nằm trong `npm run check`
+- **`scripts/lib/prose-counts.mjs`** — bộ luật đếm tách khỏi script để `tests/prose-counts-gate.test.ts` chạy **đúng** bộ luật ấy trong `vitest`, trên 14 tài liệu, với số đo lấy từ badge và `readdirSync`
+- **`tests/adaptive-hold-verdict.test.ts`** (18) · **`tests/adaptive-drag.test.ts`** (12) · **`tests/prose-counts-gate.test.ts`** (29)
+- **`assets/adaptive-hold.svg`** — hình thứ hai mươi tám: sáu verdict, dải ±2px với con trỏ rung, và hai cột của drag audit
+
+### Fixed — vòng mười sáu
+
+- **Một lần đổi bậc khi cửa sổ *không* nhích bị giữ vĩnh viễn** — điều kiện cũ ("hai hộp trong `margin` của nhau") đúng cả khi hai hộp **giống nhau**. Thang sửa vẽ profile đổi `plan.fit` với cùng hộp, nên nó bị giữ, `last.current` không bao giờ tiến và **bản sửa không bao giờ được vẽ**. Nay `still` là lý do riêng, áp ngay khung đầu
+- **Bốn tệp còn «26 SVG» sau khi hình thứ 27 ra đời** — CI đỏ ở `sync-prose-counts --verify`; cổng đã có nhưng chỉ chạy trong CI. Nay luật đếm dùng chung và có test trong `npm run check`
+- **`scripts/README.md` thiếu `audit-drag.ts`**, `docs/README.md` thiếu `adaptive-drag.md`, `tests/README.md` thiếu ba dòng catalogue
+- **`docs/adaptive-audit.md` / hai hình SVG** còn ghi `1458 test` sau khi suite lên 1518
 
 ### Fixed — vòng mười bốn (chỉ sửa lỗi)
 
