@@ -83,8 +83,8 @@ describe("docs/assets.md, the 'Dùng ở' column", () => {
  *
  * v1.1.7 shipped 14 SVGs; the folder holds 23. Nine arrived with v1.1.8 (six
  * diagrams, `adaptive-layers.svg` from round 8, `hud-bands.svg` from round 9,
- * `mode-chip.svg` from round 10, `diacritics-clip.svg` from round 11 and
- * `adaptive-audit.svg` from round 12)
+ * `mode-chip.svg` from round 10, `diacritics-clip.svg` from round 11,
+ * `adaptive-audit.svg` from round 12 and `adaptive-select.svg` from round 13)
  * and the row listed two of them, so six pictures — a third of that release's
  * artwork — had no row at all. Nobody notices an absent row: the table looks
  * complete because every line that is there is correct, and the sum is never
@@ -97,7 +97,7 @@ describe("docs/assets.md, the 'Hình ra đời' table", () => {
 
   it("names every SVG in assets/", () => {
     const onDisk = readdirSync(join(ROOT, "assets")).filter((f) => f.endsWith(".svg"));
-    expect(onDisk.length).toBe(25);
+    expect(onDisk.length).toBe(26);
     const unlisted = onDisk.filter((f) => !listed.has(f));
     expect(unlisted, "SVGs with no release row").toEqual([]);
   });

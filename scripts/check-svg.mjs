@@ -41,10 +41,10 @@ const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
  * the failure this guards against, and a floor would let a dead file sit there.
  * Round 8 added `adaptive-layers.svg`, the twenty-first; round 9 added
  * `hud-bands.svg`, the twenty-second; round 10 added `mode-chip.svg`; round 11
- * added `diacritics-clip.svg`, the twenty-fourth; round 12 adds `adaptive-audit.svg`,
- * the twenty-fifth.
+ * added `diacritics-clip.svg`, the twenty-fourth; round 12 added `adaptive-audit.svg`,
+ * the twenty-fifth; round 13 adds `adaptive-select.svg`, the twenty-sixth.
  */
-const EXPECTED_ASSETS = 25;
+const EXPECTED_ASSETS = 26;
 if (files.length !== EXPECTED_ASSETS) {
   problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }
