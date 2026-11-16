@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——134 个文件 1366 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——136 个文件 1398 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -348,6 +348,52 @@ compact-hud → single-column → smaller-type → smallest-type`。顺序就是
 指南：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
 
 <img src="assets/adaptive-audit.svg" alt="v1.1.8 自适应审计 —— 578 个窗口、0 处契约违反、契合与尺寸档的直方图，以及六层自动修复阶梯（SMIL 动画）" width="100%" />
+
+### 第 13 轮 —— 不只是**对**，还要**最省**
+
+第 12 轮做了一件只能回答是/否的事：**有没有不变量被破坏？** 但每次收到截图，第二个
+问题仍然没人回答：**有没有更省的布局？**
+
+这一轮回答它。`select/` 给每个 profile **七个项**，并按**字典序**比较 —— 不用加权求和，
+因为加权求和可能让 40px 余量"买回"一个已经失去的 mascot，只要权重刚好凑成那样：
+
+| # | 项 | 玩家失去什么 |
+| --- | --- | --- |
+| 1 | `violations` | 什么也没失去 —— 破坏契约就不是候选 |
+| 2 | `hidden` | mascot、deck、标语 |
+| 3 | `cropped` | 比自身下限少多少 px |
+| 4 | `hudLost` | HUD 缩放的比例 |
+| 5 | `typeDrop` | 字号少了多少 px（全表求和） |
+| 6 | `levers` | 动了几个东西 —— 玩家看不见 |
+| 7 | `slack` | 多余空间 —— 不是损失，只用来破平 |
+
+两个细节决定"记分板"和"真正正确的比较"之间的差别：
+
+- **`hidden` / `cropped` 相对基准 profile 测量。** 320×320 窗口在拉动任何杠杆之前
+  *本来*就只有 wordmark、*本来*就被裁剪 —— 那是窗口，不是牺牲。用原始标志会为应用
+  正在绘制的 profile 报出 "hidden 1"。
+- **`levers` 从 profile 计数，而不是从 override。** 没有 inset 的窗口上 `ignoreInset`
+  什么都没改变，所以不算拉动过 —— 也正因如此**平局是真实存在的**，破平靠的是阶梯
+  位置，而不是 `sort` 恰好看到的顺序。
+
+这一轮换来的、并且可以检验的命题：
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   648 / 648
+```
+
+> 在所有可玩窗口上，正在发布的 profile 都是六层里最省的那一个。
+
+第 12 轮说"没有东西坏"；第 13 轮说"没有更省的"。命题更强也更容易错，所以它有**第五个
+语料库**：`tests/fixtures/selection/` —— 12 个窗口，每个文件记录的是*决策*而非布局：
+完整六层排名、第二名，以及每一层为何落败。阈值一变，diff 显示的是一个**决策**变了 ——
+这才是审阅时真正需要批准的东西。
+
+详见：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+指南：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
+
+<img src="assets/adaptive-select.svg" alt="选择最省的一层 —— v1.1.8 第 13 轮：阶梯的六个候选、七个字典序项，以及 648 / 648 个窗口都选择 as-planned（SMIL 动画）" width="100%" />
 
 
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
