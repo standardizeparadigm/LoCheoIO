@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——136 个文件 1398 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——137 个文件 1412 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -380,7 +380,7 @@ compact-hud → single-column → smaller-type → smallest-type`。顺序就是
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > 在所有可玩窗口上，正在发布的 profile 都是六层里最省的那一个。
@@ -393,7 +393,36 @@ npm run audit:adaptive -- --select
 详见：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 指南：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
 
-<img src="assets/adaptive-select.svg" alt="选择最省的一层 —— v1.1.8 第 13 轮：阶梯的六个候选、七个字典序项，以及 648 / 648 个窗口都选择 as-planned（SMIL 动画）" width="100%" />
+<img src="assets/adaptive-select.svg" alt="选择最省的一层 —— v1.1.8 第 13 轮：阶梯的六个候选、七个字典序项，以及 578 / 578 个窗口都选择 as-planned（SMIL 动画）" width="100%" />
+
+### 第 14 轮 —— 修 bug：chip 的契约必须数满七种语言
+
+这一轮没有新增任何东西。它去找的是一个"承诺说得比检查做得更宽"的地方。
+
+chip 在**四处**用越南语字面量来测量（`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`、
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`）—— 而越南语是七种语言里**最短**的：
+
+| | 标签 | 最长的模式名 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI`（11） | `MUỐI DƯA CỔ ĐIỂN`（19） |
+| es | `MODOS DE JUEGO`（14） | `60 SEGUNDOS DE LOCURA`（21） |
+| fr | `MODES DE JEU`（12） | `FESTIVAL DES COMBOS`（19） |
+
+所以 `chip-labelled` 声称*"每个可玩窗口都保留标签"*，而西班牙语在 320px 和 360px
+丢掉标签、法语在 320px 丢掉 —— 审计却报告**0 处违约**。
+
+现在 `chip/probes.ts` 从 `localeTable()` + `MODE_LIST` 生成探针，`chip-labelled`
+改成一个可检验的承诺：**chip 永远不会同时失去两个台阶**。审计报告实际发生的事情：
+**439 full · 101 hidden · 38 label-dropped**。
+
+同时修掉三个同类型的小 bug：`scoreProfile()` 返回的违约列表没有排序（导致最后的
+平局判定依赖插入顺序）、`isFiniteProfile()` 从不检查 `playfield`/`modal`、
+`slackOf()` 与 `constraints.ts` 对同一个盒子做了不同的取整。另外 `--select` 不再
+打印一个不存在的数字：它把 18 × 36 的乘积叫作"648 个窗口"，而审计扫的是 578 ——
+现在 `578 / 578`，同一个列表。
+
+没有新功能、没有改布局、没有升版本。只是 **1 412 个测试 / 137 个文件**（原先
+1 398），以及一份说清楚自己在检查什么的契约。
 
 
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
