@@ -56,6 +56,7 @@
     "check:assets": "node scripts/check-assets.mjs",
     "gen:chip": "vite-node scripts/gen-mode-chip-fixtures.ts",
     "gen:regress": "vite-node scripts/gen-regression-fixtures.ts",
+    "gen:select": "vite-node scripts/gen-selection-fixtures.ts",
     "check:adaptive": "vite-node scripts/check-adaptive.ts",
     "audit:adaptive": "vite-node scripts/audit-adaptive.ts",
     "check:svg": "node scripts/check-svg.mjs"
