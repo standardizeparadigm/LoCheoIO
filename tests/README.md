@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1422 tests / 137 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1456 tests / 139 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -53,6 +53,8 @@
 | `mode-chip.test.ts` | `planModeChip()`/`estimateText()` — 23 test: chip không bao giờ khai báo rộng hơn band, chỉ trạng thái `ellipsis` mới tràn, 9 tên × 7 locale × 21 preset đều không bị cắt, nhãn chỉ bị bỏ ở 3 tên dài nhất trên điện thoại 320px (ghim lại), thang bậc đơn điệu và tất định | pure |
 | `adaptive-presets.test.ts` | **21 preset** — id duy nhất, thứ tự theo kích thước, ba nhóm cỡ không chồng lấn, mỗi id xuất hiện trong hợp đồng thiết kế và trong release notes; quét 21 × 21 cặp để chắc `warningsFor()` không phải hằng số | pure + fs |
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
+| `adaptive-hysteresis.test.ts` | **hai pixel bộ nhớ** (vòng 15) — `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần chuột nhích; quét 60px qua một ranh giới thật (tìm bằng máy quét, không hardcode) đổi bậc ≤ 2 lần; nhảy lớn (xoay máy) áp dụng ngay | pure |
+| `adaptive-preferences.test.ts` | **hai sở thích của người chơi** (vòng 15) — `settings.reducedMotion` và `prefers-contrast` vào tới profile; OR chứ không AND (OS không bị app ghi đè); `prefs` và hai biến `--adaptive-motion/-contrast` phải khớp (`prefs-respected`); bật lên không đổi một pixel nào của bố cục; CSS dừng đúng bộ lớp như media query | pure |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |
 | `check-adaptive-script.test.ts` | `scripts/check-adaptive.ts` không được mọc lại bảng `VIEWPORTS` riêng hay predicate nội tuyến — phải đọc `PRESETS` + `violations()`; giữ cờ `--explain` mà guide ghi, và in đủ 21 preset thay vì lấy mẫu | fs |
 | `hud-plan.test.ts` | `planHud()` — HUD **dời chứ không vẽ lại**: toạ độ nội tuyến cũ ở 1280×720 vẫn được giữ, quét cả nghìn bàn không hàng nào ra ngoài canvas, không cặp chồng lấn trên bàn chơi được, bậc thang bỏ dần `chips → comboBar → jars → best`, có sàn nén | pure |
