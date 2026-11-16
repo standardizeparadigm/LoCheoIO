@@ -78,7 +78,9 @@ export const CONSTRAINTS: readonly Constraint[] = [
     id: "column-fills-window",
     why: "hero + chrome is exactly the usable height, so there is nothing to scroll.",
     check: (p) => {
-      if (p.plan.fit === "crop") return null; // a cropped plan spends the floor, not the window
+      // A cropped plan spends the floor, not the window — and the rung is
+      // scrollable, so the overflow it announces is reachable (round 14).
+      if (p.plan.fit === "crop") return null;
       const total = p.plan.scene + p.plan.reserve;
       const usable = usableHeight(p.box);
       return total === usable ? null : `scene ${p.plan.scene} + reserve ${p.plan.reserve} = ${total}, usable ${usable}`;
@@ -188,9 +190,17 @@ export const CONSTRAINTS: readonly Constraint[] = [
       /*
        * A cropped plan is exempt: by definition the window is shorter than
        * floor + chrome, so the chrome *is* taller than the window and the plan
-       * says so out loud (`fit: "crop"`). The floor exists so a 1×1 report from a
-       * rotation does not collapse the column to nothing — the trade is that the
-       * chrome is clipped until the next frame reports a real size.
+       * says so out loud (`fit: "crop"`).
+       *
+       * ROUND 14: this used to say the chrome is "clipped until the next frame
+       * reports a real size", which assumed crop is a transient rotation frame.
+       * It is not: a landscape phone with two toolbars (844×300) and a phone
+       * with the keyboard open (390×240) are persistent, and 56px to 206px of
+       * column stayed unreachable behind `overflow: clip` while every invariant
+       * here reported nothing. The exemption is still right — there is no
+       * arrangement that fits — but the compensation is now real:
+       * `[data-adaptive-fit="crop"] .menu-pane` is a scroll container, so the
+       * clipped chrome can be reached instead of lost.
        */
       if (p.plan.fit === "crop") return null;
       const usable = usableHeight(p.box);
