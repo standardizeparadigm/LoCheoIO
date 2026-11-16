@@ -23,6 +23,7 @@ export {
 } from "./score";
 export {
   bestOn,
+  bestOnWindows,
   candidatesFor,
   describeSelection,
   selectBest,

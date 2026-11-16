@@ -203,6 +203,7 @@ export type {
 export {
   SCORE_ORDER,
   bestOn,
+  bestOnWindows,
   candidatesFor,
   compareScores,
   countLevers,

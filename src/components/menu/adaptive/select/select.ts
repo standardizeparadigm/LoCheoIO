@@ -207,6 +207,32 @@ export function selectionRungIds(): string[] {
  * in `audit/` because it is a statement about `selectBest()`, and the script that
  * prints it (`scripts/gen-selection-fixtures.ts`) is about the corpus.
  */
+/**
+ * How many of a **list of windows** the shipped profile wins.
+ *
+ * This is the honest version of the claim, and it replaces a cross product. The
+ * first `--select` multiplied the audit's distinct widths by its distinct heights
+ * and reported 648 — a grid that is neither the audit's 578 windows nor the space
+ * between them, described in four documents and ten READMEs as "648 windows". A
+ * number that big is not wrong *as a sweep*, but calling it the window count made
+ * two tools disagree about how big the space is.
+ */
+export function bestOnWindows(windows: ReadonlyArray<{ width: number; height: number }>): {
+  windows: number;
+  shipped: number;
+  failures: string[];
+} {
+  let shipped = 0;
+  const failures: string[] = [];
+  for (const { width, height } of windows) {
+    const selection = selectBest({ width, height });
+    if (shippedIsBest(selection)) shipped += 1;
+    else failures.push(`${width}×${height} → ${selection.chosen.rung}`);
+  }
+  return { windows: windows.length, shipped, failures };
+}
+
+/** The same question over a rectangular grid — `widths × heights`. */
 export function bestOn(widths: readonly number[], heights: readonly number[]): {
   windows: number;
   shipped: number;
