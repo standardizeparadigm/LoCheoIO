@@ -1,0 +1,51 @@
+{
+ "id": "r06-tight-320x480",
+ "round": 6,
+ "window": "320×480",
+ "width": 320,
+ "height": 480,
+ "symptom": "the tier below the scroll fix: every economy on, and a wordmark that still had to fit",
+ "guard": "the wordmark's box is inside the band even with every economy enabled",
+ "profile": {
+  "tier": "xs",
+  "device": "handset",
+  "aspect": "portrait",
+  "density": "minimal",
+  "room": 0.1,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 264,
+  "reserve": 216,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 204,
+  "modal": "1×304×413",
+  "playfield": "320×480",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 10,
+   "rowHint": 8,
+   "hudScore": 21
+  }
+ },
+ "chip": {
+  "band": 288,
+  "reason": "label-dropped",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": false,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [
+  "no-ticker",
+  "no-footer",
+  "dialog-compact",
+  "panels-stacked",
+  "jar-at-floor"
+ ],
+ "violations": []
+}

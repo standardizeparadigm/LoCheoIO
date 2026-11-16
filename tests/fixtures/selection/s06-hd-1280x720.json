@@ -1,0 +1,42 @@
+{
+ "id": "s06-hd-1280x720",
+ "window": "1280×720",
+ "width": 1280,
+ "height": 720,
+ "why": "the reference window every round is compared on",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 102
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.16",
+  "single-column · hudLost 0.16",
+  "smaller-type · hudLost 0.16",
+  "smallest-type · hudLost 0.16"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "lg",
+  "density": "comfortable",
+  "fit": "none",
+  "minimal": false,
+  "scene": 342,
+  "reserve": 378,
+  "hero": "row",
+  "panelHeight": 318,
+  "hudScale": 1.029,
+  "rowLabel": 11.5
+ }
+}

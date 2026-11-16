@@ -39,6 +39,14 @@ export interface Environment {
   insetLeft: number;
   /** `prefers-reduced-motion: reduce`. */
   reducedMotion: boolean;
+  /**
+   * `prefers-contrast: more`.
+   *
+   * Round 15: the app read this in `App.tsx` (to set a root attribute) and the
+   * profile could not see it, so nothing adaptive could react to it and the audit
+   * could not report it. It is a reading like the other four.
+   */
+  moreContrast: boolean;
 }
 
 /** The environment every browser without the relevant APIs reports. */
@@ -51,6 +59,7 @@ export const DESKTOP_ENVIRONMENT: Environment = {
   insetBottom: 0,
   insetLeft: 0,
   reducedMotion: false,
+  moreContrast: false,
 };
 
 /** `[1, 4]`, with anything non-finite read as 1. */
@@ -114,7 +123,15 @@ export const HANDHELD_MAX_HEIGHT = 500;
  *
  * WCAG 2.2 SC 2.5.8 asks for 24×24 CSS px as a minimum and Apple's HIG asks for
  * 44; this project's rows are 34 (normal) and 26 (tight), so a touch device gets
- * neither. Raising them is not free — it is 8 × 7 = 56px off a 390px screen —
- * which is exactly why `isHandheld()` gates it.
+ * neither.
+ *
+ * **Round 14: this constant is a target, not a shipped row height.** Nothing in
+ * the geometry reads it — `density.ts` produces 34/26 and `isHandheld()` has no
+ * caller in `src/`. The bullet in this folder's README said coarse pointer
+ * "changes what the geometry should be", and the comment here said `isHandheld()`
+ * gates the change; neither was true. Raising rows to 44 is a layout decision
+ * (56px off a 390px screen, i.e. a different fit for every landscape phone), so it
+ * is recorded here as the size of the remaining gap instead of being smuggled into
+ * a bug-fix round.
  */
 export const TOUCH_ROW_HEIGHT = 44;

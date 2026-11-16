@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1311 tests / 131 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1458 tests / 139 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -53,6 +53,8 @@
 | `mode-chip.test.ts` | `planModeChip()`/`estimateText()` — 23 test: chip không bao giờ khai báo rộng hơn band, chỉ trạng thái `ellipsis` mới tràn, 9 tên × 7 locale × 21 preset đều không bị cắt, nhãn chỉ bị bỏ ở 3 tên dài nhất trên điện thoại 320px (ghim lại), thang bậc đơn điệu và tất định | pure |
 | `adaptive-presets.test.ts` | **21 preset** — id duy nhất, thứ tự theo kích thước, ba nhóm cỡ không chồng lấn, mỗi id xuất hiện trong hợp đồng thiết kế và trong release notes; quét 21 × 21 cặp để chắc `warningsFor()` không phải hằng số | pure + fs |
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
+| `adaptive-hysteresis.test.ts` | **hai pixel bộ nhớ** (vòng 15) — `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần chuột nhích; quét 60px qua một ranh giới thật (tìm bằng máy quét, không hardcode) đổi bậc ≤ 2 lần; nhảy lớn (xoay máy) áp dụng ngay | pure |
+| `adaptive-preferences.test.ts` | **hai sở thích của người chơi** (vòng 15) — `settings.reducedMotion` và `prefers-contrast` vào tới profile; OR chứ không AND (OS không bị app ghi đè); `prefs` và hai biến `--adaptive-motion/-contrast` phải khớp (`prefs-respected`); bật lên không đổi một pixel nào của bố cục; CSS dừng đúng bộ lớp như media query | pure |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |
 | `check-adaptive-script.test.ts` | `scripts/check-adaptive.ts` không được mọc lại bảng `VIEWPORTS` riêng hay predicate nội tuyến — phải đọc `PRESETS` + `violations()`; giữ cờ `--explain` mà guide ghi, và in đủ 21 preset thay vì lấy mẫu | fs |
 | `hud-plan.test.ts` | `planHud()` — HUD **dời chứ không vẽ lại**: toạ độ nội tuyến cũ ở 1280×720 vẫn được giữ, quét cả nghìn bàn không hàng nào ra ngoài canvas, không cặp chồng lấn trên bàn chơi được, bậc thang bỏ dần `chips → comboBar → jars → best`, có sàn nén | pure |
@@ -81,6 +83,12 @@
 | `menu-adaptive.test.ts` | quét **1 682 viewport** và khẳng định `heroContentHeight(layout) ≤ scene` ở từng mẫu | pure |
 | `menu-panel.test.ts` | panel góc — chiều cao 318/458, bảy hàng, `cornerRowReserve`, co theo `compact` | pure |
 | `diacritics-clip.test.ts` | **lỗi vòng 11** — dấu tiếng Việt không được để CSS cắt: `.clip-safe` tồn tại và bù đúng `padding-block`/`margin-block` bằng nhau, không còn `truncate` nào trong `src/`, chip in `plan.text` với `lineHeight: plan.lineHeight`, và ba dòng chữ hiển thị có hộp dòng ≥ 1.3 | đọc file qua `node:fs` |
+| `adaptive-audit.test.ts` | **kiểm toán toàn không gian** (vòng 12) — 578 cửa sổ, 0 vi phạm, histogram khít/mật độ/tầng/chip cộng đúng bằng số cửa sổ, mọi preset có mặt và mọi breakpoint có mẫu hai bên, report khớp byte với `docs/adaptive-audit.md` | pure + `node:fs` |
+| `adaptive-repair.test.ts` | **thang tự sửa** (vòng 12) — 6 bậc đơn điệu, chữ cuối cùng, mỗi bậc tự nó hợp lệ trên 21 preset, app không bao giờ cần dùng, và thang **thật sự bước** khi hợp đồng bị làm chặt hơn nhờ `validator` | pure |
+| `adaptive-regressions.test.ts` | **corpus sự cố** (vòng 12) — 14 cửa sổ từng bị báo lỗi (vòng 1 → 12), mỗi file mang triệu chứng + điều phải giữ, snapshot khớp lại, và các guard riêng của từng vụ | `node:fs` + pure |
+| `adaptive-select.test.ts` | **phép so sánh trên thang sửa** (vòng 13) — bảy hạng tử so từ điển đúng thứ tự, `hidden`/`cropped` đo **so với base**, `levers` đếm từ profile, chữ trước số lever, `slack` chỉ phá hoà, sort toàn phần, NaN không bao giờ thắng, và **cả 21 preset + 270 cửa sổ đều chọn `as-planned`** | pure |
+| `adaptive-selection-corpus.test.ts` | **corpus thứ năm** (vòng 13) — 12 cửa sổ, mỗi file ghi lại *quyết định* chứ không chỉ profile: thứ hạng đủ 6 bậc, người về nhì, điểm từng hạng tử; snapshot khớp `selectBest()` hôm nay | `node:fs` + pure |
+| `chip-locales.test.ts` | **chip trong cả bảy ngôn ngữ** (vòng 14) — probe lấy từ `localeTable()` chứ không phải literal; es/fr mất nhãn «MODOS DE JUEGO» ở 320–360px trong khi hợp đồng cũ chỉ kiểm tiếng Việt và báo 0 vi phạm; tên không bao giờ bị ellipsis ở bất kỳ ngôn ngữ nào, và `chipRungFor()` của audit dùng đúng chuỗi xấu nhất | pure |
 | `menu-row.test.ts` | hàng panel — nhãn, icon, trạng thái khoá, không tràn khi nhãn dài nhất; nhãn và hint dùng `clip-safe` chứ không `truncate` | pure |
 | `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
@@ -132,7 +140,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 24 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 26 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |

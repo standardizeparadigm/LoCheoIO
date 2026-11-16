@@ -2,16 +2,18 @@
  "preset": "android-small",
  "window": "360×640",
  "mode": "blitz",
- "name": "ĐUA 60 GIÂY",
+ "name": "60 SEGUNDOS DE LOCURA",
  "band": 328,
  "visible": true,
  "align": "end",
- "showLabel": true,
+ "showLabel": false,
  "nameSize": 11,
- "labelSize": 8,
+ "labelSize": 0,
  "maxWidth": 312,
- "needed": 207,
+ "needed": 212,
+ "neededWithLabel": 320,
+ "neededWithout": 212,
  "available": 312,
  "truncated": false,
- "reason": "full"
+ "reason": "label-dropped"
 }

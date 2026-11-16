@@ -1,0 +1,53 @@
+{
+ "id": "r12-audit-floor-320x320",
+ "round": 12,
+ "window": "320×320",
+ "width": 320,
+ "height": 320,
+ "symptom": "the tightest window the audit finds: scene 140px, room 0, a crop, and a hero with no mascot",
+ "guard": "even the floor of the space satisfies every invariant",
+ "profile": {
+  "tier": "xs",
+  "device": "handset",
+  "aspect": "square",
+  "density": "minimal",
+  "room": 0,
+  "fit": "crop",
+  "minimal": true,
+  "scene": 140,
+  "reserve": 216,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 204,
+  "modal": "1×304×275",
+  "playfield": "320×320",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 10,
+   "rowHint": 8,
+   "hudScore": 20
+  }
+ },
+ "chip": {
+  "band": 288,
+  "reason": "hidden",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": false,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [
+  "crop",
+  "no-ticker",
+  "no-footer",
+  "minimal",
+  "dialog-compact",
+  "panels-stacked",
+  "jar-at-floor"
+ ],
+ "violations": []
+}

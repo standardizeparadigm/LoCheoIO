@@ -1,0 +1,47 @@
+{
+ "id": "r11-diacritics-390x844",
+ "round": 11,
+ "window": "390×844",
+ "width": 390,
+ "height": 844,
+ "symptom": "the circumflex vanished from «CỔ ĐIỂN» — a `truncate` clip box shaved the mark off the top of the glyph",
+ "guard": "the chip plans a full line box for a name with two stacked marks",
+ "profile": {
+  "tier": "sm",
+  "device": "tablet",
+  "aspect": "tall",
+  "density": "spacious",
+  "room": 0.42,
+  "fit": "none",
+  "minimal": false,
+  "scene": 326,
+  "reserve": 518,
+  "ticker": true,
+  "hero": "stack",
+  "mascot": true,
+  "panelHeight": 458,
+  "modal": "1×374×726",
+  "playfield": "390×844",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 11,
+   "rowHint": 8.5,
+   "hudScore": 25
+  }
+ },
+ "chip": {
+  "band": 358,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [
+  "panels-stacked"
+ ],
+ "violations": []
+}

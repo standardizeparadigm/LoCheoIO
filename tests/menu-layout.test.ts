@@ -256,6 +256,28 @@ describe("panel width", () => {
   });
 });
 
+/*
+ * The body of a CSS rule, matched to its closing brace.
+ *
+ * Round 14 needed it: `.menu-pane` and `[data-adaptive-fit="crop"] .menu-pane`
+ * are two rules, and a file-wide regex cannot tell which one a declaration
+ * belongs to.
+ */
+function ruleBodyOf(css: string, selector: string): string {
+  const at = css.indexOf(`${selector} {`);
+  if (at < 0) return "";
+  const open = css.indexOf("{", at);
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === "{") depth += 1;
+    else if (css[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return css.slice(open + 1, i);
+    }
+  }
+  return "";
+}
+
 describe("the classes that caused the bug are gone", () => {
   /** Strip block comments — a comment describing the old class must not fail this. */
   const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -292,7 +314,11 @@ describe("the classes that caused the bug are gone", () => {
     expect(css).toContain(".menu-pane");
     expect(css).toMatch(/\.menu-pane\s*\{[^}]*overflow:\s*clip/);
     // `overscroll-behavior` only exists to stop a *scrollable* box chaining to
-    // its parent. With the pane clipped, there is nothing to chain.
-    expect(css).not.toMatch(/\.menu-pane\s*\{[^}]*overscroll-behavior/);
+    // its parent. The base rule is clipped, so it has nothing to chain — the
+    // crop rung (round 14) is the one scrollable case and carries its own
+    // containment there. Asserted per-rule: the base `.menu-pane` block must
+    // not mention it, and no rule may make the pane scroll without it.
+    const base = ruleBodyOf(css, ".menu-pane");
+    expect(base).not.toContain("overscroll-behavior");
   });
 });

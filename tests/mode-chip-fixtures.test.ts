@@ -19,6 +19,7 @@ import { join } from "node:path";
 import { MODE_LIST } from "../src/game/modes";
 import { PRESETS } from "../src/components/menu/adaptive/presets";
 import { heroBandWidth } from "../src/components/menu/adaptive/hero";
+import { widestChipLabel } from "../src/components/menu/adaptive/chip";
 import { planModeChip } from "../src/components/menu/adaptive/chip";
 
 const CORPUS = join("tests", "fixtures", "mode-chips");
@@ -37,6 +38,9 @@ interface Snapshot {
   labelSize: number;
   maxWidth: number;
   needed: number;
+  /** The two text widths this mode can have: with its label, and without. */
+  neededWithLabel: number;
+  neededWithout: number;
   available: number;
   truncated: boolean;
   reason: string;
@@ -62,8 +66,13 @@ describe("the mode-chip corpus", () => {
 
   it("still matches what the planner produces", () => {
     for (const s of snapshots) {
-      const mode = MODE_LIST.find((m) => m.id === s.mode)!;
-      const plan = planModeChip({ heroWidth: s.band, side: "right", name: mode.name, label: "CHẾ ĐỘ CHƠI" });
+      /*
+       * The same strings the generator used — the widest translation of this mode
+       * and the widest label. A literal here (the Vietnamese name, «CHẾ ĐỘ CHƠI»)
+       * would compare the corpus against a different question than the one it was
+       * written to answer.
+       */
+      const plan = planModeChip({ heroWidth: s.band, side: "right", name: s.name, label: widestChipLabel() });
       expect(
         {
           visible: plan.visible,
@@ -119,18 +128,34 @@ describe("the mode-chip corpus", () => {
     expect(classic.length).toBe(PRESETS.length);
     for (const s of classic) {
       expect(s.visible, s.preset).toBe(true);
-      expect(s.showLabel, s.preset).toBe(true);
+      /*
+       * The promise round 10 made, restated in the terms that survive a second
+       * language: the **name** is never cut. The label is the first rung of the
+       * ladder and does go at the narrowest bands in the longest language — the
+       * old expectation (`showLabel` everywhere, `needed` 246) was a fact about
+       * Vietnamese spelled as a fact about the app.
+       */
       expect(s.truncated, s.preset).toBe(false);
-      expect(s.reason, s.preset).toBe("full");
-      expect(s.needed, s.preset).toBe(246);
+      expect(["full", "label-dropped"], s.preset).toContain(s.reason);
+      expect(s.showLabel, s.preset).toBe(s.reason === "full");
+      expect(s.needed, s.preset).toBe(s.showLabel ? s.neededWithLabel : s.neededWithout);
     }
   });
 
   it("grows the chip only with the mode name, never with the window", () => {
-    // For one mode, `needed` is the same at 320 and at 4K — it is a text width.
+    /*
+     * For one mode, `needed` is a text width: it is the same at 320 and at 4K.
+     * There are **two** such widths per mode — with the label and without — and a
+     * snapshot's `needed` has to be one of them, not a third number that drifts
+     * with the window.
+     */
     for (const mode of MODE_LIST) {
-      const forMode = snapshots.filter((s) => s.mode === mode.id).map((s) => s.needed);
-      expect(new Set(forMode).size, mode.id).toBe(1);
+      const forMode = snapshots.filter((s) => s.mode === mode.id);
+      const widths = new Set(forMode.map((s) => s.needed));
+      expect(widths.size, mode.id).toBeLessThanOrEqual(2);
+      for (const s of forMode) {
+        expect([s.neededWithLabel, s.neededWithout], `${mode.id} @ ${s.preset}`).toContain(s.needed);
+      }
     }
   });
 });

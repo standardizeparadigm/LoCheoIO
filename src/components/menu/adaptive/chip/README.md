@@ -7,6 +7,7 @@ name is nineteen characters.
 
 | File | Owns |
 | --- | --- |
+| `probes.ts` | **mọi ngôn ngữ**: `chipProbes()`, `widestProbe()`, `widestChipLabel()`, `widestChipName()`, `widestNameFor()` — một định nghĩa của "chuỗi xấu nhất" cho cả 7 locale |
 | `measure.ts` | `estimateText()` · `charsThatFit()` — painted width from characters, no layout engine |
 | `modeChip.ts` | `planModeChip()` · `describeModeChip()` — alignment, the label ladder, the width cap |
 | `index.ts` | the barrel: `planModeChip` is what the component imports |

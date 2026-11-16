@@ -1,0 +1,45 @@
+{
+ "id": "r10-chip-row-1920x820",
+ "round": 10,
+ "window": "1920×820",
+ "width": 1920,
+ "height": 820,
+ "symptom": "«MUỐI DƯA CỔ ĐIỂN» lost the right side of the chip: border, padding and the end of the name",
+ "guard": "the chip is drawn in full at the window from the report",
+ "profile": {
+  "tier": "lg",
+  "device": "laptop",
+  "aspect": "ultrawide",
+  "density": "comfortable",
+  "room": 0.78,
+  "fit": "none",
+  "minimal": false,
+  "scene": 442,
+  "reserve": 378,
+  "ticker": true,
+  "hero": "row",
+  "mascot": true,
+  "panelHeight": 318,
+  "modal": "1×448×705",
+  "playfield": "1920×820",
+  "hudScale": 1.16,
+  "type": {
+   "lockupLo": 89.5,
+   "lockupCheo": 73.5,
+   "rowLabel": 12,
+   "rowHint": 9.5,
+   "hudScore": 30
+  }
+ },
+ "chip": {
+  "band": 1088,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [],
+ "violations": []
+}

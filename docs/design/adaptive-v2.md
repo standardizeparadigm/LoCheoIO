@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–10 — one profile, every size, every pixel
+# Adaptive, rounds 8–15 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8, 9 và 10).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 15).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -214,7 +214,7 @@ này tồn tại để dứt điểm.
 
 | Bất biến | Test |
 | --- | --- |
-| `scene + reserve === usableHeight` (trừ `crop`) | `layout-fit`, `adaptive-resolve` |
+| `scene + reserve === usableHeight` (trừ `crop`, và bậc `crop` cuộn được) | `layout-fit`, `adaptive-resolve`, `menu-no-scroll` |
 | `type.lockupLo × 1.68 ≤ scene + 0.5` | `adaptive-type` |
 | `CHÉO < LỌ` ở mọi width × band | `adaptive-type`, `adaptive-wordmark-band` |
 | `panelHeightForPlan + 12 ≤ reserve` (và `+ (footer ? 0 : 30) === cornerRowHeight`) | `adaptive-density`, `panel-footer-overflow`, `adaptive-fixtures` |
@@ -358,7 +358,7 @@ thêm thì không ai đọc được, và mọi lần chèn đều làm hỏng p
 | 20 | `1440p` | 2560×1440 | màn hình rời |
 | 21 | `4k` | 3840×2160 | trần của hộp thoại |
 
-## 16. 14 bất biến — một định nghĩa, ba nơi dùng
+## 16. 15 bất biến — một định nghĩa, ba nơi dùng
 
 `constraints.ts` giữ danh sách; `tests/adaptive-constraints.test.ts` chạy nó trên
 21 preset, `scripts/check-adaptive.ts` chạy nó như một cổng CI, và tài liệu này
@@ -371,7 +371,7 @@ hứa không ai kiểm được ở mọi cửa sổ.
 
 | id | bất biến | bắt lỗi gì |
 | --- | --- | --- |
-| `column-fills-window` | `scene + reserve === height` (trừ `fit: crop`) | cột không lấp hết cửa sổ, hở đáy |
+| `column-fills-window` | `scene + reserve === height` (trừ `fit: crop`, bậc đó cuộn được) | cột không lấp hết cửa sổ, hở đáy |
 | `reserve-inside-window` | `0 ≤ reserve ≤ height` | panel cao hơn cửa sổ |
 | `panel-fits-reserve` | panel ≤ reserve, trừ `crop` | panel tràn ra ngoài reserve |
 | `hero-fits-scene` | hero ≤ band | hero cao hơn vùng nó ở |
@@ -381,17 +381,20 @@ hứa không ai kiểm được ở mọi cửa sổ.
 | `dialog-fits-window` | modal ≤ `visualViewport` | dialog tràn khỏi cửa sổ |
 | `jar-fits-board` | jar ≤ board, tâm trong board | lọ ra ngoài canvas |
 | `density-matches-flags` | ticker/footer theo density | density và chrome nói khác nhau |
-| `css-vars-complete` | 11 biến `--lo-*` | component đọc biến không tồn tại |
-| `numbers-finite` | mọi số hữu hạn | `NaN` từ `aspect` hoặc `dvh` |
-| `chip-name-survives` | không tên chế độ nào bị cắt bằng ellipsis | tên dài (bản dịch) tràn band |
-| `chip-labelled` | chip còn nhãn «CHẾ ĐỘ CHƠI» ở mọi cửa sổ chơi được | nhãn bị bỏ sớm hơn mức cần |
+| `css-vars-complete` | **27** biến: 17 `--type-*` + 10 `--adaptive-*` | component đọc biến không tồn tại |
+| `numbers-finite` | mọi số hữu hạn; hai biến dạng tên phải thuộc bộ giá trị của nó | `NaN` từ `aspect` hoặc `dvh` |
+| `chip-name-survives` | không tên chế độ nào bị ellipsis, **cả bảy ngôn ngữ** | tên dài (bản dịch) tràn band |
+| `chip-labelled` | chip **không mất hai bậc cùng lúc** (vòng 14) | mất nhãn *và* co tên trong cùng một cửa sổ |
+| `prefs-respected` | `prefs` và hai biến `--adaptive-motion/-contrast` khớp nhau (vòng 15) | profile nói "giảm chuyển động" mà biến nói "đầy đủ" |
 
 ## 17. "Vì sao trông như vậy" — `diagnose()`
 
 Một bảng số trả lời *cái gì*. Câu hỏi đến cùng ảnh chụp màn hình luôn là *vì
 sao*: vì sao không có ticker, vì sao hero thành hàng ở đây mà thành cột ở kia.
-`diagnose()` xếp **chín** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
-từ chính trường đã quyết định nó — lớp 8 là chip chế độ, thêm ở vòng 10:
+`diagnose()` xếp **mười** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
+từ chính trường đã quyết định nó — lớp 8 là chip chế độ (vòng 10), lớp 10 là sở thích
+của người chơi (vòng 15), và lớp 11 `repair` chỉ xuất hiện khi profile ấy do hook vẽ ra,
+vì `resolveAdaptive()` thuần không đi thang sửa nên không có bậc nào để báo:
 
 ```
 1280×720 · lg · comfortable · row · fit none
@@ -417,7 +420,9 @@ từ chính trường đã quyết định nó — lớp 8 là chip chế độ,
 trade-offs: none — this window gets the full layout
 ```
 
-`warningsFor()` chỉ báo *thoả hiệp*, không báo *lỗi*: `crop` kèm số pixel thiếu,
+`warningsFor()` chỉ báo *thoả hiệp*, không báo *lỗi*: `crop` kèm số pixel vượt và
+việc vượt đó **tới được bằng cách cuộn** (vòng 14 — trước đó câu chữ nói "hero bị cắt",
+trong khi thứ bị cắt là đáy chrome),
 `no-ticker`, `no-footer`, `minimal`, `panels-stacked`, `jar-at-floor`,
 `dialog-compact`, `inset`. Một cảnh báo luôn đúng là nhiễu — đó là lý do
 `dialog-scrolls` bị bỏ ở vòng 9 (mọi dialog đều bị chặn ở 86% cửa sổ).
@@ -573,3 +578,257 @@ nó bắt đúng thứ đã ship sai hai lần.
 | `menu-row.test.ts` | ghim `truncate` | sửa thành `clip-safe` |
 | `mode-chip-wiring.test.ts` | ghim `min-w-0 truncate` | sửa thành "không tự cắt chữ" |
 | `assets/` 23 hình | tài liệu trực quan | thêm `diacritics-clip.svg` (24) |
+
+## 20. Vòng 12 — kiểm toán toàn không gian, và thang tự sửa
+
+Ba vòng trước mỗi vòng thêm **một** corpus: 1 110 cửa sổ (vòng 8), 510 cặp band
+(vòng 9), 189 cặp chip (vòng 10). Mỗi corpus trả lời một câu hẹp. Không corpus nào
+trả lời câu mà người bảo trì hỏi trước mỗi bản phát hành:
+
+> Trên **mọi** cửa sổ chơi được, bố cục làm gì, bao nhiêu lần, và có gì hỏng?
+
+Câu trả lời đó nằm rải ở ba tệp test, một bảng trong `check-adaptive.ts` và một mục
+tài liệu — bốn chỗ, bốn con số có thể lệch. Vòng 12 gộp nó thành **một giá trị**.
+
+### 20.1 `AuditReport` — một phép quét, sáu câu trả lời
+
+`src/components/menu/adaptive/audit/` chạy `resolveAdaptive()` trên **578** cửa sổ
+(21 preset + lưới 25 × 23 quanh từng breakpoint, khử trùng lặp) và gộp thành:
+
+| Trường | Trả lời |
+| --- | --- |
+| `violations` | *có hỏng không* — id bất biến × số cửa sổ × ví dụ |
+| `warnings` | *đã nhường cái gì* — `crop` 25, `no-ticker` 176, `minimal` 101… |
+| `fits` / `densities` / `tiers` / `chip` | *bốn quyết định chính rơi vào đâu* |
+| `hero` | hàng **170** / cột **408** |
+| `extrema` | scene 140–1 642px, reserve sàn 216px, room chật nhất `0` |
+| `samples` | từng cửa sổ, để một lỗi đọc được tên |
+
+Con số quan trọng nhất là **0 vi phạm trên 578 cửa sổ**. Đây không phải "chưa
+kiểm": mỗi cửa sổ đã chạy hết 15 bất biến.
+
+**Vì sao vừa preset vừa lưới.** Preset là nơi hồi quy thật đã xảy ra, và một thất
+bại ở đó đọc là `iphone-4` chứ không phải `320×480`. Nhưng 21 cửa sổ không thấy được
+**vách**: bậc `row → stack` là một ngưỡng *chiều rộng*, và 420px là điện thoại thật
+mà không preset nào phủ. Lưới vì thế có mặt ở **hai bên** mỗi ngưỡng (639/640,
+1023/1024, 1151/1152).
+
+### 20.2 Báo cáo là tệp, không phải màn hình console
+
+`docs/adaptive-audit.md` được **sinh** từ chính report — histogram có bar 40 ký tự
+cố định, nên hai bản báo cáo của hai bản phát hành diff được với nhau. `--check`
+nằm trong `npm run check`, nên tệp không thể cũ đi mà không ai biết: đổi một
+breakpoint, một dòng density hay một sàn chữ **sẽ** hiện ra như một diff trong
+đúng commit đã gây ra nó.
+
+### 20.3 Thang sửa — động từ còn thiếu
+
+`constraints.ts` nói *có hỏng không*. `diagnostics.ts` nói *vì sao*. Không tệp nào
+nói **làm gì**. `adaptive/repair/` là câu trả lời, dưới dạng một thang hữu hạn:
+
+| Bậc | Nhường | Lever |
+| --- | --- | --- |
+| `as-planned` | không gì — profile đang vẽ | `{}` |
+| `ignore-inset` | safe-area inset thôi chiếm chiều cao chrome | `ignoreInset` |
+| `compact-hud` | HUD còn 85% cỡ | `hudScale: 0.85` |
+| `single-column` | modal rộng xuống một cột | `singleColumn` |
+| `smaller-type` | chữ còn 94% | `typeScale: 0.94` |
+| `smallest-type` | chữ còn 88% — bậc cuối trước sàn 8px | `typeScale: 0.88` |
+
+Thứ tự là nguyên tắc: **chữ cuối cùng**, vì sàn 8px là lời hứa.
+
+**Vì sao thang là dữ liệu.** Một nhánh `if (bad) { … }` chỉ chạy tới bậc thứ ba khi
+tìm được cửa sổ hỏng ba bất biến cùng lúc — gần như không bao giờ, và một đường dự
+phòng chưa từng chạy là đường dự phòng sẽ hỏng đúng ngày cần. Nên mỗi bậc là
+`{ id, why, overrides }` và test bắt đầu từ bất kỳ bậc nào.
+
+**Vì sao có `validator`.** Với hợp đồng thật, `as-planned` luôn thắng trên cả 578
+cửa sổ. `repairProfile()` nhận một `validator` (mặc định `violations()`), và test
+truyền một hợp đồng **chặt hơn** để thang thật sự bước — khẳng định đúng bậc dừng
+(`smaller-type` cho 390×844), đúng thứ tự `attempts`, và đúng tie-break
+"ít hỏng nhất" khi mọi bậc đều hỏng.
+
+### 20.4 Bốn lever, và ba bất biến của chính chúng
+
+`resolveAdaptive()` nhận `overrides` (mặc định vắng mặt ⇒ **byte-identical** với
+trước vòng 12, có test so sánh từng trường trên 21 preset). Bốn lever:
+`ignoreInset`, `typeScale`, `singleColumn`, `hudScale`.
+
+Ba luật, mỗi luật một test:
+
+1. **Không lever nào phá hợp đồng** — cả 6 bậc × 21 preset đều qua 15 bất biến.
+2. **Không vượt sàn** — `typeScale` kẹp ở 8px, `hudScale` kẹp ở 0.55 (sàn của
+   `planHud`).
+3. **Chỉ nhỏ đi, không bao giờ to lên** — `0 < f ≤ 1`; `NaN`, `Infinity`, `0`, số
+   âm và `> 1` bị **bỏ qua**, không bị kẹp thành nonsense.
+
+### 20.5 Vòng này **không** làm gì
+
+- Không đổi bố cục nào: 578 cửa sổ cho ra đúng profile cũ (test so từng trường).
+- Không thêm bất biến: vẫn 14.
+- Không dùng thang sửa trong ứng dụng — `useAdaptive()` vẫn resolve trần, vì không
+  cửa sổ nào cần sửa. Thang tồn tại để *có thể* dùng.
+
+---
+
+## 21. Vòng 13 — không chỉ *đúng*, mà *rẻ nhất*
+
+Vòng 12 dựng thang sửa và một bộ kiểm toán. Cả hai trả lời câu hỏi nhị phân: **có
+đúng hợp đồng không**. Không chỗ nào trả lời câu thứ hai, câu mà mỗi lần đọc ảnh
+chụp người ta vẫn phải tự hỏi: **có bản nào rẻ hơn không**.
+
+### 21.1 Một thứ tự, không phải một trọng số
+
+`score.ts` cho mỗi profile bảy hạng tử và so chúng **từ điển**, theo đúng thứ tự
+khai báo:
+
+| # | Hạng tử | Người chơi mất gì | Đo từ |
+| --- | --- | --- | --- |
+| 1 | `violations` | không gì cả — phá hợp đồng thì không phải ứng viên | `violations()` |
+| 2 | `hidden` | mascot, deck, tagline | `plan.minimal` **so với base** |
+| 3 | `cropped` | px thiếu so với sàn của chính nó | `scene + reserve − height` |
+| 4 | `hudLost` | phần trăm cỡ HUD | `playfield.hudScale` |
+| 5 | `typeDrop` | px chữ, cộng toàn thang | `type.*` |
+| 6 | `levers` | *không nhìn thấy* — nhưng là số thứ đã đổi | so profile |
+| 7 | `slack` | không gì cả — phòng thừa là chuyện tốt | `scene − heroContentHeight()` |
+
+Tổng có trọng số sẽ ngắn hơn để viết và sai hơn để đọc: nó cho phép 40px trống
+"mua lại" một cái mascot đã mất nếu các trọng số cộng ra như vậy. Thứ tự từ điển
+là một khẳng định về sản phẩm, không phải một bảng cân.
+
+### 21.2 Hai hạng tử đo *so với base*, và vì sao
+
+`hidden` và `cropped` **không** đọc cờ thô. Cửa sổ 320×320 vốn chỉ có wordmark và
+vốn bị crop — đó là **cửa sổ**, không phải mất mát. Chấm theo cờ thô sẽ báo
+"hidden 1" cho chính profile ứng dụng đang vẽ, và biến mọi so sánh ở góc chật nhất
+của không gian thành vô nghĩa — đúng chỗ chúng quan trọng nhất.
+
+Bài học lặp lại của bốn vòng: **một phép đo không biết cái gì là nền thì đo sai ở
+đúng biên**. `heroContentHeight()` ở vòng 9 từng báo tràn 10px ở 320×320 vì nó
+không thấy cỡ chữ bố cục đã chọn; đây là cùng một lỗi ở dạng khác.
+
+### 21.3 `levers` đếm từ profile
+
+Một override không làm gì — `ignoreInset` trên cửa sổ không có inset — không đổi
+kế hoạch. Đếm override sẽ phạt oan và, tệ hơn, làm hai ứng viên **giống hệt** có
+điểm khác nhau. Nên `countLevers()` so hai profile, không so hai `AdaptiveOverrides`.
+
+Hệ quả là **hoà là chuyện thật**, xảy ra thường xuyên: `ignore-inset` trên desktop
+cho ra điểm y hệt `as-planned`. Thứ tự chốt là **vị trí trong thang**, không phải
+thứ tự `Array.prototype.sort` nhìn thấy — sort ổn định là thuộc tính của engine,
+còn quyết định này không được phép phụ thuộc vào engine. `describeSelection()` in
+`tied, earlier rung` thay vì bịa một khoảng cách không tồn tại.
+
+### 21.4 Mệnh đề mà vòng này mua được
+
+    trên mọi cửa sổ chơi được, profile đang ship là bản rẻ nhất trong sáu bậc.
+
+Đó là câu về **sản phẩm**, và nó kiểm được: `tests/adaptive-select.test.ts` quét 21
+preset + 270 cửa sổ; `npm run audit:adaptive -- --select` chạy trên chính lưới của
+audit (578 cặp width × height) và in `578 / 578`. Vòng 12 nói "không gì hỏng";
+vòng 13 nói "không gì rẻ hơn" — mạnh hơn, và cũng dễ sai hơn, nên nó có corpus
+riêng.
+
+### 21.5 Corpus thứ năm: quyết định, không phải bố cục
+
+`tests/fixtures/selection/` — 12 cửa sổ, mỗi file ghi `chosen`, điểm bảy hạng tử,
+thứ hạng đủ sáu bậc, người về nhì, và profile người thắng tạo ra. Bốn corpus trước
+trả lời "bố cục **là gì**"; corpus này trả lời "**vì sao nó được chọn**". Khi một
+ngưỡng xê dịch, diff của 12 file này cho thấy một *quyết định* đổi — thứ người
+review thật sự cần duyệt.
+
+### 21.6 Vòng này **không** làm gì
+
+- **Không đổi bố cục.** `selectBest()` chọn `as-planned` ở cả 578 cửa sổ; đây là
+  bản kiểm tra, không phải bản viết lại.
+- **Không tìm kiếm rộng hơn thang.** 2⁴ tổ hợp lever là 16; tìm kiếm tổ hợp là
+  nhiều mã hơn cho một quyết định mà thang đã xếp đúng. Tên thật của module là
+  "phép so sánh trên thang sửa".
+- **Không thêm bất biến.** Vẫn 14. `select/` không phải luật mới, mà là phép đo
+  chất lượng trên luật đang có.
+
+---
+
+## 22. Vòng 14 — hợp đồng phải đếm đủ ngôn ngữ
+
+Vòng 13 thêm một phép so sánh. Vòng 14 không thêm gì; nó đi tìm chỗ mà một lời hứa
+được phát biểu rộng hơn thứ đã kiểm.
+
+### 22.1 Một literal, bốn nơi, bảy ngôn ngữ
+
+Chip được đo bằng `const CHIP_LABEL = "CHẾ ĐỘ CHƠI"` trong `constraints.ts`,
+`diagnostics.ts` và `audit/audit.ts`, và bằng `const CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`
+trong generator corpus. Bốn bản của **một chuỗi đã dịch**, và tiếng Việt là ngôn ngữ
+ngắn nhất trong bảy:
+
+| | nhãn | tên dài nhất |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+Nên `chip-labelled` — *"nhãn sống trên mọi cửa sổ chơi được"* — sai ở 320px (es, fr)
+và 360px (es), trong khi audit báo **0 vi phạm**. Một lời hứa về bảy ngôn ngữ không
+được kiểm bằng một ngôn ngữ.
+
+### 22.2 Cách sửa: một định nghĩa, hai mươi nhăm lời hứa
+
+`chip/probes.ts` sinh probe từ `localeTable()` + `MODE_LIST`: `chipProbes()` (bảy),
+`widestProbe()` (trường hợp xấu nhất), `widestNameFor(id)` (bản dịch rộng nhất của
+**một** chế độ), `widestChipLabel()`, `widestChipName()`. Bốn nơi trên đều đọc từ
+đây, nên một lần dịch lại di chuyển cả hợp đồng, cả chẩn đoán, cả audit và cả corpus
+— đúng thứ cần di chuyển cùng nhau.
+
+`chip-labelled` đổi **nghĩa**, giữ **id**: không còn là "nhãn luôn sống" (sai về hình
+học ở ngôn ngữ dài) mà là **"chip không bao giờ mất hai bậc cùng lúc"** — mất nhãn thì
+tên phải còn nguyên cỡ thiết kế. Đó là thứ kiểm được, và nó vẫn bắt được cửa sổ 200px
+mà test dùng làm đầu dò.
+
+### 22.3 Hệ quả lên số
+
+Audit báo đúng cái đang xảy ra thay vì cái đang đúng ở một ngôn ngữ:
+**439 full · 101 hidden · 38 label-dropped** (trước: 477 / 101). Ba mươi tám cửa sổ
+đó là **thiết kế**, không phải lỗi: bậc thang bỏ nhãn trước khi bỏ tên. Cái sai là báo
+cáo nói chúng không tồn tại.
+
+### 22.4 Và một con số không tồn tại
+
+`--select` in `648 / 648 cửa sổ`: tích của 18 bề rộng × 36 chiều cao, không phải tập
+cửa sổ nào cả — audit quét 578. Nay `bestOnWindows()` quét đúng danh sách đó:
+`578 / 578`.
+
+---
+
+## 23. Vòng 14 (tiếp) — bậc `crop` là một lối cụt
+
+Vòng 14 đi tìm chỗ mà một lời hứa rộng hơn thứ đã kiểm. Đây là chỗ thứ ba: một **bậc**
+mà mười bốn bất biến cùng bỏ qua.
+
+### 23.1 Ba miễn trừ, không một bù trừ
+
+`fit: "crop"` có ba miễn trừ trong `constraints.ts` (`column-fills-window`,
+`reserve-inside-window`, `panel-fits-reserve`) — hợp lý, vì cửa sổ thấp hơn `sàn + chrome`
+thì **không có** cách bố trí nào vừa. Nhưng cả ba miễn trừ đều giả định điều không đúng:
+rằng `crop` là **khung hình xoay tạm thời**, một hai frame rồi cửa sổ báo lại cỡ thật.
+
+Quét lại cửa sổ audit: **25 / 578** cửa sổ là `crop`, cả 25 ở chiều cao 320px. Đó không
+phải frame chuyển tiếp. Và `.menu-pane` là `overflow: clip`: phần cột vượt cửa sổ — đáy
+của hai panel, nút START — bị cắt và **không có cách nào tới**. Mười bốn bất biến im
+lặng, vì cả mười bốn đều miễn trừ đúng cái bậc ấy.
+
+### 23.2 Cách sửa: miễn trừ giữ nguyên, bù trừ thành thật
+
+Bậc `crop` **được** phép vượt cửa sổ; điều sai là bỏ phần vượt đi. Nên:
+
+- `[data-adaptive-fit="crop"] .menu-pane` → `overflow-y: auto` (dọc), `overflow-x: clip`,
+  `overscroll-behavior: contain`. Chỉ bậc này; mọi cửa sổ từ 356px trở lên vẫn
+  `overflow: clip` và vẫn lấp đúng cửa sổ.
+- `data-adaptive-fit` đã được ghi ra DOM từ vòng 12 và **không ai đọc** — một hook chết.
+  Giờ CSS đọc nó, và `menu-no-scroll` khẳng định đúng **một** quy tắc được làm pane cuộn,
+  và nó phải mang selector của bậc `crop`.
+- Ngưỡng được ghim thành số: `crop` bắt đầu dưới **356px** = sàn hero 140 + chrome 216,
+  và **không** phụ thuộc bề rộng. Từ 356px trở lên, `scene + reserve === height` đúng
+  từng pixel.
+- Câu cảnh báo `crop` nói đúng hộp: *"column is taller than the window: Npx past floor +
+  chrome, reachable by scrolling"* — trước đó nó nói "hero is cropped", trong khi hero
+  chính là hộp **không** bị cắt (nó giữ đúng sàn 140px).

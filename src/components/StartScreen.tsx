@@ -122,7 +122,16 @@ export default function StartScreen({
    * one render could hold a hero planned for 1920×820 beside a width read at
    * 1920×800. See `menu/adaptive/useAdaptive.ts`.
    */
-  const profile = useAdaptive();
+  /*
+   * The player's own reduced-motion switch goes *into* the profile (round 15).
+   *
+   * Before this, `settings.reducedMotion` reached the canvas and nothing else: the
+   * menu kept bobbing, blinking and rotating while the game went still. Now it
+   * resolves into `profile.prefs`, which `adaptiveAttributes()` publishes as
+   * `data-reduced-motion="true"` on this element — the hook `index.css` has selected
+   * on since round 5, finally applied to the menu subtree.
+   */
+  const profile = useAdaptive(false, settings.reducedMotion);
   const { plan, hero, type } = profile;
 
   return (

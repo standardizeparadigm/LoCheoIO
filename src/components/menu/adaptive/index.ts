@@ -124,6 +124,7 @@ export {
   LOCKUP_BOX_RATIO,
   MAX_LOCKUP_PX,
   MIN_LOCKUP_PX,
+  lockupBoxOf,
   lockupMaxForBand,
   typeScaleFor,
   typeVars,
@@ -143,7 +144,7 @@ export {
 export { readEnvironment, readInsets, useEnvironment } from "./useEnvironment";
 
 /* ---- the profile ------------------------------------------------------ */
-export type { AdaptiveInput, AdaptiveProfile } from "./resolve";
+export type { AdaptiveInput, AdaptiveOverrides, AdaptiveProfile } from "./resolve";
 export {
   ADAPTIVE_CSS_VARS,
   adaptiveAttributes,
@@ -172,6 +173,71 @@ export {
   firstViolation,
   violations,
 } from "./constraints";
+
+/* ---- the audit -------------------------------------------------------- */
+export type { AuditReport, AuditSample, AuditTally } from "./audit";
+export {
+  AUDIT_HEIGHTS,
+  AUDIT_WIDTHS,
+  auditAdaptive,
+  auditOne,
+  auditWindowList,
+  auditWindows,
+  knownViolationIds,
+  renderAuditMarkdown,
+  summarise,
+} from "./audit";
+
+/* ---- the selection over that ladder ----------------------------------- */
+export type {
+  Candidate,
+  Comparable,
+  Loser,
+  Score,
+  ScoreContext,
+  ScoreTerm,
+  ScoreTerms,
+  Selection,
+  SelectionInput,
+  SelectionValidator,
+} from "./select";
+export {
+  SCORE_ORDER,
+  bestOn,
+  bestOnWindows,
+  candidatesFor,
+  compareScores,
+  countLevers,
+  describeScore,
+  describeSelection,
+  isFiniteProfile,
+  scoreProfile,
+  selectBest,
+  selectionRungIds,
+  shippedIsBest,
+  slackOf,
+  typeDropOf,
+} from "./select";
+
+/* ---- the repair ladder ------------------------------------------------ */
+export type { RepairInput, RepairResult, RepairRung, RepairValidator } from "./repair";
+export { REPAIR_LADDER, describeRepair, repairForSize, repairProfile, repairRungIds } from "./repair";
+
+/* ---- preferences (round 15) ------------------------------------------ */
+export type { ContrastPreference, MotionPreference, Preferences } from "./preferences";
+export {
+  CONTRAST_PREFERENCES,
+  DEFAULT_PREFERENCES,
+  MOTION_PREFERENCES,
+  describePreferences,
+  preferenceAttributes,
+  preferenceVars,
+  preferencesFor,
+} from "./preferences";
+
+/* ---- hysteresis (round 15) ------------------------------------------- */
+export type { RungKey } from "./hysteresis";
+export { HYSTERESIS_MARGIN, rungKeyOf, sameRung, shouldHold, stabilize } from "./hysteresis";
 
 /* ---- the explanation -------------------------------------------------- */
 export type { AdaptiveWarning, Diagnosis, DiagnosisRow } from "./diagnostics";

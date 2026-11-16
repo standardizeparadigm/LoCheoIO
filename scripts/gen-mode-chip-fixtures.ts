@@ -8,7 +8,7 @@
  *
  * WHY THE MODE NAMES AND NOT THE LOCALES
  * --------------------------------------
- * `MODE_LIST` carries the canonical (Vietnamese) names, and they are the widest
+ * `MODE_LIST` carries the canonical names; the widest *translation* of each is
  * set: nineteen characters for the classic mode, versus twelve for the English
  * one. A corpus over the widest set is a corpus that bounds the narrow ones. The
  * translations are covered separately by `tests/mode-chip.test.ts`, which is the
@@ -24,14 +24,49 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from "node:path";
 
 import { heroBandWidth } from "../src/components/menu/adaptive/hero";
-import { planModeChip } from "../src/components/menu/adaptive/chip";
+import {
+  MODE_CHIP_CHROME_X,
+  MODE_CHIP_DOT,
+  MODE_CHIP_GAP,
+  MODE_CHIP_WANT,
+  estimateText,
+  planModeChip,
+  widestChipLabel,
+  widestNameFor,
+} from "../src/components/menu/adaptive/chip";
 import { PRESETS } from "../src/components/menu/adaptive/presets";
 import { MODE_LIST } from "../src/game/modes";
 
 export const CORPUS = join("tests", "fixtures", "mode-chips");
 
 /** The label the app actually prints, so the snapshot includes it. */
-export const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+/*
+ * Both strings are the widest the app can print, not the Vietnamese ones.
+ *
+ * The matrix is `PRESETS × MODES` — a matrix of *modes* — so each row uses the
+ * widest translation of **its own** mode name, plus the widest label of any
+ * language. Using the global widest name would claim that `classic` prints
+ * «60 SEGUNDOS DE LOCURA».
+ */
+export const CHIP_LABEL = widestChipLabel();
+
+/** The chip's width for this name with the label, at design sizes. */
+function MIN_LABEL_AND_NAME(name: string): number {
+  return (
+    2 * MODE_CHIP_CHROME_X +
+    MODE_CHIP_DOT +
+    MODE_CHIP_GAP +
+    estimateText(CHIP_LABEL, MODE_CHIP_WANT.labelSize, MODE_CHIP_WANT.labelTracking) +
+    estimateText(name, MODE_CHIP_WANT.nameSize, MODE_CHIP_WANT.nameTracking)
+  );
+}
+
+/** The chip's width for this name alone, at its design size. */
+function MIN_NAME_ONLY(name: string): number {
+  return (
+    2 * MODE_CHIP_CHROME_X + MODE_CHIP_DOT + estimateText(name, MODE_CHIP_WANT.nameSize, MODE_CHIP_WANT.nameTracking)
+  );
+}
 
 export function matrix(): Array<{ preset: (typeof PRESETS)[number]; mode: (typeof MODE_LIST)[number] }> {
   return PRESETS.flatMap((preset) => MODE_LIST.map((mode) => ({ preset, mode })));
@@ -39,12 +74,13 @@ export function matrix(): Array<{ preset: (typeof PRESETS)[number]; mode: (typeo
 
 export function snapshot(preset: (typeof PRESETS)[number], mode: (typeof MODE_LIST)[number]) {
   const band = heroBandWidth(preset.width);
-  const plan = planModeChip({ heroWidth: band, side: "right", name: mode.name, label: CHIP_LABEL });
+  const name = widestNameFor(mode.id);
+  const plan = planModeChip({ heroWidth: band, side: "right", name, label: CHIP_LABEL });
   return {
     preset: preset.id,
     window: `${preset.width}×${preset.height}`,
     mode: mode.id,
-    name: mode.name,
+    name,
     band,
     visible: plan.visible,
     align: plan.align,
@@ -53,6 +89,14 @@ export function snapshot(preset: (typeof PRESETS)[number], mode: (typeof MODE_LI
     labelSize: plan.labelSize,
     maxWidth: plan.maxWidth,
     needed: plan.needed,
+    /*
+     * The two text widths this mode can have — with its label and without —
+     * recorded next to the width the plan actually chose. A snapshot whose
+     * `needed` matches neither has started tracking the window instead of the
+     * text, which is the bug this corpus exists to catch.
+     */
+    neededWithLabel: MIN_LABEL_AND_NAME(name),
+    neededWithout: MIN_NAME_ONLY(name),
     available: plan.available,
     truncated: plan.truncated,
     reason: plan.reason,

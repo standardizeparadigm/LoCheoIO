@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 新特性
 
-> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 任何尺寸下都不滚动、不裁切。甲板横条被移除，21 张 SVG 全部重绘，第九轮再加一张 HUD 分带示意图。
+> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 在有解的任何尺寸下（356px 起）都不滚动、不裁切。甲板横条被移除，SVG 共 27 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告、第 13 轮的选阶图、第 15 轮的稳定图），另加第四个语料库（事故窗口）与六层自动修复阶梯。
 
 ### 📐 一次没人管的加法——同时造成四个错误
 
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——131 个文件 1311 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——139 个文件 1458 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -314,6 +314,121 @@ ellipsis`）。文字宽度估算误差 6% 也没关系——真正守住像素�
 详见：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
 
 <img src="assets/diacritics-clip.svg" alt="越南语声调符为何消失 —— 之前：与行框同高的裁剪框把 Ể 的扬抑符切掉，「CỔ ĐIỂN」读成「CỔ ĐIÊN」；之后：1.5em 行框配合 clip-safe 的 ±0.24em 内边距，声调符完整保留（SMIL 动画）" width="100%" />
+
+### 第 12 轮 —— 审计整个窗口空间，并加上自动修复阶梯
+
+前三轮各加了**一个**语料库，但都没有回答维护者在发版前会问的问题：*在**所有**可玩
+窗口中，布局做了什么、做了多少次、有没有坏的地方？*
+
+现在用 `npm run audit:adaptive`：**578** 个窗口（21 个预设 + 围绕每个断点的 25 × 23
+网格，去重），一次解析，汇总成一个 `AuditReport`。
+
+| | |
+| --- | --- |
+| 窗口 | **578** |
+| 违反契约 | **0** —— 每个窗口都跑完 14 条不变量 |
+| 只剩 LỌ CHÉO | 101（17%） |
+| Hero 横排 / 竖排 | 170 / 408 |
+| Scene | 140px（320×320）… 1 642px（3840×2160） |
+
+`docs/adaptive-audit.md` 是该报告的**自动生成**副本，`audit:adaptive --check` 已加入
+`npm run check` —— 改动一个断点或字号下限，**会在造成它的同一个 commit 里**变成一份
+diff。这就是“升级一处必须检查周围”的原则，交给机器提醒。
+
+同时新增**自动修复阶梯** `repair/`：六层 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`。顺序就是原则：**字号最后**，
+因为 8px 下限是承诺。应用在全部 578 个窗口都停在第 0 层；阶梯存在是为了**能够**用，
+测试传入更严的契约来证明它真的会往下走。
+
+还有**第四个语料库**：14 个曾经出现在截图报告里的窗口（第 1 轮到第 12 轮），每个文件
+带 `symptom`（症状）与 `guard`（必须保持的东西），所以失败时读起来是一句关于游戏的
+话，而不是两个数字。
+
+详见：[docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+指南：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 自适应审计 —— 578 个窗口、0 处契约违反、契合与尺寸档的直方图，以及六层自动修复阶梯（SMIL 动画）" width="100%" />
+
+### 第 13 轮 —— 不只是**对**，还要**最省**
+
+第 12 轮做了一件只能回答是/否的事：**有没有不变量被破坏？** 但每次收到截图，第二个
+问题仍然没人回答：**有没有更省的布局？**
+
+这一轮回答它。`select/` 给每个 profile **七个项**，并按**字典序**比较 —— 不用加权求和，
+因为加权求和可能让 40px 余量"买回"一个已经失去的 mascot，只要权重刚好凑成那样：
+
+| # | 项 | 玩家失去什么 |
+| --- | --- | --- |
+| 1 | `violations` | 什么也没失去 —— 破坏契约就不是候选 |
+| 2 | `hidden` | mascot、deck、标语 |
+| 3 | `cropped` | 比自身下限少多少 px |
+| 4 | `hudLost` | HUD 缩放的比例 |
+| 5 | `typeDrop` | 字号少了多少 px（全表求和） |
+| 6 | `levers` | 动了几个东西 —— 玩家看不见 |
+| 7 | `slack` | 多余空间 —— 不是损失，只用来破平 |
+
+两个细节决定"记分板"和"真正正确的比较"之间的差别：
+
+- **`hidden` / `cropped` 相对基准 profile 测量。** 320×320 窗口在拉动任何杠杆之前
+  *本来*就只有 wordmark、*本来*就被裁剪 —— 那是窗口，不是牺牲。用原始标志会为应用
+  正在绘制的 profile 报出 "hidden 1"。
+- **`levers` 从 profile 计数，而不是从 override。** 没有 inset 的窗口上 `ignoreInset`
+  什么都没改变，所以不算拉动过 —— 也正因如此**平局是真实存在的**，破平靠的是阶梯
+  位置，而不是 `sort` 恰好看到的顺序。
+
+这一轮换来的、并且可以检验的命题：
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   578 / 578
+```
+
+> 在所有可玩窗口上，正在发布的 profile 都是六层里最省的那一个。
+
+第 12 轮说"没有东西坏"；第 13 轮说"没有更省的"。命题更强也更容易错，所以它有**第五个
+语料库**：`tests/fixtures/selection/` —— 12 个窗口，每个文件记录的是*决策*而非布局：
+完整六层排名、第二名，以及每一层为何落败。阈值一变，diff 显示的是一个**决策**变了 ——
+这才是审阅时真正需要批准的东西。
+
+详见：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+指南：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
+
+<img src="assets/adaptive-select.svg" alt="选择最省的一层 —— v1.1.8 第 13 轮：阶梯的六个候选、七个字典序项，以及 578 / 578 个窗口都选择 as-planned（SMIL 动画）" width="100%" />
+
+第三处，同样的形状：**`crop` 台阶是一条死路。** 审计的 578 个窗口里有 25 个是
+`fit: "crop"`（全部在 320px 高）。三条不变量豁免这一台阶——这是对的，没有任何排布
+能放下——但 `.menu-pane` 是 `overflow: clip`，于是超出窗口的那部分**无法到达**：两个面板
+的底部和 START 按钮，而没有一条不变量说话。现在 `[data-adaptive-fit="crop"] .menu-pane`
+是菜单里唯一的纵向滚动容器；**356px** 及以上的每个窗口仍然逐像素吻合。
+
+### 第 14 轮 —— 修 bug：chip 的契约必须数满七种语言
+
+这一轮没有新增任何东西。它去找的是一个"承诺说得比检查做得更宽"的地方。
+
+chip 在**四处**用越南语字面量来测量（`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`、
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`）—— 而越南语是七种语言里**最短**的：
+
+| | 标签 | 最长的模式名 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI`（11） | `MUỐI DƯA CỔ ĐIỂN`（19） |
+| es | `MODOS DE JUEGO`（14） | `60 SEGUNDOS DE LOCURA`（21） |
+| fr | `MODES DE JEU`（12） | `FESTIVAL DES COMBOS`（19） |
+
+所以 `chip-labelled` 声称*"每个可玩窗口都保留标签"*，而西班牙语在 320px 和 360px
+丢掉标签、法语在 320px 丢掉 —— 审计却报告**0 处违约**。
+
+现在 `chip/probes.ts` 从 `localeTable()` + `MODE_LIST` 生成探针，`chip-labelled`
+改成一个可检验的承诺：**chip 永远不会同时失去两个台阶**。审计报告实际发生的事情：
+**439 full · 101 hidden · 38 label-dropped**。
+
+同时修掉三个同类型的小 bug：`scoreProfile()` 返回的违约列表没有排序（导致最后的
+平局判定依赖插入顺序）、`isFiniteProfile()` 从不检查 `playfield`/`modal`、
+`slackOf()` 与 `constraints.ts` 对同一个盒子做了不同的取整。另外 `--select` 不再
+打印一个不存在的数字：它把 18 × 36 的乘积叫作"648 个窗口"，而审计扫的是 578 ——
+现在 `578 / 578`，同一个列表。
+
+没有新功能、没有改布局、没有升版本。只是 **1 412 个测试 / 137 个文件**（原先
+1 398），以及一份说清楚自己在检查什么的契约。
 
 
 ## 📐 自适应布局 —— 首屏如何选择自己的形态
@@ -398,6 +513,32 @@ Lọ Chéo 内置 **7 种界面语言**，即时生效 —— 无需刷新、不
 | 切换语言 | —（使用 VI/EN/中/日/한/ES/FR 按钮） | 菜单 / 暂停界面的 VI/EN/中/日/한/ES/FR 按钮 |
 
 ## 🚀 安装与运行
+
+### 🧠 第 15 轮：自适应系统自己调，而且不再抖
+
+这一轮没有新增窗口。它补上第 14 轮留下的四个缺口 —— 文档里有承诺、代码里没有路径：
+
+| | 第 15 轮之前 | 第 15 轮之后 |
+| --- | --- | --- |
+| 「减少动效」开关 | 只到画布 —— 停 **3** 层 CSS | 进入 `profile.prefs`，到菜单 —— 停 **27** 层 |
+| `prefers-contrast: more` | 只有 `App.tsx` 读，设一个属性 | 成为 `Environment` 的第六个信号；面板边框与标题提亮 |
+| 六层修复阶梯 | 有测试的库，**没人调用** | `useAdaptive()` 在运行时执行；`data-adaptive-repair` 说明哪一层胜出 |
+| 拖边框穿过断点 | 鼠标每动一次就重排 | `stabilize()` 保留旧层 **2px** —— 拖 60px 只换 ≤ 2 次 |
+
+- **三个来源，两个名字**：`preferencesFor()` 用 **OR** 合并操作系统与玩家开关，而不是
+  AND —— 应用无权用默认值推翻系统的声明。
+- **第 15 条不变量 `prefs-respected`**：禁止 profile 说「减少动效」而 CSS 变量说「完整」。
+- **`diagnose()` 增加两行**：`10 · prefs` 恒在，`11 · repair` 只在 hook 绘制的 profile
+  上出现 —— 纯函数 `resolveAdaptive()` 不走阶梯，没有层可报。
+
+两个偏好全开 **不改变一个像素**：578 / 578 窗口仍是 `as-planned`，0 违规，并且有测试
+比较两种 profile 的 `plan` / `type` / `density`。
+
+细节：[docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+目录：[`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md)。
+
+<img src="assets/adaptive-stability.svg" alt="稳定与偏好 —— v1.1.8 第 15 轮：迟滞保持 2px、修复阶梯在运行时执行、两个偏好来自三个来源（SMIL 动画）" width="100%" />
 
 ### 免构建直接玩
 

@@ -1,0 +1,45 @@
+{
+ "id": "r08-deck-band-1280x640",
+ "round": 8,
+ "window": "1280×640",
+ "width": 1280,
+ "height": 640,
+ "symptom": "the deck band claimed height the hero needed, at exactly the size Chrome windowed gives you",
+ "guard": "the chrome's reserve leaves the hero at least its floor",
+ "profile": {
+  "tier": "md",
+  "device": "laptop",
+  "aspect": "ultrawide",
+  "density": "comfortable",
+  "room": 0.63,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 262,
+  "reserve": 378,
+  "ticker": true,
+  "hero": "row",
+  "mascot": true,
+  "panelHeight": 318,
+  "modal": "1×448×550",
+  "playfield": "1280×640",
+  "hudScale": 0.914,
+  "type": {
+   "lockupLo": 89.5,
+   "lockupCheo": 73.5,
+   "rowLabel": 11.5,
+   "rowHint": 9,
+   "hudScore": 28.5
+  }
+ },
+ "chip": {
+  "band": 1088,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [],
+ "violations": []
+}

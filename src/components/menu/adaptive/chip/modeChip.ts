@@ -58,11 +58,11 @@ export const MODE_CHIP_LINE_HEIGHT = 1.5;
 export const MODE_CHIP_GUTTER = 8;
 
 /** The chip's own chrome: `px-3` (12) plus the 3px border, per side. */
-const CHROME_X = 15;
+export const MODE_CHIP_CHROME_X = 15;
 /** Dot 8px + its gap 8px. */
-const DOT = 16;
+export const MODE_CHIP_DOT = 16;
 /** The gap between the label and the name. */
-const GAP = 8;
+export const MODE_CHIP_GAP = 8;
 
 /** The button's border, per side: `border-[3px]`. */
 export const CHIP_BORDER = 3;
@@ -125,7 +125,8 @@ export interface ModeChipPlan {
   reason: "full" | "label-dropped" | "name-shrunk" | "ellipsis" | "hidden";
 }
 
-const WANT = {
+/** The sizes the chip *wants*, before any rung of the ladder. */
+export const MODE_CHIP_WANT = {
   nameSize: 11,
   labelSize: 8,
   nameTracking: 0.06,
@@ -142,10 +143,10 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
   const width = Number.isFinite(input.heroWidth) ? Math.max(0, Math.trunc(input.heroWidth)) : 0;
   const available = Math.max(0, width - 2 * MODE_CHIP_GUTTER);
 
-  const nameSheet = clampSize(input.nameSize, WANT.nameSize);
-  const labelSheet = clampSize(input.labelSize, WANT.labelSize);
-  const nameTracking = finite(input.nameTracking, WANT.nameTracking);
-  const labelTracking = finite(input.labelTracking, WANT.labelTracking);
+  const nameSheet = clampSize(input.nameSize, MODE_CHIP_WANT.nameSize);
+  const labelSheet = clampSize(input.labelSize, MODE_CHIP_WANT.labelSize);
+  const nameTracking = finite(input.nameTracking, MODE_CHIP_WANT.nameTracking);
+  const labelTracking = finite(input.labelTracking, MODE_CHIP_WANT.labelTracking);
   const name = typeof input.name === "string" ? input.name : "";
   const label = typeof input.label === "string" ? input.label : "";
 
@@ -169,7 +170,7 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
   if (available < MODE_CHIP_FLOOR || name.length === 0) return blank;
 
   const nameAt = (size: number) => estimateText(name, size, nameTracking);
-  const full = 2 * CHROME_X + DOT + GAP + labelSheetWidth(label, labelSheet, labelTracking) + nameAt(nameSheet);
+  const full = 2 * MODE_CHIP_CHROME_X + MODE_CHIP_DOT + MODE_CHIP_GAP + labelSheetWidth(label, labelSheet, labelTracking) + nameAt(nameSheet);
 
   if (full <= available) {
     return {
@@ -193,7 +194,7 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
    * the button's `title`/`aria-label` still say «Chế độ chơi» for a screen
    * reader, so nothing is actually lost by hiding the words.
    */
-  const withoutLabel = 2 * CHROME_X + DOT + nameAt(nameSheet);
+  const withoutLabel = 2 * MODE_CHIP_CHROME_X + MODE_CHIP_DOT + nameAt(nameSheet);
   if (withoutLabel <= available) {
     return {
       visible: true,
@@ -216,7 +217,7 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
    * 9.5px: a name smaller than that is a name nobody reads, and an ellipsis is
    * the more honest failure at that point.
    */
-  const room = available - 2 * CHROME_X - DOT;
+  const room = available - 2 * MODE_CHIP_CHROME_X - MODE_CHIP_DOT;
   const perPx = nameAt(1);
   const fitted = perPx > 0 ? Math.floor((room / perPx) * 10) / 10 : 0;
   const shrunk = Math.max(MODE_CHIP_NAME_FLOOR, Math.min(nameSheet, fitted));
@@ -229,7 +230,7 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
       nameSize: shrunk,
       labelSize: 0,
       maxWidth: available,
-      needed: 2 * CHROME_X + DOT + nameAt(shrunk),
+      needed: 2 * MODE_CHIP_CHROME_X + MODE_CHIP_DOT + nameAt(shrunk),
       available,
       truncated: false,
       text: name,
@@ -258,7 +259,7 @@ export function planModeChip(input: ModeChipInput): ModeChipPlan {
     nameSize: MODE_CHIP_NAME_FLOOR,
     labelSize: 0,
     maxWidth: available,
-    needed: 2 * CHROME_X + DOT + nameAt(MODE_CHIP_NAME_FLOOR),
+    needed: 2 * MODE_CHIP_CHROME_X + MODE_CHIP_DOT + nameAt(MODE_CHIP_NAME_FLOOR),
     available,
     truncated: true,
     text,

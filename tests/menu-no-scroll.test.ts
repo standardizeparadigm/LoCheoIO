@@ -9,7 +9,8 @@
  * *arithmetic* that makes a bar unnecessary:
  *
  *     1. planMenuLayout() seats the column inside the window exactly
- *     2. the pane is `overflow: clip` (or `hidden`), not `overflow: auto`
+ *     2. the pane is `overflow: clip` (or `hidden`), not `overflow: auto` —
+ *        except in the crop rung, which has no exact fit and must scroll
  *     3. the hero is a fixed band, not a growing one
  *     4. no scrollbar-hiding rules survive that would mask a regression
  *
@@ -20,6 +21,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { planMenuLayout, planFits, occupiesExactly } from "../src/components/menu/layout/fit";
+import { resolveForSize, adaptiveAttributes } from "../src/components/menu/adaptive";
 
 
 /**
@@ -128,8 +130,23 @@ describe("the pane is not a scroll container", () => {
     expect(CSS).toMatch(/@supports not \(overflow: clip\)/);
   });
 
-  it("never sets overflow-y: auto on the pane", () => {
-    expect(CSS).not.toMatch(/\.menu-pane[^{]*\{[^}]*overflow(?:-y)?:\s*auto/);
+  it("makes the pane scrollable in exactly one place: the crop rung", () => {
+    /*
+     * Round 14. The blanket version of this test (`never overflow-y: auto`)
+     * was right about every layout the game supports and wrong about the one
+     * rung that has no arrangement at all: below 356px of column height the
+     * plan reports `fit: "crop"`, `overflow: clip` threw the extra pixels
+     * away, and no invariant said anything — they all exempt crop.
+     *
+     * So the assertion is now "exactly one rule, and it is scoped": the pane
+     * may scroll only when the crop rung is on the element. A future rule that
+     * makes the pane scroll on a supported size still fails here.
+     */
+    const rules = [...CSS.matchAll(/([^{}]*\.menu-pane[^{}]*)\{([^}]*)\}/g)]
+      .map((m) => ({ selector: m[1].trim(), body: m[2] }))
+      .filter((r) => /overflow(?:-y)?:\s*(?:auto|scroll)/.test(r.body));
+    expect(rules).toHaveLength(1);
+    expect(rules[0].selector).toContain('[data-adaptive-fit="crop"]');
   });
 
   it("StartScreen no longer mounts a `.menu-scroll` container", () => {
@@ -181,5 +198,81 @@ describe("no leftover bar-hiding rules", () => {
     // must not have broken modals: they are the one place that still scrolls.
     expect(CSS).toContain(".game-scroll::-webkit-scrollbar");
     expect(CSS).toMatch(/\.game-scroll::-webkit-scrollbar\s*\{[^}]*width:\s*8px/);
+  });
+});
+
+describe("the crop rung is scrollable, and nothing else is", () => {
+  /*
+   * The finding: `fit: "crop"` is reachable on real windows, not just as a
+   * transient rotation frame — a landscape phone with two toolbars is 844×300,
+   * a phone with the keyboard open is 390×240. In both, the column needs 356px
+   * (hero floor 140 + chrome 216), the window has less, and the old
+   * `overflow: clip` made the difference permanently unreachable.
+   */
+  const CROP = [
+    { width: 844, height: 300 },
+    { width: 844, height: 240 },
+    { width: 390, height: 240 },
+  ];
+
+  it("crop is real: the column is taller than the window", () => {
+    for (const vp of CROP) {
+      const plan = planMenuLayout(vp);
+      expect(plan.fit).toBe("crop");
+      expect(plan.scene + plan.reserve).toBeGreaterThan(vp.height);
+    }
+  });
+
+  it("the overflow is exactly scene + reserve − height", () => {
+    for (const vp of CROP) {
+      const plan = planMenuLayout(vp);
+      const overflow = plan.scene + plan.reserve - vp.height;
+      expect(overflow).toBeGreaterThan(0);
+      // 844×300: 356 − 300 = 56; 390×240: 356 − 240 = 116.
+      expect(overflow).toBe(plan.scene + plan.reserve - vp.height);
+    }
+  });
+
+  it("the rung starts at one height, and that height is 356px", () => {
+    /*
+     * The boundary is `TIGHT_SCENE_HEIGHT + chrome` = 140 + 216, and it does not
+     * depend on the width: the chrome is a corner row, so a narrow window makes
+     * the panels stack, not grow. Pinned as a number because the CSS comment
+     * quotes it and because a change here moves the set of windows that can
+     * reach the scroll rule.
+     */
+    for (const w of [320, 375, 390, 768, 844, 1280, 1920]) {
+      const firstOk = [...Array(1200).keys()]
+        .map((i) => i + 100)
+        .find((h) => planMenuLayout({ width: w, height: h }).fit !== "crop");
+      expect(firstOk).toBe(356);
+    }
+  });
+
+  it("every window at or above 356px seats exactly — the scroll rule is unreachable there", () => {
+    for (let h = 356; h <= 1400; h += 1) {
+      for (const w of [320, 375, 390, 768, 844, 1280, 1920]) {
+        const plan = planMenuLayout({ width: w, height: h });
+        expect(plan.fit).not.toBe("crop");
+        expect(plan.scene + plan.reserve).toBe(h);
+      }
+    }
+  });
+
+  it("the hook the CSS keys off is actually emitted", () => {
+    // A `[data-adaptive-fit="crop"]` rule is dead unless the attribute is on
+    // the element. Before round 14 `data-adaptive-fit` was written and read by
+    // nobody: the rung was announced to the DOM and then ignored.
+    const profile = resolveForSize(844, 300);
+    expect(adaptiveAttributes(profile)["data-adaptive-fit"]).toBe("crop");
+    expect(START).toContain("adaptiveAttributes(profile)");
+  });
+
+  it("the pane only scrolls vertically, and contains its own overscroll", () => {
+    const block = ruleBody(CSS, '[data-adaptive-fit="crop"] .menu-pane').replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(block).toMatch(/overflow-y:\s*auto/);
+    expect(block).toMatch(/overflow-x:\s*clip/);
+    // Without this the scroll chains to the page and the whole app moves.
+    expect(block).toMatch(/overscroll-behavior:\s*contain/);
   });
 });

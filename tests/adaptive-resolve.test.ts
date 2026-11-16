@@ -125,9 +125,18 @@ describe("safe-area insets", () => {
 describe("CSS variables and data attributes", () => {
   it("sets every documented variable, as a usable CSS value", () => {
     const profile = resolveForSize(1280, 720);
+    /* Round 15 added two variables whose value is a name, not a number. Both are
+     * checked against their own closed set, which is stricter than "matches a
+     * regex", and everything else must still parse as a pixel value. */
+    const KEYWORDS: Record<string, readonly string[]> = {
+      "--adaptive-motion": ["full", "reduced"],
+      "--adaptive-contrast": ["normal", "more"],
+    };
     for (const name of ADAPTIVE_CSS_VARS) {
       expect(profile.cssVars[name], name).toBeDefined();
-      expect(profile.cssVars[name], name).toMatch(/^-?\d+(\.\d+)?(px)?$/);
+      const allowed = KEYWORDS[name];
+      if (allowed) expect(allowed, name).toContain(profile.cssVars[name]);
+      else expect(profile.cssVars[name], name).toMatch(/^-?\d+(\.\d+)?(px)?$/);
     }
     expect(profile.cssVars["--adaptive-scene"]).toBe(`${profile.plan.scene}px`);
     expect(profile.cssVars["--adaptive-panel-h"]).toBe(`${profile.panelHeight}px`);

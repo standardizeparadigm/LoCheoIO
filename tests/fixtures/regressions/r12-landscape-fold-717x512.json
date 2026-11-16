@@ -1,0 +1,47 @@
+{
+ "id": "r12-landscape-fold-717x512",
+ "round": 12,
+ "window": "717×512",
+ "width": 717,
+ "height": 512,
+ "symptom": "a foldable mid-rotation: wide enough to feel like a tablet, too short for the tablet layout",
+ "guard": "no arrangement is chosen that the band cannot seat",
+ "profile": {
+  "tier": "md",
+  "device": "tablet",
+  "aspect": "wide",
+  "density": "tight",
+  "room": 0.33,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 238,
+  "reserve": 274,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 262,
+  "modal": "1×448×440",
+  "playfield": "717×512",
+  "hudScale": 0.731,
+  "type": {
+   "lockupLo": 69,
+   "lockupCheo": 56.5,
+   "rowLabel": 10.5,
+   "rowHint": 8.5,
+   "hudScore": 24
+  }
+ },
+ "chip": {
+  "band": 653,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [
+  "no-ticker"
+ ],
+ "violations": []
+}

@@ -1,0 +1,45 @@
+{
+ "id": "r09-hud-compressed-1280x720",
+ "round": 9,
+ "window": "1280×720",
+ "width": 1280,
+ "height": 720,
+ "symptom": "the HUD's chips overlapped the combo label as soon as the combo reached two digits",
+ "guard": "the reference window plans an uncompressed HUD",
+ "profile": {
+  "tier": "lg",
+  "device": "laptop",
+  "aspect": "wide",
+  "density": "comfortable",
+  "room": 0.7,
+  "fit": "none",
+  "minimal": false,
+  "scene": 342,
+  "reserve": 378,
+  "ticker": true,
+  "hero": "row",
+  "mascot": true,
+  "panelHeight": 318,
+  "modal": "1×448×619",
+  "playfield": "1280×720",
+  "hudScale": 1.029,
+  "type": {
+   "lockupLo": 89.5,
+   "lockupCheo": 73.5,
+   "rowLabel": 11.5,
+   "rowHint": 9.5,
+   "hudScore": 29
+  }
+ },
+ "chip": {
+  "band": 1088,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "60 SEGUNDOS DE LOCURA",
+  "box": 35
+ },
+ "warnings": [],
+ "violations": []
+}

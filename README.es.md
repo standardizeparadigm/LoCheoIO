@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalación-y-ejecución)
@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños, sin scroll ni recortes. La banda del deck desaparece y los 24 SVG existentes se redibujan y la ronda nueve añade el diagrama de bandas del HUD.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 27 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -188,7 +188,7 @@ Nada de lo que decía el deck se pierde:
 
 Las cuentas de fecha **no** se fueron con él. `challengeFor()` y `tipIndexFor()` se mudaron a `src/game/daily/` — son funciones puras del día local, sin relación con la presentación. Las 21 pruebas se mudaron con ellas, conservando sus nombres.
 
-La banda vacía bajo el wordmark ahora es **deliberada**. Ese es el precio de un hero que encaja en cualquier tamaño.
+La banda vacía bajo el wordmark ahora es **deliberada**. Ese es el precio de un hero que encaja en cualquier tamaño con solución.
 
 ### 🏷️ Changelog por niveles — un color por nivel
 
@@ -202,7 +202,7 @@ El nivel se **deriva del SemVer** con `tierFor(version)`, nunca se escribe a man
 
 <img src="assets/release-tiers.svg" alt="Los tres niveles MAJOR/UPDATE/PATCH con sus colores y la línea de tiempo de diez versiones (animación SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matriz de pruebas 1.1.8 — 1311 tests en 131 archivos, nueve puertas (animación SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matriz de pruebas 1.1.8 — 1458 tests en 139 archivos, nueve puertas (animación SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Las seis capas adaptativas de Lọ Chéo 1.1.8 — caja, nivel, plan y luego densidad / hero / tipografía / modal / tablero, en una sola dirección (animación SMIL)" width="100%" />
 
@@ -286,6 +286,137 @@ Detalles: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--d�
 
 <img src="assets/diacritics-clip.svg" alt="Por qué desaparecen las tildes vietnamitas — antes: una caja de recorte del tamaño de la caja de línea cortaba el circunflejo de Ể y «CỔ ĐIỂN» se leía «CỔ ĐIÊN»; después: caja de línea de 1,5em y el relleno ±0,24em de clip-safe conservan cada tilde (animación SMIL)" width="100%" />
 
+### Ronda 12 — todo el espacio de ventanas, auditado — y una escalera de reparación
+
+Cada una de las tres rondas anteriores añadió **un** corpus. Ninguno respondía a la
+pregunta que uno se hace antes de publicar: *en **todas** las ventanas jugables,
+¿qué hace el diseño, cuántas veces, y hay algo roto?*
+
+Ahora `npm run audit:adaptive` responde: **578** ventanas (21 presets más una
+cuadrícula de 25 × 23 alrededor de cada punto de ruptura, sin duplicados), resueltas
+una vez y reunidas en un único `AuditReport`.
+
+| | |
+| --- | --- |
+| Ventanas | **578** |
+| Violaciones del contrato | **0** — cada ventana ejecuta las 14 invariantes |
+| Solo LỌ CHÉO | 101 (17%) |
+| Hero fila / columna | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md` es la copia **generada** de ese informe, y
+`audit:adaptive --check` corre dentro de `npm run check`: mover un punto de ruptura
+o un suelo tipográfico **aparece como un diff** en el mismo commit que lo causó. Es
+la regla de «al mejorar algo, revisa su alrededor», delegada en una máquina.
+
+Junto a ello, una **escalera de reparación** en `repair/`: seis peldaños —
+`as-planned → ignore-inset → compact-hud → single-column → smaller-type →
+smallest-type`. El orden es el principio: **el texto al final**, porque el suelo de
+8px es una promesa. La app se detiene en el peldaño 0 en las 578 ventanas; la
+escalera existe para *poder* usarse, y el test le entrega un contrato más estricto
+para demostrar que de verdad baja.
+
+Y un **cuarto corpus**: 14 ventanas que fueron objeto de un informe con captura, de
+la ronda 1 a la 12, cada archivo con `symptom` y `guard`, para que un fallo se lea
+como una frase sobre la tienda y no como dos números.
+
+Detalles: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+guía: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="Auditoría adaptive de v1.1.8 — 578 ventanas, 0 violaciones del contrato, histogramas de ajuste y nivel, y la escalera de reparación de seis peldaños (animación SMIL)" width="100%" />
+
+### Ronda 13 — no solo *correcto*, sino *lo más barato*
+
+La ronda 12 construyó una auditoría que responde a una pregunta de sí/no: **¿se rompe
+algún invariante?** Pero cada vez que llega una captura queda una segunda pregunta
+sin responder: **¿hay un diseño más barato?**
+
+Esta ronda la responde. `select/` da a cada perfil **siete términos** y los compara
+**lexicográficamente** — no como suma ponderada, porque una suma ponderada dejaría
+que 40px de holgura "recompren" una mascota perdida si los pesos cuadran así:
+
+| # | Término | Qué pierde el jugador |
+| --- | --- | --- |
+| 1 | `violations` | nada — un diseño roto no es candidato |
+| 2 | `hidden` | mascota, deck, eslogan |
+| 3 | `cropped` | px por debajo de su propio suelo |
+| 4 | `hudLost` | parte de la escala del HUD |
+| 5 | `typeDrop` | px de texto, sumados |
+| 6 | `levers` | cuántas cosas se movieron — invisible |
+| 7 | `slack` | holgura — no es pérdida, solo desempata |
+
+Dos detalles separan «un marcador» de «una comparación correcta»:
+
+- **`hidden` y `cropped` se miden contra el perfil base.** Una ventana de 320×320 *ya
+  es* solo-wordmark y *ya está* recortada antes de tocar ninguna palanca — eso es la
+  ventana, no un sacrificio. Con banderas crudas se informaría «hidden 1» del perfil
+  que la app ya dibuja.
+- **`levers` cuenta desde el perfil, no desde los overrides.** `ignoreInset` en una
+  ventana sin inset no cambia nada, así que no cuenta — y por eso **los empates son
+  reales**, y el desempate es la posición en la escalera, no el orden que `sort` vio.
+
+La afirmación que esta ronda compra, y puede comprobar:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   578 / 578
+```
+
+> en toda ventana jugable, el perfil publicado es el más barato de los seis.
+
+La ronda 12 decía «nada está roto»; la 13 dice «nada es más barato». Una afirmación
+más fuerte se equivoca más fácil, así que tiene su **quinto corpus**:
+`tests/fixtures/selection/` — 12 ventanas, cada archivo registrando la *decisión* y no
+el diseño: la clasificación completa de seis peldaños, el segundo, y por qué perdió
+cada uno. Cuando un umbral se mueve, el diff muestra una **decisión** cambiando — lo
+que un revisor realmente necesita aprobar.
+
+Detalles: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+guía: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
+
+<img src="assets/adaptive-select.svg" alt="Elegir el peldaño más barato — v1.1.8 ronda 13: los seis candidatos de la escalera, los siete términos lexicográficos y 578 de 578 ventanas eligiendo as-planned (animación SMIL)" width="100%" />
+
+Un tercer sitio, la misma forma: **el peldaño `crop` era un callejón sin salida.** 25 de
+las 578 ventanas de la auditoría dan `fit: "crop"` (las 25 a 320px de alto). Tres
+invariantes eximen ese peldaño — con razón, no hay disposición que quepa — pero
+`.menu-pane` es `overflow: clip`, así que la parte de la columna que se sale era
+**inalcanzable**: el pie de ambos paneles y el botón START, sin que ninguna invariante
+dijera nada. Ahora `[data-adaptive-fit="crop"] .menu-pane` es el único contenedor de
+desplazamiento vertical del menú; toda ventana de **356px** o más sigue encajando al píxel.
+
+### Ronda 14 — corrección de errores: el contrato del chip debe contar los siete idiomas
+
+Esta ronda no añade nada. Buscó un lugar donde una promesa estaba enunciada más ampliamente
+que aquello que la comprobaba.
+
+El chip se medía con literales en vietnamita en **cuatro** sitios
+(`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`, `CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`), y el vietnamita es el
+**más corto** de los siete idiomas:
+
+| | etiqueta | nombre de modo más largo |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+Así que `chip-labelled` afirmaba *«la etiqueta sobrevive en toda ventana jugable»* mientras
+el español la pierde a 320px y 360px y el francés a 320px — y la auditoría informaba
+**0 violaciones**.
+
+Ahora `chip/probes.ts` deriva las sondas de `localeTable()` + `MODE_LIST`, y
+`chip-labelled` enuncia algo comprobable: **el chip nunca pierde dos peldaños a la vez**.
+La auditoría informa lo que ocurre: **439 full · 101 hidden · 38 label-dropped**.
+
+Con ellas, tres errores menores de la misma forma: `scoreProfile()` devolvía su lista de
+violaciones sin ordenar (el desempate final dependía del orden de inserción),
+`isFiniteProfile()` nunca miraba `playfield`/`modal`, y `slackOf()` redondeaba distinto que
+`constraints.ts` sobre la misma caja. Y `--select` dejó de imprimir un número que no
+existe: multiplicaba 18 × 36 y llamaba al producto «648 ventanas» cuando la auditoría
+recorre 578 — ahora `578 / 578`, la misma lista.
+
+Sin funciones nuevas, sin cambios de diseño, sin subir versión. Solo **1 412 pruebas en
+137 archivos** en vez de 1 398, y un contrato que dice lo que comprueba.
+
 
 ## 📐 Diseño adaptable — cómo el hero elige su forma
 
@@ -318,6 +449,36 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // columna más alta: 192 mascota + 24 chip
 ```
 
 `tests/menu-adaptive.test.ts` recorre **1.682 viewports** y verifica `heroContentHeight(layout) ≤ scene` en cada muestra. Al redimensionar, ambos hooks escuchan **seis** eventos y actualizan en un solo frame.
+
+### 🧠 Ronda quince: el sistema se ajusta solo, y ya no tiembla
+
+Ninguna ventana nueva. Cierra cuatro huecos que dejó la ronda catorce — sitios donde la
+promesa existía en la documentación y no había código detrás:
+
+| | antes de la ronda 15 | después de la ronda 15 |
+| --- | --- | --- |
+| Interruptor «Reducir movimiento» | llegaba solo al canvas — **3** capas CSS se detenían | resuelto en `profile.prefs`, llega al menú — **27** capas se detienen |
+| `prefers-contrast: more` | solo `App.tsx` lo leía, para poner un atributo | la sexta señal de `Environment`; bordes y cabeceras de panel suben |
+| La escalera de reparación de seis peldaños | una biblioteca probada **que nadie llamaba** | `useAdaptive()` la ejecuta en runtime; `data-adaptive-repair` dice qué peldaño ganó |
+| Arrastrar un borde por un punto de ruptura | rehacía el diseño en cada movimiento del ratón | `stabilize()` retiene el peldaño **2px** — 60px de arrastre lo cambian ≤ 2 veces |
+
+- **Tres fuentes, dos nombres.** `preferencesFor(env, settings.reducedMotion)` combina con
+  **OR** el sistema y el interruptor del jugador, no con AND: una app no anula con un
+  valor por defecto lo que declara el sistema.
+- **La decimoquinta invariante, `prefs-respected`**, prohíbe un perfil que diga «reducido»
+  mientras sus variables CSS digan «completo».
+- **`diagnose()` suma dos filas**: `10 · prefs` siempre, `11 · repair` solo en un perfil
+  que pintó el hook — un `resolveAdaptive()` puro no recorre la escalera.
+
+Activar ambas preferencias **no cambia un píxel** del diseño: 578 / 578 ventanas siguen
+`as-planned` con 0 violaciones, y un test compara `plan` / `type` / `density` entre ambos
+perfiles para mantener esa promesa.
+
+Detalles: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+carpetas: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Estabilidad y preferencias — v1.1.8 ronda 15: la histéresis retiene 2px, la escalera de reparación corre en runtime, dos preferencias de tres fuentes (animación SMIL)" width="100%" />
 
 ### 🧱 Octava ronda: seis capas, un perfil
 
@@ -411,7 +572,7 @@ combinaciones comprobadas).
 | 💾 **Clasificación TOP 8** | Guardado local, validado y normalizado al leer, nombres en mayúsculas automáticas, highlight para el récord recién marcado |
 | 🎨 **Gráficos 60fps** | Canvas 2D, presupuesto de 460 partículas, DPR tope 2, suelo de losetas pre-renderizado offscreen, titileo de estrellas + aurora en el menú |
 | 📴 **Offline-first de verdad** | Fuentes auto-alojadas (subsets latin + vietnamita, woff2), sin CDN ni APIs — abre `dist/index.html` y a jugar |
-| 🧪 **Calidad** | 1311 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
+| 🧪 **Calidad** | 1458 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
 
 <img src="assets/items.svg" alt="Los 14 ingredientes — encurtidos para atrapar, poderes dorados para agarrar, peligros para esquivar" width="100%" />
 
@@ -474,7 +635,7 @@ npm run build      # → dist/index.html (un único archivo autocontenido)
 npm run dev        # servidor de desarrollo con HMR (http://localhost:5173)
 npm run preview    # sirve el build de producción localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1311 tests unitarios (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1458 tests unitarios (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (puerta de calidad CI)
 ```
 
@@ -619,7 +780,7 @@ Doble clic en [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`
 
 | Versión | Tier | Fecha | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1311 tests / 131 archivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1458 tests / 139 archivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fondo del menú sin niebla** (cuatro capas: `blur 64→22px`, viñeta de esquinas en vez de pantalla completa, marco CRT 140→90px, suelo 45→70%) · **changelog por niveles con color** · **96 viñetas nuevas** para 8 versiones · fechas reordenadas · `src/game/changelog/` dividido · 10 READMEs rehechos · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes en 6 secciones** (rápidos · audio · pantalla · idioma · copia · datos) · volúmenes 0–100 · intensidad de sacudida · calidad visual · pausa al cambiar de pestaña · idioma dentro de Ajustes · 4 preajustes · exportar/importar JSON · menú multicapa animado · degradado en la tarjeta del autor · foco atrapado en modales · fix de música al recargar · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |
@@ -663,7 +824,7 @@ Notas de diseño y documentación técnica más profunda:
 ## 🤝 Contribuir
 
 1. Haz fork, crea una rama con la convención `arena/<nombre>` o `feat/<nombre>`.
-2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 1311 tests + build).
+2. `npm run check` debe estar en verde antes de abrir PR (typecheck + 1458 tests + build).
 3. Evita nuevas dependencias de runtime salvo necesidad real — filosofía: **un archivo, sin red, jugable para siempre**.
 4. En el PR indica las pantallas/modos afectados y adjunta un clip si cambia el gameplay.
 

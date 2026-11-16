@@ -1,0 +1,42 @@
+{
+ "id": "s04-landscape-717x512",
+ "window": "717×512",
+ "width": 717,
+ "height": 512,
+ "why": "landscape phone — the band where the hero flips to a row",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 122
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.11",
+  "single-column · hudLost 0.11",
+  "smaller-type · hudLost 0.11",
+  "smallest-type · hudLost 0.11"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "md",
+  "density": "tight",
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 238,
+  "reserve": 274,
+  "hero": "stack",
+  "panelHeight": 262,
+  "hudScale": 0.731,
+  "rowLabel": 10.5
+ }
+}

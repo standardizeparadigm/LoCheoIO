@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 の新機能
 
-> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。どのサイズでもスクロールも切れもなし。デッキの帯は削除、既存 21 枚の SVG を描き直し、第9ラウンドで HUD の帯の図を追加。
+> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 27 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート、第13ラウンドの選択図、第15ラウンドの安定図）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
 
 ### 📐 誰も管理していなかった足し算——そして同時に四つの不具合
 
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——131ファイル1311テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——139ファイル1458テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -326,6 +326,131 @@ name-shrunk → ellipsis`）を守ります。文字幅の推定が 6% ずれて
 詳細：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
 
 <img src="assets/diacritics-clip.svg" alt="ベトナム語の声調記号が消える理由 —— 以前：行ボックスと同じ高さの切り取りボックスが Ể のサーカムフレックスを削り、「CỔ ĐIỂN」が「CỔ ĐIÊN」に；以後：1.5em の行ボックスと clip-safe の ±0.24em で記号が残る（SMIL アニメーション）" width="100%" />
+
+### 第 12 ラウンド —— ウィンドウ空間全体の監査と、自動修復のはしご
+
+直近 3 ラウンドはそれぞれ**1 つ**のコーパスを追加しました。しかしどれも、リリース
+前にメンテナが尋ねる問いには答えていません：*遊べる**すべて**のウィンドウで、レイア
+ウトは何をどれだけ行い、壊れているものはあるか？*
+
+いまは `npm run audit:adaptive` が答えます：**578** ウィンドウ（21 プリセット＋各ブ
+レークポイント周辺の 25 × 23 グリッド、重複除去）。一度だけ解決し、ひとつの
+`AuditReport` にまとめます。
+
+| | |
+| --- | --- |
+| ウィンドウ | **578** |
+| 契約違反 | **0** —— 各ウィンドウが 14 の不変条件をすべて実行 |
+| LỌ CHÉO のみ | 101（17%） |
+| Hero 横並び / 縦積み | 170 / 408 |
+| Scene | 140px（320×320）… 1 642px（3840×2160） |
+
+`docs/adaptive-audit.md` はその**自動生成**コピーで、`audit:adaptive --check` は
+`npm run check` の中で走ります。したがってブレークポイントや文字サイズの下限を変える
+と、**それを引き起こしたコミットの中で** diff として現れます。これが「何かを改善した
+ら周囲への影響を確認する」という原則を、機械に任せた形です。
+
+さらに**自動修復のはしご** `repair/`：6 段 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`。順序そのものが原則です：
+**文字は最後**。8px の下限は約束だからです。アプリは 578 すべてで段 0 に止まり、はし
+ごは*使えるように*存在し、テストはより厳しい契約を渡して実際に降りることを示します。
+
+そして**4 つ目のコーパス**：スクリーンショット報告の対象になった 14 のウィンドウ
+（第 1 ラウンドから第 12 ラウンドまで）。各ファイルが `symptom` と `guard` を持つので、
+失敗は 2 つの数字ではなく、店についての一文として読めます。
+
+詳細：[docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+ガイド：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 の adaptive 監査 —— 578 ウィンドウ、契約違反 0、フィットと階層のヒストグラム、そして 6 段の自動修復はしご（SMIL アニメーション）" width="100%" />
+
+### 第 13 ラウンド —— *正しい*だけでなく*いちばん安い*
+
+第 12 ラウンドは「不変条件が壊れているか」という yes/no に答える仕組みを作りました。
+しかしスクリーンショットが届くたびに、二つ目の問いが残ります：**もっと安いレイアウトは
+無いのか？**
+
+このラウンドがそれに答えます。`select/` は各プロファイルに**七つの項**を与え、**辞書順**
+で比べます。重み付き和にしないのは、重みの合計がたまたまそうなれば 40px の余白が
+「失ったマスコットを買い戻す」ことになってしまうからです。
+
+| # | 項 | プレイヤーが失うもの |
+| --- | --- | --- |
+| 1 | `violations` | 何も失わない —— 契約違反は候補ではない |
+| 2 | `hidden` | マスコット・デッキ・タグライン |
+| 3 | `cropped` | 自身の下限に対する不足 px |
+| 4 | `hudLost` | HUD のスケールの割合 |
+| 5 | `typeDrop` | 文字の px（全スケール合計） |
+| 6 | `levers` | 動かした数 —— プレイヤーには見えない |
+| 7 | `slack` | 余り —— 損失ではなく、同点崩しだけ |
+
+「スコアボード」と「本当に正しい比較」を分ける二点：
+
+- **`hidden` / `cropped` は基準プロファイルとの差で測る。** 320×320 の窓はレバーを
+  引く前から wordmark だけであり、前から crop されています —— それは窓であって犠牲
+  ではありません。生のフラグで測ると、アプリが今描いているプロファイルに
+  「hidden 1」と報告してしまいます。
+- **`levers` は override ではなくプロファイルから数える。** inset の無い窓での
+  `ignoreInset` は何も変えないので、引いたことにしません —— だから**同点は実在し**、
+  同点崩しは `sort` が見た順ではなく階段の位置で行います。
+
+このラウンドが手に入れ、かつ検証できる命題：
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   578 / 578
+```
+
+> 遊べるすべての窓で、出荷中のプロファイルは六段のうち最も安い。
+
+第 12 ラウンドは「壊れていない」と言いました。第 13 ラウンドは「より安いものは無い」と
+言います。強い命題は間違えやすいので、専用の**第五のコーパス**があります：
+`tests/fixtures/selection/` —— 12 の窓、各ファイルはレイアウトではなく*決定*を記録し、
+六段すべての順位、次点、そして各段が負けた理由を持ちます。しきい値が動けば diff は
+**決定**が変わったことを示します —— レビューで本当に承認したいものはそれです。
+
+詳細：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+ガイド：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
+
+<img src="assets/adaptive-select.svg" alt="最も安い段を選ぶ —— v1.1.8 第 13 ラウンド：階段の六候補、七つの辞書順項、そして 578 / 578 の窓が as-planned を選ぶ（SMIL アニメーション）" width="100%" />
+
+三つ目も同じ形：**`crop` の段は行き止まりだった。** 監査の 578 窓のうち 25 窓が
+`fit: "crop"`（すべて高さ 320px）。三つの不変条件がこの段を免除している —— 正しい、
+収まる配置が存在しないから —— しかし `.menu-pane` は `overflow: clip` なので、はみ出した
+部分は**到達できなかった**：両パネルの下端と START ボタン。それを告げる不変条件は
+一つもなかった。いま `[data-adaptive-fit="crop"] .menu-pane` がメニューで唯一の縦スクロール
+領域で、**356px** 以上の窓は今も 1px まで一致する。
+
+### 第 14 ラウンド —— バグ修正：chip の契約は七言語を数えなければならない
+
+このラウンドは何も追加していません。探したのは「約束が、それを検査するものより広く
+語られている場所」です。
+
+chip は**四か所**でベトナム語のリテラルで測られていました（`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`、
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`）—— そしてベトナム語は七言語のうち**最も短い**：
+
+| | ラベル | 最も長いモード名 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI`（11） | `MUỐI DƯA CỔ ĐIỂN`（19） |
+| es | `MODOS DE JUEGO`（14） | `60 SEGUNDOS DE LOCURA`（21） |
+| fr | `MODES DE JEU`（12） | `FESTIVAL DES COMBOS`（19） |
+
+そのため `chip-labelled` は*「どの遊べる窓でもラベルが残る」*と主張していましたが、
+スペイン語は 320px と 360px で、フランス語は 320px でラベルを失い —— 監査は
+**違反 0** と報告していました。
+
+いま `chip/probes.ts` が `localeTable()` + `MODE_LIST` からプローブを生成し、
+`chip-labelled` は検証できる命題になりました：**chip は二段を同時に失わない**。
+監査は実際に起きていることを報告します：**439 full · 101 hidden · 38 label-dropped**。
+
+同型の小さなバグも三つ修正：`scoreProfile()` の違反リストが未ソート（最後の同点判定が
+挿入順に依存）、`isFiniteProfile()` が `playfield`/`modal` を見ていない、`slackOf()` が
+`constraints.ts` と同じロックアップ箱で違う丸めをしていた。そして `--select` は存在
+しない数を印刷しなくなりました：18 × 36 の積を「648 の窓」と呼んでいましたが監査は
+578 を走査します —— いまは `578 / 578`、同じリストです。
+
+新機能なし、レイアウト変更なし、バージョン変更なし。**1 412 テスト / 137 ファイル**
+（従来 1 398）と、自分が何を検査しているかを言える契約だけ。
 
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
@@ -410,6 +535,34 @@ Lọ Chéo はゲーム内で **7 言語のUI** を搭載 — リロード不要
 | 言語切替 | —（VI/EN/中/日/한/ES/FR ボタンを使用） | メニュー / 一時停止の VI/EN/中/日/한/ES/FR ボタン |
 
 ## 🚀 インストールと実行
+
+### 🧠 第15ラウンド：適応システムが自分を整え、もう揺れない
+
+このラウンドは窓を増やしません。第14ラウンドが残した四つの穴 —— 文書には約束があり、
+コードに経路がない場所 —— を塞ぎます：
+
+| | 第15ラウンド前 | 第15ラウンド後 |
+| --- | --- | --- |
+| 「動きを減らす」スイッチ | キャンバスだけ —— CSS **3** 層が停止 | `profile.prefs` に入り、メニューまで —— **27** 層が停止 |
+| `prefers-contrast: more` | `App.tsx` が属性を一つ立てるだけ | `Environment` の六番目の信号。パネル枠と見出しが持ち上がる |
+| 六段の修復はしご | テストのあるライブラリ、**呼び出しなし** | `useAdaptive()` が実行時に走らせる。`data-adaptive-repair` が勝った段を名乗る |
+| 境界をまたぐドラッグ | マウスが動くたび再レイアウト | `stabilize()` が **2px** だけ段を保持 —— 60px のドラッグで ≤ 2 回 |
+
+- **三つの出所、二つの名前**：`preferencesFor()` は OS とプレイヤーのスイッチを **OR**
+  でまとめます（AND ではない）。アプリが既定値で OS の申告を覆すことはできません。
+- **15番目の不変条件 `prefs-respected`**：プロフィールが「動きを減らす」と言うのに
+  CSS 変数が「完全」と言うことを禁じます。
+- **`diagnose()` に二行**：`10 · prefs` は常に、`11 · repair` はフックが描いた
+  プロフィールだけ —— 純粋な `resolveAdaptive()` ははしごを歩かないためです。
+
+両方を有効にしても **レイアウトは 1px も変わりません**：578 / 578 窓は `as-planned`、
+違反 0、そして二つのプロフィールの `plan` / `type` / `density` を比較するテストがあります。
+
+詳細：[docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+フォルダ：[`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md)。
+
+<img src="assets/adaptive-stability.svg" alt="安定と選好 —— v1.1.8 第15ラウンド：ヒステリシスが 2px 保持、修復はしごが実行時、三つの出所から二つの選好（SMIL アニメーション）" width="100%" />
 
 ### ビルド不要で今すぐ遊ぶ
 

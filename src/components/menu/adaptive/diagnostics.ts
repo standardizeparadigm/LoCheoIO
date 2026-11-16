@@ -26,9 +26,9 @@
 import type { AdaptiveProfile } from "./resolve";
 import { describeTier } from "./tiers";
 import { heroBandWidth } from "./hero";
-import { chipBoxHeight, planModeChip } from "./chip";
-import { MODE_LIST } from "../../../game/modes";
+import { chipBoxHeight, planModeChip, widestOf, widestProbe } from "./chip";
 import { describeBox } from "./viewport";
+import { describePreferences } from "./preferences";
 
 /** One decision and the reason it went the way it did. */
 export interface DiagnosisRow {
@@ -142,6 +142,30 @@ export function diagnose(p: AdaptiveProfile): Diagnosis {
       value: `${p.playfield.width}×${p.playfield.height} · jar ${p.playfield.playerRadius}px · hud ×${p.playfield.hudScale}`,
       because: `item scale follows height (${p.playfield.itemScale}), radius follows the short side`,
     },
+    {
+      layer: "10 · prefs",
+      value: describePreferences(p.prefs),
+      because: preferencesReason(p),
+    },
+    /*
+     * The repair rung only exists on a profile the hook painted. `resolveAdaptive()`
+     * is pure and never walks the ladder, so a raw profile has no rung to report —
+     * and inventing "as-planned" for it would be a diagnosis of something that did
+     * not happen.
+     */
+    ...(p.repair
+      ? [
+          {
+            layer: "11 · repair",
+            value: `${p.repair.rung}${p.repair.ok ? "" : " · FAILED"}`,
+            because: p.repair.ok
+              ? p.repair.rung === "as-planned"
+                ? "the plan satisfied the contract with no lever pulled"
+                : `rung ${p.repair.rung} was the first that satisfied the contract`
+              : "no rung satisfied the contract — the least-broken one is painted",
+          },
+        ]
+      : []),
   ];
 
   return { headline: headline(p), rows, warnings: warningsFor(p) };
@@ -178,9 +202,33 @@ function chipReason(p: AdaptiveProfile): string {
   return "hidden: the band is under the chip floor";
 }
 
-/** The label the chip prints, and the widest mode name it can be asked to print. */
-const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
-const CHIP_WIDEST_NAME = MODE_LIST.reduce((best, m) => (m.name.length > best.length ? m.name : best), "");
+/**
+ * The worst case across the seven languages — the widest label over the widest name.
+ *
+ * Both used to be Vietnamese literals, which made this line a statement about one
+ * translation. See `chip/probes.ts`: Spanish needs three more characters for the
+ * label and two more for the widest name, and the diagnosis was reporting the
+ * window as if the app only shipped in Vietnamese.
+ */
+const CHIP_PROBE = widestProbe();
+const CHIP_LABEL = CHIP_PROBE.label;
+const CHIP_WIDEST_NAME = widestOf(CHIP_PROBE.names);
+
+/**
+ * The preferences row.
+ *
+ * Round 15: the player can ask for less motion and more contrast, and three sources
+ * can each ask for it — so the diagnosis says *why* the animation stopped, rather
+ * than leaving the next reader to open DevTools and read two attributes.
+ */
+function preferencesReason(p: AdaptiveProfile): string {
+  if (p.prefs.motion === "reduced" && p.prefs.contrast === "more") {
+    return "the OS asked for less motion *and* more contrast; decorative layers stopped, borders and copy lifted";
+  }
+  if (p.prefs.motion === "reduced") return "less motion — the OS preference or the player's switch stopped the decorative layers";
+  if (p.prefs.contrast === "more") return "more contrast — copy and panel borders lifted for legibility";
+  return "nothing asked for: full motion, normal contrast";
+}
 
 /** The one-line summary, with the parts a screenshot review always needs. */
 export function headline(p: AdaptiveProfile): string {
@@ -203,9 +251,18 @@ export function warningsFor(p: AdaptiveProfile): AdaptiveWarning[] {
   const out: AdaptiveWarning[] = [];
 
   if (p.plan.fit === "crop") {
+    /*
+     * ROUND 14: the message described the wrong box. `fit: "crop"` clamps the
+     * hero at its floor (140px) and lets the *column* overrun the window — so
+     * what the player loses is the bottom of the chrome, not the hero. The
+     * number is the same either way (`scene + reserve − height`), but the noun
+     * sent anyone reading it to the wrong element. And the rung is scrollable
+     * (see `[data-adaptive-fit="crop"] .menu-pane`), so say "reachable by
+     * scrolling" rather than leaving the reader to assume it is cut off.
+     */
     out.push({
       code: "crop",
-      message: `hero is cropped: the window is ${Math.max(0, 220 + p.plan.reserve - p.box.height)}px shorter than floor + chrome`,
+      message: `column is taller than the window: ${Math.max(0, 220 + p.plan.reserve - p.box.height)}px past floor + chrome, reachable by scrolling`,
     });
   }
   if (!p.plan.ticker) {

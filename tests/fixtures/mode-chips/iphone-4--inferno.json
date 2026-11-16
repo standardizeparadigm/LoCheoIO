@@ -2,16 +2,18 @@
  "preset": "iphone-4",
  "window": "320×480",
  "mode": "inferno",
- "name": "ỚT LỬA",
+ "name": "PIMENT INFERNAL",
  "band": 288,
  "visible": true,
  "align": "end",
- "showLabel": true,
+ "showLabel": false,
  "nameSize": 11,
- "labelSize": 8,
+ "labelSize": 0,
  "maxWidth": 272,
- "needed": 174,
+ "needed": 165,
+ "neededWithLabel": 273,
+ "neededWithout": 165,
  "available": 272,
  "truncated": false,
- "reason": "full"
+ "reason": "label-dropped"
 }

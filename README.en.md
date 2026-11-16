@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)](#-changelog-tiers--one-colour-per-tier)
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
+[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-install--run)
@@ -37,7 +37,7 @@ This is a **single-screen action arcade** inspired by Vietnam's humble pickled v
 
 ## 🆕 What's new in v1.1.8
 
-> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size, without scroll or clipping. The deck band is gone, the 21 existing SVGs are redrawn — and round nine adds the HUD-band diagram.
+> The **final patch** before 1.2.0. No new game mode, no balance change, no save-format change. This last round does one thing: **the hero measures the window and picks its own layout** — at every size with a fit (356px and up), without scroll or clipping. The deck band is gone, the 21 existing SVGs are redrawn — and round nine adds the HUD-band diagram.
 
 ### 📐 One unmanaged addition — and four bugs at once
 
@@ -200,7 +200,7 @@ The tier is **derived from SemVer** by `tierFor(version)`, never typed by hand. 
 
 <img src="assets/release-tiers.svg" alt="The three tiers MAJOR/UPDATE/PATCH with their colours and the ten-release timeline (SMIL animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1311 tests across 131 files, nine gates (SMIL animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1458 tests across 139 files, nine gates (SMIL animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
 
@@ -291,6 +291,138 @@ Details: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--d�
 
 <img src="assets/diacritics-clip.svg" alt="Why Vietnamese tone marks disappear — before: a clip box the size of the line box shaved the circumflex off Ể, so «CỔ ĐIỂN» read as «CỔ ĐIÊN»; after: a 1.5em line box and clip-safe padding of ±0.24em keep every mark (SMIL animation)" width="100%" />
 
+### Round 12 — the whole window space, audited — and a repair ladder
+
+Each of the last three rounds added **one** corpus. None of them answered the
+question a maintainer asks before a release: *across **every** playable window,
+what does the layout do, how often, and is anything broken?*
+
+Now `npm run audit:adaptive` does: **578** windows (21 presets plus a 25 × 23 grid
+around every breakpoint, deduplicated), resolved once and folded into a single
+`AuditReport`.
+
+| | |
+| --- | --- |
+| Windows | **578** |
+| Contract violations | **0** — each window runs all 14 invariants |
+| Wordmark-only | 101 (17%) |
+| Hero row / stack | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md` is the report's **generated** copy, and
+`audit:adaptive --check` runs inside `npm run check` — so moving a breakpoint or a
+type floor **shows up as a diff** in the very commit that caused it. That is the
+"check the neighbours when you upgrade something" rule, handed to a machine.
+
+Alongside it, a **repair ladder** in `repair/`: six rungs — `as-planned →
+ignore-inset → compact-hud → single-column → smaller-type → smallest-type`. The
+order is the principle: **type last**, because the 8px floor is a promise. The app
+stops at rung 0 on all 578 windows; the ladder exists so that it *can* be used, and
+the test hands it a stricter contract to prove it really walks.
+
+And a **fourth corpus**: 14 windows that were each the subject of a screenshot
+report, from round 1 to round 12 — every file carrying a `symptom` and a `guard`,
+so a failure reads as a sentence about the shop instead of two numbers.
+
+Details: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+guide: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="The v1.1.8 adaptive audit — 578 windows, 0 contract violations, histograms of fit and tier, and the six-rung repair ladder (SMIL animation)" width="100%" />
+
+### Round 13 — not just *right*, but *cheapest*
+
+Round 12 built an audit that answers a yes/no question: **does any invariant
+break?** But every time a screenshot arrives, a second question goes unanswered:
+**is there a cheaper layout?**
+
+This round answers it. `select/` gives each profile **seven terms** and compares
+them **lexicographically** — not as a weighted sum, because a weighted sum would
+let 40px of slack buy back a lost mascot if the weights happened to add up that way:
+
+| # | Term | What the player loses |
+| --- | --- | --- |
+| 1 | `violations` | nothing — a broken layout is not a candidate |
+| 2 | `hidden` | mascot, deck, tagline |
+| 3 | `cropped` | px short of its own floor |
+| 4 | `hudLost` | share of the HUD's scale |
+| 5 | `typeDrop` | px of type, summed over the scale |
+| 6 | `levers` | how many things moved — invisible to the player |
+| 7 | `slack` | spare room — not a loss, only a tie-breaker |
+
+Two details separate "a scoreboard" from "a comparison that is actually right":
+
+- **`hidden` and `cropped` are measured against the base profile.** A 320×320
+  window *is* wordmark-only and *is* cropped before any lever is pulled — that is
+  the window, not a sacrifice. Raw flags would report "hidden 1" for the profile
+  the app already ships.
+- **`levers` counts from the profile, not from the overrides.** `ignoreInset` on a
+  window with no inset changes nothing, so it does not count as pulled — which is
+  why **ties are real**, and why the tie-break is ladder position rather than
+  whatever order `sort` happened to see.
+
+The claim this round buys, and can check:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   578 / 578
+```
+
+> across every playable window, the shipped profile is the cheapest of the six.
+
+Round 12 said "nothing is broken"; round 13 says "nothing is cheaper". A stronger
+claim is easier to get wrong, so it has its own **fifth corpus**:
+`tests/fixtures/selection/` — 12 windows, each recording the *decision* rather than
+the layout: the full six-rung ranking, the runner-up, and why each rung lost. When a
+threshold moves, the diff shows a **decision** changing — the thing a reviewer
+actually needs to approve.
+
+Details: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+guide: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
+
+<img src="assets/adaptive-select.svg" alt="Choosing the cheapest rung — v1.1.8 round 13: the ladder's six candidates, the seven lexicographic terms, and 578 of 578 windows choosing as-planned (SMIL animation)" width="100%" />
+
+A third place, same shape: **the `crop` rung was a dead end.** 25 of the audit's 578
+windows report `fit: "crop"` (all 25 at 320px tall). Three invariants exempt that rung —
+rightly, there is no arrangement that fits — but `.menu-pane` is `overflow: clip`, so the
+part of the column that overruns was **unreachable**: the bottom of both panels and the
+START button, with no invariant saying a word. Now `[data-adaptive-fit="crop"] .menu-pane`
+is the one vertical scroll container in the menu; every window **356px** tall or more
+still seats exactly, to the pixel.
+
+### Round 14 — bug fix: the chip's contract has to count all seven languages
+
+Nothing new was added. This round went looking for a place where a promise was
+stated more broadly than the thing that checked it.
+
+The chip was measured with Vietnamese literals in **four** places
+(`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`, `CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) — and Vietnamese
+is the **shortest** of the seven languages:
+
+| | label | widest mode name |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+So `chip-labelled` claimed *"the label survives on every playable window"* while
+Spanish drops it at 320px and 360px and French at 320px — and the audit reported
+**0 violations**.
+
+Now `chip/probes.ts` derives the probes from `localeTable()` + `MODE_LIST`, and
+`chip-labelled` states something checkable: **the chip never takes two rungs at
+once**. The audit reports what actually happens: **439 full · 101 hidden · 38
+label-dropped**.
+
+Three smaller bugs of the same shape went with it: `scoreProfile()` returned its
+violation list unsorted (so the final tie-break depended on insertion order),
+`isFiniteProfile()` never looked at `playfield`/`modal`, and `slackOf()` rounded
+differently from `constraints.ts` on the same lockup box. And `--select` stopped
+printing a number that does not exist: it multiplied 18 × 36 and called the product
+"648 windows" while the audit sweeps 578 — now `578 / 578`, the same list.
+
+No new features, no layout change, no version bump. Just **1 412 tests over 137
+files** instead of 1 398, and a contract that says what it checks.
+
 
 ## 📐 Adaptive layout — how the hero picks its shape
 
@@ -323,6 +455,36 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // taller column: 192 mascot + 24 chip + padding
 ```
 
 `tests/menu-adaptive.test.ts` sweeps **1,682 viewports** and asserts `heroContentHeight(layout) ≤ scene` at every sample — so a wrong threshold is a red test, not something a player finds. On resize, both hooks listen for **six** events and update in one animation frame.
+
+### 🧠 Round fifteen: the adaptive system tunes itself, without flinching
+
+No new windows this round. It closes four gaps round fourteen left behind — places
+where a promise existed in the docs and no code path existed behind it:
+
+| | before round 15 | after round 15 |
+| --- | --- | --- |
+| 「Reduce motion」 switch | reached the canvas only — **3** CSS layers stopped | resolved into `profile.prefs`, reaches the menu — **27** layers stop |
+| `prefers-contrast: more` | read by `App.tsx` to set one attribute | the sixth `Environment` signal; panel borders and heads lift |
+| The six-rung repair ladder | a tested library **nobody called** | `useAdaptive()` runs it at runtime; `data-adaptive-repair` names the rung |
+| Dragging an edge across a breakpoint | re-laid-out the screen on every mouse move | `stabilize()` holds the rung for **2px** — 60px of drag changes it ≤ 2 times |
+
+- **Three sources, two names.** `preferencesFor(env, settings.reducedMotion)` OR-s the OS
+  and the player's switch rather than AND-ing them: an app does not get to overrule the
+  OS with a default.
+- **The fifteenth invariant, `prefs-respected`**, forbids a profile that says "reduced
+  motion" while its CSS variables say "full".
+- **`diagnose()` grew two rows**: `10 · prefs` always, `11 · repair` only on a profile the
+  hook painted — a pure `resolveAdaptive()` never walks the ladder, so it has no rung.
+
+Turning both preferences on **changes no pixel** of the layout: 578 / 578 windows stay
+`as-planned` with 0 violations, and a test compares `plan` / `type` / `density` between
+the two profiles to keep that promise.
+
+Details: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+folders: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Stability and preferences — v1.1.8 round 15: hysteresis holds a rung for 2px, the repair ladder runs at runtime, two preferences from three sources (SMIL animation)" width="100%" />
 
 ### 🧱 Round eight: six layers, one profile
 
@@ -438,7 +600,7 @@ usableHeight` (252 combinations asserted).
 | 💾 **TOP 8 leaderboard** | Local storage, validated & normalised on read, auto upper-case names, highlight for freshly set records |
 | 🎨 **60fps graphics** | Canvas 2D, 460-particle budget, DPR cap 2, pre-rendered offscreen tile floor, star twinkle + menu aurora |
 | 📴 **Truly offline-first** | Self-hosted fonts (latin + vietnamese subsets, woff2), no CDN, no API — double-click `dist/index.html` and play |
-| 🧪 **Quality gates** | 1311 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
+| 🧪 **Quality gates** | 1458 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
 
@@ -501,7 +663,7 @@ npm run build      # → dist/index.html (one self-contained file)
 npm run dev        # dev server with HMR (http://localhost:5173)
 npm run preview    # serve the production build locally
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1311 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1458 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI quality gate)
 ```
 
@@ -627,18 +789,18 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 24 SVGs — no orphans, no broken references
+$ npm run check:assets # 27 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
 | Gate | Scope | 1.1.8 status |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1311 tests / 131 files** | ✅ |
+| `vitest run` | **1458 tests / 139 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 24 SVGs, references checked both ways | ✅ |
+| `check-assets` | 27 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
@@ -670,7 +832,7 @@ Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`s
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1311 tests / 131 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1458 tests / 139 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
@@ -714,7 +876,7 @@ Design notes and deeper technical docs:
 ## 🤝 Contributing
 
 1. Fork the repo, branch with the `arena/<name>` or `feat/<name>` convention.
-2. `npm run check` must be green before opening a PR (typecheck + 1311 tests + build).
+2. `npm run check` must be green before opening a PR (typecheck + 1458 tests + build).
 3. Avoid new runtime dependencies unless truly necessary — philosophy: **one file, no network, playable forever**.
 4. In your PR, note the screens/modes affected and attach a clip if gameplay changes.
 

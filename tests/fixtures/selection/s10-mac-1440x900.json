@@ -1,0 +1,42 @@
+{
+ "id": "s10-mac-1440x900",
+ "window": "1440×900",
+ "width": 1440,
+ "height": 900,
+ "why": "MacBook Air, where density is `spacious` a tier early",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 142
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.17",
+  "single-column · hudLost 0.17",
+  "smaller-type · hudLost 0.17",
+  "smallest-type · hudLost 0.17"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "lg",
+  "density": "spacious",
+  "fit": "none",
+  "minimal": false,
+  "scene": 382,
+  "reserve": 518,
+  "hero": "row",
+  "panelHeight": 458,
+  "hudScale": 1.16,
+  "rowLabel": 12
+ }
+}

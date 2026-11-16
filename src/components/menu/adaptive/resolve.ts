@@ -28,7 +28,38 @@ import { verticalInset, type Environment, DESKTOP_ENVIRONMENT } from "./environm
 import { heroLayout, type HeroLayout } from "./hero";
 import { typeScaleFor, typeVars, type TypeScale } from "./typeScale";
 import { tierFor, deviceClass, type DeviceClass, type SizeTier } from "./tiers";
+import {
+  preferencesFor,
+  preferenceVars,
+  preferenceAttributes,
+  type Preferences,
+} from "./preferences";
 import { aspectClassOf, boxOf, describeBox, roomDriver, type AspectClass, type Box } from "./viewport";
+
+/**
+ * The levers the repair engine may pull.
+ *
+ * Every field here is a *deliberate* degradation: it throws away something the
+ * layout would otherwise show, and it exists so `repair/repair.ts` has a finite,
+ * ordered set of things to try when a window cannot satisfy the contract. Nothing
+ * in the app sets them — `useAdaptive()` resolves with none — so the default path
+ * is byte-for-byte the pre-round-12 one, which `tests/adaptive-repair.test.ts`
+ * asserts directly.
+ *
+ * The values are `unknown`-safe: a `NaN` factor or a negative one is ignored
+ * rather than propagated, because a repair path that can produce an invalid
+ * profile is worse than no repair path.
+ */
+export interface AdaptiveOverrides {
+  /** Pretend the safe-area inset is zero, buying back the chrome's height. */
+  ignoreInset?: boolean;
+  /** Multiply every type size (0 < f ≤ 1). Sizes never go below the 8px floor. */
+  typeScale?: number;
+  /** Force one column on the wide dialogs. */
+  singleColumn?: boolean;
+  /** Multiply the HUD scale (0 < f ≤ 1), so it claims less of the board. */
+  hudScale?: number;
+}
 
 /** The environment the profile was built for; a browser-less default otherwise. */
 export interface AdaptiveInput {
@@ -36,6 +67,17 @@ export interface AdaptiveInput {
   env?: Environment;
   /** The dialog currently open, if any, asks for the wide layout. */
   wideModal?: boolean;
+  /** Repair levers. Absent on the default path; pulled by `repairProfile()`. */
+  overrides?: AdaptiveOverrides;
+  /**
+   * `settings.reducedMotion` — the player's own switch.
+   *
+   * Separate from `env.reducedMotion` because the two are different statements:
+   * the OS says what the person needs, the setting says what they chose *here*.
+   * Either one means "stop the decorative motion", which is why `preferencesFor()`
+   * OR-s them rather than letting the app overrule the OS.
+   */
+  playerReducedMotion?: boolean;
 }
 
 /** Everything the start screen, the dialogs and the canvas read. */
@@ -70,18 +112,38 @@ export interface AdaptiveProfile {
   cssVars: Record<string, string>;
   /** True when the safe-area inset moved the plan off the raw window height. */
   insetApplied: boolean;
+  /** What the player asked the system for: motion and contrast. */
+  prefs: Preferences;
+  /**
+   * Which rung of the repair ladder produced this profile — `useAdaptive()` only.
+   *
+   * Absent from a raw `resolveAdaptive()` result on purpose: repair is a *runtime*
+   * fact about a window, not part of the geometry, so the pure function neither
+   * runs the ladder nor pretends it did. The hook fills it in, and
+   * `adaptiveAttributes()` publishes it as `data-adaptive-repair`, which is how a
+   * screenshot proves the ladder was consulted.
+   */
+  repair?: { rung: string; ok: boolean };
 }
 
 /** Build the profile for a box. */
-export function resolveAdaptive({ box, env = DESKTOP_ENVIRONMENT, wideModal = false }: AdaptiveInput): AdaptiveProfile {
-  const inset = Math.max(0, verticalInset(env));
+export function resolveAdaptive({
+  box,
+  env = DESKTOP_ENVIRONMENT,
+  wideModal = false,
+  overrides,
+  playerReducedMotion = false,
+}: AdaptiveInput): AdaptiveProfile {
+  const o = overrides ?? {};
+  const prefs = preferencesFor(env, playerReducedMotion);
+  const inset = o.ignoreInset ? 0 : Math.max(0, verticalInset(env));
   const plan = planMenuLayout({ width: box.width, height: box.height, inset });
   const density = densityFor(plan);
   const metrics = metricsFor(density);
-  const type = typeScaleFor({ box, plan });
+  const type = scaleTypeScale(typeScaleFor({ box, plan }), o.typeScale);
   const hero = heroLayout({ scene: plan.scene, width: box.width, minimal: plan.minimal });
-  const modal = planModal(box, wideModal);
-  const playfield = planPlayfield(box.width, box.height, env.dpr);
+  const modal = planModal(box, wideModal && !o.singleColumn);
+  const playfield = scaleHud(planPlayfield(box.width, box.height, env.dpr), o.hudScale);
   const panelHeight = panelHeightForPlan(plan);
 
   return {
@@ -108,9 +170,56 @@ export function resolveAdaptive({ box, env = DESKTOP_ENVIRONMENT, wideModal = fa
       "--adaptive-row-gap": `${metrics.rowGap}px`,
       "--adaptive-ticker-h": `${plan.ticker ? metrics.tickerHeight : 0}px`,
       "--adaptive-room": `${roomDriver(box)}`,
+      ...preferenceVars(prefs),
     },
     insetApplied: inset > 0,
+    prefs,
   };
+}
+
+/**
+ * `typeScale × factor`, with the 8px floor intact.
+ *
+ * The floor is not a nicety: `type-legible` is one of the fourteen invariants, and
+ * a repair lever that can violate the contract it is repairing is not a lever.
+ * A non-finite or out-of-range factor is ignored, not clamped into nonsense.
+ */
+function scaleTypeScale(type: TypeScale, factor: number | undefined): TypeScale {
+  if (typeof factor !== "number" || !Number.isFinite(factor) || factor <= 0 || factor >= 1) return type;
+  /*
+   * Rebuilt key by key rather than mutated in a loop: `TypeScale` is all numbers,
+   * but TypeScript narrows a `keyof` loop into `never` the moment it writes,
+   * and a cast there would hide a future non-numeric field instead of failing.
+   */
+  const f = (v: number) => Math.max(8, Math.round(v * factor * 10) / 10);
+  return {
+    eyebrow: f(type.eyebrow),
+    liveBadge: f(type.liveBadge),
+    lockupLo: f(type.lockupLo),
+    lockupCheo: f(type.lockupCheo),
+    badgePlate: f(type.badgePlate),
+    record: f(type.record),
+    panelHeader: f(type.panelHeader),
+    rowLabel: f(type.rowLabel),
+    rowHint: f(type.rowHint),
+    statFooter: f(type.statFooter),
+    ticker: f(type.ticker),
+    tickerFooter: f(type.tickerFooter),
+    modalTitle: f(type.modalTitle),
+    modalBody: f(type.modalBody),
+    hudScore: f(type.hudScore),
+    hudLabel: f(type.hudLabel),
+    overScore: f(type.overScore),
+    /* The two non-numeric fields are the derivation's *reasons*, not sizes. */
+    lockupLimitedBy: type.lockupLimitedBy,
+    tier: type.tier,
+  };
+}
+
+/** The HUD scale, shrunk — never below `planHud`'s own floor. */
+function scaleHud(plan: PlayfieldPlan, factor: number | undefined): PlayfieldPlan {
+  if (typeof factor !== "number" || !Number.isFinite(factor) || factor <= 0 || factor >= 1) return plan;
+  return { ...plan, hudScale: Math.max(0.55, Math.round(plan.hudScale * factor * 100) / 100) };
 }
 
 /** Convenience for callers that only have two numbers. */
@@ -130,6 +239,7 @@ export function resolveForSize(width: unknown, height: unknown, env?: Environmen
  */
 export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, string> {
   return {
+    ...preferenceAttributes(profile.prefs),
     "data-adaptive-tier": profile.tier,
     "data-adaptive-density": profile.density,
     "data-adaptive-device": profile.device,
@@ -138,6 +248,7 @@ export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, str
     "data-adaptive-fit": profile.plan.fit,
     "data-adaptive-room": profile.room.toFixed(2),
     "data-adaptive-inset": profile.insetApplied ? "1" : "0",
+    ...(profile.repair ? { "data-adaptive-repair": profile.repair.ok ? profile.repair.rung : `failed:${profile.repair.rung}` } : {}),
   };
 }
 
@@ -181,4 +292,6 @@ export const ADAPTIVE_CSS_VARS = [
   "--adaptive-row-gap",
   "--adaptive-ticker-h",
   "--adaptive-room",
+  "--adaptive-motion",
+  "--adaptive-contrast",
 ] as const;

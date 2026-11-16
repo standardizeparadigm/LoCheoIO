@@ -1,0 +1,42 @@
+{
+ "id": "s12-portrait-tall-320x480",
+ "window": "320×480",
+ "width": 320,
+ "height": 480,
+ "why": "the tight portrait window from the first round of reports",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 194
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.11",
+  "single-column · hudLost 0.11",
+  "smaller-type · hudLost 0.11",
+  "smallest-type · hudLost 0.11"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "xs",
+  "density": "minimal",
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 264,
+  "reserve": 216,
+  "hero": "stack",
+  "panelHeight": 204,
+  "hudScale": 0.72,
+  "rowLabel": 10
+ }
+}

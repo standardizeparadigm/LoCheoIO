@@ -1,0 +1,42 @@
+{
+ "id": "s05-tablet-768x1024",
+ "window": "768×1024",
+ "width": 768,
+ "height": 1024,
+ "why": "portrait tablet: spacious, stacked panels",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 150
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.12",
+  "single-column · hudLost 0.12",
+  "smaller-type · hudLost 0.12",
+  "smallest-type · hudLost 0.12"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "lg",
+  "density": "spacious",
+  "fit": "none",
+  "minimal": false,
+  "scene": 506,
+  "reserve": 518,
+  "hero": "stack",
+  "panelHeight": 458,
+  "hudScale": 0.853,
+  "rowLabel": 11.5
+ }
+}

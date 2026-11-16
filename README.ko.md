@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 새로운 점
 
-> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 어떤 크기에서도 스크롤도 잘림도 없이. 덱 띠는 사라지고 기존 21개 SVG를 다시 그렸으며, 9라운드에서 HUD 밴드 도해를 더했다.
+> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 27개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서, 13라운드 선택 도해, 15라운드 안정 도해)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
 
 ### 📐 아무도 관리하지 않던 덧셈 하나——그리고 동시에 네 개의 버그
 
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——131개 파일 1311 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——139개 파일 1458 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -328,6 +328,129 @@ label-dropped → name-shrunk → ellipsis`)를 지킵니다. 폭 추정이 6% �
 자세히: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
 
 <img src="assets/diacritics-clip.svg" alt="베트남어 성조 부호가 사라지는 이유 —— 이전: 줄 상자 크기의 자르는 상자가 Ể의 곡절을 깎아 «CỔ ĐIỂN»이 «CỔ ĐIÊN»으로; 이후: 1.5em 줄 상자와 clip-safe의 ±0.24em 패딩으로 부호가 그대로 (SMIL 애니메이션)" width="100%" />
+
+### 12라운드 —— 창 공간 전체 감사, 그리고 자동 수리 사다리
+
+지난 세 라운드는 각각 **하나**의 코퍼스를 추가했습니다. 그러나 그 어느 것도 릴리스
+전에 관리자가 묻는 질문에 답하지 못했습니다: *플레이 가능한 **모든** 창에서 레이아웃은
+무엇을 얼마나 했고, 무엇이 깨졌는가?*
+
+이제 `npm run audit:adaptive`가 답합니다: **578**개 창(21개 프리셋 + 모든 브레이크포인트
+주변의 25 × 23 격자, 중복 제거). 한 번 해석하고 하나의 `AuditReport`로 모읍니다.
+
+| | |
+| --- | --- |
+| 창 | **578** |
+| 계약 위반 | **0** —— 각 창이 14개 불변식을 모두 실행 |
+| LỌ CHÉO만 | 101 (17%) |
+| Hero 가로 / 세로 | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md`는 그 보고서의 **자동 생성** 사본이고, `audit:adaptive --check`는
+`npm run check` 안에서 실행됩니다. 그래서 브레이크포인트나 글자 크기 하한을 바꾸면
+**그것을 일으킨 바로 그 커밋에서** diff로 드러납니다. "무언가를 개선하면 주변에 미치는
+영향을 확인한다"는 원칙을 기계에 맡긴 셈입니다.
+
+함께 **자동 수리 사다리** `repair/`가 있습니다: 여섯 단계 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`. 순서 자체가 원칙입니다:
+**글자가 마지막**, 8px 하한은 약속이기 때문입니다. 앱은 578개 창 모두에서 0단계에
+머물고, 사다리는 *쓸 수 있도록* 존재하며, 테스트는 더 엄격한 계약을 넘겨 실제로 내려가는
+것을 증명합니다.
+
+그리고 **네 번째 코퍼스**: 스크린샷 보고의 대상이 되었던 14개 창(1라운드 → 12라운드).
+각 파일이 `symptom`과 `guard`를 지니므로, 실패는 두 숫자가 아니라 가게에 대한 한 문장
+으로 읽힙니다.
+
+자세히: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+가이드: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 adaptive 감사 —— 578개 창, 계약 위반 0, 적합도와 계층 히스토그램, 그리고 6단계 자동 수리 사다리 (SMIL 애니메이션)" width="100%" />
+
+### 13라운드 —— *맞는* 것을 넘어 *가장 싼* 것
+
+12라운드는 "불변식이 깨졌는가"라는 예/아니오에 답하는 감사를 만들었습니다. 하지만
+스크린샷이 올 때마다 두 번째 질문은 남습니다: **더 싼 레이아웃이 있는가?**
+
+이번 라운드가 답합니다. `select/`는 각 프로필에 **일곱 항**을 주고 **사전순**으로
+비교합니다. 가중 합을 쓰지 않는 이유는, 가중치가 우연히 그렇게 더해지면 40px 여유가
+"잃어버린 마스코트를 되사는" 일이 될 수 있기 때문입니다.
+
+| # | 항 | 플레이어가 잃는 것 |
+| --- | --- | --- |
+| 1 | `violations` | 없음 —— 계약 위반은 후보가 아님 |
+| 2 | `hidden` | 마스코트 · 덱 · 태그라인 |
+| 3 | `cropped` | 자기 하한보다 부족한 px |
+| 4 | `hudLost` | HUD 배율의 비율 |
+| 5 | `typeDrop` | 글자 px(전체 합) |
+| 6 | `levers` | 움직인 개수 —— 플레이어는 못 봄 |
+| 7 | `slack` | 남는 공간 —— 손실이 아니라 동점 처리용 |
+
+"점수판"과 "정말 올바른 비교"를 가르는 두 가지:
+
+- **`hidden` / `cropped`는 기준 프로필과의 차이로 잽니다.** 320×320 창은 레버를
+  당기기 전부터 wordmark뿐이고 전부터 crop입니다 —— 그것은 창이지 희생이 아닙니다.
+  원시 플래그로 재면 앱이 지금 그리는 프로필에 "hidden 1"을 보고합니다.
+- **`levers`는 override가 아니라 프로필에서 셉니다.** inset이 없는 창에서
+  `ignoreInset`은 아무것도 바꾸지 않으므로 당긴 것으로 치지 않습니다 —— 그래서
+  **동점이 실재하고**, 동점 처리는 `sort`가 본 순서가 아니라 사다리 위치입니다.
+
+이번 라운드가 얻고 검증할 수 있는 명제:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   578 / 578
+```
+
+> 플레이 가능한 모든 창에서, 출시 중인 프로필이 여섯 단 중 가장 싸다.
+
+12라운드는 "깨진 것이 없다"고 했고, 13라운드는 "더 싼 것이 없다"고 합니다. 더 강한
+명제는 틀리기도 쉬우므로 전용 **다섯 번째 코퍼스**가 있습니다:
+`tests/fixtures/selection/` —— 12개 창, 각 파일은 레이아웃이 아니라 *결정*을 기록합니다.
+여섯 단 전체 순위, 차점, 그리고 각 단이 진 이유. 임계값이 움직이면 diff는 **결정**이
+바뀌었다는 것을 보여 줍니다 —— 리뷰에서 정말 승인해야 하는 것.
+
+자세히: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+가이드: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
+
+<img src="assets/adaptive-select.svg" alt="가장 싼 단 고르기 —— v1.1.8 13라운드: 사다리의 여섯 후보, 일곱 사전순 항, 그리고 578 / 578 창이 as-planned 선택 (SMIL 애니메이션)" width="100%" />
+
+세 번째도 같은 모양입니다: **`crop` 단은 막다른 길이었습니다.** 감사의 578 창 중 25 창이
+`fit: "crop"`(모두 높이 320px)입니다. 세 불변식이 이 단을 면제합니다 — 맞습니다, 들어맞는
+배치가 없으니까요 — 하지만 `.menu-pane`은 `overflow: clip`이라 넘친 부분에 **닿을 수
+없었습니다**: 두 패널의 아래쪽과 START 버튼, 그리고 그것을 알리는 불변식은 없었습니다.
+이제 `[data-adaptive-fit="crop"] .menu-pane`이 메뉴의 유일한 세로 스크롤 영역이고,
+**356px** 이상의 창은 여전히 픽셀 단위로 맞습니다.
+
+### 14라운드 —— 버그 수정: chip 계약은 일곱 언어를 세어야 한다
+
+이번 라운드는 아무것도 추가하지 않았습니다. 찾은 것은 "약속이 그것을 검사하는 것보다
+넓게 말해진 곳"입니다.
+
+chip은 **네 곳**에서 베트남어 리터럴로 측정되고 있었습니다(`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`,
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) —— 그리고 베트남어는 일곱 언어 중 **가장 짧습니다**:
+
+| | 라벨 | 가장 긴 모드 이름 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+그래서 `chip-labelled`는 *"모든 플레이 가능한 창에서 라벨이 남는다"*고 주장했지만,
+스페인어는 320px와 360px에서, 프랑스어는 320px에서 라벨을 잃고 — 감사는 **위반 0**을
+보고했습니다.
+
+이제 `chip/probes.ts`가 `localeTable()` + `MODE_LIST`에서 프로브를 만들고,
+`chip-labelled`는 검사 가능한 명제가 되었습니다: **chip은 두 단을 동시에 잃지 않는다**.
+감사는 실제로 일어나는 일을 보고합니다: **439 full · 101 hidden · 38 label-dropped**.
+
+같은 형태의 작은 버그 셋도 함께 고쳤습니다: `scoreProfile()`의 위반 목록이 정렬되지
+않았고(마지막 동점 판정이 삽입 순서에 의존), `isFiniteProfile()`은 `playfield`/`modal`을
+보지 않았고, `slackOf()`는 `constraints.ts`와 같은 로크업 박스에 다른 반올림을 썼습니다.
+그리고 `--select`는 존재하지 않는 수를 인쇄하지 않습니다: 18 × 36의 곱을 "648 창"이라
+불렀지만 감사는 578을 훑습니다 —— 이제 `578 / 578`, 같은 목록입니다.
+
+새 기능 없음, 레이아웃 변경 없음, 버전 변경 없음. **1 412 테스트 / 137 파일**(이전
+1 398)과, 자기가 무엇을 검사하는지 말하는 계약뿐입니다.
 
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
@@ -412,6 +535,34 @@ Lọ Chéo는 게임 내에서 **7개 언어 UI**를 지원합니다 — 새로�
 | 언어 전환 | — (VI/EN/中/日/한/ES/FR 버튼 사용) | 메뉴 / 일시정지의 VI/EN/中/日/한/ES/FR 버튼 |
 
 ## 🚀 설치 · 실행
+
+### 🧠 15라운드: 적응 시스템이 스스로 조정하고, 더는 떨지 않는다
+
+이번 라운드는 창을 늘리지 않습니다. 14라운드가 남긴 네 개의 구멍 — 문서에는 약속이
+있고 코드에는 경로가 없는 곳 — 을 막습니다:
+
+| | 15라운드 이전 | 15라운드 이후 |
+| --- | --- | --- |
+| 「동작 줄이기」 스위치 | 캔버스까지만 — CSS **3**개 층 정지 | `profile.prefs`로 들어가 메뉴까지 — **27**개 층 정지 |
+| `prefers-contrast: more` | `App.tsx`가 속성 하나만 설정 | `Environment`의 여섯 번째 신호; 패널 테두리와 제목이 올라감 |
+| 6단 수리 사다리 | 테스트는 있지만 **호출자가 없음** | `useAdaptive()`가 런타임에 실행; `data-adaptive-repair`가 이긴 단을 알림 |
+| 경계를 가로지르는 드래그 | 마우스가 움직일 때마다 다시 배치 | `stabilize()`가 **2px** 동안 단을 유지 — 60px 드래그에 ≤ 2회 |
+
+- **세 출처, 두 이름**: `preferencesFor()`는 OS와 플레이어 스위치를 **OR**로 합칩니다
+  (AND 아님). 앱이 기본값으로 OS의 선언을 뒤집을 수 없습니다.
+- **15번째 불변식 `prefs-respected`**: 프로필이 「동작 줄이기」라고 말하는데 CSS 변수가
+  「전체」라고 말하는 것을 금지합니다.
+- **`diagnose()`에 두 행 추가**: `10 · prefs`는 항상, `11 · repair`는 훅이 그린
+  프로필에만 — 순수 `resolveAdaptive()`는 사다리를 걷지 않기 때문입니다.
+
+둘 다 켜도 **레이아웃은 1픽셀도 변하지 않습니다**: 578 / 578 창이 `as-planned`,
+위반 0, 그리고 두 프로필의 `plan` / `type` / `density`를 비교하는 테스트가 있습니다.
+
+자세히: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+폴더: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="안정성과 선호 — v1.1.8 15라운드: 히스테리시스가 2px 유지, 수리 사다리가 런타임에 실행, 세 출처에서 두 선호 (SMIL 애니메이션)" width="100%" />
 
 ### 빌드 없이 바로 플레이
 

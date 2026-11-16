@@ -99,6 +99,16 @@ tagline/deck/mascot khi `minimal`, và `MenuTicker` chỉ render khi `ticker`.
 `tests/menu-no-scroll.test.ts` **cấm** một rule giấu thanh cuộn quay lại
 `.menu-pane`: một rule như thế nghĩa là ai đó vẫn đang chờ có tràn.
 
+**Một ngoại lệ, và chỉ một (vòng 14).** Từ **356px** chiều cao trở xuống không
+còn cách bố trí nào vừa — `fit: "crop"`, sàn hero 140 + chrome 216. Bậc đó
+**được** phép vượt cửa sổ; điều sai trước đây là bỏ phần vượt đi: `overflow: clip`
+cắt nó và không có cách nào tới, nên đáy hai panel và nút START biến mất mà
+không bất biến nào lên tiếng (25 / 578 cửa sổ audit rơi vào bậc này, cả 25 ở
+320px cao). Nay `[data-adaptive-fit="crop"] .menu-pane` cuộn dọc, có
+`overscroll-behavior: contain`; mọi cửa sổ từ 356px trở lên vẫn `overflow: clip`
+và vẫn lấp đúng cửa sổ từng pixel. Test khẳng định **đúng một** rule được làm
+pane cuộn, và rule ấy phải mang selector `crop`.
+
 ## Vì sao `justify-center` không còn là lỗi
 
 Bản cũ đặt `justify-center` + `min-h-full` trong một khung `overflow-y-auto`,
@@ -111,8 +121,8 @@ phần dư ở hai đầu bằng nhau, chứ không đẩy ai ra ngoài tầm v�
 
 - `tests/menu-layout.test.ts` — 34 ca, quét 300→1600px theo bước 7px trên 10
   bề rộng, khẳng định `scene + reserve === height` ở từng tổ hợp.
-- `tests/menu-no-scroll.test.ts` — 26 ca trên 15 viewport thật, cộng quét
-  300→2000px theo bước 5px.
+- `tests/menu-no-scroll.test.ts` — 32 ca trên 15 viewport thật, cộng quét
+  300→2000px theo bước 5px, và bậc `crop`: ngưỡng 356px, phần vượt, rule cuộn duy nhất.
 - `scripts/probe-menu-layout.tsx` — render `StartScreen` thành HTML thật và
   kiểm 30 tính chất trên DOM, không chỉ trên mã nguồn.
 

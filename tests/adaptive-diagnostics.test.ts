@@ -13,6 +13,7 @@ import { describe, expect, it } from "vitest";
 import { diagnose, headline, renderDiagnosis, warningsFor } from "../src/components/menu/adaptive/diagnostics";
 import { PRESETS, presetFor } from "../src/components/menu/adaptive/presets";
 import { resolveForSize } from "../src/components/menu/adaptive/resolve";
+import { DESKTOP_ENVIRONMENT } from "../src/components/menu/adaptive/environment";
 
 const codes = (w: number, h: number) => warningsFor(resolveForSize(w, h)).map((x) => x.code);
 
@@ -36,7 +37,13 @@ describe("the headline", () => {
 });
 
 describe("the rows", () => {
-  it("walks the nine layers in derivation order", () => {
+  it("walks the ten layers in derivation order", () => {
+    /*
+     * Round 15 added `10 · prefs`, and an `11 · repair` row that only exists on a
+     * profile the hook painted — `resolveAdaptive()` never walks the ladder, so a raw
+     * profile has no rung and inventing one would be a diagnosis of something that
+     * did not happen.
+     */
     const d = diagnose(resolveForSize(1280, 720));
     expect(d.rows.map((r) => r.layer)).toEqual([
       "1 · box",
@@ -48,7 +55,28 @@ describe("the rows", () => {
       "7 · modal",
       "8 · chip",
       "9 · board",
+      "10 · prefs",
     ]);
+  });
+
+  it("reports the repair rung only when there is one", () => {
+    const raw = diagnose(resolveForSize(1280, 720));
+    expect(raw.rows.map((r) => r.layer)).not.toContain("11 · repair");
+
+    const repaired = diagnose({ ...resolveForSize(1280, 720), repair: { rung: "as-planned", ok: true } });
+    const row = repaired.rows.find((r) => r.layer === "11 · repair");
+    expect(row?.value).toBe("as-planned");
+    expect(row?.because).toContain("no lever pulled");
+
+    const failed = diagnose({ ...resolveForSize(1280, 720), repair: { rung: "smallest-type", ok: false } });
+    expect(failed.rows.find((r) => r.layer === "11 · repair")?.value).toBe("smallest-type · FAILED");
+  });
+
+  it("says why the animation stopped", () => {
+    const reduced = diagnose(resolveForSize(1280, 720, { ...DESKTOP_ENVIRONMENT, reducedMotion: true, moreContrast: true }));
+    const row = reduced.rows.find((r) => r.layer === "10 · prefs");
+    expect(row?.value).toBe("motion reduced · contrast more");
+    expect(row?.because).toContain("OS asked for less motion");
   });
 
   it("pairs every value with a because", () => {
@@ -94,11 +122,18 @@ describe("the rows", () => {
 });
 
 describe("the warnings", () => {
-  it("calls a cropped hero a trade-off, with the shortfall in pixels", () => {
+  it("names the box that overruns, and says it can be reached", () => {
+    /*
+     * Round 14: the message said "hero is cropped". The hero is exactly the box
+     * that is *not* cropped — `fit: "crop"` clamps it at its 140px floor and
+     * lets the column overrun, so the player loses the bottom of the chrome.
+     */
     const w = warningsFor(resolveForSize(1280, 300));
     const crop = w.find((x) => x.code === "crop");
     expect(crop).toBeTruthy();
-    expect(crop!.message).toMatch(/\d+px shorter/);
+    expect(crop!.message).toMatch(/\d+px past floor \+ chrome/);
+    expect(crop!.message).toContain("reachable by scrolling");
+    expect(crop!.message).not.toContain("hero is cropped");
   });
 
   it("reports the economies a small window pays for and a desktop does not", () => {

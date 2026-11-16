@@ -1,6 +1,7 @@
 # `src/components/menu/adaptive/`
 
-Twelve files and one subfolder (`chip/`), one direction of dependency:
+Sixteen files and six subfolders (`chip/`, `audit/`, `repair/`, `select/`,
+`preferences/`, `hysteresis/`), one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -17,6 +18,11 @@ presets.ts    —                           the 21 named windows the tables use
 constraints.ts AdaptiveProfile           →  the invariants, as data
 diagnostics.ts AdaptiveProfile           →  why the layout is shaped this way
 chip/         Box width + the band width →  how the mode chip fits (see chip/README.md)
+audit/        the whole window space      →  one AuditReport (see audit/README.md)
+repair/       a profile + the contract    →  the rungs it walks (see repair/README.md)
+select/       the rungs, compared          →  the cheapest one (see select/README.md)
+preferences/  what the player asked for    →  motion + contrast, as names (see preferences/README.md)
+hysteresis/   the previous profile         →  the same rung for two more pixels (see hysteresis/README.md)
 ```
 
 | File | Owns |
@@ -32,9 +38,16 @@ chip/         Box width + the band width →  how the mode chip fits (see chip/R
 | `useEnvironment.ts` | reads them from the browser, and `readInsets()` for the plan |
 | `resolve.ts` | `resolveAdaptive()`, `adaptiveAttributes()`, `describeAdaptive()` |
 | `useAdaptive.ts` | one subscription → one profile; `readAdaptiveInput()` for scripts |
+| `regressions.ts` | `REGRESSIONS` — 14 cửa sổ đã từng bị báo lỗi (vòng 1 → 12), mỗi cái kèm triệu chứng và điều phải giữ; nguồn của `tests/fixtures/regressions/` |
 | `presets.ts` | `PRESETS` — 21 named windows (phone → 4K), the single source the probe, the docs and the corpus agree on |
-| `constraints.ts` | `CONSTRAINTS` — twelve invariants as `{ id, why, check }`, run by the tests and the probe |
+| `constraints.ts` | `CONSTRAINTS` — fourteen invariants as `{ id, why, check }`, run by the tests and the probe |
 | `diagnostics.ts` | `diagnose()`, `warningsFor()`, `renderDiagnosis()` — the explanation, not the numbers |
+| `audit/` | `adaptive/audit/` — kiểm toán toàn bộ không gian cửa sổ (578 cửa sổ) thành `AuditReport` + `docs/adaptive-audit.md` |
+| `repair/` | `adaptive/repair/` — thang sửa `as-planned → ignore-inset → … → smallest-type` khi một cửa sổ phá hợp đồng |
+| `select/` | `adaptive/select/` — cho điểm bảy hạng tử theo thứ tự từ điển, so sánh sáu bậc, trả bậc rẻ nhất kèm lý do từng bậc thua |
+| `chip/` | `adaptive/chip/` — chip chế độ: `planModeChip()`, `chipBoxHeight()`, `estimateText()` |
+| `preferences/` | `adaptive/preferences/` — **vòng 15**: `preferencesFor()` gộp ba nguồn (OS, công tắc người chơi, mặc định) thành hai tên `motion`/`contrast`, kèm biến CSS và `data-*` |
+| `hysteresis/` | `adaptive/hysteresis/` — **vòng 15**: `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần nhích chuột |
 | `index.ts` | the public surface — import from here, not the modules |
 
 ## Why this existed in v1.1.8 round 6
@@ -105,6 +118,14 @@ geometry and not enough for four things that change what the geometry *should* b
 
 Everything in that file is a *reading*. The decisions stay in `fit.ts` and
 `hero.ts`, which never touch `window`.
+
+Two of those readings are read and one is not: `dpr`, orientation and the insets
+all reach the plan, while **coarse pointer is recorded and not acted on**.
+`isHandheld()` and `TOUCH_ROW_HEIGHT = 44` exist, nothing calls them, and the rows
+stay 34/26 on a touch phone — 8×7 = 56px is a different fit on every landscape
+phone, which makes it a layout decision rather than a bug fix. The gap is named
+here and pinned by `tests/environment.test.ts`, so it cannot be mistaken for a
+shipped feature the way the older wording invited.
 
 ## The measurements are the component's, not this folder's
 

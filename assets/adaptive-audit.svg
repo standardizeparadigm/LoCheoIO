@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" role="img" aria-label="Kiểm toán adaptive v1.1.8 — 578 cửa sổ, 0 vi phạm hợp đồng, histogram kiểu khít và thang tự sửa sáu bậc (hoạt họa SMIL)">
+  <defs>
+    <linearGradient id="aaBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08201f"/>
+      <stop offset="0.55" stop-color="#0b2b2b"/>
+      <stop offset="1" stop-color="#06191a"/>
+    </linearGradient>
+    <linearGradient id="aaCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17494a"/>
+      <stop offset="1" stop-color="#0d3536"/>
+    </linearGradient>
+    <linearGradient id="aaJade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b6e07a"/>
+      <stop offset="1" stop-color="#7fd3a1"/>
+    </linearGradient>
+    <linearGradient id="aaBrass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+    <radialGradient id="aaBloom" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#b6e07a" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#b6e07a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="aaGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="aaSoft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="470" fill="url(#aaBg)"/>
+
+  <text x="56" y="58" fill="#f4e3c2" font-family="Bungee, Verdana, sans-serif" font-size="24" letter-spacing="1.2">KIỂM TOÁN CẢ KHÔNG GIAN</text>
+  <text x="56" y="84" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="12.5">v1.1.8 · vòng 12 — 21 preset + lưới quanh từng breakpoint, khử trùng lặp</text>
+  <line x1="56" y1="102" x2="1144" y2="102" stroke="#1c4a49" stroke-width="1.5"/>
+
+  <g font-family="Verdana, sans-serif">
+    <text x="56" y="140" fill="#b6e07a" font-size="30" font-weight="bold" filter="url(#aaGlow)">578<animate attributeName="opacity" values="0.75;1;0.75" dur="3s" repeatCount="indefinite"/></text>
+    <text x="56" y="160" fill="#7fae95" font-size="11">cửa sổ</text>
+    <text x="196" y="140" fill="#b6e07a" font-size="30" font-weight="bold">0</text>
+    <text x="196" y="160" fill="#7fae95" font-size="11">vi phạm hợp đồng</text>
+    <text x="380" y="140" fill="#f5a81c" font-size="30" font-weight="bold">170 / 408</text>
+    <text x="380" y="160" fill="#a98a52" font-size="11">hero hàng / cột</text>
+    <text x="620" y="140" fill="#f4e3c2" font-size="30" font-weight="bold">25</text>
+    <text x="620" y="160" fill="#8a8272" font-size="11">SVG · 5 corpus · 1458 test</text>
+  </g>
+
+  <rect x="56" y="184" width="520" height="242" rx="16" fill="url(#aaCard)" stroke="#245a5a" stroke-width="1.6"/>
+  <text x="80" y="212" fill="#f4e3c2" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold">KIỂU KHÍT — cửa sổ rơi vào đâu</text>
+  <text x="80" y="251" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="11">none</text>
+  <rect x="150" y="236" width="300" height="20" rx="4" fill="url(#aaJade)">
+    <animate attributeName="width" values="4;330" dur="0.9s" begin="0.1s" fill="freeze"/>
+  </rect>
+  <text x="504" y="251" fill="#cfe6d4" font-family="Verdana, sans-serif" font-size="11" text-anchor="start">277</text>
+  <text x="80" y="285" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="11">squeeze</text>
+  <rect x="150" y="270" width="299" height="20" rx="4" fill="url(#aaBrass)">
+    <animate attributeName="width" values="4;329" dur="0.9s" begin="0.22s" fill="freeze"/>
+  </rect>
+  <text x="504" y="285" fill="#cfe6d4" font-family="Verdana, sans-serif" font-size="11" text-anchor="start">276</text>
+  <text x="80" y="319" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="11">crop</text>
+  <rect x="150" y="304" width="27" height="20" rx="4" fill="#e63b2e">
+    <animate attributeName="width" values="4;30" dur="0.9s" begin="0.33999999999999997s" fill="freeze"/>
+  </rect>
+  <text x="504" y="319" fill="#cfe6d4" font-family="Verdana, sans-serif" font-size="11" text-anchor="start">25</text>
+  <text x="80" y="356" fill="#f4e3c2" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold">TẦNG KÍCH THƯỚC</text>
+  <rect x="96" y="364" width="26" height="46" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;46" dur="0.8s" begin="0.3s" fill="freeze"/>
+    <animate attributeName="y" values="408;370" dur="0.8s" begin="0.3s" fill="freeze"/>
+  </rect>
+  <text x="109" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">md</text>
+  <rect x="170" y="385" width="26" height="25" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;31" dur="0.8s" begin="0.39s" fill="freeze"/>
+    <animate attributeName="y" values="408;397" dur="0.8s" begin="0.39s" fill="freeze"/>
+  </rect>
+  <text x="183" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">sm</text>
+  <rect x="244" y="389" width="26" height="21" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;26" dur="0.8s" begin="0.48s" fill="freeze"/>
+    <animate attributeName="y" values="408;402" dur="0.8s" begin="0.48s" fill="freeze"/>
+  </rect>
+  <text x="257" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">lg</text>
+  <rect x="318" y="401" width="26" height="9" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;11" dur="0.8s" begin="0.5700000000000001s" fill="freeze"/>
+    <animate attributeName="y" values="408;417" dur="0.8s" begin="0.5700000000000001s" fill="freeze"/>
+  </rect>
+  <text x="331" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">xs</text>
+  <rect x="392" y="402" width="26" height="8" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;8" dur="0.8s" begin="0.6599999999999999s" fill="freeze"/>
+    <animate attributeName="y" values="408;420" dur="0.8s" begin="0.6599999999999999s" fill="freeze"/>
+  </rect>
+  <text x="405" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">xl</text>
+  <rect x="466" y="402" width="26" height="8" rx="4" fill="url(#aaJade)" opacity="0.85">
+    <animate attributeName="height" values="2;8" dur="0.8s" begin="0.75s" fill="freeze"/>
+    <animate attributeName="y" values="408;420" dur="0.8s" begin="0.75s" fill="freeze"/>
+  </rect>
+  <text x="479" y="424" fill="#6f9b8d" font-family="Verdana, sans-serif" font-size="9" text-anchor="middle">xxl</text>
+  <rect x="624" y="184" width="520" height="242" rx="16" fill="url(#aaCard)" stroke="#7a6a24" stroke-width="1.6"/>
+  <text x="648" y="212" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold">THANG TỰ SỬA — 6 bậc, chữ cuối cùng</text>
+  <g>
+    <rect x="648" y="228" width="360" height="22" rx="5" fill="url(#aaJade)" stroke="#b6e07a" stroke-width="1.6">
+      <animate attributeName="opacity" values="1;1;1" dur="3.2s" begin="0.0s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="243" fill="#06231f" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">as-planned</text>
+    <text x="1108" y="243" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">không nhường gì</text>
+  </g>
+  <g>
+    <rect x="648" y="258" width="331" height="22" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0.3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="273" fill="#bfe6c9" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">ignore-inset</text>
+    <text x="1108" y="273" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">safe-area</text>
+  </g>
+  <g>
+    <rect x="648" y="288" width="302" height="22" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0.6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="303" fill="#bfe6c9" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">compact-hud</text>
+    <text x="1108" y="303" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">HUD 85%</text>
+  </g>
+  <g>
+    <rect x="648" y="318" width="274" height="22" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="0.8999999999999999s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="333" fill="#bfe6c9" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">single-column</text>
+    <text x="1108" y="333" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">modal 1 cột</text>
+  </g>
+  <g>
+    <rect x="648" y="348" width="245" height="22" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="1.2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="363" fill="#bfe6c9" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">smaller-type</text>
+    <text x="1108" y="363" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">chữ 94%</text>
+  </g>
+  <g>
+    <rect x="648" y="378" width="216" height="22" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="1.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="658" y="393" fill="#bfe6c9" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">smallest-type</text>
+    <text x="1108" y="393" fill="#7f9c90" font-family="Verdana, sans-serif" font-size="9" text-anchor="end">chữ 88%</text>
+  </g>
+  <text x="648" y="414" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="9.5">app dừng ở bậc 0 trên cả 578 cửa sổ — 5 bậc dưới chỉ chạy khi hợp đồng bị chặt hơn</text>
+
+  <line x1="56" y1="444" x2="1144" y2="444" stroke="#1c4a49" stroke-width="1"/>
+  <text x="56" y="460" fill="#4f7a6f" font-family="Verdana, sans-serif" font-size="9.5">npm run audit:adaptive -- --check · docs/adaptive-audit.md · tests/adaptive-audit · adaptive-repair · adaptive-regressions</text>
+</svg>
