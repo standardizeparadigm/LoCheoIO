@@ -108,9 +108,20 @@ describe("the numbers", () => {
   });
 
   it("gives the chip a rung on every window that draws one", () => {
-    // The only two rungs a ≥320px-wide window can reach, which is the promise
-    // round 10 made: the label survives, the name is never ellipsised.
-    expect(report.chip.map((c) => c.key).sort()).toEqual(["full", "hidden"]);
+    /*
+     * Three rungs, not the two this test used to claim.
+     *
+     * The audit measured the chip with two Vietnamese literals — the widest *vi*
+     * name and «CHẾ ĐỘ CHƠI» — so it reported `full` or `hidden` and nothing else.
+     * With the worst case over all seven languages (Spanish: `MODOS DE JUEGO` over
+     * `60 SEGUNDOS DE LOCURA`) it also reports `label-dropped` on 38 windows: the
+     * narrow bands, where the label is by design the first thing to go.
+     *
+     * `ellipsis` is still absent, and that is the promise: no playable window
+     * shortens a mode name in any language.
+     */
+    expect(report.chip.map((c) => c.key).sort()).toEqual(["full", "hidden", "label-dropped"]);
+    expect(report.chip.map((c) => c.key)).not.toContain("ellipsis");
   });
 
   it("measures the two ends of the space", () => {
@@ -137,7 +148,8 @@ describe("one window at a time", () => {
     const sample = auditOne(320, 480, "preset:iphone-4");
     expect(sample.origin).toBe("preset:iphone-4");
     expect(sample.fit).toBe("squeeze");
-    expect(sample.chip).toBe("full");
+    /* 288px of band: the label is the first rung to go in the longest language. */
+    expect(sample.chip).toBe("label-dropped");
     expect(sample.violations).toEqual([]);
   });
 
