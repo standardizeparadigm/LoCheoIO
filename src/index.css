@@ -320,7 +320,7 @@
     linear-gradient(#0b2b2b, #0b2b2b) padding-box,
     linear-gradient(115deg, #f5a81c, #e63b2e, #8cc63f, #2bb48c, #ffc94a, #e63b2e, #f5a81c) border-box;
   background-size: 100% 100%, 320% 320%;
-  animation: lc-about-pan 5.5s linear infinite;
+  animation: lc-about-pan calc(5.5s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
 .about-chip {
   background: linear-gradient(115deg, rgba(245, 168, 28, 0.16), rgba(43, 180, 140, 0.16), rgba(230, 59, 46, 0.16), rgba(245, 168, 28, 0.16));
@@ -606,15 +606,15 @@
  * looks alive rather than loading.
  */
 .halo-ring-1 {
-  animation: lc-halo-cw 18s linear infinite;
+  animation: lc-halo-cw calc(18s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 .halo-ring-2 {
-  animation: lc-halo-ccw 26s linear infinite;
+  animation: lc-halo-ccw calc(26s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 .halo-ring-3 {
-  animation: lc-halo-cw 34s linear infinite;
+  animation: lc-halo-cw calc(34s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 
@@ -1035,21 +1035,28 @@
 .about-crest-orbit-main {
   transform-box: view-box;
   transform-origin: 50% 50%;
-  animation: lc-halo-cw 14s linear infinite;
+  /*
+   * `--adaptive-motion-factor` is 1 on a desktop and 1.6 on a handset
+   * (`menu/adaptive/motion/`). Multiplying the duration is how the *grade*
+   * reaches the cascade: the ornament keeps its shape, it just moves at a speed
+   * the device and the band can afford. The fallback of 1 keeps an SSR render
+   * and a storybook page byte-identical to the pre-round-17 CSS.
+   */
+  animation: lc-halo-cw calc(14s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
 
 /* Clockwise, faster, chili — the comet that makes the motion obvious. */
 .about-crest-orbit-inner {
   transform-box: view-box;
   transform-origin: 50% 50%;
-  animation: lc-halo-cw 9s linear infinite;
+  animation: lc-halo-cw calc(9s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
 
 /* Counter-clockwise, slow, jade — co-prime with the two above. */
 .about-crest-orbit-dotted {
   transform-box: view-box;
   transform-origin: 50% 50%;
-  animation: lc-halo-ccw 22s linear infinite;
+  animation: lc-halo-ccw calc(22s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
 
 /* The wash behind the jar: breathes, never spins. */

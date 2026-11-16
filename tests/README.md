@@ -25,6 +25,7 @@
 | `palette.test.ts` | 9 màu canvas phải khớp `--color-*` trong `index.css`, engine không giữ bảng màu riêng | fs + pure |
 | `time.test.ts` | `fmtTime`/`fmtCountdown` — pad, floor, ván dài, NaN/âm | pure |
 | `math.test.ts` | `clamp`/`clamp01`/`lerp`/`damp` — biên, NaN, 60↔120 Hz, không overshoot | pure |
+| `game-perf.test.ts` | governor khung hình — hạ sau 2 khung chậm, nâng sau 6 khung nhanh, stall/NaN không tính là mẫu, trần `visualQuality` không ai được vượt, engine lấy mẫu **trước** clamp vật lý | pure + fs |
 | `clipboard.test.ts` | `copyText` trả true/false thay vì throw (thiếu API, bị từ chối) | stub `navigator` |
 | `changelog.test.ts` | CHANGELOG_ENTRIES descending semver, unique, ISO dates | pure |
 | `modes-balance.test.ts` | mode catalogue invariants (unique ids, positive mults, blitz timed-only, hardcore cracks-only, combo/feast math) | pure |
@@ -56,6 +57,7 @@
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
 | `adaptive-hysteresis.test.ts` | **hai pixel bộ nhớ** (vòng 15) — `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần chuột nhích; quét 60px qua một ranh giới thật (tìm bằng máy quét, không hardcode) đổi bậc ≤ 2 lần; nhảy lớn (xoay máy) áp dụng ngay | pure |
 | `adaptive-preferences.test.ts` | **hai sở thích của người chơi** (vòng 15) — `settings.reducedMotion` và `prefers-contrast` vào tới profile; OR chứ không AND (OS không bị app ghi đè); `prefs` và hai biến `--adaptive-motion/-contrast` phải khớp (`prefs-respected`); bật lên không đổi một pixel nào của bố cục; CSS dừng đúng bộ lớp như media query | pure |
+| `adaptive-motion.test.ts` | chấm mức chuyển động (`vivid`/`steady`/`still`) — máy tính bảng giữ nguyên, handset chậm ×1.6, giảm chuyển động là dừng; factor luôn ≥ 1 (không có `calc(14s * 0)`), CSS đọc `--adaptive-motion-factor` với fallback 1 | pure + fs |
 | `adaptive-drag.test.ts` | **drag audit** (vòng 16) — 21 preset × 241 bước 1px: không vi phạm hợp đồng trên profile được vẽ, không lần giữ nào dài quá `margin + 1`, rung 1px quanh ranh giới bị dập **toàn bộ** (48 → 0), và kéo một chiều không bao giờ tệ hơn | pure |
 | `adaptive-hold-verdict.test.ts` | **năm lý do** của dải 2px (vòng 16) — `explainHold()` trả `first-frame` / `no-band` / `same-rung` / `still` / `jump` / `held` kèm trục và hai bậc; `shouldHold()` chỉ là một lần đọc verdict, và ca `still` (bậc đổi mà cửa sổ **không** nhích) từng bị giữ vĩnh viễn nên bản sửa của thang sửa không bao giờ được vẽ | pure |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |

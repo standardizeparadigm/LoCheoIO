@@ -114,7 +114,16 @@ describe("about crest — motion", () => {
   });
 
   it("uses three distinct durations, in two directions", () => {
-    const durations = ORBITS.map((selector) => /(\d+(?:\.\d+)?)s\s+linear/.exec(rule(`.${selector}`))?.[1]);
+    /*
+     * The durations are written as `calc(14s * var(--adaptive-motion-factor, 1))`
+     * since round 17, so the number is the one before the `*` — or, in a rule
+     * that has not been graded yet, the one before `linear`.
+     */
+    const durationOf = (selector: string) => {
+      const body = rule(`.${selector}`);
+      return (/calc\((\d+(?:\.\d+)?)s \*/.exec(body) ?? /(\d+(?:\.\d+)?)s\s+linear/.exec(body))?.[1];
+    };
+    const durations = ORBITS.map(durationOf);
     expect(new Set(durations).size).toBe(3);
     const names = ORBITS.map((selector) => animationNames(rule(`.${selector}`))[0]);
     expect(names.filter((n) => n === "lc-halo-cw")).toHaveLength(2);
@@ -146,6 +155,21 @@ describe("about crest — motion", () => {
       expect(css, `the player's switch must name .${selector}`).toContain(
         `[data-reduced-motion="true"] .${selector}`,
       );
+    }
+  });
+
+  it("scales its durations by the adaptive motion factor, and never by zero", () => {
+    /*
+     * The grade reaches the cascade as a multiplier, so a handset slows the same
+     * orbits instead of losing them. `calc(14s * 0)` would be a zero-duration
+     * *infinite* animation — an engine-specific edge case rather than a stop —
+     * so the factor is only ever ≥ 1 and `still` is left to the
+     * `animation: none` hooks above.
+     */
+    for (const selector of ORBITS) {
+      const body = rule(`.${selector}`);
+      expect(body, selector).toContain("var(--adaptive-motion-factor, 1)");
+      expect(body, selector).toMatch(/calc\(\d+(\.\d+)?s \* var\(--adaptive-motion-factor, 1\)\)/);
     }
   });
 
