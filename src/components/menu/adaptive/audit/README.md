@@ -1,8 +1,18 @@
-# `adaptive/audit/` — kiểm toán toàn bộ không gian cửa sổ
+# `adaptive/audit/` — kiểm toán không gian cửa sổ, và cả đường đi qua nó
 
-Thư mục này trả lời **một** câu hỏi mà bốn corpus trước không trả lời được:
+Thư mục này trả lời **hai** câu hỏi mà bốn corpus trước không trả lời được:
 
 > Trên *mọi* cửa sổ ứng dụng có thể chạy, bố cục làm gì, bao nhiêu lần, và có gì hỏng?
+
+và, từ vòng 16:
+
+> Khi cửa sổ **di chuyển**, màn hình dựng lại bao nhiêu lần — và cái dải 2px thật
+> sự mua được gì?
+
+Câu thứ nhất là bảng: 578 cửa sổ, mỗi cửa sổ một dòng, mọi dòng đều đúng ở mọi thời
+điểm. Câu thứ hai là **chuỗi**: cùng những cửa sổ ấy, đi theo thứ tự khác, cho ra số
+lần dựng lại khác nhau. Một bảng không có "hôm qua", nên nó không thể thấy hiện tượng
+mà dải 2px sinh ra để dập — menu nhấp nháy khi kéo cạnh.
 
 Trước vòng 12, câu trả lời nằm rải ở bốn tệp test, một bảng trong `check-adaptive.ts`
 và một mục trong tài liệu thiết kế. Bốn chỗ, bốn con số có thể lệch nhau. Nay nó là
@@ -33,6 +43,8 @@ khử trùng lặp:
 | --- | --- |
 | `audit.ts` | `auditWindows()` (preset + lưới) · `auditOne()` · `auditWindowList()` · `summarise()` (gộp mẫu thành `AuditReport`) · `knownViolationIds()` · hai bảng `AUDIT_WIDTHS`/`AUDIT_HEIGHTS` |
 | `report.ts` | `renderAuditMarkdown(report)` — sinh `docs/adaptive-audit.md`, cột bar 40 ký tự cố định để hai bản báo cáo diff được với nhau |
+| `drag.ts` | **vòng 16** — `dragPath()` / `dragAudit()`: mỗi preset được "kéo" ±120px theo từng pixel, chạy hai lần (raw và qua `stabilize()`), đếm số lần đổi bậc; kèm đường **rung** `b−1, b, b+1, b` tại mỗi ranh giới — cử chỉ mà dải 2px sinh ra để dập |
+| `dragReport.ts` | `renderDragMarkdown(report)` — sinh `docs/adaptive-drag.md` với **hai** cột (sweep và shake), vì một cột sẽ để báo cáo kể một trong hai câu chuyện |
 | `index.ts` | barrel — `src/components/menu/adaptive/index.ts` re-export từ đây |
 | `README.md` | tệp này |
 
@@ -65,6 +77,25 @@ npm run audit:adaptive -- --select   # profile đang ship có phải bản rẻ 
 
 `--check` nằm trong `npm run check`, nên báo cáo không thể cũ đi mà không ai biết.
 
+```bash
+npm run audit:drag                  # tổng số, và những drag cắt nhiều ranh giới nhất
+npm run audit:drag -- --json        # toàn bộ DragReport
+npm run audit:drag -- --check       # lỗi nếu docs/adaptive-drag.md lệch
+npm run audit:drag -- --write       # ghi lại tài liệu
+```
+
+## Drag audit đo gì (vòng 16)
+
+| Số | Ở bản 1.1.8 (vòng 16) | Nghĩa |
+| --- | --- | --- |
+| windows | **4 600** | 21 preset × 241 bước 1px (± 120px ở chiều cao của preset) |
+| sweep raw → held | **12 → 11** | kéo một chiều: mỗi ranh giới đi qua **một** lần, nên gần như không có gì để dập |
+| shake raw → held | **48 → 0** | con trỏ rung 1px quanh ranh giới: **toàn bộ** bị dập — đây là thứ dải 2px mua được |
+| held frames | **23 / 4 600** (1%) | tỉ lệ khung hình cố ý trễ, và trễ không quá `worstLag` |
+| worst lag | **2px** | đúng bằng `HYSTERESIS_MARGIN`; vượt là dải bị rò |
+| violations | **0** | profile được vẽ vẫn hợp lệ — nó *là* profile trước đó |
+| stalled | **0** | không đường nào giữ lâu quá `margin + 1` khung |
+
 **Một chế độ mỗi lần (vòng 14).** `--json`, `--write`, `--check`, `--select` cùng ghi
 ra stdout theo bốn kiểu khác nhau, nên tổ hợp hai cờ không có nghĩa. Trước đây
 `--select --check` chạy phần chọn bậc rồi `exit 0` **trước khi** kiểm báo cáo — thêm
@@ -76,5 +107,9 @@ từ chối với `exit 2`.
 - **Không render.** Nó không thấy font fallback hay border 1px. Phần đó là của
   `scripts/smoke-ssr.tsx` (markup) và ảnh chụp (mắt người).
 - **Không sửa gì.** Nó chỉ mô tả. Việc tự sửa nằm ở `../repair/`.
+- **Drag audit không render và không chạy React.** `stabilize()` là hàm thuần nên
+  một đường kéo chỉ là một phép fold; thứ được kiểm là *quyết định*, không phải khung
+  hình. Một component lờ profile trả về vẫn qua được đây — nửa còn lại nằm ở
+  `tests/adaptive-hysteresis.test.ts` và smoke render.
 - **Không thay bất biến.** `constraints.ts` vẫn là nơi duy nhất định nghĩa "hỏng";
   audit chỉ đếm.
