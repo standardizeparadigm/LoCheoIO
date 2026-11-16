@@ -2,16 +2,18 @@
  "preset": "iphone-se-1",
  "window": "320×568",
  "mode": "blitz",
- "name": "ĐUA 60 GIÂY",
+ "name": "60 SEGUNDOS DE LOCURA",
  "band": 288,
  "visible": true,
  "align": "end",
- "showLabel": true,
+ "showLabel": false,
  "nameSize": 11,
- "labelSize": 8,
+ "labelSize": 0,
  "maxWidth": 272,
- "needed": 207,
+ "needed": 212,
+ "neededWithLabel": 320,
+ "neededWithout": 212,
  "available": 272,
  "truncated": false,
- "reason": "full"
+ "reason": "label-dropped"
 }

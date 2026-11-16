@@ -2,16 +2,18 @@
  "preset": "iphone-se-1",
  "window": "320×568",
  "mode": "combo",
- "name": "LỄ HỘI COMBO",
+ "name": "FESTIVAL DES COMBOS",
  "band": 288,
  "visible": true,
  "align": "end",
- "showLabel": true,
+ "showLabel": false,
  "nameSize": 11,
- "labelSize": 8,
+ "labelSize": 0,
  "maxWidth": 272,
- "needed": 220,
+ "needed": 199,
+ "neededWithLabel": 307,
+ "neededWithout": 199,
  "available": 272,
  "truncated": false,
- "reason": "full"
+ "reason": "label-dropped"
 }
