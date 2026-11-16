@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, mười ba vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 648 / 648 cửa sổ** · 21 hình SVG vẽ lại, thêm năm sơ đồ · 1398 unit tests (136 file) và năm corpus 1 835 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười bốn vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · 21 hình SVG vẽ lại, thêm năm sơ đồ · 1412 unit tests (137 file) và năm corpus 1 835 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -126,10 +126,20 @@ Ngoài ra:
 - **`hidden` và `cropped` đo so với base**, `levers` đếm từ profile — nên "hoà" là chuyện thật, và hoà được chốt bằng **vị trí trong thang**, không bằng thứ tự `sort`
 - **`tests/fixtures/selection/`** — **12** ảnh chụp, corpus **thứ năm**; mỗi file ghi *quyết định* (thứ hạng 6 bậc, người về nhì, lý do từng bậc thua) chứ không chỉ bố cục
 - **`scripts/gen-selection-fixtures.ts`** (`npm run gen:select`) — `--check` khẳng định cả 12 cửa sổ đều chọn `as-planned` và không cửa sổ nào hỏng
-- **`npm run audit:adaptive -- --select`** — chạy trên chính lưới của audit: `648 / 648` cửa sổ mà profile đang ship cũng là bản rẻ nhất
+- **`npm run audit:adaptive -- --select`** — chạy trên chính lưới của audit: `578 / 578` cửa sổ mà profile đang ship cũng là bản rẻ nhất
 - **2 tệp test** — `adaptive-select` (23) · `adaptive-selection-corpus` (9)
 - **`assets/adaptive-select.svg`** — hình thứ **26**
 - **`docs/guides/adaptive-selection.md`** — đọc bảy hạng tử, khi nào được sửa `SCORE_ORDER`, bốn lỗi đã từng xảy ra ở đúng chỗ này
+
+### Fixed — vòng mười bốn (chỉ sửa lỗi)
+
+- **Hợp đồng chip chỉ kiểm tiếng Việt** — bốn nơi (`constraints.ts`, `diagnostics.ts`, `audit/audit.ts`, `scripts/gen-regression-fixtures.ts`) hardcode `CHIP_LABEL = "CHẾ ĐỘ CHƠI"` và `CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`. Tiếng Việt là ngôn ngữ **ngắn nhất**: tiếng Tây Ban Nha cần `MODOS DE JUEGO` (14) trên `60 SEGUNDOS DE LOCURA` (21). Nên `chip-labelled` tuyên bố "nhãn sống trên mọi cửa sổ" trong khi es mất nhãn ở 320px và 360px, fr ở 320px — và audit báo **0 vi phạm**. Nay có `chip/probes.ts` (probe sinh từ `localeTable()` + `MODE_LIST`), `chip-labelled` được phát biểu lại thành **không bao giờ mất hai bậc cùng lúc**, và audit báo đúng: **439 full · 101 hidden · 38 label-dropped**
+- **`audit:adaptive -- --select` in "648 / 648 cửa sổ"** — con số là **tích** của 18 bề rộng × 36 chiều cao, không phải 578 cửa sổ mà audit quét, và không cửa sổ nào trong 648 cặp ấy tồn tại. Nay `bestOnWindows()` quét đúng danh sách của audit: **578 / 578**
+- **`--select --check` nuốt mất `--check`** — chế độ thứ hai thoát 0 trước khi kiểm báo cáo, nên thêm một cờ lạ là bỏ qua được cổng. Nay hai chế độ xung khắc bị từ chối (`exit 2`)
+- **`scoreProfile()` trả `broken` chưa sắp xếp** — `numbers-finite` được push *sau* khi sort, nên tie-break cuối của `compareScores()` phụ thuộc thứ tự chèn
+- **`isFiniteProfile()` quá hẹp** — chỉ kiểm `type`, `plan` và `hudScale`; `NaN` trong `playfield`/`modal` vẫn "hữu hạn". Nay kiểm cả `modal.*` và `playfield.*`
+- **`slackOf()` lệch 0.05px so với `constraints.ts`** — hai chỗ làm tròn khác nhau trên cùng một hộp lockup; nay cùng một phép làm tròn
+- **`chip/` README, `tests/README.md`, `scripts/README.md`** thiếu tệp mới; badge và prose 10 README lệch sau khi thêm 1 tệp test
 
 ### Fixed — vòng mười ba
 
