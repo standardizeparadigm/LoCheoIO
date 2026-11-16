@@ -16,15 +16,16 @@ npm run audit:adaptive -- --select
 ```
 
 ```
-SELECTION — 648 windows from the audit's own grid
-  shipped profile wins   648 / 648
+SELECTION — 578 windows, the same list the audit sweeps
+  shipped profile wins   578 / 578
   disagreements          0
   sample                 1280×720 → as-planned (nothing given up, 102px spare;
                          tied, earlier rung: ignore-inset, nothing given up)
 ```
 
-Dòng `shipped profile wins` là toàn bộ ý tưởng: **648 / 648** nghĩa là trên mọi cửa
-sổ trong lưới, profile ứng dụng đang vẽ cũng là bản rẻ nhất trong sáu bậc của thang.
+Dòng `shipped profile wins` là toàn bộ ý tưởng: **578 / 578** nghĩa là trên mọi cửa
+sổ **mà audit quét** (cùng một danh sách, không phải một phép nhân), profile ứng
+dụng đang vẽ cũng là bản rẻ nhất trong sáu bậc của thang.
 Nếu con số thứ hai khác 0, in ra dưới nó là từng cửa sổ và bậc mà lẽ ra rẻ hơn —
 đó là một bố cục đang ship mà đã có bản thay thế tốt hơn.
 
