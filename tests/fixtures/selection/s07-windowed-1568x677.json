@@ -1,0 +1,42 @@
+{
+ "id": "s07-windowed-1568x677",
+ "window": "1568×677",
+ "width": 1568,
+ "height": 677,
+ "why": "the windowed screenshot that started round 7",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 59
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.15",
+  "single-column · hudLost 0.15",
+  "smaller-type · hudLost 0.15",
+  "smallest-type · hudLost 0.15"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "md",
+  "density": "comfortable",
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 299,
+  "reserve": 378,
+  "hero": "row",
+  "panelHeight": 318,
+  "hudScale": 0.967,
+  "rowLabel": 11.5
+ }
+}
