@@ -18,6 +18,7 @@ import {
 const ENVIRONMENT_QUERIES = {
   coarse: "(pointer: coarse)",
   reducedMotion: "(prefers-reduced-motion: reduce)",
+  moreContrast: "(prefers-contrast: more)",
 } as const;
 
 /** `true` when the matchMedia is absent (SSR, jsdom without a shim). */
@@ -88,6 +89,7 @@ export function readEnvironment(): Environment {
     coarse: matches(ENVIRONMENT_QUERIES.coarse),
     ...readInsets(),
     reducedMotion: matches(ENVIRONMENT_QUERIES.reducedMotion),
+    moreContrast: matches(ENVIRONMENT_QUERIES.moreContrast),
   };
 }
 

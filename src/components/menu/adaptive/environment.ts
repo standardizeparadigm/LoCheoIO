@@ -39,6 +39,14 @@ export interface Environment {
   insetLeft: number;
   /** `prefers-reduced-motion: reduce`. */
   reducedMotion: boolean;
+  /**
+   * `prefers-contrast: more`.
+   *
+   * Round 15: the app read this in `App.tsx` (to set a root attribute) and the
+   * profile could not see it, so nothing adaptive could react to it and the audit
+   * could not report it. It is a reading like the other four.
+   */
+  moreContrast: boolean;
 }
 
 /** The environment every browser without the relevant APIs reports. */
@@ -51,6 +59,7 @@ export const DESKTOP_ENVIRONMENT: Environment = {
   insetBottom: 0,
   insetLeft: 0,
   reducedMotion: false,
+  moreContrast: false,
 };
 
 /** `[1, 4]`, with anything non-finite read as 1. */
