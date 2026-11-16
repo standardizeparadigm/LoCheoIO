@@ -391,8 +391,10 @@ hứa không ai kiểm được ở mọi cửa sổ.
 
 Một bảng số trả lời *cái gì*. Câu hỏi đến cùng ảnh chụp màn hình luôn là *vì
 sao*: vì sao không có ticker, vì sao hero thành hàng ở đây mà thành cột ở kia.
-`diagnose()` xếp **chín** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
-từ chính trường đã quyết định nó — lớp 8 là chip chế độ, thêm ở vòng 10:
+`diagnose()` xếp **mười** lớp theo đúng thứ tự suy ra, mỗi lớp một câu `because` lấy
+từ chính trường đã quyết định nó — lớp 8 là chip chế độ (vòng 10), lớp 10 là sở thích
+của người chơi (vòng 15), và lớp 11 `repair` chỉ xuất hiện khi profile ấy do hook vẽ ra,
+vì `resolveAdaptive()` thuần không đi thang sửa nên không có bậc nào để báo:
 
 ```
 1280×720 · lg · comfortable · row · fit none
