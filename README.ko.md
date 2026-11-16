@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1588%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——147개 파일 1588 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——147개 파일 1590 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
