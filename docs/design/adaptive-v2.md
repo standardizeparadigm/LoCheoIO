@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–12 — one profile, every size, every pixel
+# Adaptive, rounds 8–13 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 12).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 13).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -663,3 +663,81 @@ Ba luật, mỗi luật một test:
 - Không thêm bất biến: vẫn 14.
 - Không dùng thang sửa trong ứng dụng — `useAdaptive()` vẫn resolve trần, vì không
   cửa sổ nào cần sửa. Thang tồn tại để *có thể* dùng.
+
+---
+
+## 21. Vòng 13 — không chỉ *đúng*, mà *rẻ nhất*
+
+Vòng 12 dựng thang sửa và một bộ kiểm toán. Cả hai trả lời câu hỏi nhị phân: **có
+đúng hợp đồng không**. Không chỗ nào trả lời câu thứ hai, câu mà mỗi lần đọc ảnh
+chụp người ta vẫn phải tự hỏi: **có bản nào rẻ hơn không**.
+
+### 21.1 Một thứ tự, không phải một trọng số
+
+`score.ts` cho mỗi profile bảy hạng tử và so chúng **từ điển**, theo đúng thứ tự
+khai báo:
+
+| # | Hạng tử | Người chơi mất gì | Đo từ |
+| --- | --- | --- | --- |
+| 1 | `violations` | không gì cả — phá hợp đồng thì không phải ứng viên | `violations()` |
+| 2 | `hidden` | mascot, deck, tagline | `plan.minimal` **so với base** |
+| 3 | `cropped` | px thiếu so với sàn của chính nó | `scene + reserve − height` |
+| 4 | `hudLost` | phần trăm cỡ HUD | `playfield.hudScale` |
+| 5 | `typeDrop` | px chữ, cộng toàn thang | `type.*` |
+| 6 | `levers` | *không nhìn thấy* — nhưng là số thứ đã đổi | so profile |
+| 7 | `slack` | không gì cả — phòng thừa là chuyện tốt | `scene − heroContentHeight()` |
+
+Tổng có trọng số sẽ ngắn hơn để viết và sai hơn để đọc: nó cho phép 40px trống
+"mua lại" một cái mascot đã mất nếu các trọng số cộng ra như vậy. Thứ tự từ điển
+là một khẳng định về sản phẩm, không phải một bảng cân.
+
+### 21.2 Hai hạng tử đo *so với base*, và vì sao
+
+`hidden` và `cropped` **không** đọc cờ thô. Cửa sổ 320×320 vốn chỉ có wordmark và
+vốn bị crop — đó là **cửa sổ**, không phải mất mát. Chấm theo cờ thô sẽ báo
+"hidden 1" cho chính profile ứng dụng đang vẽ, và biến mọi so sánh ở góc chật nhất
+của không gian thành vô nghĩa — đúng chỗ chúng quan trọng nhất.
+
+Bài học lặp lại của bốn vòng: **một phép đo không biết cái gì là nền thì đo sai ở
+đúng biên**. `heroContentHeight()` ở vòng 9 từng báo tràn 10px ở 320×320 vì nó
+không thấy cỡ chữ bố cục đã chọn; đây là cùng một lỗi ở dạng khác.
+
+### 21.3 `levers` đếm từ profile
+
+Một override không làm gì — `ignoreInset` trên cửa sổ không có inset — không đổi
+kế hoạch. Đếm override sẽ phạt oan và, tệ hơn, làm hai ứng viên **giống hệt** có
+điểm khác nhau. Nên `countLevers()` so hai profile, không so hai `AdaptiveOverrides`.
+
+Hệ quả là **hoà là chuyện thật**, xảy ra thường xuyên: `ignore-inset` trên desktop
+cho ra điểm y hệt `as-planned`. Thứ tự chốt là **vị trí trong thang**, không phải
+thứ tự `Array.prototype.sort` nhìn thấy — sort ổn định là thuộc tính của engine,
+còn quyết định này không được phép phụ thuộc vào engine. `describeSelection()` in
+`tied, earlier rung` thay vì bịa một khoảng cách không tồn tại.
+
+### 21.4 Mệnh đề mà vòng này mua được
+
+    trên mọi cửa sổ chơi được, profile đang ship là bản rẻ nhất trong sáu bậc.
+
+Đó là câu về **sản phẩm**, và nó kiểm được: `tests/adaptive-select.test.ts` quét 21
+preset + 270 cửa sổ; `npm run audit:adaptive -- --select` chạy trên chính lưới của
+audit (648 cặp width × height) và in `648 / 648`. Vòng 12 nói "không gì hỏng";
+vòng 13 nói "không gì rẻ hơn" — mạnh hơn, và cũng dễ sai hơn, nên nó có corpus
+riêng.
+
+### 21.5 Corpus thứ năm: quyết định, không phải bố cục
+
+`tests/fixtures/selection/` — 12 cửa sổ, mỗi file ghi `chosen`, điểm bảy hạng tử,
+thứ hạng đủ sáu bậc, người về nhì, và profile người thắng tạo ra. Bốn corpus trước
+trả lời "bố cục **là gì**"; corpus này trả lời "**vì sao nó được chọn**". Khi một
+ngưỡng xê dịch, diff của 12 file này cho thấy một *quyết định* đổi — thứ người
+review thật sự cần duyệt.
+
+### 21.6 Vòng này **không** làm gì
+
+- **Không đổi bố cục.** `selectBest()` chọn `as-planned` ở cả 648 cửa sổ; đây là
+  bản kiểm tra, không phải bản viết lại.
+- **Không tìm kiếm rộng hơn thang.** 2⁴ tổ hợp lever là 16; tìm kiếm tổ hợp là
+  nhiều mã hơn cho một quyết định mà thang đã xếp đúng. Tên thật của module là
+  "phép so sánh trên thang sửa".
+- **Không thêm bất biến.** Vẫn 14. `select/` không phải luật mới, mà là phép đo
+  chất lượng trên luật đang có.
