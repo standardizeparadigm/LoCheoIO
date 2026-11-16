@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1418%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 새로운 점
 
-> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 어떤 크기에서도 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 25개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
+> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 25개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
 
 ### 📐 아무도 관리하지 않던 덧셈 하나——그리고 동시에 네 개의 버그
 
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——137개 파일 1412 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——137개 파일 1418 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -413,6 +413,13 @@ npm run audit:adaptive -- --select
 가이드: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
 
 <img src="assets/adaptive-select.svg" alt="가장 싼 단 고르기 —— v1.1.8 13라운드: 사다리의 여섯 후보, 일곱 사전순 항, 그리고 578 / 578 창이 as-planned 선택 (SMIL 애니메이션)" width="100%" />
+
+세 번째도 같은 모양입니다: **`crop` 단은 막다른 길이었습니다.** 감사의 578 창 중 25 창이
+`fit: "crop"`(모두 높이 320px)입니다. 세 불변식이 이 단을 면제합니다 — 맞습니다, 들어맞는
+배치가 없으니까요 — 하지만 `.menu-pane`은 `overflow: clip`이라 넘친 부분에 **닿을 수
+없었습니다**: 두 패널의 아래쪽과 START 버튼, 그리고 그것을 알리는 불변식은 없었습니다.
+이제 `[data-adaptive-fit="crop"] .menu-pane`이 메뉴의 유일한 세로 스크롤 영역이고,
+**356px** 이상의 창은 여전히 픽셀 단위로 맞습니다.
 
 ### 14라운드 —— 버그 수정: chip 계약은 일곱 언어를 세어야 한다
 
