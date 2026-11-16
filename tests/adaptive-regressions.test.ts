@@ -17,6 +17,8 @@
  *     property rather than the number, so a failure says *what* broke.
  */
 import { describe, expect, it } from "vitest";
+
+import { widestChipName } from "../src/components/menu/adaptive/chip";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -111,7 +113,7 @@ describe("the guards each incident left behind", () => {
       const fixture = byId(id);
       expect(fixture.chip.visible, id).toBe(true);
       expect(fixture.chip.reason, id).toBe("full");
-      expect(fixture.chip.text, id).toBe("MUỐI DƯA CỔ ĐIỂN");
+      expect(fixture.chip.text, id).toBe(widestChipName());
       // The band must actually hold the chip plus its gutters.
       expect(fixture.chip.band, id).toBeGreaterThan(246);
     }
@@ -151,7 +153,7 @@ describe("the guards each incident left behind", () => {
       // 35px = 2×3 border + 2×6 padding + 11 × 1.5 line box. A shorter box is the
       // round-11 bug: the tops of the marks fall outside it.
       expect(fixture.chip.box, id).toBe(35);
-      expect(fixture.chip.text, id).toBe("MUỐI DƯA CỔ ĐIỂN");
+      expect(fixture.chip.text, id).toBe(widestChipName());
     }
   });
 
