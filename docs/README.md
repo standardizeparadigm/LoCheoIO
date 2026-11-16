@@ -2,13 +2,13 @@
 
 ## Release notes (historical + current)
 
-**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười ba vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí, kiểm toán 578 cửa sổ, và một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
+**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười bốn vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí, kiểm toán 578 cửa sổ, và một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
 
 Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-process.md` § Tầng phát hành) — đúng quy ước mà panel CHANGELOG trong game dùng:
 
 | Bản | Tầng | Nội dung chính | Tests lúc phát hành |
 | --- | --- | --- | --- |
-| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** · **chọn bậc rẻ nhất: 648 / 648 cửa sổ** | 1398 / 136 file |
+| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** · **chọn bậc rẻ nhất: 578 / 578 cửa sổ** · **chip đo cả bảy ngôn ngữ** | 1412 / 137 file |
 | [v1.1.7](releases/v1.1.7.md) | 🟣 PATCH | Nền menu hết mờ (4 lớp) · changelog chia tầng · 96 gạch mô tả mới · tách `src/game/changelog/` | 256 / 33 file |
 | [v1.1.6](releases/v1.1.6.md) | 🟣 PATCH | Settings 6 mục · preset · backup JSON · a11y pass | 222 / 29 file |
 | [v1.1.5](releases/v1.1.5.md) | 🟣 PATCH | Panel góc GAME/INFO, Chơi tiếp ván dở | 113 |
