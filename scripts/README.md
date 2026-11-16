@@ -180,7 +180,7 @@ Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn tr�
 
 ## `check-svg.mjs`
 
-Validator cho 26 file SVG trong `assets/`. Không có trình render SVG trong CI,
+Validator cho 27 file SVG trong `assets/`. Không có trình render SVG trong CI,
 nên nó kiểm đúng những cách một SVG **hỏng trên trình duyệt mà vẫn hợp lệ XML**:
 
 1. `url(#id)` trỏ tới `id` không tồn tại — gradient biến mất, hình phẳng.
@@ -194,7 +194,7 @@ animation SMIL và một filter.
 
 ```bash
 node scripts/check-svg.mjs
-# → ASSETS OK — 26 SVG, all references resolve, all animated.
+# → ASSETS OK — 27 SVG, all references resolve, all animated.
 ```
 
 > **Vì sao có sàn:** trước vòng 6, 12/20 file có gradient và animation nhưng
