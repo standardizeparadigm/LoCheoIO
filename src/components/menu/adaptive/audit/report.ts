@@ -21,6 +21,7 @@
  * up when diffed.
  */
 
+import { constraintIds } from "../constraints";
 import { PRESETS } from "../presets";
 import { boxOf, describeBox } from "../viewport";
 import { resolveAdaptive } from "../resolve";
@@ -59,6 +60,13 @@ function histogram(title: string, rows: AuditTally[], total: number): string {
  */
 export function renderAuditMarkdown(report: AuditReport): string {
   const total = report.windows;
+  /*
+   * Round 15: this sentence hardcoded "14 bất biến" — the count of the contract at
+   * the time it was typed. Adding `prefs-respected` made the generated report claim
+   * a number the code no longer had, which is the one thing a *generated* document
+   * must never do. The count is read from the list now.
+   */
+  const invariants = constraintIds().length;
   const lines: string[] = [];
 
   lines.push("# Kiểm toán adaptive — không gian cửa sổ");
@@ -81,7 +89,7 @@ export function renderAuditMarkdown(report: AuditReport): string {
   lines.push("");
   if (report.violations.length === 0) {
     lines.push(
-      `Không có vi phạm nào trên ${total} cửa sổ. Con số này là **0**, không phải "chưa kiểm": mỗi cửa sổ ở trên đều đã chạy hết 14 bất biến của \`constraints.ts\`.`,
+      `Không có vi phạm nào trên ${total} cửa sổ. Con số này là **0**, không phải "chưa kiểm": mỗi cửa sổ ở trên đều đã chạy hết ${invariants} bất biến của \`constraints.ts\`.`,
     );
   } else {
     lines.push("| Bất biến | Số cửa sổ | Ví dụ |");

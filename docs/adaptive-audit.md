@@ -13,7 +13,7 @@
 
 ## 1. Hợp đồng
 
-Không có vi phạm nào trên 578 cửa sổ. Con số này là **0**, không phải "chưa kiểm": mỗi cửa sổ ở trên đều đã chạy hết 14 bất biến của `constraints.ts`.
+Không có vi phạm nào trên 578 cửa sổ. Con số này là **0**, không phải "chưa kiểm": mỗi cửa sổ ở trên đều đã chạy hết 15 bất biến của `constraints.ts`.
 
 ## 2. Những gì bố cục đã nhường
 
