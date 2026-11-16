@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1418%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 新特性
 
-> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 任何尺寸下都不滚动、不裁切。甲板横条被移除，SVG 共 25 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告），另加第四个语料库（事故窗口）与六层自动修复阶梯。
+> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 在有解的任何尺寸下（356px 起）都不滚动、不裁切。甲板横条被移除，SVG 共 25 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告），另加第四个语料库（事故窗口）与六层自动修复阶梯。
 
 ### 📐 一次没人管的加法——同时造成四个错误
 
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——137 个文件 1412 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——137 个文件 1418 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -394,6 +394,12 @@ npm run audit:adaptive -- --select
 指南：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
 
 <img src="assets/adaptive-select.svg" alt="选择最省的一层 —— v1.1.8 第 13 轮：阶梯的六个候选、七个字典序项，以及 578 / 578 个窗口都选择 as-planned（SMIL 动画）" width="100%" />
+
+第三处，同样的形状：**`crop` 台阶是一条死路。** 审计的 578 个窗口里有 25 个是
+`fit: "crop"`（全部在 320px 高）。三条不变量豁免这一台阶——这是对的，没有任何排布
+能放下——但 `.menu-pane` 是 `overflow: clip`，于是超出窗口的那部分**无法到达**：两个面板
+的底部和 START 按钮，而没有一条不变量说话。现在 `[data-adaptive-fit="crop"] .menu-pane`
+是菜单里唯一的纵向滚动容器；**356px** 及以上的每个窗口仍然逐像素吻合。
 
 ### 第 14 轮 —— 修 bug：chip 的契约必须数满七种语言
 
