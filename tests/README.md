@@ -28,6 +28,7 @@
 | `clipboard.test.ts` | `copyText` trả true/false thay vì throw (thiếu API, bị từ chối) | stub `navigator` |
 | `changelog.test.ts` | CHANGELOG_ENTRIES descending semver, unique, ISO dates | pure |
 | `modes-balance.test.ts` | mode catalogue invariants (unique ids, positive mults, blitz timed-only, hardcore cracks-only, combo/feast math) | pure |
+| `modes-audit.test.ts` | `modes/audit.ts` — badge ↔ số liệu, ngân sách nứt (`maxCracksFor`), bảng spawn thật (zen không bao giờ có đồ hư), accent trùng, số vô hạn; và mỗi luật đều được kiểm chứng bằng một bản ghi cố tình hỏng | pure |
 | `achievements-defs.test.ts` | catalogue integrity — unique ids, 16 entries, glyph/tone rules, MAP 1:1 | pure |
 | `version-bump.test.ts` | version coherence — APP_VERSION = pkg = lock = changelog = README badges = release notes | fs |
 | `storage-seed.test.ts` | SEED board trả về bản sao sâu khi trống / sau clearAllProgress | `memStorage()` |
