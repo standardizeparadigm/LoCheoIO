@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1366 เทสต์ใน 134 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1398 เทสต์ใน 136 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -353,6 +353,52 @@ single-column → smaller-type → smallest-type` ลำดับคือหล
 คู่มือ: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)
 
 <img src="assets/adaptive-audit.svg" alt="การตรวจสอบ adaptive ของ v1.1.8 —— 578 หน้าต่าง ไม่มีการละเมิดสัญญา ฮิสโตแกรมความพอดีและระดับ และบันไดซ่อมหกขั้น (แอนิเมชัน SMIL)" width="100%" />
+
+### รอบที่ 13 —— ไม่ใช่แค่ *ถูก* แต่ *ถูกที่สุด*
+
+รอบที่ 12 สร้างการตรวจสอบที่ตอบคำถามใช่/ไม่ใช่: **มีเงื่อนไขใดเสียหรือไม่** แต่ทุกครั้งที่ได้
+ภาพหน้าจอมา คำถามที่สองยังไม่มีใครตอบ: **มีเลย์เอาต์ที่ถูกกว่าหรือไม่**
+
+รอบนี้ตอบ `select/` ให้ **เจ็ดพจน์** กับทุกโปรไฟล์ แล้วเทียบแบบ **พจนานุกรม** ไม่ใช่ผลรวม
+ถ่วงน้ำหนัก เพราะผลรวมถ่วงน้ำหนักจะยอมให้พื้นที่ว่าง 40px "ซื้อคืน" มาสคอตที่เสียไปได้ ถ้า
+น้ำหนักบวกออกมาแบบนั้น
+
+| # | พจน์ | ผู้เล่นเสียอะไร |
+| --- | --- | --- |
+| 1 | `violations` | ไม่เสียอะไร —— ละเมิดสัญญาก็ไม่ใช่ตัวเลือก |
+| 2 | `hidden` | มาสคอต เด็ค สโลแกน |
+| 3 | `cropped` | px ที่ขาดจากพื้นของตัวเอง |
+| 4 | `hudLost` | สัดส่วนขนาด HUD |
+| 5 | `typeDrop` | px ตัวอักษร รวมทั้งชุด |
+| 6 | `levers` | จำนวนสิ่งที่ถูกขยับ —— ผู้เล่นมองไม่เห็น |
+| 7 | `slack` | พื้นที่เหลือ —— ไม่ใช่การเสีย แค่ใช้ตัดสินเสมอ |
+
+สองรายละเอียดที่แยก "กระดานคะแนน" ออกจาก "การเปรียบเทียบที่ถูกจริง":
+
+- **`hidden` / `cropped` วัดเทียบกับโปรไฟล์ฐาน** หน้าต่าง 320×320 *เป็น* แบบมีแต่
+  wordmark และ *ถูก* ครอปอยู่แล้วก่อนดึงคันโยกใด ๆ —— นั่นคือหน้าต่าง ไม่ใช่การเสีย
+- **`levers` นับจากโปรไฟล์ ไม่ใช่จาก override** `ignoreInset` บนหน้าต่างที่ไม่มี inset
+  ไม่เปลี่ยนอะไร จึงไม่นับ —— เพราะฉะนั้น **เสมอคือของจริง** และการตัดสินใช้ตำแหน่งใน
+  บันได ไม่ใช่ลำดับที่ `sort` เห็น
+
+ข้อความที่รอบนี้ซื้อมาและตรวจสอบได้:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   648 / 648
+```
+
+> ในทุกหน้าต่างที่เล่นได้ โปรไฟล์ที่ปล่อยอยู่คืออันที่ถูกที่สุดในหกขั้น
+
+รอบที่ 12 บอกว่า "ไม่มีอะไรเสีย" รอบที่ 13 บอกว่า "ไม่มีอะไรถูกกว่า" ข้อความที่แข็งแรงกว่า
+ผิดได้ง่ายกว่า จึงมี **คอร์ปัสที่ห้า**: `tests/fixtures/selection/` —— 12 หน้าต่าง แต่ละไฟล์
+บันทึก *การตัดสินใจ* ไม่ใช่เลย์เอาต์: อันดับครบหกขั้น อันดับสอง และเหตุที่แต่ละขั้นแพ้
+เมื่อเกณฑ์ขยับ diff จะแสดง **การตัดสินใจ** ที่เปลี่ยน —— สิ่งที่คนรีวิวต้องอนุมัติจริง ๆ
+
+รายละเอียด: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+คู่มือ: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)
+
+<img src="assets/adaptive-select.svg" alt="เลือกขั้นที่ถูกที่สุด —— v1.1.8 รอบที่ 13: หกตัวเลือกของบันได เจ็ดพจน์แบบพจนานุกรม และ 648 จาก 648 หน้าต่างเลือก as-planned (แอนิเมชัน SMIL)" width="100%" />
 
 
 ## 📐 เลย์เอาต์ปรับตัว — ฮีโร่เลือกทรงของตัวเองอย่างไร
