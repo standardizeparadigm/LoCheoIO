@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–13 — one profile, every size, every pixel
+# Adaptive, rounds 8–14 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 13).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 14).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -720,7 +720,7 @@ còn quyết định này không được phép phụ thuộc vào engine. `desc
 
 Đó là câu về **sản phẩm**, và nó kiểm được: `tests/adaptive-select.test.ts` quét 21
 preset + 270 cửa sổ; `npm run audit:adaptive -- --select` chạy trên chính lưới của
-audit (648 cặp width × height) và in `648 / 648`. Vòng 12 nói "không gì hỏng";
+audit (578 cặp width × height) và in `578 / 578`. Vòng 12 nói "không gì hỏng";
 vòng 13 nói "không gì rẻ hơn" — mạnh hơn, và cũng dễ sai hơn, nên nó có corpus
 riêng.
 
@@ -734,10 +734,60 @@ review thật sự cần duyệt.
 
 ### 21.6 Vòng này **không** làm gì
 
-- **Không đổi bố cục.** `selectBest()` chọn `as-planned` ở cả 648 cửa sổ; đây là
+- **Không đổi bố cục.** `selectBest()` chọn `as-planned` ở cả 578 cửa sổ; đây là
   bản kiểm tra, không phải bản viết lại.
 - **Không tìm kiếm rộng hơn thang.** 2⁴ tổ hợp lever là 16; tìm kiếm tổ hợp là
   nhiều mã hơn cho một quyết định mà thang đã xếp đúng. Tên thật của module là
   "phép so sánh trên thang sửa".
 - **Không thêm bất biến.** Vẫn 14. `select/` không phải luật mới, mà là phép đo
   chất lượng trên luật đang có.
+
+---
+
+## 22. Vòng 14 — hợp đồng phải đếm đủ ngôn ngữ
+
+Vòng 13 thêm một phép so sánh. Vòng 14 không thêm gì; nó đi tìm chỗ mà một lời hứa
+được phát biểu rộng hơn thứ đã kiểm.
+
+### 22.1 Một literal, bốn nơi, bảy ngôn ngữ
+
+Chip được đo bằng `const CHIP_LABEL = "CHẾ ĐỘ CHƠI"` trong `constraints.ts`,
+`diagnostics.ts` và `audit/audit.ts`, và bằng `const CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`
+trong generator corpus. Bốn bản của **một chuỗi đã dịch**, và tiếng Việt là ngôn ngữ
+ngắn nhất trong bảy:
+
+| | nhãn | tên dài nhất |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+Nên `chip-labelled` — *"nhãn sống trên mọi cửa sổ chơi được"* — sai ở 320px (es, fr)
+và 360px (es), trong khi audit báo **0 vi phạm**. Một lời hứa về bảy ngôn ngữ không
+được kiểm bằng một ngôn ngữ.
+
+### 22.2 Cách sửa: một định nghĩa, hai mươi nhăm lời hứa
+
+`chip/probes.ts` sinh probe từ `localeTable()` + `MODE_LIST`: `chipProbes()` (bảy),
+`widestProbe()` (trường hợp xấu nhất), `widestNameFor(id)` (bản dịch rộng nhất của
+**một** chế độ), `widestChipLabel()`, `widestChipName()`. Bốn nơi trên đều đọc từ
+đây, nên một lần dịch lại di chuyển cả hợp đồng, cả chẩn đoán, cả audit và cả corpus
+— đúng thứ cần di chuyển cùng nhau.
+
+`chip-labelled` đổi **nghĩa**, giữ **id**: không còn là "nhãn luôn sống" (sai về hình
+học ở ngôn ngữ dài) mà là **"chip không bao giờ mất hai bậc cùng lúc"** — mất nhãn thì
+tên phải còn nguyên cỡ thiết kế. Đó là thứ kiểm được, và nó vẫn bắt được cửa sổ 200px
+mà test dùng làm đầu dò.
+
+### 22.3 Hệ quả lên số
+
+Audit báo đúng cái đang xảy ra thay vì cái đang đúng ở một ngôn ngữ:
+**439 full · 101 hidden · 38 label-dropped** (trước: 477 / 101). Ba mươi tám cửa sổ
+đó là **thiết kế**, không phải lỗi: bậc thang bỏ nhãn trước khi bỏ tên. Cái sai là báo
+cáo nói chúng không tồn tại.
+
+### 22.4 Và một con số không tồn tại
+
+`--select` in `648 / 648 cửa sổ`: tích của 18 bề rộng × 36 chiều cao, không phải tập
+cửa sổ nào cả — audit quét 578. Nay `bestOnWindows()` quét đúng danh sách đó:
+`578 / 578`.
