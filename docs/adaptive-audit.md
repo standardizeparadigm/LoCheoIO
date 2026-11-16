@@ -63,8 +63,9 @@ Không có vi phạm nào trên 578 cửa sổ. Con số này là **0**, không 
 
 | Khoá | Cửa sổ | Tỉ lệ | |
 | --- | --- | --- | --- |
-| `full` | 477 | 83% | ████████████████████████████████████████ |
-| `hidden` | 101 | 17% | ████████································ |
+| `full` | 439 | 76% | ████████████████████████████████████████ |
+| `hidden` | 101 | 17% | █████████······························· |
+| `label-dropped` | 38 | 7% | ███····································· |
 
 ## 3. Hai đầu của không gian
 
@@ -79,9 +80,9 @@ Không có vi phạm nào trên 578 cửa sổ. Con số này là **0**, không 
 
 | Preset | Cửa sổ | Box | Tầng | Mật độ | Scene | Reserve | Khít | Hero | Chip |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `iphone-4` | 320×480 | 320×480 · portrait · portrait | xs | minimal | 264 | 216 | squeeze | cột | full |
-| `iphone-se-1` | 320×568 | 320×568 · portrait · portrait | xs | tight | 294 | 274 | squeeze | cột | full |
-| `android-small` | 360×640 | 360×640 · portrait · portrait | sm | comfortable | 262 | 378 | squeeze | cột | full |
+| `iphone-4` | 320×480 | 320×480 · portrait · portrait | xs | minimal | 264 | 216 | squeeze | cột | label-dropped |
+| `iphone-se-1` | 320×568 | 320×568 · portrait · portrait | xs | tight | 294 | 274 | squeeze | cột | label-dropped |
+| `android-small` | 360×640 | 360×640 · portrait · portrait | sm | comfortable | 262 | 378 | squeeze | cột | label-dropped |
 | `iphone-se-2` | 375×667 | 375×667 · portrait · portrait | sm | comfortable | 289 | 378 | squeeze | cột | full |
 | `iphone-12` | 390×844 | 390×844 · tall · portrait | sm | spacious | 326 | 518 | none | cột | full |
 | `phone-landscape` | 844×390 | 844×390 · ultrawide · landscape | sm | minimal | 174 | 216 | squeeze | cột | hidden |
