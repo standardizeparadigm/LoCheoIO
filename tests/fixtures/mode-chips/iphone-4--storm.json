@@ -2,16 +2,18 @@
  "preset": "iphone-4",
  "window": "320×480",
  "mode": "storm",
- "name": "MƯA DƯA",
+ "name": "LLUVIA DE ENCURTIDOS",
  "band": 288,
  "visible": true,
  "align": "end",
- "showLabel": true,
+ "showLabel": false,
  "nameSize": 11,
- "labelSize": 8,
+ "labelSize": 0,
  "maxWidth": 272,
- "needed": 185,
+ "needed": 202,
+ "neededWithLabel": 310,
+ "neededWithout": 202,
  "available": 272,
  "truncated": false,
- "reason": "full"
+ "reason": "label-dropped"
 }
