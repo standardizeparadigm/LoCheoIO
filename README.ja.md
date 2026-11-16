@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——134ファイル1366テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——136ファイル1398テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -363,6 +363,56 @@ compact-hud → single-column → smaller-type → smallest-type`。順序その
 ガイド：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
 
 <img src="assets/adaptive-audit.svg" alt="v1.1.8 の adaptive 監査 —— 578 ウィンドウ、契約違反 0、フィットと階層のヒストグラム、そして 6 段の自動修復はしご（SMIL アニメーション）" width="100%" />
+
+### 第 13 ラウンド —— *正しい*だけでなく*いちばん安い*
+
+第 12 ラウンドは「不変条件が壊れているか」という yes/no に答える仕組みを作りました。
+しかしスクリーンショットが届くたびに、二つ目の問いが残ります：**もっと安いレイアウトは
+無いのか？**
+
+このラウンドがそれに答えます。`select/` は各プロファイルに**七つの項**を与え、**辞書順**
+で比べます。重み付き和にしないのは、重みの合計がたまたまそうなれば 40px の余白が
+「失ったマスコットを買い戻す」ことになってしまうからです。
+
+| # | 項 | プレイヤーが失うもの |
+| --- | --- | --- |
+| 1 | `violations` | 何も失わない —— 契約違反は候補ではない |
+| 2 | `hidden` | マスコット・デッキ・タグライン |
+| 3 | `cropped` | 自身の下限に対する不足 px |
+| 4 | `hudLost` | HUD のスケールの割合 |
+| 5 | `typeDrop` | 文字の px（全スケール合計） |
+| 6 | `levers` | 動かした数 —— プレイヤーには見えない |
+| 7 | `slack` | 余り —— 損失ではなく、同点崩しだけ |
+
+「スコアボード」と「本当に正しい比較」を分ける二点：
+
+- **`hidden` / `cropped` は基準プロファイルとの差で測る。** 320×320 の窓はレバーを
+  引く前から wordmark だけであり、前から crop されています —— それは窓であって犠牲
+  ではありません。生のフラグで測ると、アプリが今描いているプロファイルに
+  「hidden 1」と報告してしまいます。
+- **`levers` は override ではなくプロファイルから数える。** inset の無い窓での
+  `ignoreInset` は何も変えないので、引いたことにしません —— だから**同点は実在し**、
+  同点崩しは `sort` が見た順ではなく階段の位置で行います。
+
+このラウンドが手に入れ、かつ検証できる命題：
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   648 / 648
+```
+
+> 遊べるすべての窓で、出荷中のプロファイルは六段のうち最も安い。
+
+第 12 ラウンドは「壊れていない」と言いました。第 13 ラウンドは「より安いものは無い」と
+言います。強い命題は間違えやすいので、専用の**第五のコーパス**があります：
+`tests/fixtures/selection/` —— 12 の窓、各ファイルはレイアウトではなく*決定*を記録し、
+六段すべての順位、次点、そして各段が負けた理由を持ちます。しきい値が動けば diff は
+**決定**が変わったことを示します —— レビューで本当に承認したいものはそれです。
+
+詳細：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+ガイド：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
+
+<img src="assets/adaptive-select.svg" alt="最も安い段を選ぶ —— v1.1.8 第 13 ラウンド：階段の六候補、七つの辞書順項、そして 648 / 648 の窓が as-planned を選ぶ（SMIL アニメーション）" width="100%" />
 
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
