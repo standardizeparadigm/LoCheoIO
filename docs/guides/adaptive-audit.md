@@ -42,8 +42,10 @@ trade-offs
    mạnh khi `WIDTH_FOR_SIDE_BY_SIDE` đổi.
 4. **`extremes`** — hai đầu của không gian. `scene` nhỏ nhất là chỗ dễ vỡ nhất;
    `room 0` là cửa sổ chật nhất mà ứng dụng vẫn nhận.
-5. **`trade-offs`** — không phải lỗi. `crop` 25 cửa sổ là *quyết định*: cửa sổ thấp
-   hơn sàn + chrome thì thà cắt còn hơn bóp chữ.
+5. **`trade-offs`** — không phải lỗi. `crop` 25 cửa sổ (cả 25 ở chiều cao 320px) là
+   *quyết định*: cửa sổ thấp hơn sàn + chrome thì thà cắt còn hơn bóp chữ. Nhưng "cắt"
+   phải **tới được**: từ vòng 14, `[data-adaptive-fit="crop"] .menu-pane` là vùng cuộn
+   dọc, nên phần cột vượt cửa sổ vẫn với tới được thay vì bị `overflow: clip` nuốt mất.
 
 ## 3. Khi audit đỏ
 
