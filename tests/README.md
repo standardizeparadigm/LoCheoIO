@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1366 tests / 134 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1398 tests / 136 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -84,6 +84,8 @@
 | `adaptive-audit.test.ts` | **kiểm toán toàn không gian** (vòng 12) — 578 cửa sổ, 0 vi phạm, histogram khít/mật độ/tầng/chip cộng đúng bằng số cửa sổ, mọi preset có mặt và mọi breakpoint có mẫu hai bên, report khớp byte với `docs/adaptive-audit.md` | pure + `node:fs` |
 | `adaptive-repair.test.ts` | **thang tự sửa** (vòng 12) — 6 bậc đơn điệu, chữ cuối cùng, mỗi bậc tự nó hợp lệ trên 21 preset, app không bao giờ cần dùng, và thang **thật sự bước** khi hợp đồng bị làm chặt hơn nhờ `validator` | pure |
 | `adaptive-regressions.test.ts` | **corpus sự cố** (vòng 12) — 14 cửa sổ từng bị báo lỗi (vòng 1 → 12), mỗi file mang triệu chứng + điều phải giữ, snapshot khớp lại, và các guard riêng của từng vụ | `node:fs` + pure |
+| `adaptive-select.test.ts` | **phép so sánh trên thang sửa** (vòng 13) — bảy hạng tử so từ điển đúng thứ tự, `hidden`/`cropped` đo **so với base**, `levers` đếm từ profile, chữ trước số lever, `slack` chỉ phá hoà, sort toàn phần, NaN không bao giờ thắng, và **cả 21 preset + 270 cửa sổ đều chọn `as-planned`** | pure |
+| `adaptive-selection-corpus.test.ts` | **corpus thứ năm** (vòng 13) — 12 cửa sổ, mỗi file ghi lại *quyết định* chứ không chỉ profile: thứ hạng đủ 6 bậc, người về nhì, điểm từng hạng tử; snapshot khớp `selectBest()` hôm nay | `node:fs` + pure |
 | `menu-row.test.ts` | hàng panel — nhãn, icon, trạng thái khoá, không tràn khi nhãn dài nhất; nhãn và hint dùng `clip-safe` chứ không `truncate` | pure |
 | `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
@@ -135,7 +137,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 24 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 26 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |
