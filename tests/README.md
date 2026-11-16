@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1398 tests / 136 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1412 tests / 137 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -86,6 +86,7 @@
 | `adaptive-regressions.test.ts` | **corpus sự cố** (vòng 12) — 14 cửa sổ từng bị báo lỗi (vòng 1 → 12), mỗi file mang triệu chứng + điều phải giữ, snapshot khớp lại, và các guard riêng của từng vụ | `node:fs` + pure |
 | `adaptive-select.test.ts` | **phép so sánh trên thang sửa** (vòng 13) — bảy hạng tử so từ điển đúng thứ tự, `hidden`/`cropped` đo **so với base**, `levers` đếm từ profile, chữ trước số lever, `slack` chỉ phá hoà, sort toàn phần, NaN không bao giờ thắng, và **cả 21 preset + 270 cửa sổ đều chọn `as-planned`** | pure |
 | `adaptive-selection-corpus.test.ts` | **corpus thứ năm** (vòng 13) — 12 cửa sổ, mỗi file ghi lại *quyết định* chứ không chỉ profile: thứ hạng đủ 6 bậc, người về nhì, điểm từng hạng tử; snapshot khớp `selectBest()` hôm nay | `node:fs` + pure |
+| `chip-locales.test.ts` | **chip trong cả bảy ngôn ngữ** (vòng 14) — probe lấy từ `localeTable()` chứ không phải literal; es/fr mất nhãn «MODOS DE JUEGO» ở 320–360px trong khi hợp đồng cũ chỉ kiểm tiếng Việt và báo 0 vi phạm; tên không bao giờ bị ellipsis ở bất kỳ ngôn ngữ nào, và `chipRungFor()` của audit dùng đúng chuỗi xấu nhất | pure |
 | `menu-row.test.ts` | hàng panel — nhãn, icon, trạng thái khoá, không tràn khi nhãn dài nhất; nhãn và hint dùng `clip-safe` chứ không `truncate` | pure |
 | `menu-chrome.test.ts` | dải chrome tuyệt đối — không phải flex sibling của hero, chiều cao khớp `reserve` | pure + fs |
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
