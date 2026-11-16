@@ -251,7 +251,19 @@ export default function App() {
     // fold the run into lifetime progress, then light up any new badges
     const progress = recordRun(s);
     const known = loadAchievements();
-    const freshIds = checkAchievements({ ...s, mode: modeRef.current }, progress, known);
+    /*
+     * The mode comes from the *engine*, not from React state.
+     *
+     * They agree in every flow the UI can reach today — but the six
+     * mode-specific badges (`inferno-1500`, `blitz-3000`, `goldrush-2jars`,
+     * `storm-60`, `hardcore-jar`, `feast-3jars`) are the one place where a
+     * one-frame disagreement would be permanent: a run resumed from storage sets
+     * the engine's mode first and React's second, and a badge is written to disk
+     * and never re-evaluated. The engine is the thing that actually simulated
+     * the run, so it is the thing that decides which mode it was.
+     */
+    const playedMode = gameRef.current?.mode ?? modeRef.current;
+    const freshIds = checkAchievements({ ...s, mode: playedMode }, progress, known);
     if (freshIds.length > 0) {
       setAchievements(unlockAchievements(freshIds));
       setNewAchievements(
