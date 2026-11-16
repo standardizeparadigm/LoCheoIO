@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1518 tests / 142 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1578 tests / 146 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -235,6 +235,24 @@ npm run check:adaptive
 Khác `probe-menu-layout.tsx` (đọc DOM thật): script này chỉ tính số, nên chạy
 được trong CI không cần trình duyệt và không cần `jsdom`. Hai cổng bổ sung nhau —
 một cái bắt số sai, một cái bắt số đúng nhưng DOM vẽ khác.
+
+## `audit-modes.ts`
+
+Kiểm toán **chín bản ghi chế độ** với phần còn lại của engine: badge trên thẻ có
+nói đúng con số bên cạnh nó không («×1.25 · 60S»), mọi multiplier có hữu hạn và
+nằm trong khoảng chơi được không, `hazardMult: 0` có thật sự làm bảng spawn về 0
+không (lời hứa của «THẢNH THƠI» là thuộc tính của `itemWeight()`, không phải của
+con số), mỗi chế độ có ít nhất ba loại nguyên liệu hứng được ở cấp 1 không, accent
+có trùng không.
+
+```bash
+npm run check:modes        # exit 1 nếu có phát hiện nào
+npm run check:modes -- -v  # in thêm bảng 9 chế độ + bảng trọng số spawn
+```
+
+Đây là cổng đã bắt được **lỗi ngân sách vết nứt**: HUD vẽ 3 vỏ nứt cho mọi chế độ,
+kể cả «GỐM MỎNG» — chế độ vỡ ngay từ vết đầu tiên. `maxCracksFor()` trong
+`game/modeMath.ts` giờ là câu trả lời duy nhất.
 
 ## `audit-adaptive.ts`
 
