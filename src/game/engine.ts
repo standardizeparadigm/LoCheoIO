@@ -5,6 +5,7 @@ import { clamp, damp, lerp } from "../utils/math";
 import { CANVAS_COLORS } from "./palette";
 import { weightedPick } from "./spawn";
 import { planPlayfield, type PlayfieldPlan } from "./adaptive/playfield";
+import { FrameWatch } from "./adaptive/perf";
 import { planHud } from "./adaptive/hud";
 import {
   MODES,
@@ -286,8 +287,18 @@ export class LoCheoGame {
   private shakeScale = 1;
   /** settings.shakeLevel — "low" ≈ 45% of the trauma offset, "high" = full */
   private shakeAmount = 1;
-  /** settings.visualQuality — "low" halves particles and skips glow passes */
+  /**
+   * What the frame actually paints with — `settings.visualQuality` as a ceiling,
+   * lowered by the frame governor when the machine cannot hold the frame budget.
+   *
+   * It used to be a copy of the setting. `FrameWatch` (`adaptive/perf.ts`) is
+   * the machine's vote inside the player's choice: it can drop to `low` after two
+   * consecutive slow frames and hand `high` back after six fast ones, and it can
+   * never exceed what the player asked for.
+   */
   private quality: "low" | "high" = "high";
+  /** The governor. One sample per rendered frame; see `adaptive/perf.ts`. */
+  private perf = new FrameWatch();
   /** 1 normal, ~0.25 when reduced motion is on (softens the white flash) */
   private flashScale = 1;
   private flash = 0;
@@ -524,6 +535,8 @@ export class LoCheoGame {
     this.overFired = false;
     this.playerAlive = true;
     this.banner = null;
+    this.perf.reset();
+    this.quality = this.perf.quality;
     audio.setIntensity(1);
   }
 
@@ -603,9 +616,16 @@ export class LoCheoGame {
     this.shakeAmount = level === "low" ? 0.45 : 1;
   }
 
-  /** Visual quality — settings.visualQuality. Low halves particles, no glow. */
+  /**
+   * Visual quality — `settings.visualQuality`. Low halves particles, no glow.
+   *
+   * The setting is a *ceiling* now, not the value: `low` applies immediately and
+   * is final for the run, `high` lets the governor decide whether this machine
+   * can hold it. `qualityAtLeastLow()` is not a thing a player can ask for.
+   */
   setQuality(q: "low" | "high") {
-    this.quality = q;
+    this.perf.setCeiling(q);
+    this.quality = q === "low" ? "low" : this.perf.quality;
   }
 
   /** Reduce flash intensity for motion-sensitive players. */
@@ -747,6 +767,12 @@ export class LoCheoGame {
     let raw = (now - this.last) / 1000;
     this.last = now;
     if (!isFinite(raw) || raw < 0) raw = 0;
+    /*
+     * The governor sees the *raw* delta, before the 50ms clamp below flattens it:
+     * the clamp exists so physics cannot explode after a stall, and feeding the
+     * clamped value in would make a 300ms hitch look like a perfect frame.
+     */
+    this.quality = this.perf.sample(raw * 1000);
     raw = Math.min(raw, 1 / 20);
 
     if (this.freeze > 0) {
