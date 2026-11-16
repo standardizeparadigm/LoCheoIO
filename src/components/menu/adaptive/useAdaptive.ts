@@ -24,13 +24,15 @@
  * returns the desktop default, so the server render and the first client render
  * agree.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { onViewportChange } from "../layout/viewportEvents";
 import { readViewport } from "../layout/useMenuPlan";
 import { boxOf } from "./viewport";
 import { readEnvironment } from "./useEnvironment";
 import type { Environment } from "./environment";
-import { resolveAdaptive, type AdaptiveProfile } from "./resolve";
+import { stabilize } from "./hysteresis";
+import { repairProfile } from "./repair";
+import { type AdaptiveProfile } from "./resolve";
 
 /**
  * Read both halves of the input for the current frame.
@@ -53,8 +55,24 @@ const ENV_QUERIES = ["(pointer: coarse)", "(prefers-reduced-motion: reduce)", "(
  * is on screen, not of the window: opening the changelog re-resolves the profile
  * with `columns: 2`, which is a cheap pure recomputation.
  */
-export function useAdaptive(wideModal = false): AdaptiveProfile {
+export function useAdaptive(wideModal = false, playerReducedMotion = false): AdaptiveProfile {
   const [input, setInput] = useState(readAdaptiveInput);
+  /*
+   * The last profile painted. Two pixels of memory, three jobs:
+   *
+   *  1. **hysteresis** — a drag across a breakpoint no longer re-lays-out the screen
+   *     on every mouse move (`stabilize()`);
+   *  2. **repair** — the six-rung ladder runs on the real contract, so a window that
+   *     breaks an invariant is repaired instead of shipped broken. It returns
+   *     `as-planned` on all 578 audited windows, which `tests/adaptive-repair.test.ts`
+   *     asserts, so the ladder costs one `violations()` call per resolve and nothing
+   *     else;
+   *  3. **flap detection** — a held profile is a *previous* profile, and a previous
+   *     profile whose rung differs from the fresh one means the window is sitting on
+   *     a boundary. Nothing is reported for it; the ref is only there so the hold
+   *     has something to hold.
+   */
+  const last = useRef<AdaptiveProfile | null>(null);
 
   useEffect(() => {
     let frame = 0;
@@ -88,15 +106,19 @@ export function useAdaptive(wideModal = false): AdaptiveProfile {
     };
   }, []);
 
-  return useMemo(
-    () =>
-      resolveAdaptive({
-        box: boxOf(input.width, input.height),
-        env: input.env,
-        wideModal,
-      }),
-    [input, wideModal],
-  );
+  return useMemo(() => {
+    const box = boxOf(input.width, input.height);
+    const repaired = repairProfile({
+      box,
+      env: input.env,
+      wideModal,
+      playerReducedMotion,
+    });
+    const fresh: AdaptiveProfile = { ...repaired.profile, repair: { rung: repaired.rung, ok: repaired.ok } };
+    const stable = stabilize(last.current, fresh);
+    last.current = stable;
+    return stable;
+  }, [input, wideModal, playerReducedMotion]);
 }
 
 /**
