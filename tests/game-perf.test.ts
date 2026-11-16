@@ -79,7 +79,7 @@ describe("nextQuality — coming back up", () => {
 
 describe("nextQuality — the player's ceiling", () => {
   it("cannot leave low while the player asked for low", () => {
-    let s = { quality: "high" as const, busy: 0, smooth: 0 };
+    let s: PerfState = { quality: "high", busy: 0, smooth: 0 };
     for (let i = 0; i < 30; i++) s = nextQuality(s, 8, "low");
     expect(s.quality).toBe("low");
   });
