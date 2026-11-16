@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt, alle 21 vorhandenen SVGs sind neu gezeichnet, dazu kommt das HUD-Bandschema aus Runde neun.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 25 SVGs umfassen die HUD-Bandschemata (Runde neun) und den Audit-Bericht (Runde zwölf), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -171,7 +171,7 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1311 Tests in 131 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1366 Tests in 134 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
@@ -254,6 +254,46 @@ das jetzt eine Messung liest statt einer Erinnerung.
 Details: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
 
 <img src="assets/diacritics-clip.svg" alt="Warum vietnamesische Tonzeichen verschwinden — vorher: eine Beschnittbox in Größe der Zeilenbox schnitt den Zirkumflex von Ể ab, «CỔ ĐIỂN» las sich als «CỔ ĐIÊN»; nachher: 1,5em Zeilenbox und ±0,24em clip-safe-Padding erhalten jedes Zeichen (SMIL-Animation)" width="100%" />
+
+### Runde 12 — der ganze Fensterraum, geprüft — und eine Reparaturleiter
+
+Jede der drei vorigen Runden fügte **einen** Korpus hinzu. Keiner beantwortete die
+Frage, die man vor einem Release stellt: *Über **alle** spielbaren Fenster — was tut
+das Layout, wie oft, und ist etwas kaputt?*
+
+Jetzt beantwortet das `npm run audit:adaptive`: **578** Fenster (21 Presets plus ein
+25 × 23-Raster um jeden Breakpoint, dedupliziert), einmal aufgelöst und zu einem
+einzigen `AuditReport` verdichtet.
+
+| | |
+| --- | --- |
+| Fenster | **578** |
+| Vertragsverletzungen | **0** — jedes Fenster läuft alle 14 Invarianten |
+| Nur LỌ CHÉO | 101 (17 %) |
+| Hero Zeile / Spalte | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md` ist die **generierte** Kopie dieses Berichts, und
+`audit:adaptive --check` läuft in `npm run check` — ein verschobener Breakpoint oder
+eine verschobene Schriftuntergrenze **erscheint als Diff** in genau dem Commit, der
+sie verursacht hat. Das ist die Regel „wer etwas verbessert, prüft die Umgebung“,
+an eine Maschine übergeben.
+
+Daneben eine **Reparaturleiter** in `repair/`: sechs Sprossen — `as-planned →
+ignore-inset → compact-hud → single-column → smaller-type → smallest-type`. Die
+Reihenfolge ist das Prinzip: **Schrift zuletzt**, denn die 8px-Untergrenze ist ein
+Versprechen. Die App bleibt auf allen 578 Fenstern bei Sprosse 0; die Leiter
+existiert, damit sie *benutzt werden kann*, und der Test reicht ihr einen strengeren
+Vertrag, um zu zeigen, dass sie wirklich steigt.
+
+Und ein **vierter Korpus**: 14 Fenster, die je Gegenstand eines Screenshot-Berichts
+waren, von Runde 1 bis Runde 12 — jede Datei mit `symptom` und `guard`, damit ein
+Fehlschlag als Satz über den Laden liest und nicht als zwei Zahlen.
+
+Details: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+Leitfaden: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="Der Adaptive-Audit von v1.1.8 — 578 Fenster, 0 Vertragsverletzungen, Histogramme zu Passung und Stufe, und die sechsstufige Reparaturleiter (SMIL-Animation)" width="100%" />
 
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
@@ -379,7 +419,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1311 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1366 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -442,7 +482,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1311 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1366 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -587,7 +627,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1311 Tests / 131 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1366 Tests / 134 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -631,7 +671,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1311 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1366 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 
