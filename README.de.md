@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -171,7 +171,7 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1398 Tests in 136 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1412 Tests in 137 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
@@ -331,7 +331,7 @@ Die Behauptung, die diese Runde kauft und prüfen kann:
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > in jedem spielbaren Fenster ist das ausgelieferte Profil das billigste der sechs.
@@ -346,7 +346,40 @@ sich ändert — das, was ein Reviewer wirklich freigeben muss.
 Details: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 Leitfaden: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
 
-<img src="assets/adaptive-select.svg" alt="Die billigste Sprosse wählen — v1.1.8 Runde 13: die sechs Kandidaten der Leiter, die sieben lexikografischen Terme und 648 von 648 Fenstern, die as-planned wählen (SMIL-Animation)" width="100%" />
+<img src="assets/adaptive-select.svg" alt="Die billigste Sprosse wählen — v1.1.8 Runde 13: die sechs Kandidaten der Leiter, die sieben lexikografischen Terme und 578 von 578 Fenstern, die as-planned wählen (SMIL-Animation)" width="100%" />
+
+### Runde 14 — Bugfix: der Vertrag des Chips muss alle sieben Sprachen zählen
+
+Diese Runde fügt nichts hinzu. Sie hat eine Stelle gesucht, an der ein Versprechen weiter
+formuliert war als das, was es prüfte.
+
+Der Chip wurde an **vier** Stellen mit vietnamesischen Literalen gemessen
+(`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`, `CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) — und Vietnamesisch ist
+die **kürzeste** der sieben Sprachen:
+
+| | Label | längster Modusname |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+Also behauptete `chip-labelled` *„das Label überlebt in jedem spielbaren Fenster"*,
+während Spanisch es bei 320px und 360px verliert und Französisch bei 320px — und der
+Audit meldete **0 Verstöße**.
+
+Jetzt leitet `chip/probes.ts` die Sonden aus `localeTable()` + `MODE_LIST` ab, und
+`chip-labelled` sagt etwas Prüfbares: **der Chip verliert nie zwei Sprossen gleichzeitig**.
+Der Audit meldet, was geschieht: **439 full · 101 hidden · 38 label-dropped**.
+
+Drei kleinere Fehler derselben Form kamen mit: `scoreProfile()` gab seine Verstoßliste
+unsortiert zurück (der letzte Tiebreak hing an der Einfügereihenfolge), `isFiniteProfile()`
+sah `playfield`/`modal` nie an, und `slackOf()` rundete anders als `constraints.ts` bei
+derselben Box. Und `--select` druckt keine Zahl mehr, die es nicht gibt: es multiplizierte
+18 × 36 und nannte das Produkt „648 Fenster", während der Audit 578 durchläuft — jetzt
+`578 / 578`, dieselbe Liste.
+
+Keine neuen Funktionen, kein Layoutwechsel, keine Versionserhöhung. Nur **1 412 Tests auf
+137 Dateien** statt 1 398, und ein Vertrag, der sagt, was er prüft.
 
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
@@ -472,7 +505,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1398 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1412 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -535,7 +568,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1398 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1412 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -680,7 +713,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1398 Tests / 136 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1412 Tests / 137 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -724,7 +757,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1398 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1412 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 
