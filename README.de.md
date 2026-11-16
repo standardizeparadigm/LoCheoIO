@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1518%20%C2%B7%20142%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 27 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 28 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -171,7 +171,7 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1458 Tests in 139 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1518 Tests in 142 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
@@ -449,6 +449,40 @@ Ordner: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/READM
 
 <img src="assets/adaptive-stability.svg" alt="Stabilität und Vorlieben — v1.1.8 Runde 15: Hysterese hält 2px, Reparaturleiter läuft zur Laufzeit, zwei Vorlieben aus drei Quellen (SMIL-Animation)" width="100%" />
 
+### 🎚️ Runde sechzehn: das Zwei-Pixel-Band kann sagen, *warum* es stillhält
+
+Kein neuer Stabilisierungsmechanismus. Drei Dinge an dem, den Runde fünfzehn hinterließ:
+ihn erklären, ihn messen und einen Fehler beheben, den er verdeckte.
+
+| | vor Runde 16 | nach Runde 16 |
+| --- | --- | --- |
+| „Warum ist dieses Profil 2px veraltet?" | fünf Bedingungen in eine REPL kleben | `explainHold()` liefert **sechs benannte Gründe**; `shouldHold()` ist nur deren Lesart |
+| Die Stufe wechselt und das Fenster bewegt sich **nicht** | gehalten — und *für immer*, weil das nächste Bild identisch ist | eigener Grund `still`, sofort angewendet: die Reparaturleiter malt ihren Fix im ersten Bild |
+| Eine absichtliche Verzögerung | unsichtbar für Menschen und Werkzeuge | `data-adaptive-held` im DOM · `diagnose()` Ebene `12 · hold` |
+| Die Prüfung | eine Tabelle mit 578 Fenstern, jede Zeile zu jedem Zeitpunkt wahr | dazu eine **Ziehprüfung**: 21 × 241 Schritte, 4 600 Fenster, zwei Durchläufe |
+
+- **Sechs Gründe:** `first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`.
+  Nur `held` hält; die anderen fünf sind fünf Arten, wie ein Stufenwechsel *kein* Zittern ist.
+- **`still` ist ein echter Fehler:** die alte Bedingung — „beide Boxen innerhalb von 2px" —
+  gilt auch bei *identischen* Boxen. Ein repariertes Profil ändert `plan.fit` bei gleicher
+  Box, wurde also gehalten, und `last.current` rückte nie vor: *der Fix wurde nie gemalt*.
+- **Die Prüfung läuft einen Pfad ab, nicht nur Punkte.** `docs/adaptive-drag.md`:
+
+| Geste | raw | held | was das Band kauft |
+| --- | --- | --- | --- |
+| **sweep** — Ziehen in eine Richtung, ±120px (4 600 Fenster) | 12 | 11 | 1 (8 %) — jede Grenze wird einmal überschritten |
+| **shake** — der Zeiger bewegt sich an jeder Grenze um 1px | 48 | **0** | **48 (100 %)** — dafür ist das Band da |
+
+Drei Eigenschaften des Zugs: **Sicherheit** (0 Vertragsverstöße auf jedem gemalten
+Profil), **Lebendigkeit** (kein Halten länger als `margin + 1` Bilder), **Schranke**
+(`worstLag` = 2px).
+
+Und eines außerhalb des Adaptiven, dieselbe Runde: das Tor für die Prosa-Zahlen («26 SVGs»
+in vier Dateien) läuft jetzt **innerhalb** von `npm run check`, nicht nur in CI — die Regeln
+zogen nach `scripts/lib/prose-counts.mjs`, und der Test führt *diese* Regeln aus, keine Kopie.
+
+<img src="assets/adaptive-hold.svg" alt="Das Zwei-Pixel-Band und der Zug — v1.1.8 Runde 16: die sechs Gründe von explainHold(), der still-Fehler, der einen Fix für immer hielt, und eine Ziehprüfung über 4 600 Fenster, in der 1px Zittern von 48 → 0 geht (SMIL-Animation)" width="100%" />
+
 ### 🧱 Runde acht: sechs Schichten, ein Profil
 
 Runde sechs brachte dem Hero bei, sein Fenster zu messen. Der Rest riet weiter: das Modal war `86vh` **ohne Deckel**, die Game-Over-Überschrift ein festes `text-6xl`, die Panels riefen selbst `cornerRowHeight()`, und `engine.resize()` rechnete den Glasradius allein. **Sechs Leser, sechs Messungen** — und zwei Messungen können auf zwei Frames fallen.
@@ -542,7 +576,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1458 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1518 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -605,7 +639,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1458 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1518 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -750,7 +784,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1458 Tests / 139 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1518 Tests / 142 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -794,7 +828,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1458 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1518 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 
