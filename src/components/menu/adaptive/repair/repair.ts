@@ -106,6 +106,8 @@ export interface RepairInput {
   box: Box;
   env?: Environment;
   wideModal?: boolean;
+  /** The player's own reduced-motion switch, forwarded to every attempt. */
+  playerReducedMotion?: boolean;
   /**
    * The contract to satisfy — `violations()` in the app.
    *
