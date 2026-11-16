@@ -24,11 +24,22 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { auditAdaptive, auditWindows, knownViolationIds, renderAuditMarkdown, type AuditReport } from "../src/components/menu/adaptive/audit";
-import { bestOn, describeSelection, selectBest } from "../src/components/menu/adaptive/select";
+import { bestOnWindows, describeSelection, selectBest } from "../src/components/menu/adaptive/select";
 
 const DOC = "docs/adaptive-audit.md";
 const argv = process.argv.slice(2);
 const has = (flag: string) => argv.includes(flag);
+
+/*
+ * Two modes that both own stdout do not compose: `--select --check` used to run the
+ * selection and exit 0, silently skipping the report check that `npm run check`
+ * depends on. A gate that can be skipped by adding an unrelated flag is not a gate.
+ */
+const MODES = ["--json", "--write", "--check", "--select"].filter(has);
+if (MODES.length > 1) {
+  console.error(`✗ pick one mode — got ${MODES.join(" ")}`);
+  process.exit(2);
+}
 
 /** A bar, scaled to the biggest count in the group. */
 function bar(count: number, max: number, width = 28): string {
@@ -80,12 +91,16 @@ function printSummary(report: AuditReport) {
  * windows exist.
  */
 if (has("--select")) {
+  /*
+   * The audit's **windows**, not a cross product of its distinct widths and
+   * heights. The first version did the multiplication and printed 648: a larger
+   * number than the space contains, described everywhere as "648 windows". Both
+   * tools now sweep the same 578.
+   */
   const windows = auditWindows();
-  const widths = [...new Set(windows.map((w) => w.width))];
-  const heights = [...new Set(windows.map((w) => w.height))];
-  const sweep = bestOn(widths, heights);
+  const sweep = bestOnWindows(windows);
   const sample = selectBest({ width: 1280, height: 720 });
-  console.log(`\nSELECTION — ${sweep.windows} windows from the audit's own grid`);
+  console.log(`\nSELECTION — ${sweep.windows} windows, the same list the audit sweeps`);
   console.log(`  shipped profile wins   ${sweep.shipped} / ${sweep.windows}`);
   console.log(`  disagreements          ${sweep.failures.length}`);
   for (const f of sweep.failures.slice(0, 10)) console.log(`    ✗ ${f}`);
