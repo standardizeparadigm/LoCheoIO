@@ -11,5 +11,20 @@ export {
   CHIP_BORDER,
   CHIP_PAD_Y,
   CHIP_DOT,
+  MODE_CHIP_CHROME_X,
+  MODE_CHIP_DOT,
+  MODE_CHIP_GAP,
+  MODE_CHIP_WANT,
 } from "./modeChip";
+export {
+  CHIP_LOCALES,
+  chipProbeFor,
+  chipProbes,
+  widestChipLabel,
+  widestChipName,
+  widestNameFor,
+  widestOf,
+  widestProbe,
+} from "./probes";
+export type { ChipProbe } from "./probes";
 export type { ModeChipInput, ModeChipPlan } from "./modeChip";
