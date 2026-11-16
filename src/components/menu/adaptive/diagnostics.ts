@@ -28,6 +28,7 @@ import { describeTier } from "./tiers";
 import { heroBandWidth } from "./hero";
 import { chipBoxHeight, planModeChip, widestOf, widestProbe } from "./chip";
 import { describeBox } from "./viewport";
+import { describePreferences } from "./preferences";
 
 /** One decision and the reason it went the way it did. */
 export interface DiagnosisRow {
@@ -141,6 +142,30 @@ export function diagnose(p: AdaptiveProfile): Diagnosis {
       value: `${p.playfield.width}×${p.playfield.height} · jar ${p.playfield.playerRadius}px · hud ×${p.playfield.hudScale}`,
       because: `item scale follows height (${p.playfield.itemScale}), radius follows the short side`,
     },
+    {
+      layer: "10 · prefs",
+      value: describePreferences(p.prefs),
+      because: preferencesReason(p),
+    },
+    /*
+     * The repair rung only exists on a profile the hook painted. `resolveAdaptive()`
+     * is pure and never walks the ladder, so a raw profile has no rung to report —
+     * and inventing "as-planned" for it would be a diagnosis of something that did
+     * not happen.
+     */
+    ...(p.repair
+      ? [
+          {
+            layer: "11 · repair",
+            value: `${p.repair.rung}${p.repair.ok ? "" : " · FAILED"}`,
+            because: p.repair.ok
+              ? p.repair.rung === "as-planned"
+                ? "the plan satisfied the contract with no lever pulled"
+                : `rung ${p.repair.rung} was the first that satisfied the contract`
+              : "no rung satisfied the contract — the least-broken one is painted",
+          },
+        ]
+      : []),
   ];
 
   return { headline: headline(p), rows, warnings: warningsFor(p) };
@@ -188,6 +213,22 @@ function chipReason(p: AdaptiveProfile): string {
 const CHIP_PROBE = widestProbe();
 const CHIP_LABEL = CHIP_PROBE.label;
 const CHIP_WIDEST_NAME = widestOf(CHIP_PROBE.names);
+
+/**
+ * The preferences row.
+ *
+ * Round 15: the player can ask for less motion and more contrast, and three sources
+ * can each ask for it — so the diagnosis says *why* the animation stopped, rather
+ * than leaving the next reader to open DevTools and read two attributes.
+ */
+function preferencesReason(p: AdaptiveProfile): string {
+  if (p.prefs.motion === "reduced" && p.prefs.contrast === "more") {
+    return "the OS asked for less motion *and* more contrast; decorative layers stopped, borders and copy lifted";
+  }
+  if (p.prefs.motion === "reduced") return "less motion — the OS preference or the player's switch stopped the decorative layers";
+  if (p.prefs.contrast === "more") return "more contrast — copy and panel borders lifted for legibility";
+  return "nothing asked for: full motion, normal contrast";
+}
 
 /** The one-line summary, with the parts a screenshot review always needs. */
 export function headline(p: AdaptiveProfile): string {
