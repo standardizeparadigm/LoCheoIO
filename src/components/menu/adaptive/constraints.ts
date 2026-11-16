@@ -86,6 +86,19 @@ export function profileNumbers(
   return out;
 }
 
+/**
+ * Variables whose value is a *name* from a closed set rather than a number.
+ *
+ * Kept beside `numbers-finite` because that constraint is the only reader: adding a
+ * keyword variable without adding it here makes `numbers-finite` report a false
+ * positive on every window, which is loud, deliberate, and cheaper than a regex that
+ * silently accepts anything.
+ */
+const KEYWORD_VARS: Record<string, readonly string[]> = {
+  "--adaptive-motion": ["full", "reduced"],
+  "--adaptive-contrast": ["normal", "more"],
+};
+
 /** The list. Order is the order a reviewer reads the table in. */
 export const CONSTRAINTS: readonly Constraint[] = [
   {
@@ -186,6 +199,29 @@ export const CONSTRAINTS: readonly Constraint[] = [
     },
   },
   {
+    id: "prefs-respected",
+    why: "the profile's stated preferences and the variables it publishes say the same thing.",
+    check: (p) => {
+      /*
+       * Round 15. `prefs` is new, and a new field on a profile that also publishes
+       * CSS variables is a new way to disagree with itself: `motion: "reduced"` next
+       * to `--adaptive-motion: full` would leave every animation running while the
+       * attribute says they stopped. The two are derived from one call
+       * (`preferenceVars(prefs)`), so this can only fail after a refactor — which is
+       * precisely when a contract earns its keep.
+       */
+      if (p.prefs.motion !== "full" && p.prefs.motion !== "reduced") return `motion ${String(p.prefs.motion)}`;
+      if (p.prefs.contrast !== "normal" && p.prefs.contrast !== "more") return `contrast ${String(p.prefs.contrast)}`;
+      if (p.cssVars["--adaptive-motion"] !== p.prefs.motion) {
+        return `motion ${p.prefs.motion} but --adaptive-motion ${p.cssVars["--adaptive-motion"]}`;
+      }
+      if (p.cssVars["--adaptive-contrast"] !== p.prefs.contrast) {
+        return `contrast ${p.prefs.contrast} but --adaptive-contrast ${p.cssVars["--adaptive-contrast"]}`;
+      }
+      return null;
+    },
+  },
+  {
     id: "numbers-finite",
     why: "a NaN anywhere becomes a dropped CSS declaration or a hitbox that never collides.",
     check: (p) => {
@@ -193,6 +229,18 @@ export const CONSTRAINTS: readonly Constraint[] = [
         if (!Number.isFinite(value)) return `${path} is ${value}`;
       }
       for (const [name, value] of Object.entries(p.cssVars)) {
+        const allowed = KEYWORD_VARS[name];
+        /*
+         * Two variables are *names*, not numbers: `--adaptive-motion` and
+         * `--adaptive-contrast` (round 15). A single numeric regex would have to be
+         * loosened for everything to accommodate them, which is how a `NaN` check
+         * stops checking anything. So a keyword variable is checked against its own
+         * closed set instead, and everything else must still parse as px.
+         */
+        if (allowed) {
+          if (!allowed.includes(value)) return `${name} is "${value}"`;
+          continue;
+        }
         if (!/^-?\d+(\.\d+)?px$|^-?\d+(\.\d+)?$/.test(value)) return `${name} is "${value}"`;
       }
       return null;
