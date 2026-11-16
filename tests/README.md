@@ -97,6 +97,7 @@
 | `panel-gap-docs.test.ts` | khoảng trống 240px từng được ghi bằng **ba số khác nhau** trong docs và comment — test grep các cụm sai và khẳng định cả ba khung (458/278/218) có mặt để người đọc tự suy ra 240 | fs |
 | `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
 | `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
+| `prose-counts-gate.test.ts` | sổ đếm trong **prose** (10 README + `scripts/`, `tests/`, `docs/`, `CONTRIBUTING`) phải khớp hôm nay — chạy đúng bộ luật của `sync-prose-counts` **trong** vitest, vì CI bắt được lỗi «26 SVG» mà `npm run check` thì không | fs |
 | `panel-slack.test.ts` | khoảng thở của panel — reserve ≥ nội dung ở mọi economy đã biết | pure |
 | `a11y-claims.test.ts` | hướng dẫn trợ năng nói về mã nguồn, nên mã nguồn được kiểm — mọi khẳng định trong `docs/guides/accessibility.md` phải có thật | fs |
 | `focus-trap.test.ts` | `useFocusTrap` — Tab/Shift+Tab quấn vòng, Esc đóng, focus trả về nơi xuất phát | fake DOM |
