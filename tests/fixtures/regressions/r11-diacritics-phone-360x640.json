@@ -33,11 +33,11 @@
  },
  "chip": {
   "band": 328,
-  "reason": "full",
+  "reason": "label-dropped",
   "visible": true,
   "nameSize": 11,
-  "showLabel": true,
-  "text": "MUỐI DƯA CỔ ĐIỂN",
+  "showLabel": false,
+  "text": "60 SEGUNDOS DE LOCURA",
   "box": 35
  },
  "warnings": [
