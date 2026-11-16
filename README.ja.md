@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——136ファイル1398テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——137ファイル1412テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -398,7 +398,7 @@ compact-hud → single-column → smaller-type → smallest-type`。順序その
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > 遊べるすべての窓で、出荷中のプロファイルは六段のうち最も安い。
@@ -412,7 +412,38 @@ npm run audit:adaptive -- --select
 詳細：[docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 ガイド：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
 
-<img src="assets/adaptive-select.svg" alt="最も安い段を選ぶ —— v1.1.8 第 13 ラウンド：階段の六候補、七つの辞書順項、そして 648 / 648 の窓が as-planned を選ぶ（SMIL アニメーション）" width="100%" />
+<img src="assets/adaptive-select.svg" alt="最も安い段を選ぶ —— v1.1.8 第 13 ラウンド：階段の六候補、七つの辞書順項、そして 578 / 578 の窓が as-planned を選ぶ（SMIL アニメーション）" width="100%" />
+
+### 第 14 ラウンド —— バグ修正：chip の契約は七言語を数えなければならない
+
+このラウンドは何も追加していません。探したのは「約束が、それを検査するものより広く
+語られている場所」です。
+
+chip は**四か所**でベトナム語のリテラルで測られていました（`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`、
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`）—— そしてベトナム語は七言語のうち**最も短い**：
+
+| | ラベル | 最も長いモード名 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI`（11） | `MUỐI DƯA CỔ ĐIỂN`（19） |
+| es | `MODOS DE JUEGO`（14） | `60 SEGUNDOS DE LOCURA`（21） |
+| fr | `MODES DE JEU`（12） | `FESTIVAL DES COMBOS`（19） |
+
+そのため `chip-labelled` は*「どの遊べる窓でもラベルが残る」*と主張していましたが、
+スペイン語は 320px と 360px で、フランス語は 320px でラベルを失い —— 監査は
+**違反 0** と報告していました。
+
+いま `chip/probes.ts` が `localeTable()` + `MODE_LIST` からプローブを生成し、
+`chip-labelled` は検証できる命題になりました：**chip は二段を同時に失わない**。
+監査は実際に起きていることを報告します：**439 full · 101 hidden · 38 label-dropped**。
+
+同型の小さなバグも三つ修正：`scoreProfile()` の違反リストが未ソート（最後の同点判定が
+挿入順に依存）、`isFiniteProfile()` が `playfield`/`modal` を見ていない、`slackOf()` が
+`constraints.ts` と同じロックアップ箱で違う丸めをしていた。そして `--select` は存在
+しない数を印刷しなくなりました：18 × 36 の積を「648 の窓」と呼んでいましたが監査は
+578 を走査します —— いまは `578 / 578`、同じリストです。
+
+新機能なし、レイアウト変更なし、バージョン変更なし。**1 412 テスト / 137 ファイル**
+（従来 1 398）と、自分が何を検査しているかを言える契約だけ。
 
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
