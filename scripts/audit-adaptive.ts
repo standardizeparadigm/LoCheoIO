@@ -6,6 +6,7 @@
  *   npm run audit:adaptive -- --json    → the whole `AuditReport`
  *   npm run audit:adaptive -- --write   → rewrite `docs/adaptive-audit.md`
  *   npm run audit:adaptive -- --check   → exit 1 if that file is stale
+ *   npm run audit:adaptive -- --select  → did the shipped profile win every window?
  *
  * WHY A SCRIPT AS WELL AS A TEST
  * ------------------------------
@@ -22,7 +23,8 @@
  * in the same commit that caused it.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { auditAdaptive, knownViolationIds, renderAuditMarkdown, type AuditReport } from "../src/components/menu/adaptive/audit";
+import { auditAdaptive, auditWindows, knownViolationIds, renderAuditMarkdown, type AuditReport } from "../src/components/menu/adaptive/audit";
+import { bestOn, describeSelection, selectBest } from "../src/components/menu/adaptive/select";
 
 const DOC = "docs/adaptive-audit.md";
 const argv = process.argv.slice(2);
@@ -69,6 +71,27 @@ function printSummary(report: AuditReport) {
   console.log(`\n${line}`);
   console.log(`known invariant ids: ${knownViolationIds().length}`);
   console.log(`docs copy: ${DOC} — \`npm run audit:adaptive -- --check\`\n`);
+}
+
+/*
+ * `--select` answers the round-13 question, which is one step past "is anything
+ * broken": *is anything sub-optimal*. It reuses the audit's own window list, so
+ * the two answers are about the same 578 windows and cannot disagree about which
+ * windows exist.
+ */
+if (has("--select")) {
+  const windows = auditWindows();
+  const widths = [...new Set(windows.map((w) => w.width))];
+  const heights = [...new Set(windows.map((w) => w.height))];
+  const sweep = bestOn(widths, heights);
+  const sample = selectBest({ width: 1280, height: 720 });
+  console.log(`\nSELECTION — ${sweep.windows} windows from the audit's own grid`);
+  console.log(`  shipped profile wins   ${sweep.shipped} / ${sweep.windows}`);
+  console.log(`  disagreements          ${sweep.failures.length}`);
+  for (const f of sweep.failures.slice(0, 10)) console.log(`    ✗ ${f}`);
+  console.log(`  sample                 ${describeSelection(sample)}`);
+  if (sweep.failures.length) process.exit(1);
+  process.exit(0);
 }
 
 const report = auditAdaptive();
