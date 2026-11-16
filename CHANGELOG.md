@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, mười một vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · 21 hình SVG vẽ lại, thêm ba sơ đồ · 1311 unit tests (131 file) và ba corpus 1 809 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười hai vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · 21 hình SVG vẽ lại, thêm bốn sơ đồ · 1366 unit tests (134 file) và bốn corpus 1 823 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -105,6 +105,26 @@ Ngoài ra:
 - **`heroBandWidth()`** — bề rộng thật của hàng trong hero (`px-4` dưới `sm`, `px-8` từ `sm`), khác `heroContainerWidth()` vốn cố ý thận trọng cho câu hỏi row-fit
 - **`tests/fixtures/mode-chips/`** — **189** ảnh chụp (21 preset × 9 chế độ) + `scripts/gen-mode-chip-fixtures.ts` (`npm run gen:chip`, có `--check`)
 - **2 test mới** — `mode-chip` (23) · `mode-chip-fixtures` (6)
+
+### Added — vòng mười hai (kiểm toán + tự sửa)
+
+- **`src/components/menu/adaptive/audit/`** — `audit.ts` (`auditWindows()`, `auditOne()`, `summarise()`, `chipRungFor()`, hai bảng `AUDIT_WIDTHS`/`AUDIT_HEIGHTS`) · `report.ts` (`renderAuditMarkdown()`) · `index.ts` · `README.md`. Quét **578** cửa sổ (21 preset + lưới quanh từng breakpoint) và gộp thành một `AuditReport`: vi phạm, thương lượng, bốn histogram, hai đầu không gian
+- **`docs/adaptive-audit.md`** — báo cáo **sinh tự động** từ report, có bar 40 ký tự để hai bản của hai bản phát hành diff được. `--check` nằm trong `npm run check`, nên tệp không thể cũ đi mà không ai biết
+- **`src/components/menu/adaptive/repair/`** — `repair.ts` (`REPAIR_LADDER` 6 bậc, `repairProfile()`, `repairForSize()`, `describeRepair()`) · `index.ts` · `README.md`. Thang: `as-planned → ignore-inset → compact-hud → single-column → smaller-type → smallest-type`
+- **`AdaptiveOverrides`** — bốn lever (`ignoreInset`, `typeScale`, `singleColumn`, `hudScale`) trên `resolveAdaptive()`; vắng mặt ⇒ profile **byte-identical** với trước vòng 12. `typeScale` kẹp ở sàn 8px, `hudScale` kẹp 0.55, `NaN`/số âm/`> 1` bị **bỏ qua**
+- **`src/components/menu/adaptive/regressions.ts`** — `REGRESSIONS`, 14 cửa sổ đã từng bị báo lỗi (vòng 1 → 12), mỗi cái kèm `symptom` và `guard`
+- **`tests/fixtures/regressions/`** — **14** ảnh chụp, corpus **thứ tư**; sinh bằng `npm run gen:regress`, kiểm bằng `--check`
+- **`scripts/audit-adaptive.ts`** (`npm run audit:adaptive`) — bảng tóm tắt có bar · `--json` · `--write` · `--check`
+- **`scripts/gen-regression-fixtures.ts`** (`npm run gen:regress`)
+- **3 tệp test** — `adaptive-audit` (18) · `adaptive-repair` (23) · `adaptive-regressions` (14)
+- **`docs/guides/adaptive-audit.md`** — đọc bảng audit, xử lý khi audit đỏ, và đọc corpus sự cố trước khi đổi một ngưỡng
+
+### Fixed — vòng mười hai
+
+- **"Chip ở nấc nào" được định nghĩa ở hai nơi** — `audit.ts` trả `hidden` khi `plan.minimal`, generator corpus lại luôn gọi `planModeChip()`; ở 1920×400 chúng nói khác nhau (`hidden` vs `full`) và test corpus đỏ ngay lần chạy đầu. Nay chỉ còn `chipRungFor(profile)`, dùng bởi cả hai
+- **`describeRepair()` nói "không đổi gì" cho một lần sửa thất bại** — nhánh `as-planned` được kiểm trước `!ok`, nên một hợp đồng chặt hơn (hoặc một cửa sổ thật sự không sửa được) bị báo thành "ổn". Nay `!ok` được kiểm trước
+- **README của `adaptive/` ghi "twelve files, one subfolder"** trong khi đã có `chip/`, `audit/`, `repair/` và 15 tệp — nay đúng
+- **`docs/README.md` ghi v1.1.8 có "839 / 78 file"** — con số của vòng 6, không phải của bản phát hành. Nay là số thật
 
 ### Fixed — vòng mười một (dấu tiếng Việt)
 
