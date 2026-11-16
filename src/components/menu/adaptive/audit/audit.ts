@@ -48,8 +48,7 @@ import { constraintIds, violations } from "../constraints";
 import { warningsFor } from "../diagnostics";
 import { PRESETS } from "../presets";
 import { heroBandWidth } from "../hero";
-import { planModeChip } from "../chip";
-import { MODE_LIST } from "../../../../game/modes";
+import { planModeChip, widestOf, widestProbe } from "../chip";
 import type { Environment } from "../environment";
 
 /** What one audited window produced. */
@@ -161,10 +160,17 @@ export function auditWindows(): Array<{ width: number; height: number; origin: s
   return out;
 }
 
-/** The widest mode name the chip can be asked to print, in the app's language. */
-const WIDEST_NAME = MODE_LIST.reduce((best, m) => (m.name.length > best.length ? m.name : best), "");
-/** «CHẾ ĐỘ CHƠI» — the same literal `diagnose()` and the chip tests use. */
-const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+/**
+ * The chip's worst case across all seven languages.
+ *
+ * It used to be two literals — the widest *Vietnamese* name and «CHẾ ĐỘ CHƠI» —
+ * which made every chip number in this report a statement about one translation.
+ * Vietnamese is the shortest of the seven, so the census under-reported: in
+ * Spanish the label is dropped at 320px and 360px, and the report said `full`.
+ */
+const CHIP_WORST = widestProbe();
+const WIDEST_NAME = widestOf(CHIP_WORST.names);
+const CHIP_LABEL = CHIP_WORST.label;
 
 /**
  * The chip's rung for a profile — the audit's single definition of it.
