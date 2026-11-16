@@ -31,74 +31,30 @@
  *
  * A large jump (a rotation, a fullscreen toggle, a restored window) is never held:
  * it is more than `margin` away in the first frame, so the new rung applies at once.
+ *
+ * ROUND 16 — THE ONE CASE THAT WOULD HAVE STUCK
+ * ---------------------------------------------
+ * Twice over: the *distance* guards above are about the window moving, and the
+ * first version asked only whether the two boxes were close — which is also true
+ * when they are identical. A rung change with **no movement at all** does not come
+ * from the window: a safe-area inset arrives, a preference flips, a dialog opens.
+ * The old condition held that too, and because the next frame is in exactly the
+ * same state, `last.current` never advanced: the layout stayed on the old rung for
+ * as long as the condition that changed it lasted. `explainHold()` now names that
+ * case (`still`) and applies the new rung at once. See `band.ts`.
  */
-
 import type { AdaptiveProfile } from "../resolve";
+import { HYSTERESIS_MARGIN, shouldHold } from "./band";
 
-/**
- * How far the window may move before a rung change is believed, in px.
- *
- * 2 is chosen against the grid rather than by taste: `planMenuLayout()`'s own
- * thresholds are integer pixels and the chrome's smallest step (panel header
- * compact vs full) is 8px, so a 2px hold can never straddle two visual states that
- * differ by less than the band it is holding.
- */
-export const HYSTERESIS_MARGIN = 2;
-
-/** The part of a profile a player can *see* change in one frame. */
-export interface RungKey {
-  tier: string;
-  density: string;
-  hero: string;
-  fit: string;
-  panelHeight: number;
-}
-
-/** The visible rung of a profile, as a comparable value. */
-export function rungKeyOf(profile: AdaptiveProfile): RungKey {
-  return {
-    tier: profile.tier,
-    density: profile.density,
-    hero: profile.hero.sideBySide ? "row" : "stack",
-    fit: profile.plan.fit,
-    panelHeight: profile.panelHeight,
-  };
-}
-
-/** True when two profiles would paint the same *arrangement* (size may differ). */
-export function sameRung(a: AdaptiveProfile, b: AdaptiveProfile): boolean {
-  const x = rungKeyOf(a);
-  const y = rungKeyOf(b);
-  return (
-    x.tier === y.tier &&
-    x.density === y.density &&
-    x.hero === y.hero &&
-    x.fit === y.fit &&
-    x.panelHeight === y.panelHeight
-  );
-}
-
-/**
- * Should the previous profile be kept instead of the freshly resolved one?
- *
- * `previous` may be `null` (first frame, or after a reset) and then the answer is
- * always `false`: there is nothing to hold, and holding nothing is how a profile
- * gets stuck at the SSR reference size.
- */
-export function shouldHold(
-  previous: AdaptiveProfile | null,
-  next: AdaptiveProfile,
-  margin: number = HYSTERESIS_MARGIN,
-): boolean {
-  if (!previous) return false;
-  if (!Number.isFinite(margin) || margin <= 0) return false;
-  /* Same arrangement: the numbers may differ freely, there is nothing to hold. */
-  if (sameRung(previous, next)) return false;
-  const dw = Math.abs(previous.box.width - next.box.width);
-  const dh = Math.abs(previous.box.height - next.box.height);
-  if (!Number.isFinite(dw) || !Number.isFinite(dh)) return false;
-  return dw <= margin && dh <= margin;
-}
+export {
+  HYSTERESIS_MARGIN,
+  describeVerdict,
+  explainHold,
+  rungKeyOf,
+  sameRung,
+  shouldHold,
+} from "./band";
+export type { HoldAxis, HoldReason, HoldVerdict, RungKey } from "./band";
 
 /**
  * The profile to paint: the previous one while the window is within `margin` of a
