@@ -143,7 +143,7 @@ export {
 export { readEnvironment, readInsets, useEnvironment } from "./useEnvironment";
 
 /* ---- the profile ------------------------------------------------------ */
-export type { AdaptiveInput, AdaptiveProfile } from "./resolve";
+export type { AdaptiveInput, AdaptiveOverrides, AdaptiveProfile } from "./resolve";
 export {
   ADAPTIVE_CSS_VARS,
   adaptiveAttributes,
@@ -172,6 +172,24 @@ export {
   firstViolation,
   violations,
 } from "./constraints";
+
+/* ---- the audit -------------------------------------------------------- */
+export type { AuditReport, AuditSample, AuditTally } from "./audit";
+export {
+  AUDIT_HEIGHTS,
+  AUDIT_WIDTHS,
+  auditAdaptive,
+  auditOne,
+  auditWindowList,
+  auditWindows,
+  knownViolationIds,
+  renderAuditMarkdown,
+  summarise,
+} from "./audit";
+
+/* ---- the repair ladder ------------------------------------------------ */
+export type { RepairInput, RepairResult, RepairRung, RepairValidator } from "./repair";
+export { REPAIR_LADDER, describeRepair, repairForSize, repairProfile, repairRungIds } from "./repair";
 
 /* ---- the explanation -------------------------------------------------- */
 export type { AdaptiveWarning, Diagnosis, DiagnosisRow } from "./diagnostics";
