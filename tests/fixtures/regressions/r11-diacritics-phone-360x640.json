@@ -1,0 +1,48 @@
+{
+ "id": "r11-diacritics-phone-360x640",
+ "round": 11,
+ "window": "360×640",
+ "width": 360,
+ "height": 640,
+ "symptom": "the same missing mark on the commonest Android size, where the label is dropped instead",
+ "guard": "diacritics survive the rung that drops the label",
+ "profile": {
+  "tier": "sm",
+  "device": "handset",
+  "aspect": "portrait",
+  "density": "comfortable",
+  "room": 0.23,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 262,
+  "reserve": 378,
+  "ticker": true,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 318,
+  "modal": "1×344×550",
+  "playfield": "360×640",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 10.5,
+   "rowHint": 8.5,
+   "hudScore": 23
+  }
+ },
+ "chip": {
+  "band": 328,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "MUỐI DƯA CỔ ĐIỂN",
+  "box": 35
+ },
+ "warnings": [
+  "panels-stacked",
+  "jar-at-floor"
+ ],
+ "violations": []
+}

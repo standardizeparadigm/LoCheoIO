@@ -1,0 +1,49 @@
+{
+ "id": "r06-scroll-320x568",
+ "round": 6,
+ "window": "320×568",
+ "width": 320,
+ "height": 568,
+ "symptom": "«LỌ» was clipped and could not be scrolled to, because a centred scroll box put its top above the scroll origin",
+ "guard": "the smallest supported phone gets a real band, not a crop",
+ "profile": {
+  "tier": "xs",
+  "device": "handset",
+  "aspect": "portrait",
+  "density": "tight",
+  "room": 0.17,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 294,
+  "reserve": 274,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 262,
+  "modal": "1×304×488",
+  "playfield": "320×568",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 10.5,
+   "rowHint": 8.5,
+   "hudScore": 22
+  }
+ },
+ "chip": {
+  "band": 288,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "MUỐI DƯA CỔ ĐIỂN",
+  "box": 35
+ },
+ "warnings": [
+  "no-ticker",
+  "panels-stacked",
+  "jar-at-floor"
+ ],
+ "violations": []
+}

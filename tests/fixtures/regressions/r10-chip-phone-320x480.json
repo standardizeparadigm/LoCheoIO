@@ -1,0 +1,51 @@
+{
+ "id": "r10-chip-phone-320x480",
+ "round": 10,
+ "window": "320×480",
+ "width": 320,
+ "height": 480,
+ "symptom": "the same chip bug on the narrowest supported phone, where the band is only 288px",
+ "guard": "the name survives without an ellipsis even here",
+ "profile": {
+  "tier": "xs",
+  "device": "handset",
+  "aspect": "portrait",
+  "density": "minimal",
+  "room": 0.1,
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 264,
+  "reserve": 216,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 204,
+  "modal": "1×304×413",
+  "playfield": "320×480",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 41.5,
+   "lockupCheo": 34,
+   "rowLabel": 10,
+   "rowHint": 8,
+   "hudScore": 21
+  }
+ },
+ "chip": {
+  "band": 288,
+  "reason": "full",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "MUỐI DƯA CỔ ĐIỂN",
+  "box": 35
+ },
+ "warnings": [
+  "no-ticker",
+  "no-footer",
+  "dialog-compact",
+  "panels-stacked",
+  "jar-at-floor"
+ ],
+ "violations": []
+}

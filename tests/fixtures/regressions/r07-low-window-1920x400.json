@@ -1,0 +1,50 @@
+{
+ "id": "r07-low-window-1920x400",
+ "round": 7,
+ "window": "1920×400",
+ "width": 1920,
+ "height": 400,
+ "symptom": "on a 400px-tall window the hero was a row with nowhere to put it, and the HUD drew under the board",
+ "guard": "a short window is never given the row arrangement",
+ "profile": {
+  "tier": "sm",
+  "device": "tablet",
+  "aspect": "panoramic",
+  "density": "minimal",
+  "room": 0.43,
+  "fit": "squeeze",
+  "minimal": true,
+  "scene": 184,
+  "reserve": 216,
+  "ticker": false,
+  "hero": "stack",
+  "mascot": false,
+  "panelHeight": 204,
+  "modal": "1×448×344",
+  "playfield": "1920×400",
+  "hudScale": 0.72,
+  "type": {
+   "lockupLo": 89.5,
+   "lockupCheo": 73.5,
+   "rowLabel": 11,
+   "rowHint": 9,
+   "hudScore": 26
+  }
+ },
+ "chip": {
+  "band": 1088,
+  "reason": "hidden",
+  "visible": true,
+  "nameSize": 11,
+  "showLabel": true,
+  "text": "MUỐI DƯA CỔ ĐIỂN",
+  "box": 35
+ },
+ "warnings": [
+  "no-ticker",
+  "no-footer",
+  "minimal",
+  "dialog-compact"
+ ],
+ "violations": []
+}
