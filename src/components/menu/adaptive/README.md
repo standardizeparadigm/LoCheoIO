@@ -1,6 +1,6 @@
 # `src/components/menu/adaptive/`
 
-Fifteen files and three subfolders (`chip/`, `audit/`, `repair/`), one direction of dependency:
+Sixteen files and four subfolders (`chip/`, `audit/`, `repair/`, `select/`), one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -19,6 +19,7 @@ diagnostics.ts AdaptiveProfile           →  why the layout is shaped this way
 chip/         Box width + the band width →  how the mode chip fits (see chip/README.md)
 audit/        the whole window space      →  one AuditReport (see audit/README.md)
 repair/       a profile + the contract    →  the rungs it walks (see repair/README.md)
+select/       the rungs, compared          →  the cheapest one (see select/README.md)
 ```
 
 | File | Owns |
@@ -40,6 +41,7 @@ repair/       a profile + the contract    →  the rungs it walks (see repair/RE
 | `diagnostics.ts` | `diagnose()`, `warningsFor()`, `renderDiagnosis()` — the explanation, not the numbers |
 | `audit/` | `adaptive/audit/` — kiểm toán toàn bộ không gian cửa sổ (578 cửa sổ) thành `AuditReport` + `docs/adaptive-audit.md` |
 | `repair/` | `adaptive/repair/` — thang sửa `as-planned → ignore-inset → … → smallest-type` khi một cửa sổ phá hợp đồng |
+| `select/` | `adaptive/select/` — cho điểm bảy hạng tử theo thứ tự từ điển, so sánh sáu bậc, trả bậc rẻ nhất kèm lý do từng bậc thua |
 | `chip/` | `adaptive/chip/` — chip chế độ: `planModeChip()`, `chipBoxHeight()`, `estimateText()` |
 | `index.ts` | the public surface — import from here, not the modules |
 
