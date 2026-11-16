@@ -35,6 +35,7 @@ import {
   type Preferences,
 } from "./preferences";
 import { aspectClassOf, boxOf, describeBox, roomDriver, type AspectClass, type Box } from "./viewport";
+import type { HoldVerdict } from "./hysteresis/band";
 
 /**
  * The levers the repair engine may pull.
@@ -124,6 +125,19 @@ export interface AdaptiveProfile {
    * screenshot proves the ladder was consulted.
    */
   repair?: { rung: string; ok: boolean };
+  /**
+   * Why the previous profile is still being painted — `useAdaptive()` only.
+   *
+   * The same rule as `repair`: a hold is a *runtime* fact about a sequence of
+   * windows, so `resolveAdaptive()` — which sees one box and no history — neither
+   * produces it nor pretends to. The hook fills it in, `adaptiveAttributes()`
+   * publishes `data-adaptive-held`, and `diagnose()` explains it as layer 12.
+   *
+   * It exists because the alternative was silence: a profile that is deliberately
+   * two pixels stale looked exactly like a profile that is up to date, and the only
+   * way to tell them apart was to know that `stabilize()` runs at all.
+   */
+  held?: HoldVerdict;
 }
 
 /** Build the profile for a box. */
@@ -249,6 +263,7 @@ export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, str
     "data-adaptive-room": profile.room.toFixed(2),
     "data-adaptive-inset": profile.insetApplied ? "1" : "0",
     ...(profile.repair ? { "data-adaptive-repair": profile.repair.ok ? profile.repair.rung : `failed:${profile.repair.rung}` } : {}),
+    ...(profile.held ? { "data-adaptive-held": profile.held.axis ?? "none" } : {}),
   };
 }
 
