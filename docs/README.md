@@ -8,7 +8,7 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 
 | Bản | Tầng | Nội dung chính | Tests lúc phát hành |
 | --- | --- | --- | --- |
-| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · `menu/{layout,scene,ticker,howto}/` | 839 / 78 file |
+| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** | 1366 / 134 file |
 | [v1.1.7](releases/v1.1.7.md) | 🟣 PATCH | Nền menu hết mờ (4 lớp) · changelog chia tầng · 96 gạch mô tả mới · tách `src/game/changelog/` | 256 / 33 file |
 | [v1.1.6](releases/v1.1.6.md) | 🟣 PATCH | Settings 6 mục · preset · backup JSON · a11y pass | 222 / 29 file |
 | [v1.1.5](releases/v1.1.5.md) | 🟣 PATCH | Panel góc GAME/INFO, Chơi tiếp ván dở | 113 |
@@ -46,9 +46,11 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 | `troubleshooting.md` | Sự cố thường gặp — đen màn hình, audio, «Chơi tiếp», launcher, build |
 | `redrawing-an-asset.md` | Vẽ lại một hình trong `assets/` — sàn chất lượng, bốn lỗi đã gặp, vì sao SMIL chứ không CSS |
 | `numeric-guards.md` | Chặn số hỏng — vì sao `Math.max(0, x)` không phải guard, và năm lỗi thật của vòng 6 |
+| `adaptive-audit.md` | Kiểm toán toàn không gian cửa sổ: đọc bảng `audit:adaptive`, xử lý khi audit đỏ, và đọc corpus sự cố trước khi đổi một ngưỡng |
 | `adaptive-debugging.md` | Đọc lựa chọn thích ứng từ DOM (`data-adaptive-*`), console, và ba câu "chữ nhỏ / panel đè / modal không với tới" |
 
 ## Khác
 
-- `assets.md` — kho 24 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
+- `adaptive-audit.md` — báo cáo **sinh tự động** từ 578 cửa sổ (không sửa tay).
+- `assets.md` — kho 25 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
 - `DESCRIPTION.md` — mô tả ngắn cho dev/cộng đồng.
