@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1398 เทสต์ใน 136 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1412 เทสต์ใน 137 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -385,7 +385,7 @@ single-column → smaller-type → smallest-type` ลำดับคือหล
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > ในทุกหน้าต่างที่เล่นได้ โปรไฟล์ที่ปล่อยอยู่คืออันที่ถูกที่สุดในหกขั้น
@@ -398,7 +398,36 @@ npm run audit:adaptive -- --select
 รายละเอียด: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 คู่มือ: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)
 
-<img src="assets/adaptive-select.svg" alt="เลือกขั้นที่ถูกที่สุด —— v1.1.8 รอบที่ 13: หกตัวเลือกของบันได เจ็ดพจน์แบบพจนานุกรม และ 648 จาก 648 หน้าต่างเลือก as-planned (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/adaptive-select.svg" alt="เลือกขั้นที่ถูกที่สุด —— v1.1.8 รอบที่ 13: หกตัวเลือกของบันได เจ็ดพจน์แบบพจนานุกรม และ 578 จาก 578 หน้าต่างเลือก as-planned (แอนิเมชัน SMIL)" width="100%" />
+
+### รอบที่ 14 —— แก้บั๊ก: สัญญาของ chip ต้องนับทั้งเจ็ดภาษา
+
+รอบนี้ไม่เพิ่มอะไรเลย มันไปหาจุดที่ "คำสัญญาพูดกว้างกว่าสิ่งที่ตรวจมัน"
+
+chip ถูกวัดด้วยสตริงเวียดนามใน **สี่** ที่ (`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`,
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) — และเวียดนามเป็นภาษาที่ **สั้นที่สุด** ในเจ็ดภาษา:
+
+| | ป้าย | ชื่อโหมดที่ยาวที่สุด |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+ดังนั้น `chip-labelled` ประกาศว่า *"ป้ายอยู่รอดในทุกหน้าต่างที่เล่นได้"* ขณะที่ภาษาสเปน
+เสียป้ายที่ 320px และ 360px ภาษาฝรั่งเศสที่ 320px — แต่ audit รายงาน **0 การละเมิด**
+
+ตอนนี้ `chip/probes.ts` สร้าง probe จาก `localeTable()` + `MODE_LIST` และ
+`chip-labelled` กลายเป็นข้อความที่ตรวจได้: **chip ไม่เคยเสียสองขั้นพร้อมกัน**
+audit รายงานสิ่งที่เกิดขึ้นจริง: **439 full · 101 hidden · 38 label-dropped**
+
+แก้บั๊กเล็กสามตัวที่มีรูปแบบเดียวกันด้วย: `scoreProfile()` คืนรายการละเมิดที่ยังไม่เรียง
+(การตัดสินเสมอกลางท้ายจึงขึ้นกับลำดับการใส่), `isFiniteProfile()` ไม่เคยดู
+`playfield`/`modal`, และ `slackOf()` ปัดเศษต่างจาก `constraints.ts` บนกล่องเดียวกัน
+และ `--select` เลิกพิมพ์ตัวเลขที่ไม่มีอยู่จริง: มันคูณ 18 × 36 แล้วเรียกผลคูณนั้นว่า
+"648 หน้าต่าง" ขณะที่ audit กวาด 578 — ตอนนี้ `578 / 578` รายการเดียวกัน
+
+ไม่มีฟีเจอร์ใหม่ ไม่เปลี่ยนเลย์เอาต์ ไม่ขึ้นเวอร์ชัน มีเพียง **1 412 เทสต์ ใน 137 ไฟล์**
+แทน 1 398 และสัญญาที่บอกว่ามันตรวจอะไร
 
 
 ## 📐 เลย์เอาต์ปรับตัว — ฮีโร่เลือกทรงของตัวเองอย่างไร
