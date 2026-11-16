@@ -52,8 +52,16 @@ export const CREST_CENTRE = CREST_VIEW / 2;
 
 /** The radius of each orbit, from the inside out. */
 export const CREST_ORBITS = {
-  /** Fast comet, clockwise — the one you notice first. */
-  inner: 58,
+  /**
+   * Fast comet, clockwise — the one you notice first.
+   *
+   * v1.1.8 drew this at 58, only ten units inside the gold arc at 68, and both
+   * arcs started at 0°: at the bottom the two strokes ran parallel and about
+   * 30px apart at render size, which reads as a doubled line rather than two
+   * orbits. Sixteen units of separation and a shorter tail (below) fix that
+   * without moving the arc the mascot sits inside.
+   */
+  inner: 52,
   /** The bright gold arc the mascot sits inside. */
   main: 68,
   /** Slow dotted orbit, counter-clockwise — the one that keeps it alive. */
@@ -131,6 +139,11 @@ export function AboutCrest({ className = "" }: { className?: string }) {
           strokeWidth={2.2}
           strokeLinecap="round"
           strokeDasharray={orbit(CREST_ORBITS.dotted, 3, 12)}
+          /* Phase the three orbits apart: all of them start their pattern at
+             3 o'clock (0°) by default, which stacks every leading dash on one
+             radius. A dash offset is free — it changes nothing about the
+             rotation — and the rest state stops having a seam at the east. */
+          strokeDashoffset={0}
           opacity={0.55}
         />
       </g>
@@ -146,6 +159,7 @@ export function AboutCrest({ className = "" }: { className?: string }) {
           strokeWidth={4.5}
           strokeLinecap="round"
           strokeDasharray={orbit(CREST_ORBITS.main, 104)}
+          strokeDashoffset={-9}
           opacity={0.9}
         />
         <circle
@@ -157,6 +171,7 @@ export function AboutCrest({ className = "" }: { className?: string }) {
           strokeWidth={1.6}
           strokeLinecap="round"
           strokeDasharray={orbit(CREST_ORBITS.main, 20, 16)}
+          strokeDashoffset={41}
           opacity={0.4}
         />
       </g>
@@ -171,7 +186,10 @@ export function AboutCrest({ className = "" }: { className?: string }) {
           stroke={`url(#${chili})`}
           strokeWidth={3.4}
           strokeLinecap="round"
-          strokeDasharray={orbit(CREST_ORBITS.inner, 44)}
+          /* 34, not 44: a shorter tail plus the extra separation is what makes
+             the inner orbit read as a comet instead of a second ring. */
+          strokeDasharray={orbit(CREST_ORBITS.inner, 34)}
+          strokeDashoffset={-118}
           opacity={0.8}
         />
       </g>

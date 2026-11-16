@@ -89,6 +89,24 @@ describe("about crest — geometry", () => {
     expect(dashes.length).toBeGreaterThanOrEqual(4);
   });
 
+  it("keeps the fast comet clear of the gold arc", () => {
+    /*
+     * The first version drew the comets 10 units inside the gold arc and both
+     * started their dash pattern at 0°, so at the bottom of the crest the two
+     * strokes ran parallel about 30px apart at render size — two orbits that
+     * read as one doubled line. Separation is the fix that costs nothing:
+     * sixteen units, plus a per-orbit `stroke-dashoffset` so the leading dashes
+     * do not stack on the same radius at rest.
+     */
+    expect(CREST_ORBITS.main - CREST_ORBITS.inner).toBeGreaterThanOrEqual(14);
+  });
+
+  it("phases the orbits apart instead of stacking them at 0°", () => {
+    const offsets = [...crestSource.matchAll(/strokeDashoffset=\{([^}]+)\}/g)].map((m) => m[1]);
+    expect(offsets.length, "every dashed orbit should declare a phase").toBeGreaterThanOrEqual(4);
+    expect(new Set(offsets).size, "two orbits share a phase").toBe(offsets.length);
+  });
+
   it("mixes dash patterns that do not all share one period", () => {
     // Three identical dash arrays would line up into a single pulsing ring.
     const patterns = [...crestSource.matchAll(/orbit\(CREST_ORBITS\.(\w+),\s*([\d.]+)/g)].map(

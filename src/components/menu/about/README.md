@@ -28,10 +28,19 @@ complement is a balanced set of dashes and comet tails. Rotation is applied to a
 `<g>` with `transform-box: view-box` and `transform-origin: 50% 50%`, which no
 layout rule can cancel.
 
-`tests/menu-about-crest.test.ts` pins all of it: the geometry, the three
-distinct durations, that every animation name is a defined keyframe, and that
-both reduced-motion hooks (`prefers-reduced-motion` and `data-reduced-motion`)
-stop the same six classes.
+The first version placed the comets at 58 against a gold arc at 68, and every
+orbit started its dash pattern at 0° — at the bottom of the crest the two
+strokes ran parallel, ten units apart, which reads as one doubled line rather
+than two orbits. The comets now sit at 52 with a shorter tail, and each orbit
+declares a `stroke-dashoffset` so the leading dashes never stack on the same
+radius. Rendering the SVG on its own is how that was caught: nothing about the
+dash *arrays* was wrong, so no test that only reads numbers would have seen it.
+
+`tests/menu-about-crest.test.ts` pins all of it: the geometry and the comet's
+clearance, the three distinct durations, that every animation name is a defined
+keyframe, that each orbit declares its own phase, and that both reduced-motion
+hooks (`prefers-reduced-motion` and `data-reduced-motion`) stop the same six
+classes.
 
 ## Why the content is not in the modal
 
