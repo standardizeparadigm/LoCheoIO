@@ -616,6 +616,34 @@
 }
 
 /*
+ * v1.1.8 FIX (round 14) — the one rung where the column cannot fit the window.
+ *
+ * The rule above is a *proof*, and it only proves something while there is an
+ * arrangement that seats `scene + reserve === height`. That is true from 300px
+ * of window height up, and false below it: `planMenuLayout()` then reports
+ * `fit: "crop"` and deliberately spends the hero's floor (140px) plus the
+ * chrome's 216px — 356px of column in a window that has less.
+ *
+ * `overflow: clip` in that rung clips the difference and offers no way to reach
+ * it: on a landscape phone with two browser toolbars (844×300) or a phone with
+ * the keyboard open (390×240), the bottom of the menu — the footer, the lower
+ * half of the corner panels — used to be unreachable, while all fourteen
+ * invariants reported zero violations, because every one of them exempts crop.
+ *
+ * So the crop rung alone is a scroll container. It costs nothing on the sizes
+ * the game supports: no preset and no window at 300px or taller reaches this
+ * attribute, so `.menu-pane` is still `overflow: clip` for every layout that
+ * has an exact fit. `tests/menu-no-scroll.test.ts` asserts both halves — that
+ * only this selector may make the pane scroll, and that no supported window
+ * matches it.
+ */
+[data-adaptive-fit="crop"] .menu-pane {
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/*
  * v1.1.8 FIX — "phần thông tin tự nhiên bị chia ra".
  *
  * The panel body used to be `justify-around`, which spreads N rows over a
