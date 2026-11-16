@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 새로운 점
 
-> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 어떤 크기에서도 스크롤도 잘림도 없이. 덱 띠는 사라지고 기존 21개 SVG를 다시 그렸으며, 9라운드에서 HUD 밴드 도해를 더했다.
+> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 어떤 크기에서도 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 25개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
 
 ### 📐 아무도 관리하지 않던 덧셈 하나——그리고 동시에 네 개의 버그
 
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——131개 파일 1311 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——134개 파일 1366 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -328,6 +328,43 @@ label-dropped → name-shrunk → ellipsis`)를 지킵니다. 폭 추정이 6% �
 자세히: [docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt).
 
 <img src="assets/diacritics-clip.svg" alt="베트남어 성조 부호가 사라지는 이유 —— 이전: 줄 상자 크기의 자르는 상자가 Ể의 곡절을 깎아 «CỔ ĐIỂN»이 «CỔ ĐIÊN»으로; 이후: 1.5em 줄 상자와 clip-safe의 ±0.24em 패딩으로 부호가 그대로 (SMIL 애니메이션)" width="100%" />
+
+### 12라운드 —— 창 공간 전체 감사, 그리고 자동 수리 사다리
+
+지난 세 라운드는 각각 **하나**의 코퍼스를 추가했습니다. 그러나 그 어느 것도 릴리스
+전에 관리자가 묻는 질문에 답하지 못했습니다: *플레이 가능한 **모든** 창에서 레이아웃은
+무엇을 얼마나 했고, 무엇이 깨졌는가?*
+
+이제 `npm run audit:adaptive`가 답합니다: **578**개 창(21개 프리셋 + 모든 브레이크포인트
+주변의 25 × 23 격자, 중복 제거). 한 번 해석하고 하나의 `AuditReport`로 모읍니다.
+
+| | |
+| --- | --- |
+| 창 | **578** |
+| 계약 위반 | **0** —— 각 창이 14개 불변식을 모두 실행 |
+| LỌ CHÉO만 | 101 (17%) |
+| Hero 가로 / 세로 | 170 / 408 |
+| Scene | 140px (320×320) … 1 642px (3840×2160) |
+
+`docs/adaptive-audit.md`는 그 보고서의 **자동 생성** 사본이고, `audit:adaptive --check`는
+`npm run check` 안에서 실행됩니다. 그래서 브레이크포인트나 글자 크기 하한을 바꾸면
+**그것을 일으킨 바로 그 커밋에서** diff로 드러납니다. "무언가를 개선하면 주변에 미치는
+영향을 확인한다"는 원칙을 기계에 맡긴 셈입니다.
+
+함께 **자동 수리 사다리** `repair/`가 있습니다: 여섯 단계 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`. 순서 자체가 원칙입니다:
+**글자가 마지막**, 8px 하한은 약속이기 때문입니다. 앱은 578개 창 모두에서 0단계에
+머물고, 사다리는 *쓸 수 있도록* 존재하며, 테스트는 더 엄격한 계약을 넘겨 실제로 내려가는
+것을 증명합니다.
+
+그리고 **네 번째 코퍼스**: 스크린샷 보고의 대상이 되었던 14개 창(1라운드 → 12라운드).
+각 파일이 `symptom`과 `guard`를 지니므로, 실패는 두 숫자가 아니라 가게에 대한 한 문장
+으로 읽힙니다.
+
+자세히: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+가이드: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 adaptive 감사 —— 578개 창, 계약 위반 0, 적합도와 계층 히스토그램, 그리고 6단계 자동 수리 사다리 (SMIL 애니메이션)" width="100%" />
 
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
