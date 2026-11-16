@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–10 — one profile, every size, every pixel
+# Adaptive, rounds 8–12 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8, 9 và 10).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 12).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -573,3 +573,93 @@ nó bắt đúng thứ đã ship sai hai lần.
 | `menu-row.test.ts` | ghim `truncate` | sửa thành `clip-safe` |
 | `mode-chip-wiring.test.ts` | ghim `min-w-0 truncate` | sửa thành "không tự cắt chữ" |
 | `assets/` 23 hình | tài liệu trực quan | thêm `diacritics-clip.svg` (24) |
+
+## 20. Vòng 12 — kiểm toán toàn không gian, và thang tự sửa
+
+Ba vòng trước mỗi vòng thêm **một** corpus: 1 110 cửa sổ (vòng 8), 510 cặp band
+(vòng 9), 189 cặp chip (vòng 10). Mỗi corpus trả lời một câu hẹp. Không corpus nào
+trả lời câu mà người bảo trì hỏi trước mỗi bản phát hành:
+
+> Trên **mọi** cửa sổ chơi được, bố cục làm gì, bao nhiêu lần, và có gì hỏng?
+
+Câu trả lời đó nằm rải ở ba tệp test, một bảng trong `check-adaptive.ts` và một mục
+tài liệu — bốn chỗ, bốn con số có thể lệch. Vòng 12 gộp nó thành **một giá trị**.
+
+### 20.1 `AuditReport` — một phép quét, sáu câu trả lời
+
+`src/components/menu/adaptive/audit/` chạy `resolveAdaptive()` trên **578** cửa sổ
+(21 preset + lưới 25 × 23 quanh từng breakpoint, khử trùng lặp) và gộp thành:
+
+| Trường | Trả lời |
+| --- | --- |
+| `violations` | *có hỏng không* — id bất biến × số cửa sổ × ví dụ |
+| `warnings` | *đã nhường cái gì* — `crop` 25, `no-ticker` 176, `minimal` 101… |
+| `fits` / `densities` / `tiers` / `chip` | *bốn quyết định chính rơi vào đâu* |
+| `hero` | hàng **170** / cột **408** |
+| `extrema` | scene 140–1 642px, reserve sàn 216px, room chật nhất `0` |
+| `samples` | từng cửa sổ, để một lỗi đọc được tên |
+
+Con số quan trọng nhất là **0 vi phạm trên 578 cửa sổ**. Đây không phải "chưa
+kiểm": mỗi cửa sổ đã chạy hết 14 bất biến.
+
+**Vì sao vừa preset vừa lưới.** Preset là nơi hồi quy thật đã xảy ra, và một thất
+bại ở đó đọc là `iphone-4` chứ không phải `320×480`. Nhưng 21 cửa sổ không thấy được
+**vách**: bậc `row → stack` là một ngưỡng *chiều rộng*, và 420px là điện thoại thật
+mà không preset nào phủ. Lưới vì thế có mặt ở **hai bên** mỗi ngưỡng (639/640,
+1023/1024, 1151/1152).
+
+### 20.2 Báo cáo là tệp, không phải màn hình console
+
+`docs/adaptive-audit.md` được **sinh** từ chính report — histogram có bar 40 ký tự
+cố định, nên hai bản báo cáo của hai bản phát hành diff được với nhau. `--check`
+nằm trong `npm run check`, nên tệp không thể cũ đi mà không ai biết: đổi một
+breakpoint, một dòng density hay một sàn chữ **sẽ** hiện ra như một diff trong
+đúng commit đã gây ra nó.
+
+### 20.3 Thang sửa — động từ còn thiếu
+
+`constraints.ts` nói *có hỏng không*. `diagnostics.ts` nói *vì sao*. Không tệp nào
+nói **làm gì**. `adaptive/repair/` là câu trả lời, dưới dạng một thang hữu hạn:
+
+| Bậc | Nhường | Lever |
+| --- | --- | --- |
+| `as-planned` | không gì — profile đang vẽ | `{}` |
+| `ignore-inset` | safe-area inset thôi chiếm chiều cao chrome | `ignoreInset` |
+| `compact-hud` | HUD còn 85% cỡ | `hudScale: 0.85` |
+| `single-column` | modal rộng xuống một cột | `singleColumn` |
+| `smaller-type` | chữ còn 94% | `typeScale: 0.94` |
+| `smallest-type` | chữ còn 88% — bậc cuối trước sàn 8px | `typeScale: 0.88` |
+
+Thứ tự là nguyên tắc: **chữ cuối cùng**, vì sàn 8px là lời hứa.
+
+**Vì sao thang là dữ liệu.** Một nhánh `if (bad) { … }` chỉ chạy tới bậc thứ ba khi
+tìm được cửa sổ hỏng ba bất biến cùng lúc — gần như không bao giờ, và một đường dự
+phòng chưa từng chạy là đường dự phòng sẽ hỏng đúng ngày cần. Nên mỗi bậc là
+`{ id, why, overrides }` và test bắt đầu từ bất kỳ bậc nào.
+
+**Vì sao có `validator`.** Với hợp đồng thật, `as-planned` luôn thắng trên cả 578
+cửa sổ. `repairProfile()` nhận một `validator` (mặc định `violations()`), và test
+truyền một hợp đồng **chặt hơn** để thang thật sự bước — khẳng định đúng bậc dừng
+(`smaller-type` cho 390×844), đúng thứ tự `attempts`, và đúng tie-break
+"ít hỏng nhất" khi mọi bậc đều hỏng.
+
+### 20.4 Bốn lever, và ba bất biến của chính chúng
+
+`resolveAdaptive()` nhận `overrides` (mặc định vắng mặt ⇒ **byte-identical** với
+trước vòng 12, có test so sánh từng trường trên 21 preset). Bốn lever:
+`ignoreInset`, `typeScale`, `singleColumn`, `hudScale`.
+
+Ba luật, mỗi luật một test:
+
+1. **Không lever nào phá hợp đồng** — cả 6 bậc × 21 preset đều qua 14 bất biến.
+2. **Không vượt sàn** — `typeScale` kẹp ở 8px, `hudScale` kẹp ở 0.55 (sàn của
+   `planHud`).
+3. **Chỉ nhỏ đi, không bao giờ to lên** — `0 < f ≤ 1`; `NaN`, `Infinity`, `0`, số
+   âm và `> 1` bị **bỏ qua**, không bị kẹp thành nonsense.
+
+### 20.5 Vòng này **không** làm gì
+
+- Không đổi bố cục nào: 578 cửa sổ cho ra đúng profile cũ (test so từng trường).
+- Không thêm bất biến: vẫn 14.
+- Không dùng thang sửa trong ứng dụng — `useAdaptive()` vẫn resolve trần, vì không
+  cửa sổ nào cần sửa. Thang tồn tại để *có thể* dùng.
