@@ -70,6 +70,31 @@ export const COMBO_WINDOW = 2.7;
 export const MAX_CRACKS = 3;
 
 /**
+ * Cracks a mode tolerates before the jar shatters.
+ *
+ * THE THREE COPIES THIS REPLACED
+ * ------------------------------
+ * `MODES[this.mode].maxCracks ?? 3` appeared three times in the engine and the
+ * literal `3` appeared four more times beside it — in the HUD's crack row, in
+ * the danger frame threshold and in the jar's painted cracks. That is how
+ * «GỐM MỎNG» shipped a HUD that showed **three** shells for a mode that dies on
+ * the first one: the player read three lives, had one, and the last-life danger
+ * frame (drawn at `cracks >= 2`) could never appear at all.
+ *
+ * One function, one answer, and every caller asks the same question. The result
+ * is clamped to `[1, MAX_CRACKS]`: a mode cannot ask for zero cracks, because
+ * that is a run that ends before it starts, and it cannot ask for more than the
+ * HUD can draw.
+ */
+export function maxCracksFor(mode: { maxCracks?: number } | ModeId): number {
+  const record = typeof mode === "string" ? (MODES as Record<string, unknown>)[mode] : mode;
+  if (!record || typeof record !== "object") return MAX_CRACKS;
+  const raw = (record as Record<string, unknown>).maxCracks;
+  if (typeof raw !== "number" || !Number.isFinite(raw)) return MAX_CRACKS;
+  return Math.max(1, Math.min(MAX_CRACKS, Math.floor(raw)));
+}
+
+/**
  * A mode's multiplier, or 1.
  *
  * THE TWO BUGS THIS REPLACED

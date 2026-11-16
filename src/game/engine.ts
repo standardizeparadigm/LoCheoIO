@@ -11,6 +11,7 @@ import {
   comboWindowFor,
   jarBonusFor,
   levelForCatches,
+  maxCracksFor,
   multiplierForCombo,
   type ModeId,
 } from "./modes";
@@ -575,8 +576,19 @@ export class LoCheoGame {
     this.best = v;
   }
 
-  /** Switch the active mode. Takes effect on the next run. */
+  /**
+   * Switch the active mode. Takes effect on the next run.
+   *
+   * Guarded even though the parameter is typed: `mode` comes from
+   * `locheo.mode.v1`, from a resumed snapshot and from `App`'s state, and a
+   * hand-edited storage key is a state a player can reach. An id that is not in
+   * the catalogue leaves the current mode alone — `MODES[unknown]` is
+   * `undefined`, and the next `MODES[this.mode].speedMult` inside `makeItem()`
+   * is a `TypeError` in the middle of the frame loop, which takes the run with
+   * it.
+   */
   setMode(m: ModeId) {
+    if (!Object.prototype.hasOwnProperty.call(MODES, m)) return;
     this.mode = m;
   }
 
@@ -637,8 +649,7 @@ export class LoCheoGame {
     this.mode = saved.mode;
     this.stats = { ...saved.stats };
     this.fill = clamp(saved.fill, 0, 1);
-    const maxCracks = MODES[this.mode].maxCracks ?? 3;
-    this.cracks = clamp(Math.round(saved.cracks), 0, maxCracks);
+    this.cracks = clamp(Math.round(saved.cracks), 0, maxCracksFor(this.mode));
     this.stamina = clamp(saved.stamina, 0, 1);
     /*
      * ROUND 6: these six fields were the last unvalidated path from disk into
@@ -1267,8 +1278,13 @@ export class LoCheoGame {
     this.flash = 0.75;
     this.flashColor = C.chili;
     audio.play("hurt");
-    const maxCracks = MODES[this.mode].maxCracks ?? 3;
-    this.popup(this.px, this.py - this.pr * 1.9, this.cracks >= maxCracks ? t("popup.broken") : t("popup.cracked"), C.chili, 28);
+    this.popup(
+      this.px,
+      this.py - this.pr * 1.9,
+      this.cracks >= maxCracksFor(this.mode) ? t("popup.broken") : t("popup.cracked"),
+      C.chili,
+      28,
+    );
     this.rings.push({ x: this.px, y: this.py, r: this.pr, to: this.pr * 7, life: 0.4, max: 0.4, color: C.chili, width: 7 });
     for (let i = 0; i < 26; i++) {
       const a = rnd(0, TAU);
@@ -1285,7 +1301,7 @@ export class LoCheoGame {
         life: rnd(0.3, 0.7), size: rnd(2, 5) * this.S, color: it.def.color, kind: "dot", grav: 700, drag: 1.6,
       });
     }
-    if (this.cracks >= (MODES[this.mode].maxCracks ?? 3)) this.gameOver();
+    if (this.cracks >= maxCracksFor(this.mode)) this.gameOver();
   }
 
   private missItem(it: Item) {
@@ -1506,8 +1522,15 @@ export class LoCheoGame {
       ctx.fillRect(0, 0, this.w, this.h);
       ctx.globalAlpha = 1;
     }
-    // last-crack danger frame
-    if (this.phase === "playing" && this.cracks >= 2) {
+    /*
+     * Last-crack danger frame.
+     *
+     * The threshold used to be the literal `cracks >= 2`, which is the *last*
+     * life only in a mode with three cracks — and «GỐM MỎNG» shatters on the
+     * first one, so the frame that tells you your jar is about to break never
+     * appeared in the mode that needs it most.
+     */
+    if (this.phase === "playing" && this.cracks >= maxCracksFor(this.mode) - 1) {
       ctx.globalAlpha = clamp(0.3 + Math.sin(this.t * 6.5) * 0.16, 0.08, 0.5);
       ctx.strokeStyle = C.chili;
       ctx.lineWidth = 9;
@@ -1930,11 +1953,12 @@ export class LoCheoGame {
     ctx.fillStyle = "rgba(6,26,26,0.55)";
     ctx.beginPath(); ctx.ellipse(0, -h, r * 0.44, r * 0.12, 0, 0, TAU); ctx.fill();
 
-    // cracks
+    // cracks — spread across the glaze, whatever the mode's budget is
     ctx.strokeStyle = "rgba(60,40,30,0.8)";
     ctx.lineWidth = 2;
+    const crackSpan = maxCracksFor(this.mode);
     for (let i = 0; i < this.cracks; i++) {
-      const cx = (i - 1) * r * 0.5;
+      const cx = (i - (crackSpan - 1) / 2) * r * 0.5;
       ctx.beginPath();
       ctx.moveTo(cx, -h * 0.8);
       ctx.lineTo(cx + r * 0.14, -h * 0.35);
@@ -2193,6 +2217,7 @@ export class LoCheoGame {
       comboSize,
       chips: chips.length,
       cracks: true,
+      maxCracks: maxCracksFor(this.mode),
     });
     const pad = hud.pad;
     const s = hud.scale;
@@ -2223,8 +2248,16 @@ export class LoCheoGame {
     // ---- cracks (top-right)
     ctx.textAlign = "right";
     const cr = hud.crackSize;
-    for (let i = 0; i < 3; i++) {
-      const x = this.w - pad - (2 - i) * (cr + 8);
+    /*
+     * One shell per crack the *mode* allows, not three for everyone.
+     *
+     * `hud.crackSlots` comes from `planHud()`, which is what sizes the band —
+     * drawing three shells inside a band sized for one would overflow the
+     * right column, and drawing three for a one-crack mode was the bug (three
+     * lit shells read as three lives).
+     */
+    for (let i = 0; i < hud.crackSlots; i++) {
+      const x = this.w - pad - (hud.crackSlots - 1 - i) * (cr + 8);
       const y = hud.cracksY;
       const alive = i >= this.cracks;
       ctx.save();
