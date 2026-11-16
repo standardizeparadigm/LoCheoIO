@@ -187,6 +187,36 @@ export {
   summarise,
 } from "./audit";
 
+/* ---- the selection over that ladder ----------------------------------- */
+export type {
+  Candidate,
+  Comparable,
+  Loser,
+  Score,
+  ScoreContext,
+  ScoreTerm,
+  ScoreTerms,
+  Selection,
+  SelectionInput,
+  SelectionValidator,
+} from "./select";
+export {
+  SCORE_ORDER,
+  bestOn,
+  candidatesFor,
+  compareScores,
+  countLevers,
+  describeScore,
+  describeSelection,
+  isFiniteProfile,
+  scoreProfile,
+  selectBest,
+  selectionRungIds,
+  shippedIsBest,
+  slackOf,
+  typeDropOf,
+} from "./select";
+
 /* ---- the repair ladder ------------------------------------------------ */
 export type { RepairInput, RepairResult, RepairRung, RepairValidator } from "./repair";
 export { REPAIR_LADDER, describeRepair, repairForSize, repairProfile, repairRungIds } from "./repair";
