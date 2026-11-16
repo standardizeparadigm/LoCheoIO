@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-label="Ổn định và sở thích — v1.1.8 vòng 15: hysteresis giữ bậc cũ trong 2px, thang sửa sáu bậc chạy ở runtime và trả as-planned trên 578 cửa sổ, hai sở thích motion/contrast gộp từ ba nguồn (hoạt họa SMIL)">
+  <defs>
+    <linearGradient id="hsBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#07201e"/>
+      <stop offset="0.6" stop-color="#0b2b2b"/>
+      <stop offset="1" stop-color="#061a1a"/>
+    </linearGradient>
+    <linearGradient id="hsCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17494a"/>
+      <stop offset="1" stop-color="#0d3536"/>
+    </linearGradient>
+    <linearGradient id="hsJade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b6e07a"/>
+      <stop offset="1" stop-color="#6fcf9b"/>
+    </linearGradient>
+    <linearGradient id="hsGold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+    <filter id="hsGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="430" fill="url(#hsBg)"/>
+
+  <text x="44" y="48" fill="#f4e3c2" font-family="Bungee, Verdana, sans-serif" font-size="23" letter-spacing="1.1">ỔN ĐỊNH &amp; SỞ THÍCH</text>
+  <text x="44" y="72" fill="#7fae95" font-family="Verdana, sans-serif" font-size="12">v1.1.8 · vòng 15 — hai pixel bộ nhớ, một thang sửa chạy thật, ba nguồn sở thích</text>
+  <line x1="44" y1="88" x2="1156" y2="88" stroke="#1c4a49" stroke-width="1.5"/>
+
+  <!-- ============ A · hysteresis ============ -->
+  <g>
+    <rect x="44" y="104" width="352" height="252" rx="12" fill="url(#hsCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="62" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">HYSTERESIS — 2px</text>
+    <text x="62" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">kéo cạnh cửa sổ qua một biên bố cục</text>
+
+    <!-- the rail -->
+    <line x1="70" y1="210" x2="374" y2="210" stroke="#275f5e" stroke-width="2"/>
+    <!-- the hold band: ±2px visual exaggeration around the boundary -->
+    <rect x="206" y="150" width="26" height="120" fill="#f5a81c" opacity="0.14">
+      <animate attributeName="opacity" values="0.08;0.24;0.08" dur="3.4s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <line x1="219" y1="150" x2="219" y2="270" stroke="#f5a81c" stroke-width="1.6" stroke-dasharray="4 4">
+      <animate attributeName="stroke-dashoffset" values="0;16" dur="1.6s" begin="0s" repeatCount="indefinite"/>
+    </line>
+    <text x="196" y="290" fill="#ffd166" font-family="Verdana, sans-serif" font-size="9.5">biên 700px</text>
+
+    <!-- boundaries of the two rungs, drawn as a step -->
+    <path d="M70 200 H219 V220 H374" fill="none" stroke="url(#hsJade)" stroke-width="2.4" opacity="0.85"/>
+
+    <!-- the pointer that drags across -->
+    <circle cx="110" cy="210" r="7" fill="url(#hsGold)" filter="url(#hsGlow)">
+      <animate attributeName="cx" values="96;352;96" dur="9s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+
+    <text x="62" y="318" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10.5">giữ bậc cũ khi còn cách biên ≤ 2px</text>
+    <text x="62" y="336" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10.5">thả ngay khi đã đi quá 2px — không chốt</text>
+  </g>
+
+  <!-- ============ B · the ladder at runtime ============ -->
+  <g>
+    <rect x="412" y="104" width="352" height="252" rx="12" fill="url(#hsCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="430" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">THANG SỬA — chạy thật</text>
+    <text x="430" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">sáu bậc, chữ cuối cùng vì sàn 8px là lời hứa</text>
+
+    <g>
+      <rect x="430" y="164" width="250" height="20" rx="5" fill="url(#hsGold)">
+        <animate attributeName="opacity" values="0.75;1;0.75" dur="3.2s" begin="0s" repeatCount="indefinite"/>
+      </rect>
+      <text x="438" y="178" fill="#06231f" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">0 · as-planned · 578/578</text>
+    </g>
+    <g>
+      <rect x="430" y="190" width="228" height="20" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1"/>
+      <text x="438" y="204" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">1 · ignore-inset</text>
+    </g>
+    <g>
+      <rect x="430" y="216" width="206" height="20" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1"/>
+      <text x="438" y="230" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">2 · compact-hud</text>
+    </g>
+    <g>
+      <rect x="430" y="242" width="184" height="20" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1"/>
+      <text x="438" y="256" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">3 · single-column</text>
+    </g>
+    <g>
+      <rect x="430" y="268" width="162" height="20" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1"/>
+      <text x="438" y="282" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">4 · smaller-type</text>
+    </g>
+    <g>
+      <rect x="430" y="294" width="140" height="20" rx="5" fill="#164a4a" stroke="#2b5f5f" stroke-width="1"/>
+      <text x="438" y="308" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">5 · smallest-type</text>
+    </g>
+
+    <text x="430" y="334" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10.5">dừng ở bậc 0 trên cả 578 cửa sổ</text>
+  </g>
+
+  <!-- ============ C · preferences ============ -->
+  <g>
+    <rect x="780" y="104" width="376" height="252" rx="12" fill="url(#hsCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="798" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">SỞ THÍCH — ba nguồn, hai tên</text>
+    <text x="798" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">OS ∥ công tắc của người chơi — OR, không AND</text>
+
+    <g>
+      <rect x="798" y="166" width="150" height="26" rx="13" fill="#0f3a3a" stroke="#2b5f5f" stroke-width="1.2"/>
+      <rect x="800" y="168" width="72" height="22" rx="11" fill="url(#hsJade)">
+        <animate attributeName="x" values="800;874;800" dur="7s" begin="0s" repeatCount="indefinite"/>
+      </rect>
+      <text x="958" y="184" fill="#cfe9d6" font-family="Verdana, sans-serif" font-size="10">motion · full / reduced</text>
+    </g>
+    <g>
+      <rect x="798" y="200" width="150" height="26" rx="13" fill="#0f3a3a" stroke="#2b5f5f" stroke-width="1.2"/>
+      <rect x="800" y="202" width="72" height="22" rx="11" fill="url(#hsGold)">
+        <animate attributeName="x" values="874;800;874" dur="7s" begin="0s" repeatCount="indefinite"/>
+      </rect>
+      <text x="958" y="218" fill="#cfe9d6" font-family="Verdana, sans-serif" font-size="10">contrast · normal / more</text>
+    </g>
+
+    <text x="798" y="252" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10.5">27 lớp trang trí dừng khi «giảm chuyển động»</text>
+    <text x="798" y="270" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10.5">trước vòng 15: công tắc chỉ tới được canvas — 3 lớp</text>
+    <text x="798" y="288" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10.5">bật lên không đổi một pixel nào của bố cục</text>
+    <text x="798" y="316" fill="#ffd166" font-family="Verdana, sans-serif" font-size="10">data-adaptive-motion · data-adaptive-contrast</text>
+    <text x="798" y="334" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10">+ hook cũ data-reduced-motion / data-contrast</text>
+  </g>
+
+  <line x1="44" y1="372" x2="1156" y2="372" stroke="#1c4a49" stroke-width="1"/>
+
+  <!-- the invariant that ties the right panel together -->
+  <g>
+    <text x="44" y="398" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="11">15 bất biến · 10 lớp diagnose (+1 khi có bậc sửa) · 1458 test / 139 file</text>
+    <text x="44" y="416" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10">prefs-respected: profile và hai biến --adaptive-motion/-contrast không được nói khác nhau</text>
+    <circle cx="1128" cy="398" r="5" fill="url(#hsJade)">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.8s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
