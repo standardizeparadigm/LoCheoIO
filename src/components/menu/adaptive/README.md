@@ -114,6 +114,14 @@ geometry and not enough for four things that change what the geometry *should* b
 Everything in that file is a *reading*. The decisions stay in `fit.ts` and
 `hero.ts`, which never touch `window`.
 
+Two of those readings are read and one is not: `dpr`, orientation and the insets
+all reach the plan, while **coarse pointer is recorded and not acted on**.
+`isHandheld()` and `TOUCH_ROW_HEIGHT = 44` exist, nothing calls them, and the rows
+stay 34/26 on a touch phone — 8×7 = 56px is a different fit on every landscape
+phone, which makes it a layout decision rather than a bug fix. The gap is named
+here and pinned by `tests/environment.test.ts`, so it cannot be mistaken for a
+shipped feature the way the older wording invited.
+
 ## The measurements are the component's, not this folder's
 
 `WORDMARK = 150`, `MASCOT_STACKED = 128`, `CHIP_OVERHANG = 14`, `STACK_GAP = 16`
