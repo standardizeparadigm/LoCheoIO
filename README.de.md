@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-installieren--starten)
@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 25 SVGs umfassen die HUD-Bandschemata (Runde neun) und den Audit-Bericht (Runde zwölf), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe, ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 26 SVGs umfassen die HUD-Bandschemata (Runde neun) und den Audit-Bericht (Runde zwölf), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -171,7 +171,7 @@ Die Stufe wird von `tierFor(version)` **aus dem SemVer abgeleitet**, nie getippt
 
 <img src="assets/release-tiers.svg" alt="Die drei Stufen MAJOR/UPDATE/PATCH mit ihren Farben und der Zeitstrahl der zehn Releases (SMIL-Animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1366 Tests in 134 Dateien, neun Tore (SMIL-Animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Test-Matrix 1.1.8 — 1398 Tests in 136 Dateien, neun Tore (SMIL-Animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Die sechs adaptiven Schichten von Lọ Chéo 1.1.8 — Box, Stufe, Plan, dann Dichte / Hero / Typo / Modal / Brett, nur eine Richtung (SMIL-Animation)" width="100%" />
 
@@ -294,6 +294,59 @@ Details: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--ki�
 Leitfaden: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
 
 <img src="assets/adaptive-audit.svg" alt="Der Adaptive-Audit von v1.1.8 — 578 Fenster, 0 Vertragsverletzungen, Histogramme zu Passung und Stufe, und die sechsstufige Reparaturleiter (SMIL-Animation)" width="100%" />
+
+### Runde 13 — nicht nur *richtig*, sondern *am billigsten*
+
+Runde 12 baute eine Prüfung, die eine Ja/Nein-Frage beantwortet: **bricht eine
+Invariante?** Aber bei jedem Screenshot bleibt eine zweite Frage offen: **gibt es ein
+billigeres Layout?**
+
+Diese Runde beantwortet sie. `select/` gibt jedem Profil **sieben Terme** und
+vergleicht sie **lexikografisch** — keine gewichtete Summe, denn eine gewichtete Summe
+ließe 40px Luft eine verlorene Mascotte „zurückkaufen", wenn die Gewichte zufällig so
+aufgehen:
+
+| # | Term | Was der Spieler verliert |
+| --- | --- | --- |
+| 1 | `violations` | nichts — ein kaputtes Layout ist kein Kandidat |
+| 2 | `hidden` | Mascotte, Deck, Tagline |
+| 3 | `cropped` | px unter dem eigenen Boden |
+| 4 | `hudLost` | Anteil der HUD-Skala |
+| 5 | `typeDrop` | px Schrift, summiert |
+| 6 | `levers` | wie viele Dinge sich bewegt haben — unsichtbar |
+| 7 | `slack` | Luft — kein Verlust, nur Tiebreak |
+
+Zwei Details trennen „eine Anzeigetafel" von „einem wirklich richtigen Vergleich":
+
+- **`hidden` und `cropped` werden gegen das Basisprofil gemessen.** Ein 320×320-Fenster
+  *ist* schon nur-Wordmark und *ist* schon beschnitten, bevor ein Hebel gezogen wird —
+  das ist das Fenster, kein Opfer. Rohe Flags meldeten „hidden 1" für das Profil, das
+  die App ohnehin zeichnet.
+- **`levers` zählt aus dem Profil, nicht aus den Overrides.** `ignoreInset` in einem
+  Fenster ohne Inset ändert nichts, zählt also nicht — deshalb sind **Gleichstände
+  real**, und der Tiebreak ist die Leiterposition, nicht die Reihenfolge, die `sort`
+  gesehen hat.
+
+Die Behauptung, die diese Runde kauft und prüfen kann:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   648 / 648
+```
+
+> in jedem spielbaren Fenster ist das ausgelieferte Profil das billigste der sechs.
+
+Runde 12 sagte „nichts ist kaputt"; Runde 13 sagt „nichts ist billiger". Eine stärkere
+Behauptung irrt leichter, deshalb hat sie einen **fünften Korpus**:
+`tests/fixtures/selection/` — 12 Fenster, jede Datei hält die *Entscheidung* fest, nicht
+das Layout: die vollständige Rangfolge der sechs Sprossen, den Zweiten und warum jeder
+verloren hat. Bewegt sich ein Schwellwert, zeigt der Diff eine **Entscheidung**, die
+sich ändert — das, was ein Reviewer wirklich freigeben muss.
+
+Details: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+Leitfaden: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
+
+<img src="assets/adaptive-select.svg" alt="Die billigste Sprosse wählen — v1.1.8 Runde 13: die sechs Kandidaten der Leiter, die sieben lexikografischen Terme und 648 von 648 Fenstern, die as-planned wählen (SMIL-Animation)" width="100%" />
 
 
 ## 📐 Adaptives Layout — wie der Hero seine Form wählt
@@ -419,7 +472,7 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 💾 **TOP-8-Bestenliste** | Lokal gespeichert, beim Lesen validiert & normalisiert, Namen automatisch großgeschrieben, Highlight für frisch gesetzte Rekorde |
 | 🎨 **60fps-Grafik** | Canvas 2D, 460-Partikel-Budget, DPR-Cap 2, vorgerenderter Offscreen-Boden, funkelnde Sterne + Aurora im Menü |
 | 📴 **Echt offline-first** | Selbst gehostete Fonts (latein + vietnamesisch, woff2), kein CDN, keine API — `dist/index.html` doppelklicken und spielen |
-| 🧪 **Qualitätstor** | 1366 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
+| 🧪 **Qualitätstor** | 1398 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
 
@@ -482,7 +535,7 @@ npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 npm run dev        # Dev-Server mit HMR (http://localhost:5173)
 npm run preview    # Produktions-Build lokal ausliefern
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1366 Unit-Tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1398 Unit-Tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI-Qualitätstor)
 ```
 
@@ -627,7 +680,7 @@ Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1366 Tests / 134 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1398 Tests / 136 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |
@@ -671,7 +724,7 @@ Design-Notizen und tiefergehende technische Doku:
 ## 🤝 Mitwirken
 
 1. Forke das Repo, Branch nach dem Schema `arena/<name>` oder `feat/<name>`.
-2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1366 Tests + build).
+2. `npm run check` muss grün sein, bevor du einen PR öffnest (typecheck + 1398 Tests + build).
 3. Vermeide neue Laufzeit-Abhängigkeiten, sofern nicht unbedingt nötig — Philosophie: **eine Datei, kein Netz, ewig spielbar**.
 4. Nenne in deinem PR die betroffenen Screens/Modi und hänge bei Gameplay-Änderungen einen Clip an.
 
