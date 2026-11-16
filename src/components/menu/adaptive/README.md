@@ -1,6 +1,6 @@
 # `src/components/menu/adaptive/`
 
-Twelve files and one subfolder (`chip/`), one direction of dependency:
+Fifteen files and three subfolders (`chip/`, `audit/`, `repair/`), one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -17,6 +17,8 @@ presets.ts    —                           the 21 named windows the tables use
 constraints.ts AdaptiveProfile           →  the invariants, as data
 diagnostics.ts AdaptiveProfile           →  why the layout is shaped this way
 chip/         Box width + the band width →  how the mode chip fits (see chip/README.md)
+audit/        the whole window space      →  one AuditReport (see audit/README.md)
+repair/       a profile + the contract    →  the rungs it walks (see repair/README.md)
 ```
 
 | File | Owns |
@@ -32,9 +34,13 @@ chip/         Box width + the band width →  how the mode chip fits (see chip/R
 | `useEnvironment.ts` | reads them from the browser, and `readInsets()` for the plan |
 | `resolve.ts` | `resolveAdaptive()`, `adaptiveAttributes()`, `describeAdaptive()` |
 | `useAdaptive.ts` | one subscription → one profile; `readAdaptiveInput()` for scripts |
+| `regressions.ts` | `REGRESSIONS` — 14 cửa sổ đã từng bị báo lỗi (vòng 1 → 12), mỗi cái kèm triệu chứng và điều phải giữ; nguồn của `tests/fixtures/regressions/` |
 | `presets.ts` | `PRESETS` — 21 named windows (phone → 4K), the single source the probe, the docs and the corpus agree on |
-| `constraints.ts` | `CONSTRAINTS` — twelve invariants as `{ id, why, check }`, run by the tests and the probe |
+| `constraints.ts` | `CONSTRAINTS` — fourteen invariants as `{ id, why, check }`, run by the tests and the probe |
 | `diagnostics.ts` | `diagnose()`, `warningsFor()`, `renderDiagnosis()` — the explanation, not the numbers |
+| `audit/` | `adaptive/audit/` — kiểm toán toàn bộ không gian cửa sổ (578 cửa sổ) thành `AuditReport` + `docs/adaptive-audit.md` |
+| `repair/` | `adaptive/repair/` — thang sửa `as-planned → ignore-inset → … → smallest-type` khi một cửa sổ phá hợp đồng |
+| `chip/` | `adaptive/chip/` — chip chế độ: `planModeChip()`, `chipBoxHeight()`, `estimateText()` |
 | `index.ts` | the public surface — import from here, not the modules |
 
 ## Why this existed in v1.1.8 round 6
