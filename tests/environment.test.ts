@@ -16,7 +16,10 @@ import {
   saneDpr,
   TOUCH_ROW_HEIGHT,
   verticalInset,
+  type Environment,
 } from "../src/components/menu/adaptive/environment";
+import { resolveAdaptive } from "../src/components/menu/adaptive/resolve";
+import { boxOf } from "../src/components/menu/adaptive/viewport";
 
 describe("saneDpr", () => {
   it("clamps into [1, 4]", () => {
@@ -108,6 +111,29 @@ describe("isHandheld", () => {
     // against it is false, which would silently answer "not a phone".
     expect(isHandheld(phone, NaN, NaN)).toBe(false);
     expect(isHandheld(phone, Infinity, -Infinity)).toBe(false);
+  });
+});
+
+describe("the touch target is a target, not a shipped row", () => {
+  /*
+   * Round 14. `TOUCH_ROW_HEIGHT` and `isHandheld()` were documented as a gate the
+   * geometry goes through ("which is exactly why isHandheld() gates it"), and no
+   * code path reads either. The honest statement is the gap: a touch phone still
+   * gets 34px rows, and this test fails the day that changes — at which point the
+   * folder README and this comment have to change with it.
+   */
+  it("no plan paints TOUCH_ROW_HEIGHT, even for a coarse handheld", () => {
+    const handheld: Environment = { ...DESKTOP_ENVIRONMENT, coarse: true, landscape: true };
+    for (const [w, h] of [[844, 390], [740, 360], [915, 412]] as const) {
+      expect(isHandheld(handheld, w, h)).toBe(true);
+      const profile = resolveAdaptive({ box: boxOf(w, h), env: handheld });
+      expect(profile.metrics.rowHeight).toBeLessThan(TOUCH_ROW_HEIGHT);
+    }
+    // …and the desktop reading of the same window does not differ.
+    const desktop = resolveAdaptive({ box: boxOf(844, 390), env: DESKTOP_ENVIRONMENT });
+    expect(desktop.metrics.rowHeight).toBe(
+      resolveAdaptive({ box: boxOf(844, 390), env: handheld }).metrics.rowHeight,
+    );
   });
 });
 
