@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1458 tests / 139 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1518 tests / 142 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -143,7 +143,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 27 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 28 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |
