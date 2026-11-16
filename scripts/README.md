@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1458 tests / 139 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1518 tests / 142 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -180,7 +180,7 @@ Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn tr�
 
 ## `check-svg.mjs`
 
-Validator cho 27 file SVG trong `assets/`. Không có trình render SVG trong CI,
+Validator cho 28 file SVG trong `assets/`. Không có trình render SVG trong CI,
 nên nó kiểm đúng những cách một SVG **hỏng trên trình duyệt mà vẫn hợp lệ XML**:
 
 1. `url(#id)` trỏ tới `id` không tồn tại — gradient biến mất, hình phẳng.
@@ -194,7 +194,7 @@ animation SMIL và một filter.
 
 ```bash
 node scripts/check-svg.mjs
-# → ASSETS OK — 27 SVG, all references resolve, all animated.
+# → ASSETS OK — 28 SVG, all references resolve, all animated.
 ```
 
 > **Vì sao có sàn:** trước vòng 6, 12/20 file có gradient và animation nhưng
@@ -254,6 +254,36 @@ npm run audit:adaptive -- --check   # exit 1 nếu tệp lệch
 đổi một breakpoint hay một sàn chữ là đổi `docs/adaptive-audit.md` trong **cùng**
 commit. Khác `check-adaptive.ts` (21 preset, dạng bảng cho người đọc) — cái này
 quét cả không gian và trả lời "bao nhiêu lần".
+
+## `audit-drag.ts`
+
+Kiểm toán **đường đi**, không chỉ điểm: bảng 578 cửa sổ ở trên đúng ở *mọi* thời
+điểm, nên nó không thể thấy hiện tượng mà dải 2px sinh ra để dập — menu dựng lại
+mỗi lần nhéch chuột. Script này phát lại cử chỉ:
+
+```bash
+npm run audit:drag                  # tổng số + những drag cắt nhiều ranh giới nhất
+npm run audit:drag -- --json        # toàn bộ DragReport
+npm run audit:drag -- --write       # ghi docs/adaptive-drag.md
+npm run audit:drag -- --check       # exit 1 nếu tệp lệch
+```
+
+Mỗi preset bị kéo **±120px** theo từng pixel (21 × 241 = **4 600** cửa sổ) ở đúng
+chiều cao của nó, và mỗi bước được chạy hai lần: `resolveAdaptive()` trả gì (**raw**)
+và qua `stabilize()` (**held**). Số lần **bậc nhìn thấy** đổi là thứ được đếm.
+
+| Cử chỉ | raw | held |
+| --- | --- | --- |
+| sweep — kéo một chiều | 12 | 11 |
+| shake — con trỏ rung 1px tại mỗi ranh giới | 48 | **0** |
+
+Con số thứ nhất là con số thật thà: kéo một chiều qua mỗi ranh giới đúng một lần,
+nên hàm bậc thang cũng đổi đúng một lần. Con số thứ hai là thứ dải 2px mua. Báo cáo
+in **cả hai** cột vì một cột sẽ để nó kể một trong hai câu chuyện.
+
+Nó cũng ghim ba bất biến của đường kéo — **an toàn** (profile được vẽ vẫn hợp lệ),
+**sống** (không lần giữ nào dài quá `margin + 1` khung), **biên** (`worstLag` = 2px) —
+và `tests/adaptive-drag.test.ts` là bản kiểm trong suite.
 
 ## `gen-adaptive-fixtures.ts`
 
