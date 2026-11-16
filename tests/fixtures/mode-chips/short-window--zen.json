@@ -10,7 +10,9 @@
  "nameSize": 11,
  "labelSize": 8,
  "maxWidth": 820,
- "needed": 205,
+ "needed": 232,
+ "neededWithLabel": 232,
+ "neededWithout": 124,
  "available": 820,
  "truncated": false,
  "reason": "full"
