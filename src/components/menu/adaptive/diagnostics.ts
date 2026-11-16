@@ -26,8 +26,7 @@
 import type { AdaptiveProfile } from "./resolve";
 import { describeTier } from "./tiers";
 import { heroBandWidth } from "./hero";
-import { chipBoxHeight, planModeChip } from "./chip";
-import { MODE_LIST } from "../../../game/modes";
+import { chipBoxHeight, planModeChip, widestOf, widestProbe } from "./chip";
 import { describeBox } from "./viewport";
 
 /** One decision and the reason it went the way it did. */
@@ -178,9 +177,17 @@ function chipReason(p: AdaptiveProfile): string {
   return "hidden: the band is under the chip floor";
 }
 
-/** The label the chip prints, and the widest mode name it can be asked to print. */
-const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
-const CHIP_WIDEST_NAME = MODE_LIST.reduce((best, m) => (m.name.length > best.length ? m.name : best), "");
+/**
+ * The worst case across the seven languages — the widest label over the widest name.
+ *
+ * Both used to be Vietnamese literals, which made this line a statement about one
+ * translation. See `chip/probes.ts`: Spanish needs three more characters for the
+ * label and two more for the widest name, and the diagnosis was reporting the
+ * window as if the app only shipped in Vietnamese.
+ */
+const CHIP_PROBE = widestProbe();
+const CHIP_LABEL = CHIP_PROBE.label;
+const CHIP_WIDEST_NAME = widestOf(CHIP_PROBE.names);
 
 /** The one-line summary, with the parts a screenshot review always needs. */
 export function headline(p: AdaptiveProfile): string {
