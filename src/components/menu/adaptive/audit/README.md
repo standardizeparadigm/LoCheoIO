@@ -60,9 +60,16 @@ npm run audit:adaptive              # bảng tóm tắt
 npm run audit:adaptive -- --json    # toàn bộ report
 npm run audit:adaptive -- --check   # lỗi nếu docs/adaptive-audit.md lệch
 npm run audit:adaptive -- --write    # ghi lại tài liệu
+npm run audit:adaptive -- --select   # profile đang ship có phải bản rẻ nhất không
 ```
 
 `--check` nằm trong `npm run check`, nên báo cáo không thể cũ đi mà không ai biết.
+
+**Một chế độ mỗi lần (vòng 14).** `--json`, `--write`, `--check`, `--select` cùng ghi
+ra stdout theo bốn kiểu khác nhau, nên tổ hợp hai cờ không có nghĩa. Trước đây
+`--select --check` chạy phần chọn bậc rồi `exit 0` **trước khi** kiểm báo cáo — thêm
+một cờ không liên quan là bỏ qua được cổng mà `npm run check` dựa vào. Nay tổ hợp bị
+từ chối với `exit 2`.
 
 ## Cái thư mục này **không** làm
 
