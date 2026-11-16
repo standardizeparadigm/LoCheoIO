@@ -94,11 +94,18 @@ describe("the rows", () => {
 });
 
 describe("the warnings", () => {
-  it("calls a cropped hero a trade-off, with the shortfall in pixels", () => {
+  it("names the box that overruns, and says it can be reached", () => {
+    /*
+     * Round 14: the message said "hero is cropped". The hero is exactly the box
+     * that is *not* cropped — `fit: "crop"` clamps it at its 140px floor and
+     * lets the column overrun, so the player loses the bottom of the chrome.
+     */
     const w = warningsFor(resolveForSize(1280, 300));
     const crop = w.find((x) => x.code === "crop");
     expect(crop).toBeTruthy();
-    expect(crop!.message).toMatch(/\d+px shorter/);
+    expect(crop!.message).toMatch(/\d+px past floor \+ chrome/);
+    expect(crop!.message).toContain("reachable by scrolling");
+    expect(crop!.message).not.toContain("hero is cropped");
   });
 
   it("reports the economies a small window pays for and a desktop does not", () => {

@@ -210,9 +210,18 @@ export function warningsFor(p: AdaptiveProfile): AdaptiveWarning[] {
   const out: AdaptiveWarning[] = [];
 
   if (p.plan.fit === "crop") {
+    /*
+     * ROUND 14: the message described the wrong box. `fit: "crop"` clamps the
+     * hero at its floor (140px) and lets the *column* overrun the window — so
+     * what the player loses is the bottom of the chrome, not the hero. The
+     * number is the same either way (`scene + reserve − height`), but the noun
+     * sent anyone reading it to the wrong element. And the rung is scrollable
+     * (see `[data-adaptive-fit="crop"] .menu-pane`), so say "reachable by
+     * scrolling" rather than leaving the reader to assume it is cut off.
+     */
     out.push({
       code: "crop",
-      message: `hero is cropped: the window is ${Math.max(0, 220 + p.plan.reserve - p.box.height)}px shorter than floor + chrome`,
+      message: `column is taller than the window: ${Math.max(0, 220 + p.plan.reserve - p.box.height)}px past floor + chrome, reachable by scrolling`,
     });
   }
   if (!p.plan.ticker) {
