@@ -1,0 +1,42 @@
+{
+ "id": "s11-4k-3840x2160",
+ "window": "3840×2160",
+ "width": 3840,
+ "height": 2160,
+ "why": "the ceiling: the dialog cap, the widest band",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 1402
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.17",
+  "single-column · hudLost 0.17",
+  "smaller-type · hudLost 0.17",
+  "smallest-type · hudLost 0.17"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "xxl",
+  "density": "spacious",
+  "fit": "none",
+  "minimal": false,
+  "scene": 1642,
+  "reserve": 518,
+  "hero": "row",
+  "panelHeight": 458,
+  "hudScale": 1.16,
+  "rowLabel": 12.5
+ }
+}

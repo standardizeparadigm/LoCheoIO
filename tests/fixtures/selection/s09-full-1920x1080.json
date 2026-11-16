@@ -1,0 +1,42 @@
+{
+ "id": "s09-full-1920x1080",
+ "window": "1920×1080",
+ "width": 1920,
+ "height": 1080,
+ "why": "1080p fullscreen, the most common desktop",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 322
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.17",
+  "single-column · hudLost 0.17",
+  "smaller-type · hudLost 0.17",
+  "smallest-type · hudLost 0.17"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "xl",
+  "density": "spacious",
+  "fit": "none",
+  "minimal": false,
+  "scene": 562,
+  "reserve": 518,
+  "hero": "row",
+  "panelHeight": 458,
+  "hudScale": 1.16,
+  "rowLabel": 12.5
+ }
+}
