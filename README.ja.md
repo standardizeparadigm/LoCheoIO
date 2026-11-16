@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1311%20%C2%B7%20131%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 の新機能
 
-> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。どのサイズでもスクロールも切れもなし。デッキの帯は削除、既存 21 枚の SVG を描き直し、第9ラウンドで HUD の帯の図を追加。
+> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。どのサイズでもスクロールも切れもなし。デッキの帯は削除、SVG は全 25 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
 
 ### 📐 誰も管理していなかった足し算——そして同時に四つの不具合
 
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——131ファイル1311テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——134ファイル1366テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -326,6 +326,43 @@ name-shrunk → ellipsis`）を守ります。文字幅の推定が 6% ずれて
 詳細：[docs/releases/v1.1.8.md §18](docs/releases/v1.1.8.md#18-vòng-11--dấu-tiếng-việt-bị-css-cắt)。
 
 <img src="assets/diacritics-clip.svg" alt="ベトナム語の声調記号が消える理由 —— 以前：行ボックスと同じ高さの切り取りボックスが Ể のサーカムフレックスを削り、「CỔ ĐIỂN」が「CỔ ĐIÊN」に；以後：1.5em の行ボックスと clip-safe の ±0.24em で記号が残る（SMIL アニメーション）" width="100%" />
+
+### 第 12 ラウンド —— ウィンドウ空間全体の監査と、自動修復のはしご
+
+直近 3 ラウンドはそれぞれ**1 つ**のコーパスを追加しました。しかしどれも、リリース
+前にメンテナが尋ねる問いには答えていません：*遊べる**すべて**のウィンドウで、レイア
+ウトは何をどれだけ行い、壊れているものはあるか？*
+
+いまは `npm run audit:adaptive` が答えます：**578** ウィンドウ（21 プリセット＋各ブ
+レークポイント周辺の 25 × 23 グリッド、重複除去）。一度だけ解決し、ひとつの
+`AuditReport` にまとめます。
+
+| | |
+| --- | --- |
+| ウィンドウ | **578** |
+| 契約違反 | **0** —— 各ウィンドウが 14 の不変条件をすべて実行 |
+| LỌ CHÉO のみ | 101（17%） |
+| Hero 横並び / 縦積み | 170 / 408 |
+| Scene | 140px（320×320）… 1 642px（3840×2160） |
+
+`docs/adaptive-audit.md` はその**自動生成**コピーで、`audit:adaptive --check` は
+`npm run check` の中で走ります。したがってブレークポイントや文字サイズの下限を変える
+と、**それを引き起こしたコミットの中で** diff として現れます。これが「何かを改善した
+ら周囲への影響を確認する」という原則を、機械に任せた形です。
+
+さらに**自動修復のはしご** `repair/`：6 段 —— `as-planned → ignore-inset →
+compact-hud → single-column → smaller-type → smallest-type`。順序そのものが原則です：
+**文字は最後**。8px の下限は約束だからです。アプリは 578 すべてで段 0 に止まり、はし
+ごは*使えるように*存在し、テストはより厳しい契約を渡して実際に降りることを示します。
+
+そして**4 つ目のコーパス**：スクリーンショット報告の対象になった 14 のウィンドウ
+（第 1 ラウンドから第 12 ラウンドまで）。各ファイルが `symptom` と `guard` を持つので、
+失敗は 2 つの数字ではなく、店についての一文として読めます。
+
+詳細：[docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--kiểm-toán-cả-không-gian-và-thang-tự-sửa) ·
+ガイド：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
+
+<img src="assets/adaptive-audit.svg" alt="v1.1.8 の adaptive 監査 —— 578 ウィンドウ、契約違反 0、フィットと階層のヒストグラム、そして 6 段の自動修復はしご（SMIL アニメーション）" width="100%" />
 
 
 ## 📐 適応レイアウト — ヒーローが自分の形を選ぶ仕組み
