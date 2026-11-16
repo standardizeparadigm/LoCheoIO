@@ -214,7 +214,7 @@ này tồn tại để dứt điểm.
 
 | Bất biến | Test |
 | --- | --- |
-| `scene + reserve === usableHeight` (trừ `crop`) | `layout-fit`, `adaptive-resolve` |
+| `scene + reserve === usableHeight` (trừ `crop`, và bậc `crop` cuộn được) | `layout-fit`, `adaptive-resolve`, `menu-no-scroll` |
 | `type.lockupLo × 1.68 ≤ scene + 0.5` | `adaptive-type` |
 | `CHÉO < LỌ` ở mọi width × band | `adaptive-type`, `adaptive-wordmark-band` |
 | `panelHeightForPlan + 12 ≤ reserve` (và `+ (footer ? 0 : 30) === cornerRowHeight`) | `adaptive-density`, `panel-footer-overflow`, `adaptive-fixtures` |
@@ -371,7 +371,7 @@ hứa không ai kiểm được ở mọi cửa sổ.
 
 | id | bất biến | bắt lỗi gì |
 | --- | --- | --- |
-| `column-fills-window` | `scene + reserve === height` (trừ `fit: crop`) | cột không lấp hết cửa sổ, hở đáy |
+| `column-fills-window` | `scene + reserve === height` (trừ `fit: crop`, bậc đó cuộn được) | cột không lấp hết cửa sổ, hở đáy |
 | `reserve-inside-window` | `0 ≤ reserve ≤ height` | panel cao hơn cửa sổ |
 | `panel-fits-reserve` | panel ≤ reserve, trừ `crop` | panel tràn ra ngoài reserve |
 | `hero-fits-scene` | hero ≤ band | hero cao hơn vùng nó ở |
@@ -417,7 +417,9 @@ từ chính trường đã quyết định nó — lớp 8 là chip chế độ,
 trade-offs: none — this window gets the full layout
 ```
 
-`warningsFor()` chỉ báo *thoả hiệp*, không báo *lỗi*: `crop` kèm số pixel thiếu,
+`warningsFor()` chỉ báo *thoả hiệp*, không báo *lỗi*: `crop` kèm số pixel vượt và
+việc vượt đó **tới được bằng cách cuộn** (vòng 14 — trước đó câu chữ nói "hero bị cắt",
+trong khi thứ bị cắt là đáy chrome),
 `no-ticker`, `no-footer`, `minimal`, `panels-stacked`, `jar-at-floor`,
 `dialog-compact`, `inset`. Một cảnh báo luôn đúng là nhiễu — đó là lý do
 `dialog-scrolls` bị bỏ ở vòng 9 (mọi dialog đều bị chặn ở 86% cửa sổ).
@@ -791,3 +793,39 @@ cáo nói chúng không tồn tại.
 `--select` in `648 / 648 cửa sổ`: tích của 18 bề rộng × 36 chiều cao, không phải tập
 cửa sổ nào cả — audit quét 578. Nay `bestOnWindows()` quét đúng danh sách đó:
 `578 / 578`.
+
+---
+
+## 23. Vòng 14 (tiếp) — bậc `crop` là một lối cụt
+
+Vòng 14 đi tìm chỗ mà một lời hứa rộng hơn thứ đã kiểm. Đây là chỗ thứ ba: một **bậc**
+mà mười bốn bất biến cùng bỏ qua.
+
+### 23.1 Ba miễn trừ, không một bù trừ
+
+`fit: "crop"` có ba miễn trừ trong `constraints.ts` (`column-fills-window`,
+`reserve-inside-window`, `panel-fits-reserve`) — hợp lý, vì cửa sổ thấp hơn `sàn + chrome`
+thì **không có** cách bố trí nào vừa. Nhưng cả ba miễn trừ đều giả định điều không đúng:
+rằng `crop` là **khung hình xoay tạm thời**, một hai frame rồi cửa sổ báo lại cỡ thật.
+
+Quét lại cửa sổ audit: **25 / 578** cửa sổ là `crop`, cả 25 ở chiều cao 320px. Đó không
+phải frame chuyển tiếp. Và `.menu-pane` là `overflow: clip`: phần cột vượt cửa sổ — đáy
+của hai panel, nút START — bị cắt và **không có cách nào tới**. Mười bốn bất biến im
+lặng, vì cả mười bốn đều miễn trừ đúng cái bậc ấy.
+
+### 23.2 Cách sửa: miễn trừ giữ nguyên, bù trừ thành thật
+
+Bậc `crop` **được** phép vượt cửa sổ; điều sai là bỏ phần vượt đi. Nên:
+
+- `[data-adaptive-fit="crop"] .menu-pane` → `overflow-y: auto` (dọc), `overflow-x: clip`,
+  `overscroll-behavior: contain`. Chỉ bậc này; mọi cửa sổ từ 356px trở lên vẫn
+  `overflow: clip` và vẫn lấp đúng cửa sổ.
+- `data-adaptive-fit` đã được ghi ra DOM từ vòng 12 và **không ai đọc** — một hook chết.
+  Giờ CSS đọc nó, và `menu-no-scroll` khẳng định đúng **một** quy tắc được làm pane cuộn,
+  và nó phải mang selector của bậc `crop`.
+- Ngưỡng được ghim thành số: `crop` bắt đầu dưới **356px** = sàn hero 140 + chrome 216,
+  và **không** phụ thuộc bề rộng. Từ 356px trở lên, `scene + reserve === height` đúng
+  từng pixel.
+- Câu cảnh báo `crop` nói đúng hộp: *"column is taller than the window: Npx past floor +
+  chrome, reachable by scrolling"* — trước đó nó nói "hero is cropped", trong khi hero
+  chính là hộp **không** bị cắt (nó giữ đúng sàn 140px).
