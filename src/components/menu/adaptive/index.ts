@@ -223,6 +223,22 @@ export {
 export type { RepairInput, RepairResult, RepairRung, RepairValidator } from "./repair";
 export { REPAIR_LADDER, describeRepair, repairForSize, repairProfile, repairRungIds } from "./repair";
 
+/* ---- preferences (round 15) ------------------------------------------ */
+export type { ContrastPreference, MotionPreference, Preferences } from "./preferences";
+export {
+  CONTRAST_PREFERENCES,
+  DEFAULT_PREFERENCES,
+  MOTION_PREFERENCES,
+  describePreferences,
+  preferenceAttributes,
+  preferenceVars,
+  preferencesFor,
+} from "./preferences";
+
+/* ---- hysteresis (round 15) ------------------------------------------- */
+export type { RungKey } from "./hysteresis";
+export { HYSTERESIS_MARGIN, rungKeyOf, sameRung, shouldHold, stabilize } from "./hysteresis";
+
 /* ---- the explanation -------------------------------------------------- */
 export type { AdaptiveWarning, Diagnosis, DiagnosisRow } from "./diagnostics";
 export { diagnose, headline, renderDiagnosis, warningsFor } from "./diagnostics";

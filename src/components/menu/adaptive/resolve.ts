@@ -28,6 +28,12 @@ import { verticalInset, type Environment, DESKTOP_ENVIRONMENT } from "./environm
 import { heroLayout, type HeroLayout } from "./hero";
 import { typeScaleFor, typeVars, type TypeScale } from "./typeScale";
 import { tierFor, deviceClass, type DeviceClass, type SizeTier } from "./tiers";
+import {
+  preferencesFor,
+  preferenceVars,
+  preferenceAttributes,
+  type Preferences,
+} from "./preferences";
 import { aspectClassOf, boxOf, describeBox, roomDriver, type AspectClass, type Box } from "./viewport";
 
 /**
@@ -61,8 +67,17 @@ export interface AdaptiveInput {
   env?: Environment;
   /** The dialog currently open, if any, asks for the wide layout. */
   wideModal?: boolean;
-  /** Repair levers. Absent in the app; used by `repairProfile()`. */
+  /** Repair levers. Absent on the default path; pulled by `repairProfile()`. */
   overrides?: AdaptiveOverrides;
+  /**
+   * `settings.reducedMotion` — the player's own switch.
+   *
+   * Separate from `env.reducedMotion` because the two are different statements:
+   * the OS says what the person needs, the setting says what they chose *here*.
+   * Either one means "stop the decorative motion", which is why `preferencesFor()`
+   * OR-s them rather than letting the app overrule the OS.
+   */
+  playerReducedMotion?: boolean;
 }
 
 /** Everything the start screen, the dialogs and the canvas read. */
@@ -97,6 +112,18 @@ export interface AdaptiveProfile {
   cssVars: Record<string, string>;
   /** True when the safe-area inset moved the plan off the raw window height. */
   insetApplied: boolean;
+  /** What the player asked the system for: motion and contrast. */
+  prefs: Preferences;
+  /**
+   * Which rung of the repair ladder produced this profile — `useAdaptive()` only.
+   *
+   * Absent from a raw `resolveAdaptive()` result on purpose: repair is a *runtime*
+   * fact about a window, not part of the geometry, so the pure function neither
+   * runs the ladder nor pretends it did. The hook fills it in, and
+   * `adaptiveAttributes()` publishes it as `data-adaptive-repair`, which is how a
+   * screenshot proves the ladder was consulted.
+   */
+  repair?: { rung: string; ok: boolean };
 }
 
 /** Build the profile for a box. */
@@ -105,8 +132,10 @@ export function resolveAdaptive({
   env = DESKTOP_ENVIRONMENT,
   wideModal = false,
   overrides,
+  playerReducedMotion = false,
 }: AdaptiveInput): AdaptiveProfile {
   const o = overrides ?? {};
+  const prefs = preferencesFor(env, playerReducedMotion);
   const inset = o.ignoreInset ? 0 : Math.max(0, verticalInset(env));
   const plan = planMenuLayout({ width: box.width, height: box.height, inset });
   const density = densityFor(plan);
@@ -141,8 +170,10 @@ export function resolveAdaptive({
       "--adaptive-row-gap": `${metrics.rowGap}px`,
       "--adaptive-ticker-h": `${plan.ticker ? metrics.tickerHeight : 0}px`,
       "--adaptive-room": `${roomDriver(box)}`,
+      ...preferenceVars(prefs),
     },
     insetApplied: inset > 0,
+    prefs,
   };
 }
 
@@ -208,6 +239,7 @@ export function resolveForSize(width: unknown, height: unknown, env?: Environmen
  */
 export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, string> {
   return {
+    ...preferenceAttributes(profile.prefs),
     "data-adaptive-tier": profile.tier,
     "data-adaptive-density": profile.density,
     "data-adaptive-device": profile.device,
@@ -216,6 +248,7 @@ export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, str
     "data-adaptive-fit": profile.plan.fit,
     "data-adaptive-room": profile.room.toFixed(2),
     "data-adaptive-inset": profile.insetApplied ? "1" : "0",
+    ...(profile.repair ? { "data-adaptive-repair": profile.repair.ok ? profile.repair.rung : `failed:${profile.repair.rung}` } : {}),
   };
 }
 
@@ -259,4 +292,6 @@ export const ADAPTIVE_CSS_VARS = [
   "--adaptive-row-gap",
   "--adaptive-ticker-h",
   "--adaptive-room",
+  "--adaptive-motion",
+  "--adaptive-contrast",
 ] as const;
