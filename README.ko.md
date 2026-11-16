@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——136개 파일 1398 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——137개 파일 1412 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -398,7 +398,7 @@ compact-hud → single-column → smaller-type → smallest-type`. 순서 자체
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > 플레이 가능한 모든 창에서, 출시 중인 프로필이 여섯 단 중 가장 싸다.
@@ -412,7 +412,38 @@ npm run audit:adaptive -- --select
 자세히: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 가이드: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
 
-<img src="assets/adaptive-select.svg" alt="가장 싼 단 고르기 —— v1.1.8 13라운드: 사다리의 여섯 후보, 일곱 사전순 항, 그리고 648 / 648 창이 as-planned 선택 (SMIL 애니메이션)" width="100%" />
+<img src="assets/adaptive-select.svg" alt="가장 싼 단 고르기 —— v1.1.8 13라운드: 사다리의 여섯 후보, 일곱 사전순 항, 그리고 578 / 578 창이 as-planned 선택 (SMIL 애니메이션)" width="100%" />
+
+### 14라운드 —— 버그 수정: chip 계약은 일곱 언어를 세어야 한다
+
+이번 라운드는 아무것도 추가하지 않았습니다. 찾은 것은 "약속이 그것을 검사하는 것보다
+넓게 말해진 곳"입니다.
+
+chip은 **네 곳**에서 베트남어 리터럴로 측정되고 있었습니다(`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`,
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) —— 그리고 베트남어는 일곱 언어 중 **가장 짧습니다**:
+
+| | 라벨 | 가장 긴 모드 이름 |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+그래서 `chip-labelled`는 *"모든 플레이 가능한 창에서 라벨이 남는다"*고 주장했지만,
+스페인어는 320px와 360px에서, 프랑스어는 320px에서 라벨을 잃고 — 감사는 **위반 0**을
+보고했습니다.
+
+이제 `chip/probes.ts`가 `localeTable()` + `MODE_LIST`에서 프로브를 만들고,
+`chip-labelled`는 검사 가능한 명제가 되었습니다: **chip은 두 단을 동시에 잃지 않는다**.
+감사는 실제로 일어나는 일을 보고합니다: **439 full · 101 hidden · 38 label-dropped**.
+
+같은 형태의 작은 버그 셋도 함께 고쳤습니다: `scoreProfile()`의 위반 목록이 정렬되지
+않았고(마지막 동점 판정이 삽입 순서에 의존), `isFiniteProfile()`은 `playfield`/`modal`을
+보지 않았고, `slackOf()`는 `constraints.ts`와 같은 로크업 박스에 다른 반올림을 썼습니다.
+그리고 `--select`는 존재하지 않는 수를 인쇄하지 않습니다: 18 × 36의 곱을 "648 창"이라
+불렀지만 감사는 578을 훑습니다 —— 이제 `578 / 578`, 같은 목록입니다.
+
+새 기능 없음, 레이아웃 변경 없음, 버전 변경 없음. **1 412 테스트 / 137 파일**(이전
+1 398)과, 자기가 무엇을 검사하는지 말하는 계약뿐입니다.
 
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
