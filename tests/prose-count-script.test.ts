@@ -22,6 +22,8 @@ import { join, resolve } from "node:path";
 
 const ROOT = resolve(__dirname, "..");
 const SCRIPT = join(ROOT, "scripts/sync-prose-counts.mjs");
+/** The rules, guards and target list — shared with the in-suite gate. */
+const RULES = join(ROOT, "scripts/lib/prose-counts.mjs");
 const READMES = readdirSync(ROOT).filter((f) => /^README(\.[a-z]{2})?\.md$/.test(f));
 
 /** The suite total the badge advertises — the number that leaked into the tree. */
@@ -45,6 +47,16 @@ function runInCopy(mutate: (dir: string) => void): { status: number; dir: string
   const dir = mkdtempSync(join(tmpdir(), "prose-"));
   mkdirSync(join(dir, "scripts"));
   copyFileSync(SCRIPT, join(dir, "scripts/sync-prose-counts.mjs"));
+  /*
+   * The rules moved to `scripts/lib/prose-counts.mjs` so that a test could run
+   * them without spawning a second suite. The subprocess still needs them next
+   * to itself, and a copy that is missing them fails with a module-not-found
+   * that says nothing about counts — so the copy is asserted, not assumed.
+   */
+  mkdirSync(join(dir, "scripts/lib"), { recursive: true });
+  for (const f of readdirSync(join(ROOT, "scripts/lib"))) {
+    copyFileSync(join(ROOT, "scripts/lib", f), join(dir, "scripts/lib", f));
+  }
   for (const f of READMES) copyFileSync(join(ROOT, f), join(dir, f));
   if (readdirSync(join(ROOT, "scripts")).includes("README.md")) {
     copyFileSync(join(ROOT, "scripts/README.md"), join(dir, "scripts/README.md"));
@@ -107,9 +119,14 @@ describe("sync-prose-counts guards", () => {
   });
 
   it("applies the guards where every rule must pass through them", () => {
-    const src = readFileSync(SCRIPT, "utf8");
-    const loop = src.slice(src.indexOf('for (const { re, to, current } of RULES)'));
-    const body = loop.slice(0, loop.indexOf("if (next !== body)"));
+    /*
+     * The loop moved into `scripts/lib/prose-counts.mjs` (`applyRules`) so a
+     * test could run it without spawning a second suite. The property being
+     * asserted is unchanged and still has to hold in exactly one place.
+     */
+    const src = readFileSync(RULES, "utf8");
+    const loop = src.slice(src.indexOf("for (const { re, to } of makeRules(counts))"));
+    const body = loop.slice(0, loop.indexOf("return next;"));
     /* No rule may take an early branch that skips the guards. */
     expect(body).not.toMatch(/if \(!current\)/);
     expect(body).toMatch(/if \(TREE\.test\(line\)\) return line;/);
@@ -159,9 +176,9 @@ describe("sync-prose-counts guards", () => {
   });
 
   it("checks every README, not just the ten at the root", () => {
-    const body = readFileSync(SCRIPT, "utf8");
-    expect(body).toContain('"scripts/README.md"');
-    expect(body).toMatch(/readdirSync\("\."\)/);
+    /* The four extra targets are declared once, in the shared rule module. */
+    expect(readFileSync(RULES, "utf8")).toContain('"scripts/README.md"');
+    expect(readFileSync(SCRIPT, "utf8")).toMatch(/readdirSync\("\."\)/);
   });
 });
 
