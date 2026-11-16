@@ -50,9 +50,13 @@ icons/         nine stroke-consistent icons, one file each, plus a barrel
 
 ## Rules that are not negotiable
 
-1. **No scrolling.** `.menu-pane` uses `overflow: clip`. If content does not
-   fit, the plan degrades — it does not scroll. `tests/menu-no-scroll.test.ts`
-   asserts this at every breakpoint.
+1. **No scrolling — except the crop rung.** `.menu-pane` uses `overflow: clip`
+   wherever an exact fit exists (every window 356px tall or more). Below that the
+   plan reports `fit: "crop"`: the hero keeps its 140px floor, the column overruns,
+   and `[data-adaptive-fit="crop"] .menu-pane` is the one scroll container in the
+   menu, so the overrun is reachable instead of clipped (round 14). Everywhere
+   else the plan degrades rather than scrolls. `tests/menu-no-scroll.test.ts`
+   asserts both halves: exact fit from 356px up, and one scroll rule — this one.
 2. **Rows go through `MenuItemButton`; icons through `./icons`.** A one-off
    button in a panel gets its own padding, and two rows with different padding
    is how a panel starts lying about its height.
