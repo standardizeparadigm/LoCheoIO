@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-15
 
-Bản **vá cuối cùng trước 1.2.0**, mười hai vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · 21 hình SVG vẽ lại, thêm bốn sơ đồ · 1366 unit tests (134 file) và bốn corpus 1 823 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười ba vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 648 / 648 cửa sổ** · 21 hình SVG vẽ lại, thêm năm sơ đồ · 1398 unit tests (136 file) và năm corpus 1 835 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -118,6 +118,28 @@ Ngoài ra:
 - **`scripts/gen-regression-fixtures.ts`** (`npm run gen:regress`)
 - **3 tệp test** — `adaptive-audit` (18) · `adaptive-repair` (23) · `adaptive-regressions` (14)
 - **`docs/guides/adaptive-audit.md`** — đọc bảng audit, xử lý khi audit đỏ, và đọc corpus sự cố trước khi đổi một ngưỡng
+
+### Added — vòng mười ba (chọn bậc rẻ nhất)
+
+- **`src/components/menu/adaptive/select/`** — `score.ts` (`SCORE_ORDER` 7 hạng tử, `scoreProfile()`, `compareScores()`, `typeDropOf()`, `slackOf()`, `countLevers()`, `isFiniteProfile()`, `describeScore()`) · `select.ts` (`candidatesFor()`, `selectBest()`, `shippedIsBest()`, `describeSelection()`, `selectionRungIds()`, `bestOn()`) · `index.ts` · `README.md`
+- **Bảy hạng tử so từ điển** — `violations → hidden → cropped → hudLost → typeDrop → levers → slack`. Không dùng tổng có trọng số: nó sẽ cho 40px trống "mua lại" một mascot đã mất
+- **`hidden` và `cropped` đo so với base**, `levers` đếm từ profile — nên "hoà" là chuyện thật, và hoà được chốt bằng **vị trí trong thang**, không bằng thứ tự `sort`
+- **`tests/fixtures/selection/`** — **12** ảnh chụp, corpus **thứ năm**; mỗi file ghi *quyết định* (thứ hạng 6 bậc, người về nhì, lý do từng bậc thua) chứ không chỉ bố cục
+- **`scripts/gen-selection-fixtures.ts`** (`npm run gen:select`) — `--check` khẳng định cả 12 cửa sổ đều chọn `as-planned` và không cửa sổ nào hỏng
+- **`npm run audit:adaptive -- --select`** — chạy trên chính lưới của audit: `648 / 648` cửa sổ mà profile đang ship cũng là bản rẻ nhất
+- **2 tệp test** — `adaptive-select` (23) · `adaptive-selection-corpus` (9)
+- **`assets/adaptive-select.svg`** — hình thứ **26**
+- **`docs/guides/adaptive-selection.md`** — đọc bảy hạng tử, khi nào được sửa `SCORE_ORDER`, bốn lỗi đã từng xảy ra ở đúng chỗ này
+
+### Fixed — vòng mười ba
+
+- **`hidden` / `cropped` chấm theo cờ thô** — 320×320 *vốn* wordmark-only và *vốn* crop, nên profile đang ship bị báo "hidden 1" và mọi so sánh ở góc chật nhất thành vô nghĩa. Nay đo **so với base**
+- **`levers` đếm override thay vì đếm thay đổi** — `ignoreInset` trên cửa sổ không có inset làm hai ứng viên *giống hệt* có điểm khác nhau. Nay đếm từ profile
+- **Hoà phụ thuộc thứ tự `sort`** — đúng hôm nay, đổi engine là đổi bậc. Nay có khoá thứ hai: vị trí trong thang
+- **`describeSelection()` in "next" cho hai ứng viên bằng điểm** — nay in `tied, earlier rung`
+- **Chuỗi phát hành trong release doc bị lặp** — `1.0.0 … 1.1.3` được in hai lần liền nhau; test chỉ khớp lần đầu nên không ai thấy. Nay một lần
+- **Release doc v1.1.8 dài 1 494 dòng** — nay **558**, giữ mọi ý quan trọng, mọi con số và mọi mốc kiểm chứng; bảng 6.8, mục 12.1, chuỗi ngày và dòng i18n lịch sử giữ nguyên vì test đọc chúng
+- **`docs/README.md`, `scripts/README.md`, `tests/README.md`** và badge 10 README lệch số sau khi thêm 2 tệp test — nay 1398 / 136 / 26 SVG
 
 ### Fixed — vòng mười hai
 
