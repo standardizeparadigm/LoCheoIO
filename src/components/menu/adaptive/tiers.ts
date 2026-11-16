@@ -100,12 +100,41 @@ export function tierScale(tier: SizeTier): number {
  */
 export type DeviceClass = "handset" | "tablet" | "laptop" | "desktop" | "cinema";
 
-/** Classify a box by area and aspect, for docs and the HUD. */
+/**
+ * Classify a box by area **and** shortest side, for docs, diagnostics and the
+ * motion grade.
+ *
+ * THE BUG THIS REPLACED
+ * ---------------------
+ * It was area alone, with the handset floor at 300 000 px². Every phone shipped
+ * since 2019 is above it:
+ *
+ *     390 × 844 = 329 160   →  "tablet"     (iPhone 12/13/14/15)
+ *     412 × 915 = 376 980   →  "tablet"     (Pixel 6/7)
+ *     360 × 800 = 288 000   →  "handset"    (an older, smaller phone)
+ *
+ * So the label was wrong on the most common screen in the world, and the
+ * smaller the phone the *more* likely it was to be classified correctly. Two
+ * consequences: `describeAdaptive()` and the diagnostics strip said "tablet" on
+ * a phone, and `motion/` graded decoration for a device it had misidentified.
+ *
+ * The shortest side is the honest axis — it is the one that runs out first, the
+ * same argument `tierFor()` makes one screen up. Area is kept, but only to
+ * separate the large classes from each other (`cinema`/`desktop`/`laptop`),
+ * where it does work: a 2560×1440 monitor and a 2560×1080 ultrawide are both
+ * "big", and only the first has a short side big enough to be a desktop.
+ */
 export function deviceClass(box: Box): DeviceClass {
-  if (box.area >= 3_500_000) return "cinema"; // ≥ ~2560×1440
-  if (box.area >= 1_600_000) return "desktop"; // ≥ ~1600×1000
-  if (box.area >= 800_000) return "laptop"; // ≥ ~1280×720
-  if (box.area >= 300_000) return "tablet";
+  const { area, shortest } = box;
+  if (area >= 3_500_000) return "cinema"; // ≥ ~2560×1440
+  if (shortest >= 1_000) return "desktop"; // 1024 short side or better
+  if (area >= 800_000) return "laptop"; // ≥ ~1280×720
+  /*
+   * `area >= 500_000` as well as the short side: an 800×600 window is a small
+   * desktop window, not a tablet, and it is still big enough to carry the
+   * chrome's full decoration.
+   */
+  if (shortest >= 600 || area >= 500_000) return "tablet";
   return "handset";
 }
 
