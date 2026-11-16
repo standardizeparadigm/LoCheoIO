@@ -30,8 +30,15 @@
 import { CORNER_ROW_MARGIN, PANEL_FOOTER_HEIGHT } from "../layout/metrics";
 import { usableHeight } from "../layout/fit";
 import { heroBandWidth, heroContentHeight } from "./hero";
-import { planModeChip } from "./chip";
-import { MODE_LIST } from "../../../game/modes";
+import {
+  MODE_CHIP_CHROME_X,
+  MODE_CHIP_DOT,
+  MODE_CHIP_GAP,
+  MODE_CHIP_WANT,
+  chipProbes,
+  estimateText,
+  planModeChip,
+} from "./chip";
 import { densityFor } from "./density";
 import { LOCKUP_BOX_RATIO } from "../wordmark/scale";
 import { ADAPTIVE_CSS_VARS, type AdaptiveProfile } from "./resolve";
@@ -200,52 +207,93 @@ export const CONSTRAINTS: readonly Constraint[] = [
  * band, so a centred absolute element was free to leave it. A promise that lives
  * only in a component is a promise nobody can test at every window.
  */
-const CHIP_LABEL = "CHẾ ĐỘ CHƠI";
+/** Every language's label and mode names — never one language's literal. */
+const CHIP_PROBES = chipProbes();
 
 /** The band the chip lives in, for this profile. */
 function chipBand(p: AdaptiveProfile): number {
   return heroBandWidth(p.box.width);
 }
 
-/** Every mode name the chip may print, in the app's own language. */
-function modeNames(): string[] {
-  return MODE_LIST.map((m) => m.name);
+/**
+ * The width the chip would need with its label **at design sizes**.
+ *
+ * Composed here from the primitives rather than read from the plan: the plan's
+ * `needed` is the width of the plan it chose, which is the thing being checked.
+ * A second composition is what makes the check meaningful — if the ladder ever
+ * drops the label on a band where the full chip fits, this number says so.
+ */
+function chipWidthWithLabel(label: string, name: string): number {
+  return (
+    2 * MODE_CHIP_CHROME_X +
+    MODE_CHIP_DOT +
+    MODE_CHIP_GAP +
+    estimateText(label, MODE_CHIP_WANT.labelSize, MODE_CHIP_WANT.labelTracking) +
+    estimateText(name, MODE_CHIP_WANT.nameSize, MODE_CHIP_WANT.nameTracking)
+  );
 }
 
 const CHIP_CONSTRAINTS: readonly Constraint[] = [
   /*
-   * Only two chip invariants: the other candidate — "maxWidth ≤ available" — was
-   * true by construction, and a constraint that cannot fail is a comment with a
-   * function signature. The width guarantee is asserted as a property in
-   * `tests/mode-chip.test.ts`, where it can be swept over every band.
+   * Two chip invariants: the name always survives, and the label is only given up
+   * where the full-size chip genuinely cannot fit.
+   *
+   * Both sweep **every language**, which they did not before. `chip-labelled` used
+   * to read `const CHIP_LABEL = "CHẾ ĐỘ CHƠI"` — one translated string, hardcoded —
+   * and Vietnamese is the shortest of the seven. Spanish needs
+   * `MODOS DE JUEGO` (14 characters) over `60 SEGUNDOS DE LOCURA` (21), so the
+   * label really is dropped at 320px and 360px, and French at 320px. The invariant
+   * said that never happened on any playable window, and the audit agreed, because
+   * neither ever looked at a second language.
    */
   {
     id: "chip-name-survives",
-    why: "no mode name is ellipsised at a window the app can be played in.",
+    why: "no mode name is ellipsised at a window the app can be played in, in any of the seven languages.",
     check: (p) => {
       if (p.plan.minimal) return null;
       const band = chipBand(p);
-      for (const name of modeNames()) {
-        const plan = planModeChip({ heroWidth: band, side: "right", name, label: CHIP_LABEL });
-        if (plan.visible && plan.truncated) return `«${name}» needs an ellipsis in a ${band}px band`;
+      for (const probe of CHIP_PROBES) {
+        for (const name of probe.names) {
+          const plan = planModeChip({ heroWidth: band, side: "right", name, label: probe.label });
+          if (plan.visible && plan.truncated) {
+            return `«${name}» (${probe.locale}) needs an ellipsis in a ${band}px band`;
+          }
+        }
       }
       return null;
     },
   },
   {
     id: "chip-labelled",
-    why: "the chip keeps its «CHẾ ĐỘ CHƠI» label on every playable window.",
+    why: "the chip never takes two rungs at once: a label given up never also costs the name its size, in any of the seven languages.",
     check: (p) => {
       /*
-       * The label is the first rung of the ladder, and the ladder exists for
-       * windows this contract does not cover — the crop economy, where the band
-       * is the bare floor. Everywhere else the label is part of the design.
+       * The label is the first rung of the ladder ("the label goes before the name
+       * does"), so on a narrow band it *is* given up — in Spanish at 320px, in
+       * French at 320px, in Vietnamese only below the playable floor. What the
+       * player must never see is a chip that pays twice: no label **and** a name
+       * that shrank or ellipsised to buy it.
+       *
+       * This replaces a claim that was simply false: with
+       * `const CHIP_LABEL = "CHẾ ĐỘ CHƠI"` hardcoded here, `chip-labelled` said the
+       * label survives on every playable window, and the audit reported 0
+       * violations — while the two longest languages drop it at 320–360px. A
+       * promise about seven languages may not be checked in one of them.
        */
       if (p.plan.minimal || p.plan.fit === "crop") return null;
       const band = chipBand(p);
-      for (const name of modeNames()) {
-        const plan = planModeChip({ heroWidth: band, side: "right", name, label: CHIP_LABEL });
-        if (plan.visible && !plan.showLabel) return `«${name}» loses the label in a ${band}px band`;
+      for (const probe of CHIP_PROBES) {
+        for (const name of probe.names) {
+          const plan = planModeChip({ heroWidth: band, side: "right", name, label: probe.label });
+          if (!plan.visible || plan.showLabel) continue;
+          const wouldFit = chipWidthWithLabel(probe.label, name) <= plan.available;
+          if (wouldFit) {
+            return `«${name}» (${probe.locale}) drops the label although the full chip needs only ${Math.round(chipWidthWithLabel(probe.label, name))}px of ${plan.available}px`;
+          }
+          if (plan.nameSize < MODE_CHIP_WANT.nameSize || plan.truncated) {
+            return `«${name}» (${probe.locale}) pays twice: the label is gone and the name is ${plan.truncated ? "ellipsised" : `${plan.nameSize}px, below its ${MODE_CHIP_WANT.nameSize}px design size`}`;
+          }
+        }
       }
       return null;
     },
