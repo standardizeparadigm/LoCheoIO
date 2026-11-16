@@ -47,6 +47,10 @@ trade-offs
    phải **tới được**: từ vòng 14, `[data-adaptive-fit="crop"] .menu-pane` là vùng cuộn
    dọc, nên phần cột vượt cửa sổ vẫn với tới được thay vì bị `overflow: clip` nuốt mất.
 
+Bốn chế độ (`--json`, `--write`, `--check`, `--select`) **không đi cùng nhau**: mỗi cái
+sở hữu stdout theo một kiểu, nên đưa hai cờ là từ chối (`exit 2`) — trước vòng 14,
+`--select --check` lặng lẽ bỏ qua phần kiểm.
+
 ## 3. Khi audit đỏ
 
 ```bash
@@ -70,6 +74,7 @@ là thiết kế, không phải phiền toái:
 
 ```bash
 npm run audit:adaptive -- --write   # sinh lại tệp
+npm run audit:adaptive -- --select  # chế độ thứ tư — xem guides/adaptive-selection.md
 git diff docs/adaptive-audit.md     # đọc xem bạn vừa đổi cái gì, bao nhiêu cửa sổ
 ```
 
