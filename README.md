@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20t%C3%ADm-9d6bff.svg?style=for-the-badge)](#-changelog-chia-t%E1%BA%A7ng--m%E1%BB%97i-t%E1%BA%A7ng-m%E1%BB%99t-m%C3%A0u)
-[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-kiểm-chứng-chất-lượng)
+[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-kiểm-chứng-chất-lượng)
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-cài-đặt--chạy)
@@ -25,7 +25,7 @@
 
 <img src="assets/palette-ribbon.svg" alt="Bảng màu Lọ Chéo v1.1.8 — 7 dải màu chạy sáng luân phiên (hoạt họa SMIL)" width="100%" />
 
-**v1.1.8** · bản vá cuối trước **1.2.0** · *menu không cuộn được ở bất kỳ cỡ nào* · *dấu nặng `LỌ` không còn bị che* · *dấu sắc `CHÉO` được cứu* · *panel THÔNG TIN hết chia cắt* · *deck thay dải đếm* · 1398 test / 136 file
+**v1.1.8** · bản vá cuối trước **1.2.0** · *menu không cuộn được ở bất kỳ cỡ nào* · *dấu nặng `LỌ` không còn bị che* · *dấu sắc `CHÉO` được cứu* · *panel THÔNG TIN hết chia cắt* · *deck thay dải đếm* · 1412 test / 137 file
 
 </div>
 
@@ -321,7 +321,7 @@ Hai panel cũng nhận **footer** thay vì để khoảng dư rơi rải rác: G
 
 <img src="assets/diagonal-motion.svg" alt="Cơ chế CHÉO — ba trạng thái đứng yên, tăng tốc, chém tan đồ hư (hoạt họa SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Ma trận kiểm thử 1.1.8 — 1398 test trên 136 file, 9 cổng kiểm tra (hoạt họa SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Ma trận kiểm thử 1.1.8 — 1412 test trên 137 file, 9 cổng kiểm tra (hoạt họa SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Sáu lớp adaptive của Lọ Chéo 1.1.8 — hộp cửa sổ, tier, plan, rồi density/hero/type/modal/board, kèm một chiều dữ liệu (hoạt họa SMIL)" width="100%" />
 
@@ -509,7 +509,7 @@ Mệnh đề mà vòng này mua được, và kiểm được:
 
 ```
 npm run audit:adaptive -- --select
-  shipped profile wins   648 / 648
+  shipped profile wins   578 / 578
 ```
 
 > trên mọi cửa sổ chơi được, profile đang ship là bản rẻ nhất trong sáu bậc.
@@ -523,7 +523,36 @@ nhì, và lý do từng bậc thua. Khi một ngưỡng xê dịch, diff cho th�
 Chi tiết: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
 hướng dẫn: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
 
-<img src="assets/adaptive-select.svg" alt="Chọn bậc rẻ nhất — v1.1.8 vòng 13: sáu ứng viên của thang sửa, bảy hạng tử so từ điển, và 648 trên 648 cửa sổ chọn as-planned (hoạt họa SMIL)" width="100%" />
+<img src="assets/adaptive-select.svg" alt="Chọn bậc rẻ nhất — v1.1.8 vòng 13: sáu ứng viên của thang sửa, bảy hạng tử so từ điển, và 578 trên 578 cửa sổ chọn as-planned (hoạt họa SMIL)" width="100%" />
+
+### Vòng 14 — sửa lỗi: hợp đồng chip phải đếm đủ bảy ngôn ngữ
+
+Vòng này không thêm gì. Nó đi tìm chỗ mà một lời hứa được phát biểu rộng hơn thứ đã kiểm.
+
+Chip được đo bằng literal tiếng Việt ở **bốn** nơi (`CHIP_LABEL = "CHẾ ĐỘ CHƠI"`,
+`CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`) — mà tiếng Việt là ngôn ngữ **ngắn nhất** trong bảy:
+
+| | nhãn | tên chế độ dài nhất |
+| --- | --- | --- |
+| vi | `CHẾ ĐỘ CHƠI` (11) | `MUỐI DƯA CỔ ĐIỂN` (19) |
+| es | `MODOS DE JUEGO` (14) | `60 SEGUNDOS DE LOCURA` (21) |
+| fr | `MODES DE JEU` (12) | `FESTIVAL DES COMBOS` (19) |
+
+Nên `chip-labelled` tuyên bố *"nhãn sống trên mọi cửa sổ"* trong khi tiếng Tây Ban
+Nha mất nhãn ở 320px và 360px, tiếng Pháp ở 320px — và audit báo **0 vi phạm**.
+
+Nay `chip/probes.ts` sinh probe từ `localeTable()` + `MODE_LIST`; `chip-labelled`
+được phát biểu lại thành thứ kiểm được: **chip không bao giờ mất hai bậc cùng lúc**.
+Audit báo đúng cái đang xảy ra: **439 full · 101 hidden · 38 label-dropped**.
+
+Sửa luôn ba lỗi nhỏ cùng dạng: `scoreProfile()` trả danh sách vi phạm chưa sắp xếp
+(tie-break phụ thuộc thứ tự chèn), `isFiniteProfile()` không kiểm `playfield`/`modal`,
+`slackOf()` làm tròn khác `constraints.ts` trên cùng một hộp. Và `--select` thôi in
+một con số không tồn tại: nó nhân 18 × 36 rồi gọi tích đó là "648 cửa sổ", trong khi
+audit quét 578 — nay `578 / 578`, cùng danh sách.
+
+Không có tính năng mới, không đổi bố cục, không đổi phiên bản. Chỉ có **1 412 test
+trên 137 file** thay vì 1 398, và một hợp đồng nói đúng thứ nó kiểm.
 
 
 ## 📐 Bố cục thích nghi — cách hero tự chọn hình dạng
@@ -680,7 +709,7 @@ lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: t
 | 💾 **Bảng vàng TOP 8** | Điểm lưu cục bộ, validate & chuẩn hoá khi đọc, tên tự viết hoa, highlight dòng vừa lập kỷ lục |
 | 🎨 **Đồ hoạ 60fps** | Canvas 2D, particle budget 460, DPR cap 2, nền gạch bông pre-render offscreen, star twinkle + aurora menu |
 | 📴 **Offline-first thật sự** | Fonts tự host (subset latin + vietnamese, woff2), không CDN, không API — mở `dist/index.html` là chơi |
-| 🧪 **Chất lượng** | 1398 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
+| 🧪 **Chất lượng** | 1412 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
 
 <img src="assets/items.svg" alt="14 nguyên liệu Lọ Chéo — nhóm hứng, nhóm power, nhóm né" width="100%" />
 
@@ -743,7 +772,7 @@ npm run build      # → dist/index.html (một file tự chứa mọi thứ)
 npm run dev        # dev server với HMR (http://localhost:5173)
 npm run preview    # xem thử bản build bằng server tĩnh
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1398 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1412 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (cổng chất lượng ci)
 ```
 
@@ -888,14 +917,14 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | Cổng | Phạm vi | Trạng thái 1.1.8 |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1398 test / 136 file** | ✅ |
+| `vitest run` | **1412 test / 137 file** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
 | `check-assets` | 26 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
-Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1398 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
+Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1412 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
 
 ## ❓ FAQ
 
@@ -926,7 +955,7 @@ Mỗi bản có một tầng: <kbd>MAJOR</kbd> 🩷 hồng · <kbd>UPDATE</kbd> 
 
 | Bản | Tầng | Ngày | Ghi chú |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1398 test / 136 file** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1412 test / 137 file** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Nền menu hết mờ** (4 lớp phủ cộng hưởng: `blur 64→22px`, vignette góc thay vignette toàn màn hình, khung CRT 140→90px, sàn 45→70%) · **changelog chia tầng có màu** · **96 gạch mô tả mới** cho 8 bản cũ · ngày phát hành xếp lại · `src/game/changelog/` tách thư mục · README 10 ngôn ngữ làm lại · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Cài đặt 6 mục** (nhanh · âm thanh · giao diện · ngôn ngữ · sao lưu · dữ liệu) · âm lượng 0–100 · mức rung · chất lượng hình · tự pause khi đổi tab · ngôn ngữ dời vào Cài đặt · 4 preset · xuất/nhập JSON · nền menu nhiều lớp · gradient chạy vòng ở mục tác giả · trap focus modal · fix nhạc reload · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menu góc GAME/INFO** (Chơi · Chơi tiếp · Chế độ · BXH · Thành tựu · Cài đặt / About · Changelog · Thoát) · **lưu & Chơi tiếp ván dở** (`locheo.run.v1`) · cài đặt trong game (SFX/nhạc/rung/giảm chuyển động) · fix phím tắt rò rỉ modal · prefers-reduced-motion toàn bộ · **113 tests** |
@@ -970,7 +999,7 @@ Tài liệu thiết kế & hướng dẫn kỹ thuật sâu hơn:
 ## 🤝 Đóng góp
 
 1. Fork repo, tạo branch theo quy ước `arena/<tên>` hoặc `feat/<tên>`.
-2. `npm run check` phải xanh trước khi mở PR (typecheck + 1398 test + build).
+2. `npm run check` phải xanh trước khi mở PR (typecheck + 1412 test + build).
 3. Không thêm dependency runtime nếu không thực sự cần — triết lý: **một file, không mạng, chơi được mãi mãi**.
 4. Mô tả PR ghi rõ chế độ/màn hình bị ảnh hưởng và kèm clip nếu thay đổi gameplay.
 
