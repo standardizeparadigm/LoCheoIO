@@ -1,6 +1,6 @@
-# Adaptive, rounds 8–14 — one profile, every size, every pixel
+# Adaptive, rounds 8–15 — one profile, every size, every pixel
 
-> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 14).
+> **Trạng thái:** hợp đồng đang có hiệu lực cho v1.1.8 (vòng 8 → 15).
 > **Đọc trước:** [`adaptive-layout.md`](adaptive-layout.md) — hợp đồng giữa
 > `menu/layout/` và `menu/adaptive/` ở vòng 6.
 
@@ -358,7 +358,7 @@ thêm thì không ai đọc được, và mọi lần chèn đều làm hỏng p
 | 20 | `1440p` | 2560×1440 | màn hình rời |
 | 21 | `4k` | 3840×2160 | trần của hộp thoại |
 
-## 16. 14 bất biến — một định nghĩa, ba nơi dùng
+## 16. 15 bất biến — một định nghĩa, ba nơi dùng
 
 `constraints.ts` giữ danh sách; `tests/adaptive-constraints.test.ts` chạy nó trên
 21 preset, `scripts/check-adaptive.ts` chạy nó như một cổng CI, và tài liệu này
@@ -381,10 +381,11 @@ hứa không ai kiểm được ở mọi cửa sổ.
 | `dialog-fits-window` | modal ≤ `visualViewport` | dialog tràn khỏi cửa sổ |
 | `jar-fits-board` | jar ≤ board, tâm trong board | lọ ra ngoài canvas |
 | `density-matches-flags` | ticker/footer theo density | density và chrome nói khác nhau |
-| `css-vars-complete` | 11 biến `--lo-*` | component đọc biến không tồn tại |
-| `numbers-finite` | mọi số hữu hạn | `NaN` từ `aspect` hoặc `dvh` |
-| `chip-name-survives` | không tên chế độ nào bị cắt bằng ellipsis | tên dài (bản dịch) tràn band |
-| `chip-labelled` | chip còn nhãn «CHẾ ĐỘ CHƠI» ở mọi cửa sổ chơi được | nhãn bị bỏ sớm hơn mức cần |
+| `css-vars-complete` | **27** biến: 17 `--type-*` + 10 `--adaptive-*` | component đọc biến không tồn tại |
+| `numbers-finite` | mọi số hữu hạn; hai biến dạng tên phải thuộc bộ giá trị của nó | `NaN` từ `aspect` hoặc `dvh` |
+| `chip-name-survives` | không tên chế độ nào bị ellipsis, **cả bảy ngôn ngữ** | tên dài (bản dịch) tràn band |
+| `chip-labelled` | chip **không mất hai bậc cùng lúc** (vòng 14) | mất nhãn *và* co tên trong cùng một cửa sổ |
+| `prefs-respected` | `prefs` và hai biến `--adaptive-motion/-contrast` khớp nhau (vòng 15) | profile nói "giảm chuyển động" mà biến nói "đầy đủ" |
 
 ## 17. "Vì sao trông như vậy" — `diagnose()`
 
@@ -602,7 +603,7 @@ tài liệu — bốn chỗ, bốn con số có thể lệch. Vòng 12 gộp nó
 | `samples` | từng cửa sổ, để một lỗi đọc được tên |
 
 Con số quan trọng nhất là **0 vi phạm trên 578 cửa sổ**. Đây không phải "chưa
-kiểm": mỗi cửa sổ đã chạy hết 14 bất biến.
+kiểm": mỗi cửa sổ đã chạy hết 15 bất biến.
 
 **Vì sao vừa preset vừa lưới.** Preset là nơi hồi quy thật đã xảy ra, và một thất
 bại ở đó đọc là `iphone-4` chứ không phải `320×480`. Nhưng 21 cửa sổ không thấy được
@@ -653,7 +654,7 @@ trước vòng 12, có test so sánh từng trường trên 21 preset). Bốn le
 
 Ba luật, mỗi luật một test:
 
-1. **Không lever nào phá hợp đồng** — cả 6 bậc × 21 preset đều qua 14 bất biến.
+1. **Không lever nào phá hợp đồng** — cả 6 bậc × 21 preset đều qua 15 bất biến.
 2. **Không vượt sàn** — `typeScale` kẹp ở 8px, `hudScale` kẹp ở 0.55 (sàn của
    `planHud`).
 3. **Chỉ nhỏ đi, không bao giờ to lên** — `0 < f ≤ 1`; `NaN`, `Infinity`, `0`, số
