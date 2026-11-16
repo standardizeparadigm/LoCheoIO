@@ -14,6 +14,7 @@ import { diagnose, headline, renderDiagnosis, warningsFor } from "../src/compone
 import { PRESETS, presetFor } from "../src/components/menu/adaptive/presets";
 import { resolveForSize } from "../src/components/menu/adaptive/resolve";
 import { DESKTOP_ENVIRONMENT } from "../src/components/menu/adaptive/environment";
+import { explainHold, sameRung } from "../src/components/menu/adaptive/hysteresis";
 
 const codes = (w: number, h: number) => warningsFor(resolveForSize(w, h)).map((x) => x.code);
 
@@ -37,7 +38,7 @@ describe("the headline", () => {
 });
 
 describe("the rows", () => {
-  it("walks the ten layers in derivation order", () => {
+  it("walks the ten unconditional layers in derivation order", () => {
     /*
      * Round 15 added `10 · prefs`, and an `11 · repair` row that only exists on a
      * profile the hook painted — `resolveAdaptive()` never walks the ladder, so a raw
@@ -70,6 +71,39 @@ describe("the rows", () => {
 
     const failed = diagnose({ ...resolveForSize(1280, 720), repair: { rung: "smallest-type", ok: false } });
     expect(failed.rows.find((r) => r.layer === "11 · repair")?.value).toBe("smallest-type · FAILED");
+  });
+
+  it("explains a held frame as layer 12, and only when one was held", () => {
+    /*
+     * Same rule as `11 · repair`: a hold is a runtime fact, so a raw profile has no
+     * row. When it does have one, the row has to name *both* rungs — "held" alone
+     * would tell a reviewer that the layout is stale without saying what it is
+     * stale against.
+     */
+    /* Find a width where one pixel really does change the rung. */
+    let width = 0;
+    for (let w = 400; w < 1900 && !width; w += 1) {
+      if (!sameRung(resolveForSize(w, 720), resolveForSize(w + 1, 720))) width = w;
+    }
+    expect(width, "a rung boundary exists at 720px").toBeGreaterThan(0);
+    const previous = resolveForSize(width, 720);
+    const candidate = resolveForSize(width + 1, 720);
+    expect(sameRung(previous, candidate)).toBe(false);
+
+    const held = diagnose({
+      ...previous,
+      held: explainHold(previous, candidate),
+    });
+    const row = held.rows.find((r) => r.layer === "12 · hold");
+    expect(row).toBeDefined();
+    expect(row?.value).toContain("band 2px");
+    expect(row?.because).toContain("held");
+    expect(row?.because).toContain("instead of");
+    expect(row?.because).toContain("early");
+    expect(held.rows.at(-1)?.layer).toBe("12 · hold");
+
+    /* A profile that was not held never grows the row. */
+    expect(diagnose(previous).rows.map((r) => r.layer)).not.toContain("12 · hold");
   });
 
   it("says why the animation stopped", () => {
