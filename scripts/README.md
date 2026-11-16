@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1311 tests / 131 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1366 tests / 134 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -236,6 +236,25 @@ Khác `probe-menu-layout.tsx` (đọc DOM thật): script này chỉ tính số,
 được trong CI không cần trình duyệt và không cần `jsdom`. Hai cổng bổ sung nhau —
 một cái bắt số sai, một cái bắt số đúng nhưng DOM vẽ khác.
 
+## `audit-adaptive.ts`
+
+Kiểm toán **toàn bộ** không gian cửa sổ: 21 preset + lưới 25 × 23 quanh từng
+breakpoint, khử trùng lặp → **578** cửa sổ, mỗi cửa sổ resolve một lần rồi gộp
+thành một `AuditReport` (vi phạm, thương lượng, bốn histogram, hai đầu không gian,
+và từng mẫu).
+
+```bash
+npm run audit:adaptive              # bảng tóm tắt có bar
+npm run audit:adaptive -- --json    # toàn bộ report
+npm run audit:adaptive -- --write   # ghi docs/adaptive-audit.md
+npm run audit:adaptive -- --check   # exit 1 nếu tệp lệch
+```
+
+`--check` nằm trong `npm run check`, nên báo cáo không thể cũ đi mà không ai biết:
+đổi một breakpoint hay một sàn chữ là đổi `docs/adaptive-audit.md` trong **cùng**
+commit. Khác `check-adaptive.ts` (21 preset, dạng bảng cho người đọc) — cái này
+quét cả không gian và trả lời "bao nhiêu lần".
+
 ## `gen-adaptive-fixtures.ts`
 
 Sinh `tests/fixtures/adaptive-matrix/` — **1 110** file JSON, mỗi cửa sổ một
@@ -278,3 +297,19 @@ Corpus thứ ba là corpus đầu tiên về một **component** chứ không ph
 nó ghim đúng hai đầu vào đã sinh ra lỗi ở vòng 10 — bề ngang band và một bản dịch
 dài 19 ký tự. Dùng tên tiếng Việt trong `MODE_LIST` vì đó là tập rộng nhất; bảy
 ngôn ngữ được phủ riêng trong `tests/mode-chip.test.ts`.
+
+## `gen-regression-fixtures.ts`
+
+Sinh `tests/fixtures/regressions/` — **14** cửa sổ đã từng là chủ đề của một ảnh
+chụp báo lỗi, từ vòng 1 tới vòng 12. Danh sách nằm ở
+`src/components/menu/adaptive/regressions.ts` (đó là *kiến thức*: cửa sổ nào, vòng
+nào, triệu chứng gì), còn script chỉ chụp lại profile.
+
+```bash
+npm run gen:regress                                  # ghi
+npx vite-node scripts/gen-regression-fixtures.ts --check   # chỉ báo
+```
+
+Đây là corpus nhỏ nhất và là corpus dễ bắt hồi quy nhất, vì mỗi file là một cửa sổ
+mà bố cục đã từng **sai nhìn thấy được** — và file mang theo câu mô tả triệu chứng,
+nên khi đỏ nó đọc thành một câu về cửa hàng chứ không phải hai con số.
