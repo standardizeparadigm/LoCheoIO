@@ -41,7 +41,7 @@
 
 ## 🆕 Mới trong v1.1.8
 
-> Bản **vá cuối** trước 1.2.0. Không thêm chế độ chơi, không đổi cân bằng, không đổi định dạng lưu. Vòng cuối của bản vá này làm một việc: **hero tự đo cửa sổ và tự chọn bố cục**, ở mọi kích thước có bố cục vừa, không cuộn, không cắt. Kèm theo là dải deck bị bỏ, 25 hình SVG (ba sơ đồ HUD cho vòng chín, bản kiểm toán cho vòng mười hai), corpus thứ tư cho sự cố, và một thang tự sửa sáu bậc.
+> Bản **vá cuối** trước 1.2.0. Không thêm chế độ chơi, không đổi cân bằng, không đổi định dạng lưu. Vòng cuối của bản vá này làm một việc: **hero tự đo cửa sổ và tự chọn bố cục**, ở mọi kích thước có bố cục vừa, không cuộn, không cắt. Kèm theo là dải deck bị bỏ, 26 hình SVG (ba sơ đồ HUD cho vòng chín, bản kiểm toán cho vòng mười hai, bản chọn bậc cho vòng mười ba), corpus thứ tư cho sự cố, và một thang tự sửa sáu bậc.
 
 ### 📐 Một phép cộng không ai quản lý — và bốn lỗi cùng lúc
 
