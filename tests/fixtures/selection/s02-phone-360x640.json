@@ -1,0 +1,42 @@
+{
+ "id": "s02-phone-360x640",
+ "window": "360×640",
+ "width": 360,
+ "height": 640,
+ "why": "a common Android phone, one step above the floor",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 192
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.11",
+  "single-column · hudLost 0.11",
+  "smaller-type · hudLost 0.11",
+  "smallest-type · hudLost 0.11"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "sm",
+  "density": "comfortable",
+  "fit": "squeeze",
+  "minimal": false,
+  "scene": 262,
+  "reserve": 378,
+  "hero": "stack",
+  "panelHeight": 318,
+  "hudScale": 0.72,
+  "rowLabel": 10.5
+ }
+}

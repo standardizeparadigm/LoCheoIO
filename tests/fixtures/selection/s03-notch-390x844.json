@@ -1,0 +1,42 @@
+{
+ "id": "s03-notch-390x844",
+ "window": "390×844",
+ "width": 390,
+ "height": 844,
+ "why": "an inset that is real, so `ignore-inset` would cost something",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 98
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.11",
+  "single-column · hudLost 0.11",
+  "smaller-type · hudLost 0.11",
+  "smallest-type · hudLost 0.11"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "sm",
+  "density": "spacious",
+  "fit": "none",
+  "minimal": false,
+  "scene": 326,
+  "reserve": 518,
+  "hero": "stack",
+  "panelHeight": 458,
+  "hudScale": 0.72,
+  "rowLabel": 11
+ }
+}

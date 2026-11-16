@@ -1,0 +1,42 @@
+{
+ "id": "s01-floor-320x320",
+ "window": "320×320",
+ "width": 320,
+ "height": 320,
+ "why": "the floor of the space — crop, minimal hero, no ticker",
+ "chosen": "as-planned",
+ "shippedIsBest": true,
+ "score": {
+  "violations": 0,
+  "hidden": 0,
+  "cropped": 0,
+  "hudLost": 0,
+  "typeDrop": 0,
+  "levers": 0,
+  "slack": 70
+ },
+ "ok": true,
+ "tell": "nothing given up",
+ "ranked": [
+  "as-planned · nothing given up",
+  "ignore-inset · nothing given up",
+  "compact-hud · hudLost 0.11",
+  "single-column · hudLost 0.11",
+  "smaller-type · hudLost 0.11",
+  "smallest-type · hudLost 0.11"
+ ],
+ "losers": 5,
+ "runnerUp": "ignore-inset",
+ "profile": {
+  "tier": "xs",
+  "density": "minimal",
+  "fit": "crop",
+  "minimal": true,
+  "scene": 140,
+  "reserve": 216,
+  "hero": "stack",
+  "panelHeight": 204,
+  "hudScale": 0.72,
+  "rowLabel": 10
+ }
+}
