@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1366%20%C2%B7%20134%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1398%20%C2%B7%20136%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——134개 파일 1366 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——136개 파일 1398 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -365,6 +365,54 @@ compact-hud → single-column → smaller-type → smallest-type`. 순서 자체
 가이드: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
 
 <img src="assets/adaptive-audit.svg" alt="v1.1.8 adaptive 감사 —— 578개 창, 계약 위반 0, 적합도와 계층 히스토그램, 그리고 6단계 자동 수리 사다리 (SMIL 애니메이션)" width="100%" />
+
+### 13라운드 —— *맞는* 것을 넘어 *가장 싼* 것
+
+12라운드는 "불변식이 깨졌는가"라는 예/아니오에 답하는 감사를 만들었습니다. 하지만
+스크린샷이 올 때마다 두 번째 질문은 남습니다: **더 싼 레이아웃이 있는가?**
+
+이번 라운드가 답합니다. `select/`는 각 프로필에 **일곱 항**을 주고 **사전순**으로
+비교합니다. 가중 합을 쓰지 않는 이유는, 가중치가 우연히 그렇게 더해지면 40px 여유가
+"잃어버린 마스코트를 되사는" 일이 될 수 있기 때문입니다.
+
+| # | 항 | 플레이어가 잃는 것 |
+| --- | --- | --- |
+| 1 | `violations` | 없음 —— 계약 위반은 후보가 아님 |
+| 2 | `hidden` | 마스코트 · 덱 · 태그라인 |
+| 3 | `cropped` | 자기 하한보다 부족한 px |
+| 4 | `hudLost` | HUD 배율의 비율 |
+| 5 | `typeDrop` | 글자 px(전체 합) |
+| 6 | `levers` | 움직인 개수 —— 플레이어는 못 봄 |
+| 7 | `slack` | 남는 공간 —— 손실이 아니라 동점 처리용 |
+
+"점수판"과 "정말 올바른 비교"를 가르는 두 가지:
+
+- **`hidden` / `cropped`는 기준 프로필과의 차이로 잽니다.** 320×320 창은 레버를
+  당기기 전부터 wordmark뿐이고 전부터 crop입니다 —— 그것은 창이지 희생이 아닙니다.
+  원시 플래그로 재면 앱이 지금 그리는 프로필에 "hidden 1"을 보고합니다.
+- **`levers`는 override가 아니라 프로필에서 셉니다.** inset이 없는 창에서
+  `ignoreInset`은 아무것도 바꾸지 않으므로 당긴 것으로 치지 않습니다 —— 그래서
+  **동점이 실재하고**, 동점 처리는 `sort`가 본 순서가 아니라 사다리 위치입니다.
+
+이번 라운드가 얻고 검증할 수 있는 명제:
+
+```
+npm run audit:adaptive -- --select
+  shipped profile wins   648 / 648
+```
+
+> 플레이 가능한 모든 창에서, 출시 중인 프로필이 여섯 단 중 가장 싸다.
+
+12라운드는 "깨진 것이 없다"고 했고, 13라운드는 "더 싼 것이 없다"고 합니다. 더 강한
+명제는 틀리기도 쉬우므로 전용 **다섯 번째 코퍼스**가 있습니다:
+`tests/fixtures/selection/` —— 12개 창, 각 파일은 레이아웃이 아니라 *결정*을 기록합니다.
+여섯 단 전체 순위, 차점, 그리고 각 단이 진 이유. 임계값이 움직이면 diff는 **결정**이
+바뀌었다는 것을 보여 줍니다 —— 리뷰에서 정말 승인해야 하는 것.
+
+자세히: [docs/releases/v1.1.8.md §20](docs/releases/v1.1.8.md#20-vòng-13--không-chỉ-đúng-mà-rẻ-nhất) ·
+가이드: [docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md).
+
+<img src="assets/adaptive-select.svg" alt="가장 싼 단 고르기 —— v1.1.8 13라운드: 사다리의 여섯 후보, 일곱 사전순 항, 그리고 648 / 648 창이 as-planned 선택 (SMIL 애니메이션)" width="100%" />
 
 
 ## 📐 적응형 레이아웃 — 히어로가 자기 모양을 고르는 방법
