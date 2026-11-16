@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1412%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1418%20%C2%B7%20137%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 の新機能
 
-> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。どのサイズでもスクロールも切れもなし。デッキの帯は削除、SVG は全 25 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
+> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 25 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
 
 ### 📐 誰も管理していなかった足し算——そして同時に四つの不具合
 
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——137ファイル1412テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——137ファイル1418テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -413,6 +413,13 @@ npm run audit:adaptive -- --select
 ガイド：[docs/guides/adaptive-selection.md](docs/guides/adaptive-selection.md)。
 
 <img src="assets/adaptive-select.svg" alt="最も安い段を選ぶ —— v1.1.8 第 13 ラウンド：階段の六候補、七つの辞書順項、そして 578 / 578 の窓が as-planned を選ぶ（SMIL アニメーション）" width="100%" />
+
+三つ目も同じ形：**`crop` の段は行き止まりだった。** 監査の 578 窓のうち 25 窓が
+`fit: "crop"`（すべて高さ 320px）。三つの不変条件がこの段を免除している —— 正しい、
+収まる配置が存在しないから —— しかし `.menu-pane` は `overflow: clip` なので、はみ出した
+部分は**到達できなかった**：両パネルの下端と START ボタン。それを告げる不変条件は
+一つもなかった。いま `[data-adaptive-fit="crop"] .menu-pane` がメニューで唯一の縦スクロール
+領域で、**356px** 以上の窓は今も 1px まで一致する。
 
 ### 第 14 ラウンド —— バグ修正：chip の契約は七言語を数えなければならない
 
