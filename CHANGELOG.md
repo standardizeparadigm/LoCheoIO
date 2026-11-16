@@ -3,9 +3,9 @@
 Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến được ghi ở đây.
 Định dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/), phiên bản theo [SemVer](https://semver.org/lang/vi/).
 
-## [1.1.8] — 2026-11-15
+## [1.1.8] — 2026-11-16
 
-Bản **vá cuối cùng trước 1.2.0**, mười sáu vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · 22 hình SVG vẽ lại, thêm sáu sơ đồ · 1518 unit tests (142 file) và năm corpus 1 835 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười bảy vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · **vòng xoay quanh lọ ở thẻ tác giả không quay: một `transform` bị utility căn giữa nuốt mất, nay ba quỹ đạo SVG** · **HUD «GỐM MỎNG» vẽ ba mạng cho chế độ chỉ có một** · **kiểm toán chín chế độ bằng `check:modes`** · **adaptive chấm mức chuyển động `vivid` · `steady` · `still`** · **governor khung hình tự hạ rồi trả lại chất lượng** · 22 hình SVG vẽ lại, thêm sáu sơ đồ · 1578 unit tests (146 file) và năm corpus 1 835 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -147,6 +147,21 @@ Ngoài ra:
 - **Bốn tệp còn «26 SVG» sau khi hình thứ 27 ra đời** — CI đỏ ở `sync-prose-counts --verify`; cổng đã có nhưng chỉ chạy trong CI. Nay luật đếm dùng chung và có test trong `npm run check`
 - **`scripts/README.md` thiếu `audit-drag.ts`**, `docs/README.md` thiếu `adaptive-drag.md`, `tests/README.md` thiếu ba dòng catalogue
 - **`docs/adaptive-audit.md` / hai hình SVG** còn ghi `1458 test` sau khi suite lên 1518
+
+### Fixed — vòng mười bảy (lọ trong thẻ tác giả)
+
+- **Vòng xoay quanh lọ không quay** — vòng đó là **một** `transform` trên span, còn việc căn giữa lại nhờ `translate` utility; rule nào chạm `transform` là mất chuyển động, và trạng thái đứng yên của nó (ba cung mờ) trông như hình vẽ dở. Nay `<AboutCrest>`: ba quỹ đạo SVG 9s / 14s / 22s, hai chiều, mỗi cái có `stroke-dasharray` nên lúc đứng vẫn là hoạ tiết cân đối, xoay bằng `<g>` với `transform-box: view-box` — thứ không rule bố cục nào huỷ được; 13 test ghim cả component lẫn stylesheet
+- **HUD «GỐM MỎNG» vẽ ba mạng cho chế độ chỉ chịu một vết** — `maxCracks ?? 3` được copy khắp nơi, nên hàng vết nứt luôn ba vỏ và khung «sắp vỡ» (`cracks >= 2`) không bao giờ hiện ở đúng chế độ cần nó. Nay `maxCracksFor()` là câu trả lời duy nhất, `planHud()` công bố `crackSlots`, và mọi chỗ vẽ đọc cùng một số
+- **`deviceClass()` gọi mọi điện thoại hiện đại là máy tính bảng** — sàn `300 000 px²` nằm dưới 390×844 = 329 160, nên từ 2019 mọi máy đều thành `tablet`. Nay phân loại theo **cạnh ngắn** trước, diện tích chỉ còn là tiêu chí phụ
+- **Mười bảy tệp còn ghi ngày `2026-11-15`** — changelog, release doc và 10 README đã lùi một ngày so với hôm nay; nay đồng loạt `2026-11-16`, gồm cả dòng `**1.1.8 11-16**` trong release doc
+
+### Added — vòng mười bảy
+
+- **`src/components/menu/about/`** — `AboutCrest.tsx` (ba quỹ đạo, `orbit()`), `sections.ts`, `index.ts`, `README.md`; thẻ tác giả thành tấm biển bốn lớp gradient, «CHÉO» chuyển sắc có pan, tiêu đề mục có chấm vàng và đường kẻ mờ dần
+- **`src/game/modes/audit.ts` + `scripts/audit-modes.ts`** — chín chế độ đối chiếu với phần còn lại của game (badge nói đúng số, multiplier hữu hạn và trong khoảng, `hazardMult: 0` thật sự làm bảng spawn về 0, ≥3 loại hứng được ở cấp 1, accent không trùng). `npm run check:modes` là cổng; chính nó bắt được lỗi ngân sách vết nứt
+- **`src/game/adaptive/motion/`** — `planMotion()` chấm `vivid` · `steady` · `still`, công bố `--adaptive-motion-factor` (1 hoặc 1.6) để halo, crest và viền thẻ nhân thời lượng thay vì tắt hẳn; `constraints.ts` đối chiếu grade ↔ factor ↔ biến CSS
+- **`src/game/adaptive/perf.ts`** — `FrameWatch` lấy mẫu delta **thô** (trước clamp 50ms), hạ chất lượng sau 2 khung chậm, trả lại sau 6 khung nhanh; stall không tính là mẫu; `settings.visualQuality` là trần chứ không phải đích
+- **`tests/menu-about-crest.test.ts`** (13) · **`tests/adaptive-motion.test.ts`** (14) · **`tests/modes-audit.test.ts`** (11) · **`tests/game-perf.test.ts`** (20)
 
 ### Fixed — vòng mười bốn (chỉ sửa lỗi)
 
