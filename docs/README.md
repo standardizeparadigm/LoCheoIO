@@ -2,13 +2,13 @@
 
 ## Release notes (historical + current)
 
-**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
+**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười ba vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí, kiểm toán 578 cửa sổ, và một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
 
 Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-process.md` § Tầng phát hành) — đúng quy ước mà panel CHANGELOG trong game dùng:
 
 | Bản | Tầng | Nội dung chính | Tests lúc phát hành |
 | --- | --- | --- | --- |
-| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** | 1366 / 134 file |
+| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** · **chọn bậc rẻ nhất: 648 / 648 cửa sổ** | 1398 / 136 file |
 | [v1.1.7](releases/v1.1.7.md) | 🟣 PATCH | Nền menu hết mờ (4 lớp) · changelog chia tầng · 96 gạch mô tả mới · tách `src/game/changelog/` | 256 / 33 file |
 | [v1.1.6](releases/v1.1.6.md) | 🟣 PATCH | Settings 6 mục · preset · backup JSON · a11y pass | 222 / 29 file |
 | [v1.1.5](releases/v1.1.5.md) | 🟣 PATCH | Panel góc GAME/INFO, Chơi tiếp ván dở | 113 |
@@ -47,10 +47,11 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 | `redrawing-an-asset.md` | Vẽ lại một hình trong `assets/` — sàn chất lượng, bốn lỗi đã gặp, vì sao SMIL chứ không CSS |
 | `numeric-guards.md` | Chặn số hỏng — vì sao `Math.max(0, x)` không phải guard, và năm lỗi thật của vòng 6 |
 | `adaptive-audit.md` | Kiểm toán toàn không gian cửa sổ: đọc bảng `audit:adaptive`, xử lý khi audit đỏ, và đọc corpus sự cố trước khi đổi một ngưỡng |
+| `adaptive-selection.md` | Đọc `select/`: bảy hạng tử theo thứ tự, vì sao hoà là chuyện thật, khi nào được sửa `SCORE_ORDER`, và bốn lỗi đã từng xảy ra ở đúng chỗ này |
 | `adaptive-debugging.md` | Đọc lựa chọn thích ứng từ DOM (`data-adaptive-*`), console, và ba câu "chữ nhỏ / panel đè / modal không với tới" |
 
 ## Khác
 
 - `adaptive-audit.md` — báo cáo **sinh tự động** từ 578 cửa sổ (không sửa tay).
-- `assets.md` — kho 25 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
+- `assets.md` — kho 26 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
 - `DESCRIPTION.md` — mô tả ngắn cho dev/cộng đồng.
