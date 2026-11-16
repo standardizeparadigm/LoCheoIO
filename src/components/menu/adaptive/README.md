@@ -1,6 +1,7 @@
 # `src/components/menu/adaptive/`
 
-Sixteen files and four subfolders (`chip/`, `audit/`, `repair/`, `select/`), one direction of dependency:
+Sixteen files and six subfolders (`chip/`, `audit/`, `repair/`, `select/`,
+`preferences/`, `hysteresis/`), one direction of dependency:
 
 ```
 viewport.ts   {width, height}          →  Box        (normalised once)
@@ -20,6 +21,8 @@ chip/         Box width + the band width →  how the mode chip fits (see chip/R
 audit/        the whole window space      →  one AuditReport (see audit/README.md)
 repair/       a profile + the contract    →  the rungs it walks (see repair/README.md)
 select/       the rungs, compared          →  the cheapest one (see select/README.md)
+preferences/  what the player asked for    →  motion + contrast, as names (see preferences/README.md)
+hysteresis/   the previous profile         →  the same rung for two more pixels (see hysteresis/README.md)
 ```
 
 | File | Owns |
@@ -43,6 +46,8 @@ select/       the rungs, compared          →  the cheapest one (see select/REA
 | `repair/` | `adaptive/repair/` — thang sửa `as-planned → ignore-inset → … → smallest-type` khi một cửa sổ phá hợp đồng |
 | `select/` | `adaptive/select/` — cho điểm bảy hạng tử theo thứ tự từ điển, so sánh sáu bậc, trả bậc rẻ nhất kèm lý do từng bậc thua |
 | `chip/` | `adaptive/chip/` — chip chế độ: `planModeChip()`, `chipBoxHeight()`, `estimateText()` |
+| `preferences/` | `adaptive/preferences/` — **vòng 15**: `preferencesFor()` gộp ba nguồn (OS, công tắc người chơi, mặc định) thành hai tên `motion`/`contrast`, kèm biến CSS và `data-*` |
+| `hysteresis/` | `adaptive/hysteresis/` — **vòng 15**: `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần nhích chuột |
 | `index.ts` | the public surface — import from here, not the modules |
 
 ## Why this existed in v1.1.8 round 6
