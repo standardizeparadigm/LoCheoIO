@@ -147,8 +147,15 @@ export function slackOf(profile: AdaptiveProfile): number {
  * over-report the hero on exactly the windows where it is squeezed to 83px.
  */
 function heroPaintedHeight(profile: AdaptiveProfile): number {
-  const box = profile.type.lockupLo * LOCKUP_BOX_RATIO;
-  const painted = heroContentHeight(profile.hero, Number.isFinite(box) && box > 0 ? box : undefined);
+  /*
+   * The same rounding `constraints.ts` uses, to a tenth of a pixel. Without it the
+   * two callers disagree by up to 0.05px on the same profile, and `slack` is
+   * compared against other slacks — a sub-pixel difference is enough to reorder a
+   * tie in a corpus diff that nobody can explain.
+   */
+  const raw = profile.type.lockupLo * LOCKUP_BOX_RATIO;
+  const box = Number.isFinite(raw) && raw > 0 ? Math.round(raw * 10) / 10 : undefined;
+  const painted = heroContentHeight(profile.hero, box);
   return Number.isFinite(painted) ? painted : 0;
 }
 
@@ -160,7 +167,7 @@ function heroPaintedHeight(profile: AdaptiveProfile): number {
  * measured" must never win a comparison.
  */
 export function scoreProfile(candidate: AdaptiveProfile, context: ScoreContext): Score {
-  const broken = [...context.broken].sort();
+  const broken = [...context.broken];
   const finite = isFiniteProfile(candidate);
   /*
    * `hidden` and `cropped` are measured against the base, not against zero.
@@ -182,7 +189,14 @@ export function scoreProfile(candidate: AdaptiveProfile, context: ScoreContext):
     levers: countLevers(context.base, candidate),
     slack: slackOf(candidate),
   };
+  /*
+   * Push **before** the score is built, and keep the list sorted: `compareScores`
+   * falls back to the joined ids as its final tie-break, so an unsorted list would
+   * make that fallback depend on insertion order — the one thing a tie-break must
+   * not do. (The first version pushed after sorting and left it unsorted.)
+   */
   if (!finite) broken.push("numbers-finite");
+  broken.sort();
   return { ok: terms.violations === 0, terms, broken };
 }
 
@@ -232,14 +246,27 @@ const TIE = 1e-9;
 
 /** True when every number the profile publishes is finite. */
 export function isFiniteProfile(profile: AdaptiveProfile): boolean {
+  /*
+   * Every number the profile publishes, not the handful this check started with:
+   * a `NaN` in `playfield` or `modal` is just as unusable as one in `type`, and the
+   * first version only looked at the type scale and the plan.
+   */
   const numbers: number[] = [
     profile.box.width,
     profile.box.height,
     profile.room,
     profile.plan.scene,
     profile.plan.reserve,
+    profile.plan.panelWidth,
     profile.panelHeight,
     profile.playfield.hudScale,
+    profile.playfield.width,
+    profile.playfield.height,
+    profile.modal.maxWidth,
+    profile.modal.maxHeight,
+    profile.modal.padding,
+    profile.modal.titleSize,
+    profile.modal.bodySize,
     ...Object.values(profile.type).filter((v): v is number => typeof v === "number"),
   ];
   return numbers.every((n) => Number.isFinite(n));
