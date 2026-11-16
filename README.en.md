@@ -456,6 +456,36 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // taller column: 192 mascot + 24 chip + padding
 
 `tests/menu-adaptive.test.ts` sweeps **1,682 viewports** and asserts `heroContentHeight(layout) ≤ scene` at every sample — so a wrong threshold is a red test, not something a player finds. On resize, both hooks listen for **six** events and update in one animation frame.
 
+### 🧠 Round fifteen: the adaptive system tunes itself, without flinching
+
+No new windows this round. It closes four gaps round fourteen left behind — places
+where a promise existed in the docs and no code path existed behind it:
+
+| | before round 15 | after round 15 |
+| --- | --- | --- |
+| 「Reduce motion」 switch | reached the canvas only — **3** CSS layers stopped | resolved into `profile.prefs`, reaches the menu — **27** layers stop |
+| `prefers-contrast: more` | read by `App.tsx` to set one attribute | the sixth `Environment` signal; panel borders and heads lift |
+| The six-rung repair ladder | a tested library **nobody called** | `useAdaptive()` runs it at runtime; `data-adaptive-repair` names the rung |
+| Dragging an edge across a breakpoint | re-laid-out the screen on every mouse move | `stabilize()` holds the rung for **2px** — 60px of drag changes it ≤ 2 times |
+
+- **Three sources, two names.** `preferencesFor(env, settings.reducedMotion)` OR-s the OS
+  and the player's switch rather than AND-ing them: an app does not get to overrule the
+  OS with a default.
+- **The fifteenth invariant, `prefs-respected`**, forbids a profile that says "reduced
+  motion" while its CSS variables say "full".
+- **`diagnose()` grew two rows**: `10 · prefs` always, `11 · repair` only on a profile the
+  hook painted — a pure `resolveAdaptive()` never walks the ladder, so it has no rung.
+
+Turning both preferences on **changes no pixel** of the layout: 578 / 578 windows stay
+`as-planned` with 0 violations, and a test compares `plan` / `type` / `density` between
+the two profiles to keep that promise.
+
+Details: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+folders: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Stability and preferences — v1.1.8 round 15: hysteresis holds a rung for 2px, the repair ladder runs at runtime, two preferences from three sources (SMIL animation)" width="100%" />
+
 ### 🧱 Round eight: six layers, one profile
 
 Round six taught the hero to measure its own window. Everything else still
@@ -759,7 +789,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 26 SVGs — no orphans, no broken references
+$ npm run check:assets # 27 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
@@ -770,7 +800,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 26 SVGs, references checked both ways | ✅ |
+| `check-assets` | 27 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.

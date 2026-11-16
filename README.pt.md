@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos que têm solução (a partir de 356px), sem rolagem nem corte. A faixa do deck sai; os 26 SVGs incluem os diagramas de faixas do HUD (rodada nove) e o relatório de auditoria (rodada doze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos que têm solução (a partir de 356px), sem rolagem nem corte. A faixa do deck sai; os 27 SVGs incluem os diagramas de faixas do HUD (rodada nove), o relatório de auditoria (rodada doze) e a figura de estabilidade (rodada quinze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 
@@ -543,6 +543,36 @@ Lọ Chéo traz **7 idiomas de interface**, aplicados na hora — sem recarregar
 | Trocar idioma | — (botões VI/EN/中/日/한/ES/FR) | Botões VI/EN/中/日/한/ES/FR no menu / pausa |
 
 ## 🚀 Instalar & Rodar
+
+### 🧠 Rodada quinze: o sistema se ajusta sozinho, e não treme mais
+
+Nenhuma janela nova. Fecha quatro lacunas que a rodada catorze deixou — lugares onde a
+promessa estava na documentação e não havia código atrás:
+
+| | antes da rodada 15 | depois da rodada 15 |
+| --- | --- | --- |
+| Interruptor «Reduzir movimento» | chegava só ao canvas — **3** camadas CSS paravam | resolvido em `profile.prefs`, chega ao menu — **27** camadas param |
+| `prefers-contrast: more` | só `App.tsx` lia, para pôr um atributo | o sexto sinal de `Environment`; bordas e cabeçalhos de painel sobem |
+| A escada de reparo de seis degraus | uma biblioteca testada **que ninguém chamava** | `useAdaptive()` a executa em runtime; `data-adaptive-repair` diz o degrau |
+| Arrastar uma borda por um ponto de quebra | refazia o layout a cada movimento do rato | `stabilize()` retém o degrau **2px** — 60px de arrasto mudam-no ≤ 2 vezes |
+
+- **Três fontes, dois nomes.** `preferencesFor(env, settings.reducedMotion)` junta com **OU**
+  o sistema e o interruptor do jogador, nunca com E: a app não anula com um padrão o que o
+  sistema declara.
+- **A décima quinta invariante, `prefs-respected`**, proíbe um perfil que diga «reduzido»
+  enquanto as suas variáveis CSS dizem «completo».
+- **`diagnose()` ganhou duas linhas**: `10 · prefs` sempre, `11 · repair` só num perfil que o
+  hook pintou — um `resolveAdaptive()` puro não percorre a escada.
+
+Ligar as duas preferências **não muda um pixel** do layout: 578 / 578 janelas continuam
+`as-planned` com 0 violações, e um teste compara `plan` / `type` / `density` entre os dois
+perfis.
+
+Detalhes: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+pastas: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Estabilidade e preferências — v1.1.8 rodada 15: a histerese retém 2px, a escada de reparo corre em runtime, duas preferências de três fontes (animação SMIL)" width="100%" />
 
 ### Jogue agora (sem build)
 

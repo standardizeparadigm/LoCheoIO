@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 26 SVGs umfassen die HUD-Bandschemata (Runde neun) und den Audit-Bericht (Runde zwölf), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 27 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -419,6 +419,35 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // höhere Spalte: 192 Maskottchen + 24 Chip
 ```
 
 `tests/menu-adaptive.test.ts` prüft **1.682 Viewports** und verlangt `heroContentHeight(layout) ≤ scene` bei jedem Sample. Beim Größenändern hören beide Hooks auf **sechs** Events und aktualisieren in einem Frame.
+
+### 🧠 Runde fünfzehn: das System justiert sich selbst, und zittert nicht mehr
+
+Keine neuen Fenster. Sie schließt vier Lücken aus Runde vierzehn — Stellen, an denen das
+Versprechen in der Doku stand und kein Code dahinter:
+
+| | vor Runde 15 | nach Runde 15 |
+| --- | --- | --- |
+| Schalter „Bewegung reduzieren" | erreichte nur das Canvas — **3** CSS-Ebenen stoppten | in `profile.prefs` aufgelöst, erreicht das Menü — **27** Ebenen stoppen |
+| `prefers-contrast: more` | nur `App.tsx` las es für ein Attribut | das sechste `Environment`-Signal; Panelrahmen und -köpfe werden angehoben |
+| Die sechsstufige Reparaturleiter | eine getestete Bibliothek, **die niemand aufrief** | `useAdaptive()` fährt sie zur Laufzeit; `data-adaptive-repair` nennt die Stufe |
+| Kante über einen Bruchpunkt ziehen | baute das Layout bei jeder Mausbewegung neu | `stabilize()` hält die Stufe **2px** — 60px Ziehen ändern sie ≤ 2-mal |
+
+- **Drei Quellen, zwei Namen.** `preferencesFor()` verknüpft System und Spielerschalter mit
+  **ODER**, nicht mit UND: eine App hebt die Aussage des Systems nicht mit einem Default auf.
+- **Die fünfzehnte Invariante `prefs-respected`** verbietet ein Profil, das „reduziert" sagt,
+  während seine CSS-Variablen „voll" sagen.
+- **`diagnose()` bekam zwei Zeilen**: `10 · prefs` immer, `11 · repair` nur bei einem Profil,
+  das der Hook gemalt hat — ein reines `resolveAdaptive()` läuft die Leiter nicht.
+
+Beide Präferenzen an **ändern keinen Pixel** des Layouts: 578 / 578 Fenster bleiben
+`as-planned` mit 0 Verstößen, und ein Test vergleicht `plan` / `type` / `density` zwischen
+beiden Profilen.
+
+Details: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+Ordner: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Stabilität und Vorlieben — v1.1.8 Runde 15: Hysterese hält 2px, Reparaturleiter läuft zur Laufzeit, zwei Vorlieben aus drei Quellen (SMIL-Animation)" width="100%" />
 
 ### 🧱 Runde acht: sechs Schichten, ein Profil
 

@@ -41,7 +41,7 @@
 
 ## 🆕 Mới trong v1.1.8
 
-> Bản **vá cuối** trước 1.2.0. Không thêm chế độ chơi, không đổi cân bằng, không đổi định dạng lưu. Vòng cuối của bản vá này làm một việc: **hero tự đo cửa sổ và tự chọn bố cục**, ở mọi kích thước có bố cục vừa, không cuộn, không cắt. Kèm theo là dải deck bị bỏ, 26 hình SVG (ba sơ đồ HUD cho vòng chín, bản kiểm toán cho vòng mười hai, bản chọn bậc cho vòng mười ba), corpus thứ tư cho sự cố, và một thang tự sửa sáu bậc.
+> Bản **vá cuối** trước 1.2.0. Không thêm chế độ chơi, không đổi cân bằng, không đổi định dạng lưu. Vòng cuối của bản vá này làm một việc: **hero tự đo cửa sổ và tự chọn bố cục**, ở mọi kích thước có bố cục vừa, không cuộn, không cắt. Kèm theo là dải deck bị bỏ, 27 hình SVG (ba sơ đồ HUD cho vòng chín, bản kiểm toán cho vòng mười hai, bản chọn bậc cho vòng mười ba, bản ổn định cho vòng mười lăm), corpus thứ tư cho sự cố, và một thang tự sửa sáu bậc.
 
 ### 📐 Một phép cộng không ai quản lý — và bốn lỗi cùng lúc
 
@@ -607,6 +607,36 @@ Khi cửa sổ đổi kích thước, `useMenuPlan()` và `useViewportWidth()` c
 **sáu** sự kiện (`resize` · `orientationchange` · `fullscreenchange` + ba tiền tố
 nhà cung cấp) và cập nhật trong một `requestAnimationFrame`.
 
+### 🧠 Vòng mười lăm: hệ adaptive tự chỉnh, và không còn rung
+
+Vòng này không thêm cửa sổ nào. Nó đóng bốn khoảng trống mà vòng 14 để lại — chỗ mà
+một lời hứa đã có trong tài liệu nhưng chưa có đường đi trong mã:
+
+| Việc | Trước vòng 15 | Sau vòng 15 |
+| --- | --- | --- |
+| Công tắc «Giảm chuyển động» | chỉ tới được canvas — **3** lớp CSS dừng | vào `profile.prefs`, tới cả menu — **27** lớp dừng |
+| `prefers-contrast: more` | chỉ `App.tsx` đọc, để đặt một attribute | là tín hiệu thứ sáu của `Environment`; viền panel + đầu panel được nâng |
+| Thang sửa sáu bậc | thư viện có test, **không ai gọi** | `useAdaptive()` chạy nó ở runtime; `data-adaptive-repair` nói bậc nào đã thắng |
+| Kéo cạnh qua một biên | dựng lại bố cục mỗi lần nhích chuột | `stabilize()` giữ bậc cũ trong **2px** — 60px kéo chỉ đổi bậc ≤ 2 lần |
+
+- **Ba nguồn, hai tên.** `preferencesFor(env, settings.reducedMotion)` gộp OS và công
+  tắc người chơi bằng **OR**, không AND: app không được ghi đè lời khai của OS.
+- **Bất biến thứ 15 — `prefs-respected`** — không cho profile nói "giảm chuyển động"
+  trong khi biến CSS nói "đầy đủ".
+- **`diagnose()` thêm hai lớp**: `10 · prefs` luôn có, `11 · repair` chỉ xuất hiện khi
+  profile do hook vẽ ra — `resolveAdaptive()` thuần không đi thang sửa, nên nó không có
+  bậc nào để báo.
+
+Bật cả hai sở thích lên **không đổi một pixel nào** của bố cục: 578 / 578 cửa sổ vẫn
+`as-planned`, 0 vi phạm, và test so `plan` / `type` / `density` giữa hai profile để giữ
+đúng lời hứa ấy.
+
+Chi tiết: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+thư mục: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Ổn định và sở thích — v1.1.8 vòng 15: hysteresis giữ bậc trong 2px, thang sửa chạy ở runtime, hai sở thích gộp từ ba nguồn (hoạt họa SMIL)" width="100%" />
+
 ### 🧱 Vòng tám: sáu lớp, một profile
 
 Vòng 6 dạy hero tự đo cửa sổ. Nhưng hộp thoại vẫn cao `86vh` không trần, tiêu đề
@@ -917,7 +947,7 @@ Mỗi thay đổi phải qua **năm cổng** trước khi vào `main` — chạy
 $ npm run check        # typecheck + toàn bộ test
 $ npm run check:readme # 10 README đồng bộ phiên bản + liên kết release
 $ npm run check:i18n   # 7 locale × 327 khoá, không thiếu không thừa
-$ npm run check:assets # 26 SVG — không file mồ côi, không tham chiếu hỏng
+$ npm run check:assets # 27 SVG — không file mồ côi, không tham chiếu hỏng
 $ npm run smoke        # SSR smoke: mọi menu/modal render được
 ```
 
@@ -928,7 +958,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
-| `check-assets` | 26 SVG, 2 chiều tham chiếu | ✅ |
+| `check-assets` | 27 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1458 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.

@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 26 SVG incluyen los diagramas de bandas del HUD (ronda nueve) y el informe de auditoría (ronda doce), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 27 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -449,6 +449,36 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // columna más alta: 192 mascota + 24 chip
 ```
 
 `tests/menu-adaptive.test.ts` recorre **1.682 viewports** y verifica `heroContentHeight(layout) ≤ scene` en cada muestra. Al redimensionar, ambos hooks escuchan **seis** eventos y actualizan en un solo frame.
+
+### 🧠 Ronda quince: el sistema se ajusta solo, y ya no tiembla
+
+Ninguna ventana nueva. Cierra cuatro huecos que dejó la ronda catorce — sitios donde la
+promesa existía en la documentación y no había código detrás:
+
+| | antes de la ronda 15 | después de la ronda 15 |
+| --- | --- | --- |
+| Interruptor «Reducir movimiento» | llegaba solo al canvas — **3** capas CSS se detenían | resuelto en `profile.prefs`, llega al menú — **27** capas se detienen |
+| `prefers-contrast: more` | solo `App.tsx` lo leía, para poner un atributo | la sexta señal de `Environment`; bordes y cabeceras de panel suben |
+| La escalera de reparación de seis peldaños | una biblioteca probada **que nadie llamaba** | `useAdaptive()` la ejecuta en runtime; `data-adaptive-repair` dice qué peldaño ganó |
+| Arrastrar un borde por un punto de ruptura | rehacía el diseño en cada movimiento del ratón | `stabilize()` retiene el peldaño **2px** — 60px de arrastre lo cambian ≤ 2 veces |
+
+- **Tres fuentes, dos nombres.** `preferencesFor(env, settings.reducedMotion)` combina con
+  **OR** el sistema y el interruptor del jugador, no con AND: una app no anula con un
+  valor por defecto lo que declara el sistema.
+- **La decimoquinta invariante, `prefs-respected`**, prohíbe un perfil que diga «reducido»
+  mientras sus variables CSS digan «completo».
+- **`diagnose()` suma dos filas**: `10 · prefs` siempre, `11 · repair` solo en un perfil
+  que pintó el hook — un `resolveAdaptive()` puro no recorre la escalera.
+
+Activar ambas preferencias **no cambia un píxel** del diseño: 578 / 578 ventanas siguen
+`as-planned` con 0 violaciones, y un test compara `plan` / `type` / `density` entre ambos
+perfiles para mantener esa promesa.
+
+Detalles: [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+carpetas: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Estabilidad y preferencias — v1.1.8 ronda 15: la histéresis retiene 2px, la escalera de reparación corre en runtime, dos preferencias de tres fuentes (animación SMIL)" width="100%" />
 
 ### 🧱 Octava ronda: seis capas, un perfil
 

@@ -39,7 +39,7 @@ C'est un **arcade d'action mono-écran** inspiré des pickles populaires vietnam
 
 ## 🆕 Nouveautés de v1.1.8
 
-> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles qui ont une solution (à partir de 356px), sans défilement ni coupure. La bande du deck disparaît ; les 26 SVG comptent les schémas de bandes du HUD (tour neuf) et le rapport d'audit (tour douze), plus un quatrième corpus d'incidents et une échelle de réparation à six barreaux.
+> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles qui ont une solution (à partir de 356px), sans défilement ni coupure. La bande du deck disparaît ; les 27 SVG comptent les schémas de bandes du HUD (tour neuf), le rapport d'audit (tour douze) et la figure de stabilité (tour quinze), plus un quatrième corpus d'incidents et une échelle de réparation à six barreaux.
 
 ### 📐 Une addition que personne ne surveillait — et quatre bugs à la fois
 
@@ -419,6 +419,36 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // colonne la plus haute : 192 mascotte + 24 puce
 ```
 
 `tests/menu-adaptive.test.ts` balaie **1 682 viewports** et vérifie `heroContentHeight(layout) ≤ scene` à chaque échantillon. Au redimensionnement, les deux hooks écoutent **six** événements et se mettent à jour dans une seule frame.
+
+### 🧠 Tour quinze : le système s'ajuste seul, et ne tremble plus
+
+Aucune fenêtre nouvelle. Il ferme quatre trous laissés par le tour quatorze — des endroits
+où la promesse existait dans la doc et où aucun code ne la portait :
+
+| | avant le tour 15 | après le tour 15 |
+| --- | --- | --- |
+| Interrupteur « Réduire les animations » | n'atteignait que le canvas — **3** couches CSS s'arrêtaient | résolu dans `profile.prefs`, atteint le menu — **27** couches s'arrêtent |
+| `prefers-contrast: more` | lu par `App.tsx` pour poser un attribut | le sixième signal d'`Environment` ; bordures et en-têtes de panneau relevés |
+| L'échelle de réparation à six barreaux | une bibliothèque testée **que personne n'appelait** | `useAdaptive()` l'exécute au runtime ; `data-adaptive-repair` nomme le barreau |
+| Glisser un bord sur un point de rupture | refaisait la mise en page à chaque mouvement | `stabilize()` retient le barreau **2px** — 60px de glissement le changent ≤ 2 fois |
+
+- **Trois sources, deux noms.** `preferencesFor()` combine en **OU** le système et
+  l'interrupteur du joueur, jamais en ET : une app n'annule pas avec un défaut ce que le
+  système déclare.
+- **La quinzième invariante, `prefs-respected`**, interdit un profil qui dit « réduit »
+  pendant que ses variables CSS disent « complet ».
+- **`diagnose()` gagne deux lignes** : `10 · prefs` toujours, `11 · repair` seulement sur
+  un profil peint par le hook — un `resolveAdaptive()` pur ne parcourt pas l'échelle.
+
+Activer les deux préférences **ne change pas un pixel** : 578 / 578 fenêtres restent
+`as-planned` avec 0 violation, et un test compare `plan` / `type` / `density` entre les
+deux profils pour tenir cette promesse.
+
+Détails : [docs/releases/v1.1.8.md §24](docs/releases/v1.1.8.md#24-vòng-15--hệ-tự-chỉnh-và-hai-pixel-bộ-nhớ) ·
+dossiers : [`adaptive/preferences/`](src/components/menu/adaptive/preferences/README.md) ·
+[`adaptive/hysteresis/`](src/components/menu/adaptive/hysteresis/README.md).
+
+<img src="assets/adaptive-stability.svg" alt="Stabilité et préférences — v1.1.8 tour 15 : l'hystérésis retient 2px, l'échelle de réparation tourne au runtime, deux préférences issues de trois sources (animation SMIL)" width="100%" />
 
 ### 🧱 Huitième tour : six couches, un profil
 
