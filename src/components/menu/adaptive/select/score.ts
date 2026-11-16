@@ -46,6 +46,7 @@
  * sacrifice nothing) without ever outweighing a sacrifice.
  */
 
+import { profileNumbers } from "../constraints";
 import { heroContentHeight } from "../hero";
 import { lockupBoxOf } from "../typeScale";
 import type { AdaptiveProfile } from "../resolve";
@@ -243,29 +244,12 @@ const TIE = 1e-9;
 /** True when every number the profile publishes is finite. */
 export function isFiniteProfile(profile: AdaptiveProfile): boolean {
   /*
-   * Every number the profile publishes, not the handful this check started with:
-   * a `NaN` in `playfield` or `modal` is just as unusable as one in `type`, and the
-   * first version only looked at the type scale and the plan.
+   * `profileNumbers()` is the definition of "every number in the profile" — the same
+   * one `numbers-finite` uses. This function had its own hand-written list, which is
+   * the bug: two lists of "everything" drift apart silently, and a number that is in
+   * one and not the other can make a profile score as broken while violating nothing.
    */
-  const numbers: number[] = [
-    profile.box.width,
-    profile.box.height,
-    profile.room,
-    profile.plan.scene,
-    profile.plan.reserve,
-    profile.plan.panelWidth,
-    profile.panelHeight,
-    profile.playfield.hudScale,
-    profile.playfield.width,
-    profile.playfield.height,
-    profile.modal.maxWidth,
-    profile.modal.maxHeight,
-    profile.modal.padding,
-    profile.modal.titleSize,
-    profile.modal.bodySize,
-    ...Object.values(profile.type).filter((v): v is number => typeof v === "number"),
-  ];
-  return numbers.every((n) => Number.isFinite(n));
+  return profileNumbers(profile).every(([, value]) => Number.isFinite(value));
 }
 
 /**

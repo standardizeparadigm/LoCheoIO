@@ -174,9 +174,28 @@ describe("the score's measurements", () => {
     expect(describeScore({ ok: false, terms: terms({ violations: 2 }), broken: ["a", "b"] })).toContain("broken:");
   });
 
-  it("knows a profile with a NaN in it", () => {
+  it("knows a profile with a NaN in it — anywhere in it", () => {
+    /*
+     * Round 14: this check had its own hand-written list of "every number", while
+     * `numbers-finite` walks the profile recursively. The lists already disagreed
+     * (`playfield` and `modal` were in one, `box` in the other), which is how a
+     * profile can score as broken while violating nothing. One definition now, so
+     * every one of these has to be caught by the same code path.
+     */
     expect(isFiniteProfile(profile)).toBe(true);
-    expect(isFiniteProfile({ ...profile, panelHeight: Number.NaN })).toBe(false);
+    const cases: Array<[string, AdaptiveProfile]> = [
+      ["panelHeight", { ...profile, panelHeight: Number.NaN }],
+      ["playfield.hudScale", { ...profile, playfield: { ...profile.playfield, hudScale: Number.NaN } }],
+      ["modal.maxWidth", { ...profile, modal: { ...profile.modal, maxWidth: Number.NaN } }],
+      ["plan.scene", { ...profile, plan: { ...profile.plan, scene: Number.NaN } }],
+      ["type.lockupLo", { ...profile, type: { ...profile.type, lockupLo: Number.NaN } }],
+      ["box.width", { ...profile, box: { ...profile.box, width: Number.NaN } }],
+    ];
+    for (const [where, broken] of cases) {
+      expect(isFiniteProfile(broken), where).toBe(false);
+      // …and the contract agrees, because it is the same walk.
+      expect(violations(broken).map((v) => v.id), where).toContain("numbers-finite");
+    }
   });
 });
 

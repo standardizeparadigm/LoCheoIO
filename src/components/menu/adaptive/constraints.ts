@@ -58,16 +58,30 @@ function n(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
 
-/** Every numeric leaf of the profile, with its dotted path. */
-function numbers(
+/**
+ * Every numeric leaf of the profile, with its dotted path.
+ *
+ * Exported because it is the definition of "every number in the profile", and
+ * `select/score.ts` used to keep a *second*, hand-written list of the same thing
+ * (`isFiniteProfile`). The two disagreed the day they were written: the recursive
+ * walk saw `playfield` and `modal` automatically and skipped `box`, the hand-written
+ * list named a dozen fields and included `box` — so a `NaN` in one place could score
+ * as broken without violating anything, and vice versa.
+ *
+ * `cssVars` and `metrics` are the two exclusions, and neither hides a number the
+ * player can be hurt by: `cssVars` is strings (checked by `numbers-finite` itself
+ * with a unit regex) and `metrics` is the density table the profile copies, whose
+ * numbers all reappear inside `plan`/`panelHeight`.
+ */
+export function profileNumbers(
   profile: unknown,
   prefix = "",
   out: Array<[string, number]> = [],
 ): Array<[string, number]> {
   for (const [key, value] of Object.entries(profile as Record<string, unknown>)) {
-    if (key === "cssVars" || key === "metrics" || key === "box") continue;
+    if (key === "cssVars" || key === "metrics") continue;
     if (typeof value === "number") out.push([`${prefix}${key}`, value]);
-    else if (value && typeof value === "object" && !Array.isArray(value)) numbers(value, `${prefix}${key}.`, out);
+    else if (value && typeof value === "object" && !Array.isArray(value)) profileNumbers(value, `${prefix}${key}.`, out);
   }
   return out;
 }
@@ -175,7 +189,7 @@ export const CONSTRAINTS: readonly Constraint[] = [
     id: "numbers-finite",
     why: "a NaN anywhere becomes a dropped CSS declaration or a hitbox that never collides.",
     check: (p) => {
-      for (const [path, value] of numbers(p)) {
+      for (const [path, value] of profileNumbers(p)) {
         if (!Number.isFinite(value)) return `${path} is ${value}`;
       }
       for (const [name, value] of Object.entries(p.cssVars)) {
