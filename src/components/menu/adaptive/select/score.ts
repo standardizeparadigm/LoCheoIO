@@ -47,7 +47,7 @@
  */
 
 import { heroContentHeight } from "../hero";
-import { LOCKUP_BOX_RATIO } from "../../wordmark/scale";
+import { lockupBoxOf } from "../typeScale";
 import type { AdaptiveProfile } from "../resolve";
 
 /** Every term, in priority order. `terms` is compared left to right. */
@@ -148,14 +148,10 @@ export function slackOf(profile: AdaptiveProfile): number {
  */
 function heroPaintedHeight(profile: AdaptiveProfile): number {
   /*
-   * The same rounding `constraints.ts` uses, to a tenth of a pixel. Without it the
-   * two callers disagree by up to 0.05px on the same profile, and `slack` is
-   * compared against other slacks — a sub-pixel difference is enough to reorder a
-   * tie in a corpus diff that nobody can explain.
+   * `lockupBoxOf()` is the one definition of the box, rounding included. This
+   * function used to compute it a third time, in its own way.
    */
-  const raw = profile.type.lockupLo * LOCKUP_BOX_RATIO;
-  const box = Number.isFinite(raw) && raw > 0 ? Math.round(raw * 10) / 10 : undefined;
-  const painted = heroContentHeight(profile.hero, box);
+  const painted = heroContentHeight(profile.hero, lockupBoxOf(profile.type.lockupLo));
   return Number.isFinite(painted) ? painted : 0;
 }
 

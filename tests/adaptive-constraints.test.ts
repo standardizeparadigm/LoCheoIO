@@ -21,6 +21,9 @@ import {
   violations,
 } from "../src/components/menu/adaptive/constraints";
 import { PRESETS } from "../src/components/menu/adaptive/presets";
+import { LOCKUP_BOX_RATIO, lockupBoxOf } from "../src/components/menu/adaptive/typeScale";
+import { heroContentHeight } from "../src/components/menu/adaptive/hero";
+import { slackOf } from "../src/components/menu/adaptive/select";
 import { resolveForSize, type AdaptiveProfile } from "../src/components/menu/adaptive/resolve";
 
 /** A profile with one field replaced — the "inject a defect" helper. */
@@ -163,5 +166,51 @@ describe("the contract is not vacuous", () => {
     const message = violations(p)[0].message;
     expect(message).toMatch(/\d/);
     expect(message.length).toBeGreaterThan(20);
+  });
+});
+
+describe("the lockup box has one definition", () => {
+  /*
+   * Round 14. `lockupLo × LOCKUP_BOX_RATIO` was written out three times — twice in
+   * `constraints.ts`, once in `select/score.ts` — and two of the three rounded it
+   * differently (0.1px in `hero-fits-scene`, not at all in `lockup-fits-scene`).
+   * Both were "right" within tolerance, which is the problem: three answers to one
+   * question drift, and a 0.05px drift reorders a tie in the scorer.
+   */
+  it("is `lockupBoxOf()`, and it rounds to a tenth", () => {
+    // 83.333… × 1.68 = 140.0000… — the squeezed case the comment in score.ts cites.
+    expect(lockupBoxOf(83.3333333)).toBe(140);
+    expect(lockupBoxOf(100)).toBe(Math.round(100 * LOCKUP_BOX_RATIO * 10) / 10);
+    // Not a positive finite number → undefined, and the hero falls back to nominal.
+    expect(lockupBoxOf(0)).toBeUndefined();
+    expect(lockupBoxOf(-5)).toBeUndefined();
+    expect(lockupBoxOf(Number.NaN)).toBeUndefined();
+    expect(lockupBoxOf(Number.POSITIVE_INFINITY)).toBeUndefined();
+  });
+
+  it("is not recomputed anywhere else in the adaptive tree", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const files = [
+      "src/components/menu/adaptive/constraints.ts",
+      "src/components/menu/adaptive/select/score.ts",
+      "src/components/menu/adaptive/diagnostics.ts",
+      "src/components/menu/adaptive/audit/audit.ts",
+    ];
+    for (const file of files) {
+      const src = await readFile(file, "utf8");
+      expect(src, file).not.toMatch(/lockupLo\s*\*\s*LOCKUP_BOX_RATIO/);
+    }
+  });
+
+  it("keeps the constraint and the scorer in agreement on a real window", () => {
+    // 844×390 squeezes the lockup to its floor; the two callers must not disagree
+    // by a fraction of a pixel, because `slack` is compared across candidates.
+    const profile = resolveForSize(844, 390);
+    const box = lockupBoxOf(profile.type.lockupLo);
+    const needs = heroContentHeight(profile.hero, box);
+    expect(needs).toBeLessThanOrEqual(profile.plan.scene + 0.5);
+    // `slackOf` is scene − painted, rounded; it must never be negative here.
+    expect(slackOf(profile)).toBeGreaterThanOrEqual(0);
+    expect(slackOf(profile)).toBeLessThanOrEqual(profile.plan.scene);
   });
 });

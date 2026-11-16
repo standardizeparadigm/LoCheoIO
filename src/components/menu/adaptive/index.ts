@@ -124,6 +124,7 @@ export {
   LOCKUP_BOX_RATIO,
   MAX_LOCKUP_PX,
   MIN_LOCKUP_PX,
+  lockupBoxOf,
   lockupMaxForBand,
   typeScaleFor,
   typeVars,

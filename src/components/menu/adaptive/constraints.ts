@@ -40,7 +40,7 @@ import {
   planModeChip,
 } from "./chip";
 import { densityFor } from "./density";
-import { LOCKUP_BOX_RATIO } from "../wordmark/scale";
+import { lockupBoxOf } from "./typeScale";
 import { ADAPTIVE_CSS_VARS, type AdaptiveProfile } from "./resolve";
 
 /** One invariant. */
@@ -104,7 +104,7 @@ export const CONSTRAINTS: readonly Constraint[] = [
     why: "the arrangement the hero chose needs no more band than the plan gave it.",
     check: (p) => {
       /* The real lockup box, not the 150px nominal one — see `heroContentHeight`. */
-      const needs = heroContentHeight(p.hero, Math.round(p.type.lockupLo * LOCKUP_BOX_RATIO * 10) / 10);
+      const needs = heroContentHeight(p.hero, lockupBoxOf(p.type.lockupLo));
       return needs <= p.plan.scene + 0.5 ? null : `hero needs ${n(needs)}px in a ${p.plan.scene}px scene`;
     },
   },
@@ -112,7 +112,8 @@ export const CONSTRAINTS: readonly Constraint[] = [
     id: "lockup-fits-scene",
     why: "the wordmark's two-line box is never taller than the hero band.",
     check: (p) => {
-      const box = p.type.lockupLo * LOCKUP_BOX_RATIO;
+      const box = lockupBoxOf(p.type.lockupLo);
+      if (box === undefined) return null; // not a positive finite number: nothing to compare
       return box <= p.plan.scene + 0.5 ? null : `lockup box ${n(box)}px in a ${p.plan.scene}px scene`;
     },
   },

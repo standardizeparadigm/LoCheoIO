@@ -103,6 +103,24 @@ export interface TypeInput {
 export { LOCKUP_BOX_RATIO, MAX_LOCKUP_PX, MIN_LOCKUP_PX, lockupMaxForBand };
 
 /**
+ * The two-line lockup's painted box, px — rounded to a tenth.
+ *
+ * Round 14: the formula `lockupLo × LOCKUP_BOX_RATIO` was written out in three
+ * places (`constraints.ts` twice, `select/score.ts` once) and two of the three
+ * rounded it differently. `hero-fits-scene` rounded to 0.1px, `lockup-fits-scene`
+ * did not, and the scorer rounded again its own way — three answers to one
+ * question, each within 0.05px of the others, which is exactly the size of error
+ * that reorders a tie in a corpus sweep and then takes a day to explain.
+ *
+ * Undefined when the box would not be a positive finite number: `hero.ts` then
+ * falls back to its nominal 150px rather than painting a `NaN` band.
+ */
+export function lockupBoxOf(lockupLo: number): number | undefined {
+  const raw = lockupLo * LOCKUP_BOX_RATIO;
+  return Number.isFinite(raw) && raw > 0 ? Math.round(raw * 10) / 10 : undefined;
+}
+
+/**
  * Build the table.
  *
  * `driver` is the 0..1 "how much room do I have" signal; `inflation` is the
