@@ -477,7 +477,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 较高的一列：192 吉祥物 + 24 标签
 | 💾 **TOP 8 名人堂** | 本地存档，读取时校验并归一化，姓名自动大写，新纪录高亮 |
 | 🎨 **60fps 画质** | Canvas 2D，粒子上限 460，DPR 上限 2，离屏预渲染花砖地板，星光闪烁 + 菜单极光 |
 | 📴 **真·离线优先** | 自托管字体（latin + 越南文子集，woff2），无 CDN、无接口 —— 双击 `dist/index.html` 即玩 |
-| 🧪 **质量保障** | 360 项单元测试（vitest）覆盖 modes / achievements / storage / i18n / settings —— `npm run check` 为 CI 关卡 |
+| 🧪 **质量保障** | 1618 项单元测试（vitest）覆盖 modes / achievements / storage / i18n / settings —— `npm run check` 为 CI 关卡 |
 
 <img src="assets/items.svg" alt="14 种食材 — 要接的腌菜、要捡的黄金道具、要躲的危险物" width="100%" />
 
@@ -599,7 +599,7 @@ npm run build      # → dist/index.html（单个自包含文件）
 npm run dev        # 带 HMR 的开发服务器（http://localhost:5173）
 npm run preview    # 本地预览生产构建
 npm run typecheck  # tsc --noEmit（strict，noUnusedLocals…）
-npm run test       # vitest — 360 项单元测试（modes / achievements / storage / i18n / settings）
+npm run test       # vitest — 1618 项单元测试（modes / achievements / storage / i18n / settings）
 npm run check      # typecheck + test + build（CI 质量关卡）
 ```
 
@@ -716,7 +716,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # 弹窗焦点捕获（v1.1.6）
-└─ tests/                  # vitest — 145 个文件 · 1553 项测试（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
+└─ tests/                  # vitest — 149 个文件 · 1618 项测试（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
 ```
 
 ## 🧱 架构与性能
@@ -759,7 +759,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 
 | 版本 | Tier | 日期 | 说明 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **1553 项测试 / 145 文件** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 项测试 / 149 文件** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **菜单背景去雾**（四层叠加：`blur 64→22px`、角落暗角替换全屏、CRT 边框 140→90px、地面 45→70%）· **分层彩色日志** · 8 个旧版 **96 条新描述** · 日期重排 · `src/game/changelog/` 拆分 · 10 个 README 重做 · **256 测试** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **六分区设置**（预设 · 音频 · 画面 · 语言 · 备份 · 数据）· 0–100 音量 · 震动强度 · 画质 · 切标签自动暂停 · 语言移入设置 · 4 个预设 · JSON 导入导出 · 多层动态菜单 · 作者卡片渐变流动 · 弹窗焦点捕获 · 修复刷新后音乐 · **150 项测试** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **双角 GAME/INFO 菜单**（开始 · 继续 · 模式 · 排行榜 · 成就 · 设置 / 关于 · 更新日志 · 退出）· **保存并恢复未完成对局**（`locheo.run.v1`）· 游戏内设置（音效/音乐/震动/减少动态）· 修复快捷键穿透弹窗 · prefers-reduced-motion 全覆盖 · **113 项测试** |
@@ -803,7 +803,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 ## 🤝 贡献
 
 1. Fork 仓库，按 `arena/<名称>` 或 `feat/<名称>` 规范创建分支。
-2. 提 PR 前 `npm run check` 必须全绿（typecheck + 1553 项测试 + build）。
+2. 提 PR 前 `npm run check` 必须全绿（typecheck + 1618 项测试 + build）。
 3. 非必要不新增运行时依赖 —— 理念：**一个文件、不联网、永久可玩**。
 4. PR 描述请注明受影响的界面/模式；若涉及玩法变更请附录屏。
 
