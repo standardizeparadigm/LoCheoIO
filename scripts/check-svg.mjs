@@ -44,9 +44,11 @@ const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
  * added `diacritics-clip.svg`, the twenty-fourth; round 12 added `adaptive-audit.svg`,
  * the twenty-fifth; round 13 adds `adaptive-select.svg`, the twenty-sixth; round 15
  * adds `adaptive-stability.svg`, the twenty-seventh; round 16 adds
- * `adaptive-hold.svg`, the twenty-eighth.
+ * `adaptive-hold.svg`, the twenty-eighth; round 17 adds `adaptive-repair.svg`,
+ * the twenty-ninth; round 18 adds `game-loop.svg`, the thirtieth, and
+ * `save-pipeline.svg`, the thirty-first.
  */
-const EXPECTED_ASSETS = 29;
+const EXPECTED_ASSETS = 31;
 if (files.length !== EXPECTED_ASSETS) {
   problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }

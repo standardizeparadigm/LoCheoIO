@@ -8,7 +8,7 @@
  "guard": "the chip plans a full line box for a name with two stacked marks",
  "profile": {
   "tier": "sm",
-  "device": "tablet",
+  "device": "handset",
   "aspect": "tall",
   "density": "spacious",
   "room": 0.42,

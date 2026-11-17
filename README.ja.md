@@ -499,9 +499,14 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 高い方の列: 192 マスコット + 24 チ�
 | 💾 **TOP 8 ランキング** | ローカル保存、読み込み時に検証・正規化、名前は自動大文字化、新記録はハイライト |
 | 🎨 **60fpsグラフィックス** | Canvas 2D、パーティクル上限460、DPR上限2、オフスクリーン事前描画の花柄床、星の瞬き + メニューオーロラ |
 | 📴 **真のオフラインファースト** | 自己ホストフォント（latin + ベトナム語サブセット、woff2）、CDN・API不使用 — `dist/index.html` をダブルクリックするだけ |
-| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1553件のユニットテスト（vitest）— `npm run check` がCIゲート |
+| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1618件のユニットテスト（vitest）— `npm run check` がCIゲート |
 
 <img src="assets/items.svg" alt="14種の食材 — キャッチすべき漬物、取るべき黄金パワー、避けるべき危険物" width="100%" />
+### 💾 ストレージと殿堂 — ひと試合の道のり
+
+データはマシンから出ない：エンジンが終了した試合をスナップショットにまとめ、`storage/`（9モジュール）は `safeStorage` という唯一の扉を通って localStorage に触り、壊れたセーブは項目ごとに救済され、それから TOP 8、実績16、設定へ — 「つづきから」はこの同じ道を逆にたどる。
+
+<img src="assets/save-pipeline.svg" alt="ひと試合の道のり — エンジン → storage/ → 統合と救済 → TOP 8 · 実績 · 設定（SMIL）" width="100%" />
 
 ## 🌐 言語の切り替え
 
@@ -535,6 +540,10 @@ Lọ Chéo はゲーム内で **7 言語のUI** を搭載 — リロード不要
 | 開始 / 確定 | `Enter` | **厨房へ**ボタン |
 | ミュート / 解除 | `M` | 右上のスピーカーボタン |
 | 言語切替 | —（VI/EN/中/日/한/ES/FR ボタンを使用） | メニュー / 一時停止の VI/EN/中/日/한/ES/FR ボタン |
+
+<img src="assets/game-loop.svg" alt="Lọ Chéo のひとサイクル — キー2つを保持し、斜めに滑って斬り、壺に受け、コンボを積む — ループは回り続ける（SMIL）" width="100%" />
+
+マシンから見たひとサイクル：キー2つの保持がステップ1、あとは繰り返し — 壺が割れなければリズムは止まらず、三つのひびが終わらせる。
 
 ## 🚀 インストールと実行
 
@@ -615,7 +624,7 @@ npm install        # 依存関係をインストール（Node ≥ 20.19）
 npm run build      # → dist/index.html（単一の自己完結ファイル）
 ```
 
-> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約700 KB、gzip約355 KB）にインライン化。サーバーもネットワークも不要です。
+> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約952 KB、gzip約430 KB）にインライン化。サーバーもネットワークも不要です。
 
 ### 開発
 
@@ -623,7 +632,7 @@ npm run build      # → dist/index.html（単一の自己完結ファイル）
 npm run dev        # HMR付き開発サーバー（http://localhost:5173）
 npm run preview    # プロダクションビルドをローカルで確認
 npm run typecheck  # tsc --noEmit（strict、noUnusedLocals…）
-npm run test       # vitest — 1553件のユニットテスト（modes / achievements / storage / i18n / settings）
+npm run test       # vitest — 1618件のユニットテスト（modes / achievements / storage / i18n / settings）
 npm run check      # typecheck + test + build（CI品質ゲート）
 ```
 
@@ -740,7 +749,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # モーダルのフォーカス封じ込め（v1.1.6）
-└─ tests/                  # vitest — 145ファイル · 1553テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
+└─ tests/                  # vitest — 149ファイル · 1618テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
 ```
 
 ## 🧱 アーキテクチャとパフォーマンス
@@ -779,11 +788,17 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 **ターミナルが苦手？**
 [`scripts/play-mac.command`](scripts/play-mac.command)（macOS）、[`scripts/play-windows.bat`](scripts/play-windows.bat)（Windows）、[`scripts/play-linux.sh`](scripts/play-linux.sh)（Linux）をダブルクリック —— カラーメニューが開き、`1` を選ぶとビルドしてすぐ遊べます。開発時は `2`。詳しくは [scripts/README.md](scripts/README.md)。
 
+**アップデートでセーブは消えますか？**
+消えません。ストレージのキーはバージョンをまたいで同じ；読み込み時にデータを統合し、項目ごとに救済します — 壊れた項目ひとつで殿堂全体が消えることはありません。
+
+**画面の大きさで遊び方は変わりますか？**
+ルールは変わりません。単一のアダプティブプロフィールがビューポートごとに配置を選び（578ウィンドウを監査、違反0）— HUD・ヒーロー・ダイアログは並び直し、ゲームはひとつのまま。
+
 ## 📦 リリースと変更履歴
 
 | バージョン | Tier | 日付 | ノート |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **1553 テスト / 145 ファイル** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 テスト / 149 ファイル** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **メニュー背景のかすみ除去**（四層の重なり：`blur 64→22px`、全画面ヴィネットを四隅のみに、CRT 枠 140→90px、床 45→70%）· **階層別カラー履歴** · 旧八版に **96 項目の説明** · 日付再整列 · `src/game/changelog/` 分割 · README 10 本刷新 · **256 テスト** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6セクション設定**（プリセット · サウンド · 表示 · 言語 · バックアップ · データ）· 音量 0–100 · 揺れの強さ · 画質 · タブ切替で自動停止 · 言語を設定へ移設 · 4プリセット · JSON 入出力 · 多層アニメのメニュー · 作者カードの流れるグラデーション · モーダルのフォーカス封じ込め · 再読込後の音楽バグ修正 · **150テスト** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **四隅 GAME/INFO メニュー**（プレイ · つづきから · モード · ランキング · 実績 · 設定 / 作者について · 更新履歴 · 終了）· **中断ランの保存＆再開**（`locheo.run.v1`）· ゲーム内設定（効果音/BGM/揺れ/動作を減らす）· モーダル越しショートカット修正 · prefers-reduced-motion 完全対応 · **113テスト** |
@@ -823,11 +838,12 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | よくある問題 — 黒画面 · 音が出ない · つづきから · ランチャー |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | ヘッドレス描画スモークテスト（全メニュー/モーダル） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | アーキテクチャ決定記録 — なぜ1ファイル、なぜSMIL、なぜ `modeConfigFor()` |
 
 ## 🤝 コントリビュート
 
 1. リポジトリをForkし、`arena/<名前>` または `feat/<名前>` の命名規則でブランチを作成。
-2. PRを出す前に `npm run check` をグリーンに（typecheck + 1553テスト + build）。
+2. PRを出す前に `npm run check` をグリーンに（typecheck + 1618テスト + build）。
 3. 本当に必要な場合以外、ランタイム依存を追加しない — 理念：**1ファイル、ネットワーク不要、永遠に遊べる**。
 4. PRには影響する画面/モードを明記し、ゲームプレイ変更時はクリップを添付してください。
 

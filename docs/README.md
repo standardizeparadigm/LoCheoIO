@@ -2,13 +2,13 @@
 
 ## Release notes (historical + current)
 
-**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười bốn vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí, kiểm toán 578 cửa sổ, và một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
+**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười tám vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, kiểm toán 578 cửa sổ, một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc, sở thích người chơi được tôn trọng (OR ba nguồn), dải 2px trả lời được *vì sao* nó đứng yên, guard chế độ prototype-safe bọc cả tick, và engine lần đầu chạy thật trong vitest. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
 
 Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-process.md` § Tầng phát hành) — đúng quy ước mà panel CHANGELOG trong game dùng:
 
 | Bản | Tầng | Nội dung chính | Tests lúc phát hành |
 | --- | --- | --- | --- |
-| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · hero 14 trang trí · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** · **chọn bậc rẻ nhất: 578 / 578 cửa sổ** · **chip đo cả bảy ngôn ngữ** | 1458 / 137 file |
+| [v1.1.8](releases/v1.1.8.md) | 🟣 PATCH | Màn hình bắt đầu hết tràn · lỗi cuộn lồng · «Cách chơi» vào menu GAME · một profile adaptive cho mọi thứ · chip chế độ · dấu tiếng Việt · **kiểm toán 578 cửa sổ** · **chọn bậc rẻ nhất: 578 / 578 cửa sổ** · sở thích người chơi (OR ba nguồn) · dải 2px có verdict · `modeConfigFor` + `readInsets` TTL · engine chạy thật trong vitest | 1618 / 149 file |
 | [v1.1.7](releases/v1.1.7.md) | 🟣 PATCH | Nền menu hết mờ (4 lớp) · changelog chia tầng · 96 gạch mô tả mới · tách `src/game/changelog/` | 256 / 33 file |
 | [v1.1.6](releases/v1.1.6.md) | 🟣 PATCH | Settings 6 mục · preset · backup JSON · a11y pass | 222 / 29 file |
 | [v1.1.5](releases/v1.1.5.md) | 🟣 PATCH | Panel góc GAME/INFO, Chơi tiếp ván dở | 113 |
@@ -30,6 +30,19 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 - `changelog-format.md` — spec module `src/game/changelog/` + ánh xạ tầng → màu (v1.1.8).
 - `adaptive-layout.md` — **hợp đồng** giữa `menu/layout/` và `menu/adaptive/`: ba bất biến, bốn ngưỡng và cột "nếu đặt sai thì hỏng gì" (v1.1.8, vòng 6).
 - `adaptive-v2.md` — **hợp đồng vòng 8**: một `AdaptiveProfile` cho plan, hero, cỡ chữ, hộp thoại và canvas; sáu lớp, bảng tier/density, và bảng "bất biến → test nào giữ" (v1.1.8, vòng 8).
+
+## Quyết định kiến trúc (`decisions/`)
+
+Mỗi quyết định đã chốt một file biên bản (phong cách MADR rút gọn) — bối cảnh,
+quyết định, phương án bị loại, hệ quả, và **gate giữ nó**. Quy tắc thư mục và
+danh mục đầy đủ nằm ở [`decisions/README.md`](decisions/README.md):
+
+- `0001-build-mot-file-html.md` — build ra **một file HTML duy nhất**; `file://` phải chơi được.
+- `0002-smil-thay-video.md` — hoạt họa tài liệu bằng **SMIL SVG**; GitHub chặn `<script>` trong README.
+- `0003-mode-config-prototype-safe.md` — tra cứu chế độ qua **`modeConfigFor()`**; id lạ → `classic`, `setMode` giữ nguyên.
+- `0004-prose-count-gate-trong-vitest.md` — cổng đếm số liệu chạy **trong `npm run check`**, không chỉ trong CI.
+- `0005-engine-headless-fake-canvas.md` — engine test headless qua **fake canvas**, không jsdom.
+- `0006-safe-storage-mot-loi-vao.md` — localStorage qua **đúng một cổng**: `safeStorage`.
 
 ## Hướng dẫn contributor (`guides/`)
 
@@ -54,5 +67,5 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 
 - `adaptive-audit.md` — báo cáo **sinh tự động** từ 578 cửa sổ (không sửa tay).
 - `adaptive-drag.md` — báo cáo **sinh tự động** từ 21 đường kéo (4 600 cửa sổ) và 12 ranh giới rung: dải 2px dập 48/48 lần đổi bậc khi con trỏ rung, và 1/12 khi kéo một chiều.
-- `assets.md` — kho 29 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
+- `assets.md` — kho 31 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
 - `DESCRIPTION.md` — mô tả ngắn cho dev/cộng đồng.

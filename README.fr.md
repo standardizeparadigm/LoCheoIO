@@ -39,7 +39,7 @@ C'est un **arcade d'action mono-écran** inspiré des pickles populaires vietnam
 
 ## 🆕 Nouveautés de v1.1.8
 
-> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles qui ont une solution (à partir de 356px), sans défilement ni coupure. La bande du deck disparaît ; les 29 SVG comptent les schémas de bandes du HUD (tour neuf), le rapport d'audit (tour douze) et la figure de stabilité (tour quinze), plus un quatrième corpus d'incidents et une échelle de réparation à six barreaux.
+> Le **dernier correctif** avant 1.2.0. Pas de nouveau mode, pas de changement d'équilibrage, pas de changement de format de sauvegarde. Cette dernière passe fait une chose : **le hero mesure la fenêtre et choisit sa propre disposition** — à toutes les tailles qui ont une solution (à partir de 356px), sans défilement ni coupure. La bande du deck disparaît ; les 31 SVG comptent les schémas de bandes du HUD (tour neuf), le rapport d'audit (tour douze) et la figure de stabilité (tour quinze), plus un quatrième corpus d'incidents et une échelle de réparation à six barreaux.
 
 ### 📐 Une addition que personne ne surveillait — et quatre bugs à la fois
 
@@ -584,6 +584,11 @@ l'invariant qui tient : dans *une* économie, `scene + reserve === usableHeight`
 | 🧪 **Qualité** | 1618 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
 
 <img src="assets/items.svg" alt="Les 14 ingrédients — les pickles à attraper, les pouvoirs dorés à saisir, les dangers à éviter" width="100%" />
+### 💾 Sauvegarde & tableau d'honneur — le voyage d'une partie
+
+Les données ne quittent jamais la machine : le moteur emballe la partie en un snapshot, `storage/` (9 modules) touche localStorage par l'unique porte `safeStorage`, une sauvegarde cassée est secourue entrée par entrée, et seulement arrivent le TOP 8, 16 succès et les réglages — « CONTINUER » parcourt ce même chemin à l'envers.
+
+<img src="assets/save-pipeline.svg" alt="Le voyage d'une partie — moteur → storage/ → fusionner &amp; secourir → TOP 8 · succès · réglages (SMIL)" width="100%" />
 
 ## 🌐 Changer de langue
 
@@ -618,6 +623,10 @@ Lọ Chéo embarque **7 langues d'interface**, appliquées instantanément — s
 | Muet / son | `M` | Bouton haut-parleur, en haut à droite |
 | Changer de langue | — (boutons VI/EN/中/日/한/ES/FR) | Boutons VI/EN/中/日/한/ES/FR sur le menu / la pause |
 
+<img src="assets/game-loop.svg" alt="Un cycle de jeu de Lọ Chéo — GARDEZ 2 touches, glissez et tranchez, remplissez le pot, encaissez les points — la boucle se referme (SMIL)" width="100%" />
+
+Un cycle vu par la machine : garder deux touches est l'étape 1, tout le reste se répète — tant que le pot tient, le rythme ne s'arrête pas ; trois fissures y mettent fin.
+
 ## 🚀 Installation & exécution
 
 ### Jouer tout de suite (sans build)
@@ -636,7 +645,7 @@ npm install        # installe les dépendances (Node ≥ 20.19)
 npm run build      # → dist/index.html (un seul fichier auto-suffisant)
 ```
 
-> `vite-plugin-singlefile` inline tout le JS/CSS/polices/images dans **un** `dist/index.html` (~700 Ko, gzip ~355 Ko). Ni serveur, ni réseau.
+> `vite-plugin-singlefile` inline tout le JS/CSS/polices/images dans **un** `dist/index.html` (~952 Ko, gzip ~430 Ko). Ni serveur, ni réseau.
 
 ### Développement
 
@@ -761,7 +770,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # confinement du focus (v1.1.6)
-└─ tests/                  # vitest — 97 fichiers · 981 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 149 fichiers · 1618 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Architecture & performance
@@ -800,11 +809,17 @@ Ajoute `src/i18n/locales/xx.ts` en miroir des clés de `vi.ts`, mets à jour `LA
 **Le terminal te rebute ?**
 Double-clique sur [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) ou [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — un menu coloré s'ouvre ; choisis `1` pour compiler et jouer aussitôt, `2` pour le serveur de dev. Détails : [scripts/README.md](scripts/README.md).
 
+**Ma sauvegarde survit-elle à une mise à jour ?**
+Oui. Les clés de stockage restent les mêmes d'une version à l'autre ; à la lecture, les données sont fusionnées et secourues entrée par entrée — une entrée cassée n'entraîne pas tout le tableau.
+
+**Joue-t-on différemment sur grand écran ?**
+Les règles ne changent pas. Un seul profil adaptatif choisit la mise en page pour chaque viewport (578 fenêtres auditées, 0 violation) — HUD, héros et dialogues se réorganisent, le jeu reste un jeu.
+
 ## 📦 Releases & changelog
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 fichiers** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **L'écran de départ ne déborde plus** : une addition de hauteurs ratée laissait 250px au hero et coupait `LỌ` · **bug de défilement** (boîte imbriquée + `justify-center`) réglé par **un seul** `.menu-scroll` ancré en haut · **« Comment jouer » dans le menu GAME** en modale · panneaux déclarés à **318px/458px** au lieu de suivre le contenu · ticker de 48px · **14 décorations du hero** + **3 anneaux de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 fichiers** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fond du menu débrumé** (quatre couches : `blur 64→22px`, vignette de coins au lieu du plein écran, cadre CRT 140→90px, sol 45→70%) · **changelog par niveaux colorés** · **96 puces neuves** pour 8 versions · dates réordonnées · `src/game/changelog/` découpé · 10 READMEs refaits · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Réglages en 6 sections** (rapides · audio · affichage · langue · sauvegarde · données) · volumes 0–100 · intensité des secousses · qualité visuelle · pause au changement d'onglet · langue dans les Réglages · 4 préréglages · export/import JSON · menu multicouche animé · dégradé sur la carte auteur · focus piégé dans les modales · fix musique après rechargement · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus d'angle GAME/INFO** (Jouer · Reprendre · Modes · Classement · Succès · Réglages / À propos · Changelog · Quitter) · **sauvegarde & reprise de partie** (`locheo.run.v1`) · réglages en jeu (SFX/musique/tremblement/animations) · fix raccourcis à travers les modales · prefers-reduced-motion partout · **113 tests** |
@@ -844,6 +859,7 @@ Notes de conception et documentation technique approfondie :
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problèmes fréquents — écran noir · audio · Reprendre · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de rendu headless (tout l'arbre menu/modales) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Registres de décisions d'architecture — pourquoi un fichier, pourquoi SMIL, pourquoi `modeConfigFor()` |
 
 ## 🤝 Contribuer
 

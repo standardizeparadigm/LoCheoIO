@@ -95,6 +95,15 @@ describe("nothing moved", () => {
       expect(sample.fit, fixture.id).toBe(fixture.profile.fit);
       expect(sample.hero, fixture.id).toBe(fixture.profile.hero);
       expect(sample.chip, fixture.id).toBe(fixture.chip.reason);
+      /*
+       * `device` left the replay once: the tablet threshold moved and two
+       * fixtures kept saying "tablet" by hand while every other field matched.
+       * The snapshot must answer for the device class too, so the next move
+       * regenerates the corpus instead of editing two labels.
+       */
+      expect(fixture.profile.device, fixture.id).toBe(
+        resolveAdaptive({ box: boxOf(fixture.width, fixture.height) }).device,
+      );
     }
   });
 

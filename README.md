@@ -784,6 +784,11 @@ lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: t
 | 🧪 **Chất lượng** | 1618 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
 
 <img src="assets/items.svg" alt="14 nguyên liệu Lọ Chéo — nhóm hứng, nhóm power, nhóm né" width="100%" />
+### 💾 Lưu trữ & bảng vàng — đường đi của một ván
+
+Dữ liệu không bay lên mây: engine gói kết quả ván thành snapshot, `storage/` (9 module) chạm localStorage đúng một lối qua `safeStorage`, bản lưu hỏng được cứu từng mục, rồi mới tới bảng vàng TOP 8, 16 thành tựu và cài đặt — và đường «CHƠI TIẾP» chạy đúng đường này, chỉ là đi ngược.
+
+<img src="assets/save-pipeline.svg" alt="Đường đi của một ván — engine → storage/ → hợp nhất + cứu dữ liệu → bảng vàng · thành tựu · cài đặt (SMIL)" width="100%" />
 
 ## 🌐 Chuyển ngôn ngữ
 
@@ -818,6 +823,10 @@ Lọ Chéo hỗ trợ **7 ngôn ngữ giao diện** ngay trong game — không c
 | Tắt / bật âm | `M` | Nút loa góc trên phải |
 | Đổi ngôn ngữ | — (dùng nút VI/EN/中/日/한/ES/FR) | Nút VI/EN/中/日/한/ES/FR ở menu / pause |
 
+<img src="assets/game-loop.svg" alt="Một nhập đoạn của Lọ Chéo — GIỮ 2 phím, LƯỢN &amp; CHÉM, HỨNG đầy hũ, CỘNG ĐIỂM — vòng lặp khép lại (SMIL)" width="100%" />
+
+Một nhập đoạn nhìn từ phía máy: giữ hai phím là bước 1, mọi nhịp sau chỉ lặp lại — hũ còn nguyên thì nhịp chưa dừng, gốm nứt làm ba thì dừng.
+
 ## 🚀 Cài đặt & chạy
 
 ### Chơi ngay (không cần build)
@@ -836,7 +845,7 @@ npm install        # cài dependencies (Node ≥ 20.19)
 npm run build      # → dist/index.html (một file tự chứa mọi thứ)
 ```
 
-> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~700 KB, gzip ~355 KB). Không cần server, không cần mạng.
+> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~952 KB, gzip ~430 KB). Không cần server, không cần mạng.
 
 ### Development
 
@@ -973,7 +982,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # trap Tab trong modal (v1.1.6)
-└─ tests/                  # vitest — 97 files · 981 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
+└─ tests/                  # vitest — 149 files · 1618 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
 ```
 
 ## 🧱 Kiến trúc & hiệu năng
@@ -997,7 +1006,7 @@ Mỗi thay đổi phải qua **năm cổng** trước khi vào `main` — chạy
 $ npm run check        # typecheck + toàn bộ test
 $ npm run check:readme # 10 README đồng bộ phiên bản + liên kết release
 $ npm run check:i18n   # 7 locale × 327 khoá, không thiếu không thừa
-$ npm run check:assets # 29 SVG — không file mồ côi, không tham chiếu hỏng
+$ npm run check:assets # 31 SVG — không file mồ côi, không tham chiếu hỏng
 $ npm run smoke        # SSR smoke: mọi menu/modal render được
 ```
 
@@ -1008,7 +1017,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
-| `check-assets` | 29 SVG, 2 chiều tham chiếu | ✅ |
+| `check-assets` | 31 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~952 KB · gzip ~430 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1618 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
@@ -1036,13 +1045,19 @@ Từ v1.1.4 `play-windows.bat` là CRLF + UTF-8 BOM với `chcp 65001` và dấu
 **Không biết gõ lệnh thì chạy game kiểu gì?**
 Nhấn đúp vào [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) hoặc [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — menu 7 ngôn ngữ hiện ra, chọn `1` để build & chơi ngay, `2` để dev tại localhost:5173, nhấn `L` để đổi ngôn ngữ. Chi tiết: [scripts/README.md](scripts/README.md).
 
+**Bản lưu có mất khi game lên bản mới không?**
+Không. Key storage giữ nguyên qua các bản; khi đọc, dữ liệu được hợp nhất và cứu từng mục — bản hỏng một mục không kéo cả bảng vàng đi theo.
+
+**Màn hình to nhỏ khác nhau có chơi khác nhau không?**
+Không khác về luật. Một profile adaptive tự chọn bố cục theo viewport (đã kiểm toán 578 cửa sổ, 0 vi phạm) — HUD, hero và hộp thoại tự xếp lại, luật chơi vẫn một.
+
 ## 📦 Releases & changelog
 
 Mỗi bản có một tầng: <kbd>MAJOR</kbd> 🩷 hồng · <kbd>UPDATE</kbd> 🟡 vàng · <kbd>PATCH</kbd> 🟣 tím — đúng quy ước dùng trong panel changelog của game.
 
 | Bản | Tầng | Ngày | Ghi chú |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 test / 149 file** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 test / 149 file** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Nền menu hết mờ** (4 lớp phủ cộng hưởng: `blur 64→22px`, vignette góc thay vignette toàn màn hình, khung CRT 140→90px, sàn 45→70%) · **changelog chia tầng có màu** · **96 gạch mô tả mới** cho 8 bản cũ · ngày phát hành xếp lại · `src/game/changelog/` tách thư mục · README 10 ngôn ngữ làm lại · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Cài đặt 6 mục** (nhanh · âm thanh · giao diện · ngôn ngữ · sao lưu · dữ liệu) · âm lượng 0–100 · mức rung · chất lượng hình · tự pause khi đổi tab · ngôn ngữ dời vào Cài đặt · 4 preset · xuất/nhập JSON · nền menu nhiều lớp · gradient chạy vòng ở mục tác giả · trap focus modal · fix nhạc reload · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menu góc GAME/INFO** (Chơi · Chơi tiếp · Chế độ · BXH · Thành tựu · Cài đặt / About · Changelog · Thoát) · **lưu & Chơi tiếp ván dở** (`locheo.run.v1`) · cài đặt trong game (SFX/nhạc/rung/giảm chuyển động) · fix phím tắt rò rỉ modal · prefers-reduced-motion toàn bộ · **113 tests** |
@@ -1082,6 +1097,7 @@ Tài liệu thiết kế & hướng dẫn kỹ thuật sâu hơn:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Sự cố thường gặp — đen màn hình · audio · «Chơi tiếp» · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless render smoke test (toàn bộ menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Biên bản quyết định kiến trúc (ADR) — vì sao một file, vì sao SMIL, vì sao `modeConfigFor()` |
 
 ## 🤝 Đóng góp
 

@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 29 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 31 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -612,6 +612,11 @@ combinaciones comprobadas).
 | 🧪 **Calidad** | 1618 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
 
 <img src="assets/items.svg" alt="Los 14 ingredientes — encurtidos para atrapar, poderes dorados para agarrar, peligros para esquivar" width="100%" />
+### 💾 Almacenamiento y tabla de honor — el viaje de una partida
+
+Los datos nunca salen de tu máquina: el motor empaqueta la partida en un snapshot, `storage/` (9 módulos) toca localStorage por la única puerta `safeStorage`, un guardado roto se rescata entrada por entrada, y solo entonces llegan el TOP 8, 16 logros y los ajustes — «CONTINUAR» recorre este mismo camino al revés.
+
+<img src="assets/save-pipeline.svg" alt="El viaje de una partida — motor → storage/ → fusionar &amp; rescatar → TOP 8 · logros · ajustes (SMIL)" width="100%" />
 
 ## 🌐 Cambiar de idioma
 
@@ -646,6 +651,10 @@ Lọ Chéo incluye **7 idiomas de interfaz**, aplicados al instante — sin reca
 | Silencio / sonido | `M` | Botón de altavoz, arriba a la derecha |
 | Cambiar idioma | — (usa los botones VI/EN/中/日/한/ES/FR) | Botones VI/EN/中/日/한/ES/FR en menú / pausa |
 
+<img src="assets/game-loop.svg" alt="Un ciclo de juego de Lọ Chéo — MANTÉN 2 teclas, DESLÍZATE y CORTA, LLENA la tinaja, SUMA puntos — el ciclo se cierra (SMIL)" width="100%" />
+
+Un ciclo visto por la máquina: mantener dos teclas es el paso 1, todo lo demás se repite — mientras la tinaja aguante, el ritmo no se detiene; tres grietas lo terminan.
+
 ## 🚀 Instalación y ejecución
 
 ### Juega ya (sin build)
@@ -664,7 +673,7 @@ npm install        # instala dependencias (Node ≥ 20.19)
 npm run build      # → dist/index.html (un único archivo autocontenido)
 ```
 
-> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~700 KB, gzip ~355 KB). Sin servidor, sin red.
+> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~952 KB, gzip ~430 KB). Sin servidor, sin red.
 
 ### Desarrollo
 
@@ -789,7 +798,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # foco atrapado en modales (v1.1.6)
-└─ tests/                  # vitest — 97 archivos · 981 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 149 archivos · 1618 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Arquitectura y rendimiento
@@ -828,11 +837,17 @@ Añade `src/i18n/locales/xx.ts` reflejando las claves de `vi.ts`, actualiza `LAN
 **¿No te apañas con la terminal?**
 Doble clic en [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) o [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — aparece un menú a color; elige `1` para compilar y jugar al instante, `2` para el servidor de desarrollo. Detalles: [scripts/README.md](scripts/README.md).
 
+**¿Se pierde mi partida al actualizar el juego?**
+No. Las claves de storage no cambian entre versiones; al leer, los datos se fusionan y se rescatan entrada por entrada — una entrada rota no arrastra toda la tabla.
+
+**¿Se juega distinto en pantallas grandes?**
+Las reglas no cambian. Un único perfil adaptativo elige la distribución para cada viewport (578 ventanas auditadas, 0 violaciones) — HUD, héroe y diálogos se reordenan solos, el juego sigue siendo uno.
+
 ## 📦 Releases y changelog
 
 | Versión | Tier | Fecha | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 archivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 archivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fondo del menú sin niebla** (cuatro capas: `blur 64→22px`, viñeta de esquinas en vez de pantalla completa, marco CRT 140→90px, suelo 45→70%) · **changelog por niveles con color** · **96 viñetas nuevas** para 8 versiones · fechas reordenadas · `src/game/changelog/` dividido · 10 READMEs rehechos · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes en 6 secciones** (rápidos · audio · pantalla · idioma · copia · datos) · volúmenes 0–100 · intensidad de sacudida · calidad visual · pausa al cambiar de pestaña · idioma dentro de Ajustes · 4 preajustes · exportar/importar JSON · menú multicapa animado · degradado en la tarjeta del autor · foco atrapado en modales · fix de música al recargar · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |
@@ -872,6 +887,7 @@ Notas de diseño y documentación técnica más profunda:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problemas comunes — pantalla negra · audio · Continuar · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de render headless (todo el árbol menú/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Registros de decisiones de arquitectura — por qué un archivo, por qué SMIL, por qué `modeConfigFor()` |
 
 ## 🤝 Contribuir
 
