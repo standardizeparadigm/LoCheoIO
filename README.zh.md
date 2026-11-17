@@ -480,6 +480,11 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 较高的一列：192 吉祥物 + 24 标签
 | 🧪 **质量保障** | 1618 项单元测试（vitest）覆盖 modes / achievements / storage / i18n / settings —— `npm run check` 为 CI 关卡 |
 
 <img src="assets/items.svg" alt="14 种食材 — 要接的腌菜、要捡的黄金道具、要躲的危险物" width="100%" />
+### 💾 存储与荣誉榜 — 一局游戏的旅程
+
+数据从不离开你的机器：引擎把结束的局打包成快照，`storage/`（9 个模块）经由唯一的门户 `safeStorage` 触到 localStorage，损坏的存档按条目逐项救援，然后才是 TOP 8 · 16 项成就 · 设置 — 「继续游戏」沿同一条路反向走一遍。
+
+<img src="assets/save-pipeline.svg" alt="一局游戏的旅程 — 引擎 → storage/ → 合并 + 救援 → TOP 8 · 成就 · 设置（SMIL）" width="100%" />
 
 ## 🌐 切换语言
 
@@ -514,6 +519,9 @@ Lọ Chéo 内置 **7 种界面语言**，即时生效 —— 无需刷新、不
 | 静音 / 取消静音 | `M` | 右上角扬声器按钮 |
 | 切换语言 | —（使用 VI/EN/中/日/한/ES/FR 按钮） | 菜单 / 暂停界面的 VI/EN/中/日/한/ES/FR 按钮 |
 
+<img src="assets/game-loop.svg" alt="Lọ Chéo 的一个回合 — 按住两键斜行斩击、把罐子接满、连击加分 — 循环周而复始（SMIL）" width="100%" />
+
+从机器视角看一个回合：按住两键是第 1 步，其余只是重复 — 只要罐子不碎，节奏就不会停，三道裂纹才会终结它。
 ## 🚀 安装与运行
 
 ### 🧠 第 15 轮：自适应系统自己调，而且不再抖
@@ -755,6 +763,12 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 **不会敲命令？**
 双击 [`scripts/play-mac.command`](scripts/play-mac.command)（macOS）、[`scripts/play-windows.bat`](scripts/play-windows.bat)（Windows）或 [`scripts/play-linux.sh`](scripts/play-linux.sh)（Linux）—— 全彩菜单会弹出；选 `1` 即构建并立刻游玩，选 `2` 进入开发模式。详见 [scripts/README.md](scripts/README.md)。
 
+**更新版本后存档会丢吗？**
+不会。存储键跨版本保持不变；读取时会合并并逐条救援 — 一条损坏的记录不会拖垮整张榜。
+
+**大屏和小屏玩起来不一样吗？**
+规则不变。单一的自适应档案为每个视口挑选布局（已审计 578 个窗口，0 违规）— HUD、主视觉和对话框自行重排，游戏仍是同一个游戏。
+
 ## 📦 发行版与更新日志
 
 | 版本 | Tier | 日期 | 说明 |
@@ -799,6 +813,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | 常见问题 — 黑屏 · 无声音 · 继续游戏 · 启动器 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | 无头渲染冒烟测试（完整菜单/弹窗树） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | 架构决策记录 — 为什么单文件、为什么 SMIL、为什么 `modeConfigFor()` |
 
 ## 🤝 贡献
 
