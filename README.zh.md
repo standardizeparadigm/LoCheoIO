@@ -591,7 +591,7 @@ npm install        # 安装依赖（Node ≥ 20.19）
 npm run build      # → dist/index.html（单个自包含文件）
 ```
 
-> `vite-plugin-singlefile` 会把所有 JS/CSS/字体/图片内联进**一个** `dist/index.html`（约 700 KB，gzip 约 355 KB）。不需要服务器，不需要网络。
+> `vite-plugin-singlefile` 会把所有 JS/CSS/字体/图片内联进**一个** `dist/index.html`（约 952 KB，gzip 约 430 KB）。不需要服务器，不需要网络。
 
 ### 开发
 
