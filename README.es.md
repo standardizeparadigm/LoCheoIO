@@ -595,6 +595,12 @@ mientras tanto al menos está escrito. Al lado está la invariante que sí se
 cumple: dentro de *una* economía, `scene + reserve === usableHeight` (252
 combinaciones comprobadas).
 
+### 🎚️ Tres niveles de movimiento — vivid · steady · still
+
+Un movimiento, tres velocidades: escritorio y tablet van a toda velocidad (**×1**), móvil y puntero grueso un ~40% más lento (**×1.6** — 9s → 14.4s) sin perder el adorno, y cuando el jugador o el SO piden menos movimiento, **se detiene del todo** — dos hooks cubren cada capa, OR y no AND.
+
+<img src="assets/adaptive-motion.svg" alt="Los tres niveles de movimiento de Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still detenido (SMIL)" width="100%" />
+
 ## ✨ Lo destacado
 
 | Grupo | Detalles |
@@ -617,6 +623,12 @@ combinaciones comprobadas).
 Los datos nunca salen de tu máquina: el motor empaqueta la partida en un snapshot, `storage/` (9 módulos) toca localStorage por la única puerta `safeStorage`, un guardado roto se rescata entrada por entrada, y solo entonces llegan el TOP 8, 16 logros y los ajustes — «CONTINUAR» recorre este mismo camino al revés.
 
 <img src="assets/save-pipeline.svg" alt="El viaje de una partida — motor → storage/ → fusionar &amp; rescatar → TOP 8 · logros · ajustes (SMIL)" width="100%" />
+
+### 🏆 16 logros — la cuadrícula de insignias
+
+Cada insignia se abre por un hecho real — rachas de 10, 20, 40, la primera tinaja, el rey de la Carrera de 60 Segundos, Cerámica de Acero — y se guarda **acumulada entre partidas**; el tono de cada insignia coincide con la tabla del juego (brine · gold · chili · jade), y el aviso «¡LOGRO NUEVO!» aparece en la pantalla de derrota.
+
+<img src="assets/achievements.svg" alt="La cuadrícula de 16 logros de Lọ Chéo — glifos y tonos de la tabla del juego, fichas encendiéndose fila por fila, el aviso «¡LOGRO NUEVO!» (SMIL)" width="100%" />
 
 ## 🌐 Cambiar de idioma
 
