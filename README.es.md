@@ -664,7 +664,7 @@ npm install        # instala dependencias (Node ≥ 20.19)
 npm run build      # → dist/index.html (un único archivo autocontenido)
 ```
 
-> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~700 KB, gzip ~355 KB). Sin servidor, sin red.
+> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~952 KB, gzip ~430 KB). Sin servidor, sin red.
 
 ### Desarrollo
 
