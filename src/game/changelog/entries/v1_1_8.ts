@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "../types";
 
 /**
- * v1.1.8 — released 2026-11-17 — tier: PATCH
+ * v1.1.8 — released 2026-11-18 — tier: PATCH
  *
  * Bản vá cuối cùng trước 1.2.0. Bốn lỗi trong ảnh chụp màn hình bắt nguồn từ
  * một phép cộng sai, và cả bốn đã được sửa bằng cách khai báo chiều cao thay
@@ -13,7 +13,7 @@ import type { ChangelogEntry } from "../types";
  */
 export const V1_1_8: ChangelogEntry = {
   version: "1.1.8",
-  date: "2026-11-17",
+  date: "2026-11-18",
   kind: "fix",
   vi: "Bản vá cuối trước 1.2.0 — màn hình bắt đầu hết tràn, dấu sắc của CHÉO được cứu, panel THÔNG TIN hết bị chia cắt, thanh cuộn biến mất, «Cách chơi» vào menu GAME và hero được trang trí",
   en: "The final patch before 1.2.0 — the start screen no longer overflows, the acute on CHÉO is preserved, the INFO panel stops spreading its rows, the scrollbar is gone, how-to-play moves into the GAME menu, and the hero is decorated",
@@ -81,7 +81,7 @@ export const V1_1_8: ChangelogEntry = {
     "BẢNG CHUYỂN ĐỘNG CỦA MENU LỆCH STYLESHEET Ở BẢY TRÊN TÁM DÒNG: tài liệu ghi vòng quanh lọ quay 22s, `jar-glow` 4.5s, hai tinh vân 19/26, tia sáng 34, hai tầng sao 6/3.4, và sàn gạch «trôi dọc 12s» — trong khi `src/index.css` nói 9s · 3.4s · 17/19 · 11 · 5.2/3.6 và **không** animation nào cho sàn. README của `menu/background/` lặp lại đúng những con số sai ấy, nên hai tài liệu *đồng ý* với nhau và cùng sai — kiểu lệch không ảnh chụp nào bắt được. Nay bảng ghi đúng code, sàn được ghi rõ là **quyết định** (lớp phủ rộng nhất màn hình, repaint toàn khung mỗi frame mà mắt không đọc được qua mask), và `tests/menu-scene-motion.test.ts` đọc cả hai tài liệu rồi đối chiếu với stylesheet",
     "RÀ SOÁT CUỐI — CORPUS HỒI QUY KỊP THEO deviceClass: r11-diacritics-390x844 và r12-landscape-fold-717x512 còn ghi `device: \"tablet\"` sau khi ngưỡng tablet đổi — corpus vi phạm hợp đồng «byte-comparable with a fresh resolve» của chính nó; nay sinh lại (tablet → handset) và test đối chiếu thêm `profile.device` với một lần resolve thật",
     "SỐ TEST CŨ SỐNG TRONG CÂU VĂN BẢN ĐỊA: badge đã 1618·149 nhưng thân ja/ko/th/zh còn 1553/145 (5 chỗ), th/zh còn cả lớp 256 và 360, sáu bản latin còn dòng cây tests/ ghi một tổng cũ từ giữa chừng — cụm số tiếng bản địa nằm ngoài pattern của sync-prose-counts nên phải rà tay; docs/README.md còn ghi bản đang ship là 1458/137 — tất cả về 1618/149",
-    "NGÀY PHÁT HÀNH CHỐT THỨ BA 2026-11-17: giữ nhãn 11-16 khi vòng rà khép lại 11-17 là lặp lại mẫu lỗi «date muộn sau khi code đã ship»; entry, CHANGELOG, release doc, release-tiers.svg, con trỏ «bản kế tiếp» của 1.1.7 và hàng release ×10 README cùng một ngày",
+    "NGÀY PHÁT HÀNH CHỐT THỨ TƯ 2026-11-18: chuỗi 11-15 → 11-16 → 11-17 → 11-18 — mỗi vòng mở rộng là một ngày làm việc nữa, giữ nhãn cũ khi vòng mới khép là lặp lại mẫu lỗi «date muộn sau khi code đã ship»; entry, CHANGELOG, release doc, release-tiers.svg, con trỏ «bản kế tiếp» của 1.1.7 và hàng release ×10 README cùng một ngày",
     "HAI HÌNH SMIL MỚI: «một nhập đoạn» (giữ 2 phím → lượn chém → hứng đầy hũ → cộng điểm, đường quay về bước 1 khép vòng, nước muối đổ đầy từng giọt) và «đường đi của một ván» (engine → storage/ → hợp nhất + cứu từng mục → bảng vàng · thành tựu · cài đặt, đường «CHƠI TIẾP» đi ngược) — nhúng ở cả 10 README, kho lên 31 hình",
     "docs/decisions/ — THƯ MỤC ADR MỚI: sáu biên bản quyết định (một file HTML · SMIL thay video · modeConfigFor prototype-safe · cổng đếm trong vitest · engine headless fake canvas · safeStorage một cổng vào), mỗi bản nêu gate giữ nó; README ×10 mở rộng: hình nhịp chơi, mục «Lưu trữ & bảng vàng», FAQ +2, hàng dẫn ADR",
   ],
@@ -149,7 +149,7 @@ export const V1_1_8: ChangelogEntry = {
     "THE MENU'S MOTION TABLE DISAGREED WITH THE STYLESHEET IN SEVEN OF EIGHT ROWS: the doc said the ring turned every 22s, `jar-glow` breathed for 4.5s, the nebulae ran 19/26, the ray 34, the two star layers 6/3.4, and the tile floor «drifted vertically, 12s» — while `src/index.css` says 9s · 3.4s · 17/19 · 11 · 5.2/3.6 and gives the floor **no** animation at all. The `menu/background/` README repeated those same wrong numbers, so the two documents *agreed* with each other and were wrong together — the kind of drift no screenshot can catch. The table now matches the code, the still floor is documented as a **decision** (widest layer on screen, a full-frame repaint per frame that the mask never lets you read anyway), and `tests/menu-scene-motion.test.ts` parses both documents against the stylesheet",
     "FINAL SWEEP — REGRESSION CORPUS CAUGHT UP WITH deviceClass: r11-diacritics-390x844 and r12-landscape-fold-717x512 still said `device: \"tablet\"` after the tablet threshold moved — the corpus broke its own «byte-comparable with a fresh resolve» contract; now regenerated (tablet → handset) and the test replays `profile.device` through a real resolve",
     "OLD TEST COUNTS LIVED IN NATIVE-LANGUAGE PROSE: badges said 1618·149 but ja/ko/th/zh bodies kept 1553/145 (5 spots each), th/zh also carried the 256 and 360 generations, and the six latin tree lines still cited a mid-project total — native-language number phrases are outside sync-prose-counts patterns, so they needed a hand sweep; docs/README.md still said the shipping release was 1458/137 — everything now reads 1618/149",
-    "RELEASE DATE LOCKED TO TUESDAY 2026-11-17: keeping the 11-16 label while the final sweep closed on 11-17 repeats the «date late after the code shipped» pattern; the entry, CHANGELOG, release doc, release-tiers.svg, the next-release pointer of v1.1.7 and all ten README release rows now share one date",
+    "RELEASE DATE LOCKED TO WEDNESDAY 2026-11-18: the chain 11-15 → 11-16 → 11-17 → 11-18 — every expansion round is one more working day, and keeping the old label while a new round closes repeats the «date late after the code shipped» pattern; the entry, CHANGELOG, release doc, release-tiers.svg, the next-release pointer of v1.1.7 and all ten README release rows now share one date",
     "TWO NEW SMIL FIGURES: «one play cycle» (hold two keys → glide & slice → fill the jar → score, with the return path closing the loop and brine filling drop by drop) and «the journey of one run» (engine → storage/ → merge + rescue item by item → golden board · achievements · settings, with «CONTINUE» walking it backwards) — embedded in all ten READMEs, collection now 31",
     "docs/decisions/ — A NEW ADR FOLDER: six records (one HTML file · SMIL over video · prototype-safe modeConfigFor · prose-count gate inside vitest · headless engine on a fake canvas · safeStorage as the single gate), each naming the gate that holds it; all ten READMEs expand: the play-cycle figure, a storage & golden board section, 2 new FAQs, an ADR pointer row",
   ],
