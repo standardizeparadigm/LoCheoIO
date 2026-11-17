@@ -8,7 +8,7 @@
  "guard": "no arrangement is chosen that the band cannot seat",
  "profile": {
   "tier": "md",
-  "device": "tablet",
+  "device": "handset",
   "aspect": "wide",
   "density": "tight",
   "room": 0.33,
