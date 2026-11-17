@@ -784,6 +784,11 @@ lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: t
 | 🧪 **Chất lượng** | 1618 unit tests (vitest) cho modes / achievements / storage / i18n / settings — `npm run check` là cổng CI |
 
 <img src="assets/items.svg" alt="14 nguyên liệu Lọ Chéo — nhóm hứng, nhóm power, nhóm né" width="100%" />
+### 💾 Lưu trữ & bảng vàng — đường đi của một ván
+
+Dữ liệu không bay lên mây: engine gói kết quả ván thành snapshot, `storage/` (9 module) chạm localStorage đúng một lối qua `safeStorage`, bản lưu hỏng được cứu từng mục, rồi mới tới bảng vàng TOP 8, 16 thành tựu và cài đặt — và đường «CHƠI TIẾP» chạy đúng đường này, chỉ là đi ngược.
+
+<img src="assets/save-pipeline.svg" alt="Đường đi của một ván — engine → storage/ → hợp nhất + cứu dữ liệu → bảng vàng · thành tựu · cài đặt (SMIL)" width="100%" />
 
 ## 🌐 Chuyển ngôn ngữ
 
@@ -818,6 +823,9 @@ Lọ Chéo hỗ trợ **7 ngôn ngữ giao diện** ngay trong game — không c
 | Tắt / bật âm | `M` | Nút loa góc trên phải |
 | Đổi ngôn ngữ | — (dùng nút VI/EN/中/日/한/ES/FR) | Nút VI/EN/中/日/한/ES/FR ở menu / pause |
 
+<img src="assets/game-loop.svg" alt="Một nhập đoạn của Lọ Chéo — GIỮ 2 phím, LƯỢN &amp; CHÉM, HỨNG đầy hũ, CỘNG ĐIỂM — vòng lặp khép lại (SMIL)" width="100%" />
+
+Một nhập đoạn nhìn từ phía máy: giữ hai phím là bước 1, mọi nhịp sau chỉ lặp lại — hũ còn nguyên thì nhịp chưa dừng, gốm nứt làm ba thì dừng.
 ## 🚀 Cài đặt & chạy
 
 ### Chơi ngay (không cần build)
@@ -1036,6 +1044,12 @@ Từ v1.1.4 `play-windows.bat` là CRLF + UTF-8 BOM với `chcp 65001` và dấu
 **Không biết gõ lệnh thì chạy game kiểu gì?**
 Nhấn đúp vào [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) hoặc [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — menu 7 ngôn ngữ hiện ra, chọn `1` để build & chơi ngay, `2` để dev tại localhost:5173, nhấn `L` để đổi ngôn ngữ. Chi tiết: [scripts/README.md](scripts/README.md).
 
+**Bản lưu có mất khi game lên bản mới không?**
+Không. Key storage giữ nguyên qua các bản; khi đọc, dữ liệu được hợp nhất và cứu từng mục — bản hỏng một mục không kéo cả bảng vàng đi theo.
+
+**Màn hình to nhỏ khác nhau có chơi khác nhau không?**
+Không khác về luật. Một profile adaptive tự chọn bố cục theo viewport (đã kiểm toán 578 cửa sổ, 0 vi phạm) — HUD, hero và hộp thoại tự xếp lại, luật chơi vẫn một.
+
 ## 📦 Releases & changelog
 
 Mỗi bản có một tầng: <kbd>MAJOR</kbd> 🩷 hồng · <kbd>UPDATE</kbd> 🟡 vàng · <kbd>PATCH</kbd> 🟣 tím — đúng quy ước dùng trong panel changelog của game.
@@ -1082,6 +1096,7 @@ Tài liệu thiết kế & hướng dẫn kỹ thuật sâu hơn:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Sự cố thường gặp — đen màn hình · audio · «Chơi tiếp» · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless render smoke test (toàn bộ menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Biên bản quyết định kiến trúc (ADR) — vì sao một file, vì sao SMIL, vì sao `modeConfigFor()` |
 
 ## 🤝 Đóng góp
 
