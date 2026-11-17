@@ -633,7 +633,7 @@ npm install        # Abhängigkeiten installieren (Node ≥ 20.19)
 npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 ```
 
-> `vite-plugin-singlefile` inlined sämtliches JS/CSS/Fonts/Bilder in **eine** `dist/index.html` (~700 KB, gzip ~355 KB). Kein Server, kein Netz.
+> `vite-plugin-singlefile` inlined sämtliches JS/CSS/Fonts/Bilder in **eine** `dist/index.html` (~952 KB, gzip ~430 KB). Kein Server, kein Netz.
 
 ### Entwicklung
 
