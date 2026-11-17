@@ -3,9 +3,9 @@
 Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến được ghi ở đây.
 Định dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/), phiên bản theo [SemVer](https://semver.org/lang/vi/).
 
-## [1.1.8] — 2026-11-15
+## [1.1.8] — 2026-11-16
 
-Bản **vá cuối cùng trước 1.2.0**, mười sáu vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · 22 hình SVG vẽ lại, thêm sáu sơ đồ · 1518 unit tests (142 file) và năm corpus 1 835 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười bảy vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · **vòng mười bảy: vòng lọ trong thẻ tác giả không bao giờ quay (lỗi translate/transform đè nhau), mọi tra cứu `MODES()` qua `modeConfigFor()` prototype-safe, `readInsets()` hết ép reflow mỗi frame resize** · 23 hình SVG vẽ lại, thêm bảy sơ đồ · 1553 unit tests (145 file) và năm corpus 1 835 ảnh chụp số**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -68,7 +68,7 @@ Ngoài ra:
 ### Fixed — vòng tám (adaptive)
 
 - **Panel vẽ 30px footer mà reserve đã cắt** — `reserveFor()` trừ `PANEL_FOOTER_HEIGHT` khi `plan.footer` sai (đó là cách cửa sổ 390px cao mua 30px hero), nhưng `panelHeightForPlan()` chỉ nhìn `density` nên vẫn vẽ đủ chiều cao. Ở **844×390** — iPhone nằm ngang, đúng cỡ trong ảnh chụp — panel cao 234px trong dải 216px: 18px chân panel nằm ngoài màn hình, đỉnh panel đè lên hero. Test cũ khẳng định `panelHeightForPlan() === cornerRowHeight()`, hai vế **cùng một phép tính**, nên nó xanh trong khi pixel sai
-- **Bốn nơi ghi ngày phát hành, ba nơi sai** — comment đầu mỗi entry ghi `2026-11-13` cho cả chín bản, `CHANGELOG.md` ghi `11-14` (một ngày không entry nào có), `assets/release-tiers.svg` in `10-31 · 11-08 · 11-14`, 10 README ghi `2026-11-13`. Chuỗi đúng: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15`
+- **Bốn nơi ghi ngày phát hành, ba nơi sai** — comment đầu mỗi entry ghi `2026-11-13` cho cả chín bản, `CHANGELOG.md` ghi `11-14` (một ngày không entry nào có), `assets/release-tiers.svg` in `10-31 · 11-08 · 11-14`, 10 README ghi `2026-11-13`. Chuỗi đúng: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-16`
 - **Tên repo có dấu gạch nối ở 19 file** — dòng «Mã nguồn» trong hộp thoại GIỚI THIỆU in `Lo-CheoIO`; repo thật là `LoCheoIO`. Lỗi nằm ở `package.json`, 10 badge CI, `ISSUE_TEMPLATE/config.yml`, `CHANGELOG.md` và `about.source` của cả 7 locale
 - **`86vh` không có trần trên màn 4K** — hộp thoại cao 1 857px trên cửa sổ 2 160px; nay `planModal()` kẹp cả hai chiều và chọn số cột theo bề ngang
 - **`GameOverScreen` / `PauseScreen` dùng `text-6xl` cố định** — 60px ở mọi cửa sổ, kể cả 320×480; nay đọc `type.overScore`
@@ -236,11 +236,31 @@ Ngoài ra:
 - **`docs/design/adaptive-v2.md`** · **`docs/guides/adaptive-debugging.md`** — hợp đồng vòng tám và cách đọc `data-adaptive-*`
 - **13 test mới** — `adaptive-{viewport,tiers,scale,density,type,modal,resolve,wordmark-band}` · `adaptive-{fixtures,hero-fixtures}` · `playfield` · `panel-footer-overflow` · `repo-name`
 
+### Fixed — vòng mười bảy (ba lỗ hổng thật, tìm được bằng cách đọc lại đầu ra của chính mình)
+
+- **Vòng conic-gradient trong thẻ tác giả đứng yên vĩnh viễn** — node vừa animate `transform` vừa mang translate của Tailwind (thuộc tính `translate:`), hai thứ đè nhau; nay cha giữ layout, `.glow-ring` chỉ animate transform với `transform-origin: 50% 50%`. Khoá bằng `about-ring.test.ts` (7 test đọc mã nguồn, không chụp ảnh)
+- **`MODES[this.mode]` ở 14 điểm trong tick** tin vào kiểu `ModeId` — một save sửa tay (`{"mode":"constructor"}`) lọt `restoreRun()` và nổ `TypeError` giữa tick, mất cả ván; nay `modeConfigFor()` (`isModeId` prototype-safe, id lạ → `classic`) là đường duy nhất, kể cả trong `setMode()` và `restoreRun()`; `?? 3` lẻ → `MAX_CRACKS`
+- **`readInsets()` append probe div + `getComputedStyle` trên MỌI frame của một resize drag** — hàng chục reflow đồng bộ mỗi giây, đúng thứ giật hình mà adaptive sinh ra để diệt; nay đo một lần mỗi `window` (TTL 1s), huỷ khi `orientationchange`/`fullscreenchange`
+- **`repairProfile()` re-resolve cả sáu rung một lần nữa ở đường thất bại** để tìm bản ít hỏng nhất — profile đã tính sẵn bị vứt; nay lưu cạnh verdict, không bao giờ tính hai lần
+- **Thẻ tác giả gradient** — halo thở 4.2s sau lọ, `.about-name` chữ gradient-clip, sheen quét card 7s, role-bar bảy dải màu, facts rows hover trượt; hai danh sách reduced-motion bao trọn mọi lớp mới
+
+### Added — vòng mười bảy
+
+- **`tests/helpers/engine-harness.ts`** — boot `LoCheoGame` headless (fake canvas + Proxy 2D + `document` stub); lần đầu engine chạy thật trong vitest
+- **`tests/engine-modes.test.ts`** — **22 test**: chín chế độ đều play được; ĐUA 60 GIÂY dừng đúng 60.00 s; GỐM MỎNG vỡ sau đúng một vết nứt, CLASSIC sau ba; THẢNH THƠI không bao giờ spawn hazard; hệ số điểm ×1/×1.5/×0.6/×0.5/×2.0 nối đúng vào `stats.score`
+- **`tests/mode-config-guard.test.ts`** — **4 test** khoá fallback `classic` cho mọi rác (`__proto__`, `constructor`, `NaN`)
+- **`tests/about-ring.test.ts`** — **7 test**; **+2 test** trong `use-environment.test.ts` (probe đo 1 lần mỗi window, invalidate ép đo lại)
+- **`assets/adaptive-repair.svg`** — hình thứ **hai mươi chín**: thang sửa sáu bậc lúc runtime; nhúng ở cả 10 README; `check-svg` và `assets-table` đếm 29
+- Suite sau vòng này: **1 553 test / 145 file**
+
 ### Documentation
+- **ja/ko/th/zh còn ghi số test cũ** (495 / 501 / 344 trên 40–51 tệp) trong cây thư mục, hàng release và cổng PR — nay **1 553 / 145**
+- **Ngày phát hành 1.1.8 là Chủ nhật 2026-11-15** — duy nhất trong chuỗi; nay **thứ Hai 2026-11-16**, `+4 ngày` sau 1.1.7, cả mười bản đều vào ngày làm việc; hai bullet «NGÀY PHÁT HÀNH» (vi/en) trong entry được viết lại vì tự mâu thuẫn
+- **`docs/releases/v1.1.8.md`** thêm §26 (vòng 17); **`docs/assets.md`** xếp `adaptive-repair.svg`; **cây thư mục 10 README** liệt kê đủ 29 hình
 
 - Đồng bộ toàn bộ **10 README**, `docs/`, `assets/*.svg`, ba launcher và `index.html` lên **1.1.8**
 - Xoá hết câu "1.1.7 là bản vá cuối cùng trước 1.2.0" — vai trò đó thuộc về 1.1.8
-- Chuỗi ngày phát hành: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15` — mỗi bản một ngày khác nhau, nhịp 1–3 ngày
+- Chuỗi ngày phát hành: `10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-16` — mỗi bản một ngày khác nhau, nhịp 1–4 ngày
 
 [1.1.8]: https://github.com/standardizeparadigm/LoCheoIO/releases/tag/v1.1.8
 
@@ -252,7 +272,7 @@ Ngoài ra:
 
 ### Fixed
 - **Nền sau menu vẫn mờ** — bốn lớp phủ cộng hưởng: `.nebula-*` `blur(64px)` + opacity đỉnh `1.0`; vignette nội tuyến `rgba(6,26,26, 0.42 → 0.88 → 1.0)` phủ toàn màn hình; khung CRT `inset 0 0 140px rgba(6,26,26,0.9)`; `.tile-floor` chỉ `opacity-45` nên gần như vô hình. Sửa: `blur(22px)`, đỉnh `0.80`, `.menu-vignette` chỉ tối ở góc (`0.30` / `0.62`), `.app-vignette` `90px @ 0.55`, sàn `opacity-70`
-- **Ngày phát hành trùng và phi logic** — bảy bản liền nhau đều ghi `2026-11-13`, riêng 1.1.6 ghi `2026-11-13` (sau thời điểm phát hành). Chuỗi mới lúc đó: 10-26 · 10-30 · 11-06 · 11-09 · 11-09 · 11-09 · 11-13 · 11-13 · 11-13 (nhịp 2 ngày, không bản nào trùng ngày). Vòng 8 chỉnh lại lần cuối cho khớp dữ liệu: 10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-15
+- **Ngày phát hành trùng và phi logic** — bảy bản liền nhau đều ghi `2026-11-13`, riêng 1.1.6 ghi `2026-11-13` (sau thời điểm phát hành). Chuỗi mới lúc đó: 10-26 · 10-30 · 11-06 · 11-09 · 11-09 · 11-09 · 11-13 · 11-13 · 11-13 (nhịp 2 ngày, không bản nào trùng ngày). Vòng 8 chỉnh lại lần cuối cho khớp dữ liệu: 10-26 · 10-29 · 10-30 · 11-02 · 11-04 · 11-06 · 11-09 · 11-10 · 11-12 · 11-16
 - **Nhãn changelog sai bản chất** — trường `kind` viết tay (`feature`/`fix`/`polish`) không suy ra từ SemVer nên đã từng lệch. Nay `tierFor(version)` suy tầng trực tiếp từ số phiên bản; `kind` còn đó nhưng `@deprecated` và không còn được đọc khi render
 - **Năm chuỗi chưa dịch lọt qua mọi cổng** — `changelog.title` / `info.changelog` ở es và fr, `scoreboard.top` ở es/fr/ko vẫn là tiếng Anh. Bật luật thứ 5 trong `check:i18n` (một locale không được mang nguyên văn chuỗi tiếng Anh) và dịch: **CAMBIOS** / **NOUVEAUTÉS** / **MEJORES** / **MEILLEURS** / **상위**
 - **Comment của `scripts/check-readme-sync.mjs` ghi cứng `1.1.6`** — đọc từ `package.json` thay vì sao chép tay qua từng bản
