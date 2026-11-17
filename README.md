@@ -767,6 +767,12 @@ thì test đỏ và buộc phải cập nhật, còn nếu không ai sửa thì 
 lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: trong *một* economy,
 `scene + reserve === usableHeight` (252 tổ hợp được kiểm).
 
+### 🎚️ Ba mức chuyển động — vivid · steady · still
+
+Cùng một chuyển động, ba tốc độ: desktop và máy tính bảng chạy tốc độ gốc (**×1**), điện thoại và con trỏ thô chậm lại ~40% (**×1.6** — 9s → 14.4s) nhưng không mất hoạ tiết, còn khi người chơi hoặc hệ điều hành xin giảm chuyển động thì **dừng hẳn** — hai hook tắt đủ mọi lớp, OR chứ không AND.
+
+<img src="assets/adaptive-motion.svg" alt="Ba mức chuyển động của Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still dừng hẳn (SMIL)" width="100%" />
+
 ## ✨ Tính năng nổi bật
 
 | Nhóm | Chi tiết |
@@ -789,6 +795,12 @@ lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: t
 Dữ liệu không bay lên mây: engine gói kết quả ván thành snapshot, `storage/` (9 module) chạm localStorage đúng một lối qua `safeStorage`, bản lưu hỏng được cứu từng mục, rồi mới tới bảng vàng TOP 8, 16 thành tựu và cài đặt — và đường «CHƠI TIẾP» chạy đúng đường này, chỉ là đi ngược.
 
 <img src="assets/save-pipeline.svg" alt="Đường đi của một ván — engine → storage/ → hợp nhất + cứu dữ liệu → bảng vàng · thành tựu · cài đặt (SMIL)" width="100%" />
+
+### 🏆 16 thành tựu — lưới huy hiệu
+
+Mỗi huy hiệu mở theo việc thật — chuỗi 10, 20, 40 củ liên tiếp, hũ đầu tay, vua Đua 60 Giây, Gốm Thép — và lưu **cộng dồn qua các ván**; tông màu từng huy hiệu đúng bảng trong game (brine · gold · chili · jade), toast «THÀNH TỰU MỚI!» hiện ở màn thua.
+
+<img src="assets/achievements.svg" alt="Lưới 16 thành tựu của Lọ Chéo — glyph và tông màu đúng bảng trong game, sáng lần lượt theo hàng, dải sáng quét lưới, toast «THÀNH TỰU MỚI!» (SMIL)" width="100%" />
 
 ## 🌐 Chuyển ngôn ngữ
 
@@ -1006,7 +1018,7 @@ Mỗi thay đổi phải qua **năm cổng** trước khi vào `main` — chạy
 $ npm run check        # typecheck + toàn bộ test
 $ npm run check:readme # 10 README đồng bộ phiên bản + liên kết release
 $ npm run check:i18n   # 7 locale × 327 khoá, không thiếu không thừa
-$ npm run check:assets # 31 SVG — không file mồ côi, không tham chiếu hỏng
+$ npm run check:assets # 33 SVG — không file mồ côi, không tham chiếu hỏng
 $ npm run smoke        # SSR smoke: mọi menu/modal render được
 ```
 
@@ -1017,7 +1029,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `smoke-ssr` | StartScreen, 11 modal, cả 6 mục cài đặt, và 4 màn hình trong ván (pause · game over · chọn chế độ · thành tựu) — **20 mục** | ✅ |
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
-| `check-assets` | 31 SVG, 2 chiều tham chiếu | ✅ |
+| `check-assets` | 33 SVG, 2 chiều tham chiếu | ✅ |
 | `build` | `dist/index.html` ~952 KB · gzip ~430 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1618 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
@@ -1057,7 +1069,7 @@ Mỗi bản có một tầng: <kbd>MAJOR</kbd> 🩷 hồng · <kbd>UPDATE</kbd> 
 
 | Bản | Tầng | Ngày | Ghi chú |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 test / 149 file** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **Màn hình bắt đầu hết tràn**: một phép cộng chiều cao sai làm hero chỉ còn 250px và `LỌ` bị cắt · **lỗi cuộn** (vùng cuộn lồng + `justify-center`) sửa bằng **một** `.menu-scroll` duy nhất · **«Cách chơi» vào menu GAME** dưới dạng modal · panel **318px/458px** khai báo thay vì tự cao · ticker 48px · **14 món trang trí hero** + **3 vòng halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 test / 149 file** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Nền menu hết mờ** (4 lớp phủ cộng hưởng: `blur 64→22px`, vignette góc thay vignette toàn màn hình, khung CRT 140→90px, sàn 45→70%) · **changelog chia tầng có màu** · **96 gạch mô tả mới** cho 8 bản cũ · ngày phát hành xếp lại · `src/game/changelog/` tách thư mục · README 10 ngôn ngữ làm lại · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Cài đặt 6 mục** (nhanh · âm thanh · giao diện · ngôn ngữ · sao lưu · dữ liệu) · âm lượng 0–100 · mức rung · chất lượng hình · tự pause khi đổi tab · ngôn ngữ dời vào Cài đặt · 4 preset · xuất/nhập JSON · nền menu nhiều lớp · gradient chạy vòng ở mục tác giả · trap focus modal · fix nhạc reload · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menu góc GAME/INFO** (Chơi · Chơi tiếp · Chế độ · BXH · Thành tựu · Cài đặt / About · Changelog · Thoát) · **lưu & Chơi tiếp ván dở** (`locheo.run.v1`) · cài đặt trong game (SFX/nhạc/rung/giảm chuyển động) · fix phím tắt rò rỉ modal · prefers-reduced-motion toàn bộ · **113 tests** |

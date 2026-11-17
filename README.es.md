@@ -39,7 +39,7 @@ Es un **arcade de acción de pantalla única** inspirado en los humildes encurti
 
 ## 🆕 Novedades de v1.1.8
 
-> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 31 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
+> El **parche final** antes de 1.2.0. Sin modo nuevo, sin cambios de balance, sin cambios en el formato de guardado. Esta última ronda hace una cosa: **el hero mide la ventana y elige su propio diseño** — en todos los tamaños con solución (desde 356px), sin scroll ni recortes. La banda del deck desaparece, los 33 SVG incluyen los diagramas de bandas del HUD (ronda nueve), el informe de auditoría (ronda doce) y la figura de estabilidad (ronda quince), más un cuarto corpus de incidencias y una escalera de reparación de seis peldaños.
 
 ### 📐 Una suma que nadie vigilaba — y cuatro errores a la vez
 
@@ -595,6 +595,12 @@ mientras tanto al menos está escrito. Al lado está la invariante que sí se
 cumple: dentro de *una* economía, `scene + reserve === usableHeight` (252
 combinaciones comprobadas).
 
+### 🎚️ Tres niveles de movimiento — vivid · steady · still
+
+Un movimiento, tres velocidades: escritorio y tablet van a toda velocidad (**×1**), móvil y puntero grueso un ~40% más lento (**×1.6** — 9s → 14.4s) sin perder el adorno, y cuando el jugador o el SO piden menos movimiento, **se detiene del todo** — dos hooks cubren cada capa, OR y no AND.
+
+<img src="assets/adaptive-motion.svg" alt="Los tres niveles de movimiento de Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still detenido (SMIL)" width="100%" />
+
 ## ✨ Lo destacado
 
 | Grupo | Detalles |
@@ -617,6 +623,12 @@ combinaciones comprobadas).
 Los datos nunca salen de tu máquina: el motor empaqueta la partida en un snapshot, `storage/` (9 módulos) toca localStorage por la única puerta `safeStorage`, un guardado roto se rescata entrada por entrada, y solo entonces llegan el TOP 8, 16 logros y los ajustes — «CONTINUAR» recorre este mismo camino al revés.
 
 <img src="assets/save-pipeline.svg" alt="El viaje de una partida — motor → storage/ → fusionar &amp; rescatar → TOP 8 · logros · ajustes (SMIL)" width="100%" />
+
+### 🏆 16 logros — la cuadrícula de insignias
+
+Cada insignia se abre por un hecho real — rachas de 10, 20, 40, la primera tinaja, el rey de la Carrera de 60 Segundos, Cerámica de Acero — y se guarda **acumulada entre partidas**; el tono de cada insignia coincide con la tabla del juego (brine · gold · chili · jade), y el aviso «¡LOGRO NUEVO!» aparece en la pantalla de derrota.
+
+<img src="assets/achievements.svg" alt="La cuadrícula de 16 logros de Lọ Chéo — glifos y tonos de la tabla del juego, fichas encendiéndose fila por fila, el aviso «¡LOGRO NUEVO!» (SMIL)" width="100%" />
 
 ## 🌐 Cambiar de idioma
 
@@ -847,7 +859,7 @@ Las reglas no cambian. Un único perfil adaptativo elige la distribución para c
 
 | Versión | Tier | Fecha | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 archivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **La pantalla de inicio ya no desborda**: una suma de alturas mal hecha dejaba el hero en 250px y cortaba `LỌ` · **error de scroll** (caja anidada + `justify-center`) resuelto con **un solo** `.menu-scroll` anclado arriba · **«Cómo jugar» al menú GAME** como modal · paneles declarados en **318px/458px** en vez de ajustarse al contenido · ticker de 48px · **14 adornos del hero** + **3 anillos de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 archivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fondo del menú sin niebla** (cuatro capas: `blur 64→22px`, viñeta de esquinas en vez de pantalla completa, marco CRT 140→90px, suelo 45→70%) · **changelog por niveles con color** · **96 viñetas nuevas** para 8 versiones · fechas reordenadas · `src/game/changelog/` dividido · 10 READMEs rehechos · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes en 6 secciones** (rápidos · audio · pantalla · idioma · copia · datos) · volúmenes 0–100 · intensidad de sacudida · calidad visual · pausa al cambiar de pestaña · idioma dentro de Ajustes · 4 preajustes · exportar/importar JSON · menú multicapa animado · degradado en la tarjeta del autor · foco atrapado en modales · fix de música al recargar · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menús de esquina GAME/INFO** (Jugar · Continuar · Modos · Clasificación · Logros · Ajustes / Sobre el autor · Changelog · Salir) · **guardar y reanudar partida** (`locheo.run.v1`) · ajustes in-game (SFX/música/sacudida/movimiento) · fix fuga de atajos por modales · prefers-reduced-motion global · **113 pruebas** |

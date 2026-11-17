@@ -43,6 +43,17 @@ danh mục đầy đủ nằm ở [`decisions/README.md`](decisions/README.md):
 - `0004-prose-count-gate-trong-vitest.md` — cổng đếm số liệu chạy **trong `npm run check`**, không chỉ trong CI.
 - `0005-engine-headless-fake-canvas.md` — engine test headless qua **fake canvas**, không jsdom.
 - `0006-safe-storage-mot-loi-vao.md` — localStorage qua **đúng một cổng**: `safeStorage`.
+- `0007-frame-watch-governor.md` — governor khung hình: **hạ sau 2 khung chậm, trả lại sau 6 khung nhanh**.
+- `0008-mot-profile-adaptive.md` — **một `AdaptiveProfile`** cho mọi bề mặt.
+
+## Bảo trì & rà soát (`maintenance/`)
+
+Cách dự án tự rà mình — quy trình ba lượt dùng thật từ vòng 12 đến vòng 19:
+
+- [`maintenance/sweep-protocol.md`](maintenance/sweep-protocol.md) — cổng chạy
+  đúng thứ tự, bốn thứ cổng không nhìn thấy (số trong câu văn bản địa, ngày
+  phát hành, fixture vs generator, bốn chỗ của số đếm tài sản), và bảng danh
+  mục dạng lỗi đã từng lọt.
 
 ## Hướng dẫn contributor (`guides/`)
 
@@ -67,5 +78,5 @@ danh mục đầy đủ nằm ở [`decisions/README.md`](decisions/README.md):
 
 - `adaptive-audit.md` — báo cáo **sinh tự động** từ 578 cửa sổ (không sửa tay).
 - `adaptive-drag.md` — báo cáo **sinh tự động** từ 21 đường kéo (4 600 cửa sổ) và 12 ranh giới rung: dải 2px dập 48/48 lần đổi bậc khi con trỏ rung, và 1/12 khi kéo một chiều.
-- `assets.md` — kho 31 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
+- `assets.md` — kho 33 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
 - `DESCRIPTION.md` — mô tả ngắn cho dev/cộng đồng.

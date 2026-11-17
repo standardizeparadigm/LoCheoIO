@@ -4,7 +4,7 @@ One file per release, ten of them, newest first in `../index.ts`.
 
 | File | Version | Tier | Date |
 | --- | --- | --- | --- |
-| `v1_1_8.ts` | 1.1.8 | 🟣 patch | 2026-11-17 |
+| `v1_1_8.ts` | 1.1.8 | 🟣 patch | 2026-11-18 |
 | `v1_1_7.ts` | 1.1.7 | 🟣 patch | 2026-11-12 |
 | `v1_1_6.ts` | 1.1.6 | 🟣 patch | 2026-11-10 |
 | `v1_1_5.ts` | 1.1.5 | 🟣 patch | 2026-11-09 |

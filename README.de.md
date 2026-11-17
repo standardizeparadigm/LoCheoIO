@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 31 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 33 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 
@@ -564,6 +564,12 @@ Test: wer es repariert, bricht den Test und muss ihn aktualisieren; bis dahin
 steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerhalb
 *einer* Economy ist `scene + reserve === usableHeight` (252 Kombinationen geprüft).
 
+### 🎚️ Drei Bewegungsstufen — vivid · steady · still
+
+Eine Bewegung, drei Geschwindigkeiten: Desktops und Tablets laufen mit voller Geschwindigkeit (**×1**), Telefone und grobe Zeiger ~40% langsamer (**×1.6** — 9s → 14.4s) ohne das Ornament zu verlieren, und wenn Spieler oder OS weniger Bewegung wünschen, **stoppt alles** — zwei Hooks decken jede Ebene ab, OR statt AND.
+
+<img src="assets/adaptive-motion.svg" alt="Die drei Bewegungsstufen von Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still gestoppt (SMIL)" width="100%" />
+
 ## ✨ Die Highlights
 
 | Bereich | Details |
@@ -586,6 +592,12 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 Daten verlassen die Maschine nie: der Motor packt eine beendete Runde in einen Snapshot, `storage/` (9 Module) berührt localStorage nur durch das eine Tor `safeStorage`, ein kaputter Stand wird Stück für Stück gerettet, und erst dann erscheinen TOP 8, 16 Erfolge und Einstellungen — „WEITER SPIELEN" geht denselben Weg rückwärts.
 
 <img src="assets/save-pipeline.svg" alt="Der Weg einer Runde — Engine → storage/ → zusammenführen &amp; retten → TOP 8 · Erfolge · Einstellungen (SMIL)" width="100%" />
+
+### 🏆 16 Erfolge — das Abzeichen-Raster
+
+Jedes Abzeichen gibt es für eine echte Tat — Serien von 10, 20, 40, das erste Glas, der König der 60-Sekunden-Jagd, Stahlkeramik — und es wird **über Runden hinweg** gespeichert; der Farbton jedes Abzeichens entspricht der Tabelle im Spiel (brine · gold · chili · jade), der Toast «NEUER ERFOLG!» erscheint auf dem Niederlage-Bildschirm.
+
+<img src="assets/achievements.svg" alt="Das 16-Erfolge-Raster von Lọ Chéo — Glyphen und Farbtöne aus der Spiel-Tabelle, Kacheln leuchten Reihe für Reihe, der «NEUER ERFOLG!»-Toast (SMIL)" width="100%" />
 
 ## 🌐 Sprachen wechseln
 
@@ -816,7 +828,7 @@ An den Regeln ändert sich nichts. Ein einziges adaptives Profil wählt das Layo
 
 | Version | Tier | Datum | Notizen |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 Tests / 149 Dateien** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **Der Startbildschirm läuft nicht mehr über**: eine verpatzte Höhen-Addition ließ dem Hero nur 250px und schnitt `LỌ` ab · **Scroll-Fehler** (verschachtelte Scroll-Box + `justify-center`) mit **einem** oben verankerten `.menu-scroll` behoben · **«Spielanleitung» ins GAME-Menü** als Modal · Panels mit **318px/458px** deklariert statt nach Inhalt · 48px-Ticker · **14 Hero-Dekorationen** + **3 Halo-Ringe** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 Tests / 149 Dateien** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menü-Hintergrund entnebelt** (vier Ebenen: `blur 64→22px`, Ecken-Vignette statt Vollbild, CRT-Rahmen 140→90px, Boden 45→70%) · **farbige Changelog-Stufen** · **96 neue Stichpunkte** für 8 Versionen · Daten neu geordnet · `src/game/changelog/` aufgeteilt · 10 READMEs neu · **256 Tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Einstellungen in 6 Abschnitten** (Presets · Audio · Anzeige · Sprache · Backup · Daten) · Lautstärken 0–100 · Shake-Stärke · Bildqualität · Auto-Pause beim Tab-Wechsel · Sprache in den Einstellungen · 4 Presets · JSON-Export/Import · mehrschichtige Menüszene · Verlauf auf der Autorenkarte · Fokus in Modals gefangen · Musik-nach-Reload-Fix · **150 Tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Eck-Panels GAME/INFO** (Spielen · Fortsetzen · Modi · Rangliste · Erfolge · Einstellungen / Über den Autor · Changelog · Beenden) · **Speichern & Fortsetzen** (`locheo.run.v1`) · In-game-Einstellungen (SFX/Musik/Shake/Reduced Motion) · Modal-Shortcut-Leck gefixt · prefers-reduced-motion überall · **113 Tests** |

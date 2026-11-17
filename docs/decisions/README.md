@@ -34,3 +34,5 @@ Quy tắc của thư mục này:
 | [0004](0004-prose-count-gate-trong-vitest.md) | Cổng đếm số liệu chạy **bên trong vitest**, không chỉ trong CI | Đã chấp nhận |
 | [0005](0005-engine-headless-fake-canvas.md) | Engine được test **headless** qua fake canvas, không jsdom | Đã chấp nhận |
 | [0006](0006-safe-storage-mot-loi-vao.md) | localStorage đi qua **đúng một cổng**: `safeStorage` | Đã chấp nhận |
+| [0007](0007-frame-watch-governor.md) | Governor khung hình: **hạ sau 2 khung chậm, trả lại sau 6 khung nhanh** | Đã chấp nhận |
+| [0008](0008-mot-profile-adaptive.md) | **Một `AdaptiveProfile`** cho mọi bề mặt | Đã chấp nhận |

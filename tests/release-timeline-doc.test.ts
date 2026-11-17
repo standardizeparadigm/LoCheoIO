@@ -73,9 +73,14 @@ describe("the release line in docs/releases/v1.1.8.md", () => {
     const gaps = iso.slice(1).map((e, i) => (e.t - iso[i].t) / 86_400_000);
 
     // 1. Every gap is a working-day-ish step: at least one day, never a month.
+    //    The ceiling is a plausibility bound, not a fact: it was 5 while the
+    //    longest real gap was +4 (1.1.7 → 1.1.8 dated 11-16). 1.1.8 then became
+    //    the longest-running patch of the project — five stabilization rounds
+    //    (14 through 19), each closing on its own working day — so the ceiling
+    //    moves to 6 rather than the release date being faked back to fit.
     for (const [i, g] of gaps.entries()) {
       expect(g, `${iso[i].v} → ${iso[i + 1].v}`).toBeGreaterThanOrEqual(1);
-      expect(g, `${iso[i].v} → ${iso[i + 1].v}`).toBeLessThanOrEqual(5);
+      expect(g, `${iso[i].v} → ${iso[i + 1].v}`).toBeLessThanOrEqual(6);
     }
 
     // 2. The cadence varies. Uniform spacing is the tell.

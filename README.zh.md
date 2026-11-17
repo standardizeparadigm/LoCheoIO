@@ -463,6 +463,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 较高的一列：192 吉祥物 + 24 标签
 
 `tests/menu-adaptive.test.ts` 扫描 **1,682 个视口**，在每个样本上验证 `heroContentHeight(layout) ≤ scene`。窗口变化时，两个 hook 监听**六个**事件，在一帧内更新。
 
+### 🎚️ 三档运动 — vivid · steady · still
+
+同一种运动，三种速度：桌面与平板全速（**×1**），手机与粗指针慢约 40%（**×1.6** — 9s → 14.4s）而不失装饰，当玩家或操作系统要求减少运动时**完全停止** — 两个 hook 覆盖每一层，是 OR 不是 AND。
+
+<img src="assets/adaptive-motion.svg" alt="Lọ Chéo 的三档运动 — vivid ×1、steady ×1.6（9s → 14.4s）、still 停止（SMIL）" width="100%" />
+
 ## ✨ 亮点功能
 
 | 分类 | 详情 |
@@ -485,6 +491,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 较高的一列：192 吉祥物 + 24 标签
 数据从不离开你的机器：引擎把结束的局打包成快照，`storage/`（9 个模块）经由唯一的门户 `safeStorage` 触到 localStorage，损坏的存档按条目逐项救援，然后才是 TOP 8 · 16 项成就 · 设置 — 「继续游戏」沿同一条路反向走一遍。
 
 <img src="assets/save-pipeline.svg" alt="一局游戏的旅程 — 引擎 → storage/ → 合并 + 救援 → TOP 8 · 成就 · 设置（SMIL）" width="100%" />
+
+### 🏆 16 项成就 — 徽章网格
+
+每枚徽章都为真实的事迹而解锁 — 连击 10、20、40、第一罐、60 秒竞速之王、钢陶 — 并且**跨局累计**保存；徽章色调与游戏内表格一致（brine · gold · chili · jade），«新成就!» 提示出现在败局画面。
+
+<img src="assets/achievements.svg" alt="Lọ Chéo 的 16 项成就网格 — 字形与色调来自游戏内表格，瓦片逐行点亮，«新成就!» 提示（SMIL）" width="100%" />
 
 ## 🌐 切换语言
 
@@ -774,7 +786,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 
 | 版本 | Tier | 日期 | 说明 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 项测试 / 149 文件** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 项测试 / 149 文件** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **菜单背景去雾**（四层叠加：`blur 64→22px`、角落暗角替换全屏、CRT 边框 140→90px、地面 45→70%）· **分层彩色日志** · 8 个旧版 **96 条新描述** · 日期重排 · `src/game/changelog/` 拆分 · 10 个 README 重做 · **256 测试** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **六分区设置**（预设 · 音频 · 画面 · 语言 · 备份 · 数据）· 0–100 音量 · 震动强度 · 画质 · 切标签自动暂停 · 语言移入设置 · 4 个预设 · JSON 导入导出 · 多层动态菜单 · 作者卡片渐变流动 · 弹窗焦点捕获 · 修复刷新后音乐 · **150 项测试** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **双角 GAME/INFO 菜单**（开始 · 继续 · 模式 · 排行榜 · 成就 · 设置 / 关于 · 更新日志 · 退出）· **保存并恢复未完成对局**（`locheo.run.v1`）· 游戏内设置（音效/音乐/震动/减少动态）· 修复快捷键穿透弹窗 · prefers-reduced-motion 全覆盖 · **113 项测试** |

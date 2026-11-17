@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" role="img" aria-label="Lọ Chéo v1.1.8 — lưới 16 thành tựu thật của game: mỗi huy hiệu một glyph và một tông màu (brine, gold, chili, jade), lưu cộng dồn qua các ván, toast «THÀNH TỰU MỚI!» ở màn thua (hoạt họa SMIL)">
+  <defs>
+    <linearGradient id="acBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2b2b"/>
+      <stop offset="0.55" stop-color="#0e3430"/>
+      <stop offset="1" stop-color="#123f38"/>
+    </linearGradient>
+    <linearGradient id="acShine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b6e07a" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f4e3c2" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#b6e07a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="acTile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14443d"/>
+      <stop offset="1" stop-color="#0d332e"/>
+    </linearGradient>
+    <filter id="acGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="acSoft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="470" fill="url(#acBg)"/>
+
+  <text x="44" y="44" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="21" letter-spacing="3" fill="#f4e3c2">16 THÀNH TỰU</text>
+  <text x="44" y="66" font-family="Verdana, sans-serif" font-size="12" fill="#7d9d94">lưu cộng dồn qua các ván (localStorage) · mở theo việc thật · toast «THÀNH TỰU MỚI!» ở màn thua</text>
+  <text x="1156" y="44" text-anchor="end" font-family="Verdana, sans-serif" font-size="11" fill="#b6e07a" opacity="0.8">v1.1.8</text>
+
+  <!-- toast -->
+  <g>
+    <rect x="906" y="76" width="250" height="34" rx="17" fill="#0b2b2b" stroke="#f5a81c" stroke-width="2"/>
+    <rect x="906" y="76" width="250" height="34" rx="17" fill="none" stroke="#f5a81c" stroke-width="6" filter="url(#acSoft)">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3.2s" begin="2.4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="1031" y="98" text-anchor="middle" font-family="'Arial Black',sans-serif" font-weight="900" font-size="12.5" letter-spacing="1.5" fill="#f5a81c">THÀNH TỰU MỚI!
+      <animate attributeName="opacity" values="0.35;1;1;0.35" dur="3.2s" begin="2.4s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- hàng 1 -->
+  <g font-family="Verdana, sans-serif">
+    <rect x="58" y="128" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#b6e07a" stroke-width="1.6"/>
+    <text x="76" y="158" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#b6e07a">CÀ</text>
+    <text x="76" y="182" font-size="9" fill="#c8d8b0">MẺ MUỐI ĐẦU TIÊN</text>
+    <rect x="58" y="128" width="262" height="72" rx="12" fill="#b6e07a" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="0.2s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="332" y="128" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#f5a81c" stroke-width="1.6"/>
+    <text x="350" y="158" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#f5a81c">×10</text>
+    <text x="350" y="182" font-size="9" fill="#c8d8b0">TAY MUỐI CHUYÊN NGHIỆP</text>
+    <rect x="332" y="128" width="262" height="72" rx="12" fill="#f5a81c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="0.5s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="606" y="128" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#e63b2e" stroke-width="1.6"/>
+    <text x="624" y="158" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#e63b2e">×20</text>
+    <text x="624" y="182" font-size="9" fill="#c8d8b0">CHÉO THẦN VÔ ĐỐI</text>
+    <rect x="606" y="128" width="262" height="72" rx="12" fill="#e63b2e" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="0.8s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="880" y="128" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#e63b2e" stroke-width="1.6"/>
+    <text x="898" y="158" font-family="'Arial Black',sans-serif" font-weight="900" font-size="15" fill="#e63b2e">CHÉM</text>
+    <text x="898" y="182" font-size="9" fill="#c8d8b0">KIẾM CHÉO THÁI MỎNG</text>
+    <rect x="880" y="128" width="262" height="72" rx="12" fill="#e63b2e" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="1.1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- hàng 2 -->
+  <g font-family="Verdana, sans-serif">
+    <rect x="58" y="212" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#b6e07a" stroke-width="1.6"/>
+    <text x="76" y="242" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#b6e07a">HŨ</text>
+    <text x="76" y="266" font-size="9" fill="#c8d8b0">HŨ ĐẦU TAY</text>
+    <rect x="58" y="212" width="262" height="72" rx="12" fill="#b6e07a" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="1.4s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="332" y="212" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#2bb48c" stroke-width="1.6"/>
+    <text x="350" y="242" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#2bb48c">C6</text>
+    <text x="350" y="266" font-size="9" fill="#c8d8b0">BẾP TRƯỞNG XÓM DƯA</text>
+    <rect x="332" y="212" width="262" height="72" rx="12" fill="#2bb48c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="1.7s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="606" y="212" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#f5a81c" stroke-width="1.6"/>
+    <text x="624" y="242" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#f5a81c">3K</text>
+    <text x="624" y="266" font-size="9" fill="#c8d8b0">TÚI MUỐI 3 NÚT</text>
+    <rect x="606" y="212" width="262" height="72" rx="12" fill="#f5a81c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="2s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="880" y="212" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#e63b2e" stroke-width="1.6"/>
+    <text x="898" y="242" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#e63b2e">6K</text>
+    <text x="898" y="266" font-size="9" fill="#c8d8b0">HUYỀN THOẠI HŨ CHÉO</text>
+    <rect x="880" y="212" width="262" height="72" rx="12" fill="#e63b2e" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="2.3s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- hàng 3 -->
+  <g font-family="Verdana, sans-serif">
+    <rect x="58" y="296" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#2bb48c" stroke-width="1.6"/>
+    <text x="76" y="326" font-family="'Arial Black',sans-serif" font-weight="900" font-size="14" fill="#2bb48c">5 MẺ</text>
+    <text x="76" y="350" font-size="9" fill="#c8d8b0">MUỐI 5 MẺ</text>
+    <rect x="58" y="296" width="262" height="72" rx="12" fill="#2bb48c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="2.6s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="332" y="296" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#e63b2e" stroke-width="1.6"/>
+    <text x="350" y="326" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#e63b2e">ỚT</text>
+    <text x="350" y="350" font-size="9" fill="#c8d8b0">ĂN ỚT KHÔNG CAY</text>
+    <rect x="332" y="296" width="262" height="72" rx="12" fill="#e63b2e" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="2.9s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="606" y="296" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#f5a81c" stroke-width="1.6"/>
+    <text x="624" y="326" font-family="'Arial Black',sans-serif" font-weight="900" font-size="15" fill="#f5a81c">60S</text>
+    <text x="624" y="350" font-size="9" fill="#c8d8b0">VUA ĐUA 60 GIÂY</text>
+    <rect x="606" y="296" width="262" height="72" rx="12" fill="#f5a81c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="3.2s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="880" y="296" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#b6e07a" stroke-width="1.6"/>
+    <text x="898" y="326" font-family="'Arial Black',sans-serif" font-weight="900" font-size="13" fill="#b6e07a">2 HŨ</text>
+    <text x="898" y="350" font-size="9" fill="#c8d8b0">MÙA VÀNG BỘI THU</text>
+    <rect x="880" y="296" width="262" height="72" rx="12" fill="#b6e07a" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="3.5s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- hàng 4 -->
+  <g font-family="Verdana, sans-serif">
+    <rect x="58" y="380" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#2bb48c" stroke-width="1.6"/>
+    <text x="76" y="410" font-family="'Arial Black',sans-serif" font-weight="900" font-size="12" fill="#2bb48c">60 CỦ</text>
+    <text x="76" y="434" font-size="9" fill="#c8d8b0">CƠN MƯA NẶNG HẠT</text>
+    <rect x="58" y="380" width="262" height="72" rx="12" fill="#2bb48c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="3.8s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="332" y="380" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#e63b2e" stroke-width="1.6"/>
+    <text x="350" y="410" font-family="'Arial Black',sans-serif" font-weight="900" font-size="11" fill="#e63b2e">1 VẾT</text>
+    <text x="350" y="434" font-size="9" fill="#c8d8b0">GỐM THÉP</text>
+    <rect x="332" y="380" width="262" height="72" rx="12" fill="#e63b2e" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="4.1s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="606" y="380" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#f5a81c" stroke-width="1.6"/>
+    <text x="624" y="410" font-family="'Arial Black',sans-serif" font-weight="900" font-size="17" fill="#f5a81c">×40</text>
+    <text x="624" y="434" font-size="9" fill="#c8d8b0">DÂY THÉP COMBO</text>
+    <rect x="606" y="380" width="262" height="72" rx="12" fill="#f5a81c" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="4.4s" repeatCount="indefinite"/>
+    </rect>
+
+    <rect x="880" y="380" width="262" height="72" rx="12" fill="url(#acTile)" stroke="#b6e07a" stroke-width="1.6"/>
+    <text x="898" y="410" font-family="'Arial Black',sans-serif" font-weight="900" font-size="13" fill="#b6e07a">3 HŨ</text>
+    <text x="898" y="434" font-size="9" fill="#c8d8b0">TẤM LÒNG TRẨY HỘI</text>
+    <rect x="880" y="380" width="262" height="72" rx="12" fill="#b6e07a" opacity="0">
+      <animate attributeName="opacity" values="0.28;0;0" dur="1.8s" begin="4.7s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- dải sáng quét lưới -->
+  <rect x="0" y="120" width="1200" height="14" fill="url(#acShine)" opacity="0.5" filter="url(#acSoft)">
+    <animate attributeName="y" values="120;438;120" dur="7.5s" begin="0s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.55;0" dur="7.5s" begin="0s" repeatCount="indefinite"/>
+  </rect>
+</svg>

@@ -621,6 +621,12 @@ update it, and until then it is at least written down. Beside it sits the
 invariant that does hold: inside *one* economy, `scene + reserve ===
 usableHeight` (252 combinations asserted).
 
+### 🎚️ Three motion grades — vivid · steady · still
+
+One motion, three speeds: desktops and tablets run at full speed (**×1**), phones and coarse pointers slow ~40% (**×1.6** — 9s → 14.4s) without losing the ornament, and when the player or the OS asks for less motion it **stops outright** — two hooks cover every layer, OR not AND.
+
+<img src="assets/adaptive-motion.svg" alt="Lọ Chéo's three motion grades — vivid ×1, steady ×1.6 (9s → 14.4s), still stopped (SMIL)" width="100%" />
+
 ## ✨ Highlights
 
 | Group | Details |
@@ -643,6 +649,12 @@ usableHeight` (252 combinations asserted).
 Data never leaves the machine: the engine packs a finished run into a snapshot, `storage/` (9 modules) touches localStorage through the single `safeStorage` gate, a broken save is rescued item by item, and only then do the TOP 8 board, 16 achievements and settings appear — and «CONTINUE» runs this same path in reverse.
 
 <img src="assets/save-pipeline.svg" alt="The journey of one run — engine → storage/ → merge + rescue → TOP 8 · achievements · settings (SMIL)" width="100%" />
+
+### 🏆 16 achievements — the badge grid
+
+Every badge unlocks for a real deed — streaks of 10, 20, 40, the first jar, the 60-Second Dash king, Steel Ceramic — and saves **across runs**; each badge's tone matches the in-game table (brine · gold · chili · jade), and the «NEW ACHIEVEMENT!» toast fires on the defeat screen.
+
+<img src="assets/achievements.svg" alt="The 16-achievement grid of Lọ Chéo — glyphs and tones from the in-game table, tiles lighting row by row, a shine sweeping the grid, the «NEW ACHIEVEMENT!» toast (SMIL)" width="100%" />
 
 ## 🌐 Switching languages
 
@@ -848,7 +860,7 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 31 SVGs — no orphans, no broken references
+$ npm run check:assets # 33 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
@@ -859,7 +871,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 31 SVGs, references checked both ways | ✅ |
+| `check-assets` | 33 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~952 KB · gzip ~430 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
@@ -897,7 +909,7 @@ The rules don't change. A single adaptive profile picks the layout for each view
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-17 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 tests / 149 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
