@@ -973,7 +973,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # trap Tab trong modal (v1.1.6)
-└─ tests/                  # vitest — 97 files · 981 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
+└─ tests/                  # vitest — 149 files · 1618 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
 ```
 
 ## 🧱 Kiến trúc & hiệu năng
