@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -39,7 +39,7 @@
 
 ## 🆕 สิ่งใหม่ใน v1.1.8
 
-> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาดที่มีทางออก (356px ขึ้นไป) ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG ทั้งหมด 28 ภาพ (แผนภาพแถบ HUD ของรอบที่เก้า รายงานตรวจสอบของรอบที่ 12 ภาพการเลือกขั้นของรอบที่ 13 ภาพความเสถียรของรอบที่ 15 และภาพการตรึงของรอบที่ 16) พร้อมคอร์ปัสที่สี่ (เหตุการณ์) และบันไดซ่อมหกขั้น
+> **แพตช์สุดท้าย** ก่อน 1.2.0 ไม่มีโหมดใหม่ ไม่มีการปรับสมดุล ไม่มีการเปลี่ยนรูปแบบเซฟ รอบสุดท้ายนี้ทำสิ่งเดียว: **ฮีโร่วัดหน้าต่างแล้วเลือกเลย์เอาต์เอง** — ทุกขนาดที่มีทางออก (356px ขึ้นไป) ไม่มีการเลื่อน ไม่มีการตัด แถบเด็คถูกถอดออก SVG ทั้งหมด 29 ภาพ (แผนภาพแถบ HUD ของรอบที่เก้า รายงานตรวจสอบและภาพบันไดซ่อมของรอบที่ 12 ภาพการเลือกขั้นของรอบที่ 13 ภาพความเสถียรของรอบที่ 15 และภาพการตรึงของรอบที่ 16) พร้อมคอร์ปัสที่สี่ (เหตุการณ์) และบันไดซ่อมหกขั้น
 
 ### 📐 การบวกที่ไม่ใครดูแล — และสี่บั๊กพร้อมกัน
 
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1590 เทสต์ใน 147 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1618 เทสต์ใน 149 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -353,6 +353,8 @@ single-column → smaller-type → smallest-type` ลำดับคือหล
 คู่มือ: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)
 
 <img src="assets/adaptive-audit.svg" alt="การตรวจสอบ adaptive ของ v1.1.8 —— 578 หน้าต่าง ไม่มีการละเมิดสัญญา ฮิสโตแกรมความพอดีและระดับ และบันไดซ่อมหกขั้น (แอนิเมชัน SMIL)" width="100%" />
+
+<img src="assets/adaptive-repair.svg" alt="บันไดซ่อมหกขั้นตอนทำงานตอน runtime — v1.1.8 รอบที่ 12: หน้าต่างที่ผิดสัญญา บันไดจะไต่ ignore-inset → compact-hud → single-column → smaller-type → smallest-type โดยไม่เคยคืนค่า null (แอนิเมชัน SMIL)" width="100%" />
 
 ### รอบที่ 13 —— ไม่ใช่แค่ *ถูก* แต่ *ถูกที่สุด*
 
@@ -481,7 +483,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // คอลัมน์ที่สูงกว�
 | 💾 **ตาราง TOP 8** | เก็บลงเครื่อง ตรวจสอบ/ปรับค่าเมื่ออ่าน ชื่อตัวพิมพ์ใหญ่ ไฮไลต์สถิติใหม่ |
 | 🎨 **กราฟิก 60fps** | Canvas 2D งบอนุภาค ≤460 จำกัด DPR ≤ 2 พื้นกระเบื้องพรีเรนเดอร์ลง offscreen ดาวระยิบ + ออโรร่าในเมนู |
 | 📴 **ออฟไลน์จริง** | ฟอนต์โฮสเอง (subset latin + vietnamese woff2) ไม่มี CDN ไม่มี API — ดับเบิลคลิก `dist/index.html` แล้วเล่นได้เลย |
-| 🧪 **คุณภาพ** | 501 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
+| 🧪 **คุณภาพ** | 1553 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
 
 <img src="assets/items.svg" alt="14 วัตถุดิบ — ผักดองให้รับ พลังทองให้คว้า อันตรายให้หลบ" width="100%" />
 
@@ -605,7 +607,7 @@ npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 npm run dev        # dev server พร้อม HMR (http://localhost:5173)
 npm run preview    # เสิร์ฟ production build ในเครื่อง
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 501 เทสต์ (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1553 เทสต์ (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (ประตูคุณภาพ CI)
 ```
 
@@ -629,6 +631,21 @@ lo-cheoio/
 │  ├─ new-modes.svg        # the 2 new v1.1.4 modes (SMIL animation)
 │  ├─ corner-menu.svg     # corner GAME/INFO panels (SMIL animation)
 │  ├─ settings-sections.svg # 6-section settings tour (SMIL, v1.1.6)
+│  ├─ wordmark-crop.svg    # LỌ nặng dấu — crop trước/sau (SMIL, v1.1.8)
+│  ├─ menu-anatomy.svg     # hero anatomy: 14 món trang trí (SMIL, v1.1.8)
+│  ├─ diagonal-motion.svg  # chuyển động chéo của hero (SMIL, v1.1.8)
+│  ├─ no-scroll-steps.svg  # bốn bậc vá lỗi cuộn (SMIL, v1.1.8)
+│  ├─ layout-fix.svg       # trước/sau vá bố cục 250→342px (SMIL, v1.1.8)
+│  ├─ test-matrix.svg      # ma trận test + 9 cổng (SMIL, v1.1.8)
+│  ├─ mode-chip.svg        # chip chế độ trước/sau (SMIL, v1.1.8 r10)
+│  ├─ adaptive-layers.svg  # sáu lớp adaptive một profile (SMIL, v1.1.8 r8)
+│  ├─ hud-bands.svg        # HUD thành kế hoạch (SMIL, v1.1.8 r9)
+│  ├─ diacritics-clip.svg  # dấu Việt dưới overflow (SMIL, v1.1.8 r11)
+│  ├─ adaptive-audit.svg   # kiểm toán 578 cửa sổ (SMIL, v1.1.8 r12)
+│  ├─ adaptive-repair.svg  # thang sửa sáu bậc runtime (SMIL, v1.1.8 r12)
+│  ├─ adaptive-select.svg  # chọn bậc rẻ nhất (SMIL, v1.1.8 r13)
+│  ├─ adaptive-stability.svg # ổn định + sở thích (SMIL, v1.1.8 r15)
+│  ├─ adaptive-hold.svg    # dải 2px + drag audit (SMIL, v1.1.8 r16)
 │  ├─ divider.svg          # sparkle divider (SMIL animation)
 │  ├─ license.svg          # ตรา copyleft AGPL-3.0 แบบเคลื่อนไหว (SMIL animation)
 │  └─ favicon.svg          # favicon (SMIL animation)
@@ -707,7 +724,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # กักโฟกัสในโมดัล (v1.1.6)
-└─ tests/                  # vitest — 48 ไฟล์ · 501 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 145 ไฟล์ · 1553 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 สถาปัตยกรรม & ประสิทธิภาพ
@@ -750,7 +767,7 @@ lo-cheoio/
 
 | เวอร์ชัน | Tier | วันที่ | บันทึก |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **501 เทสต์ / 48 ไฟล์** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **1553 เทสต์ / 145 ไฟล์** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **พื้นหลังเมนูหมอกหาย** (สี่ชั้นซ้อน: `blur 64→22px`, วิชเน็ตต์เฉพาะมุมแทนเต็มจอ, กรอบ CRT 140→90px, พื้น 45→70%) · **changelog แบ่งชั้นมีสี** · **96 หัวข้อใหม่** ให้ 8 เวอร์ชัน · จัดวันใหม่ · แยก `src/game/changelog/` · ทำ README 10 ภาษใหม่ · **256 เทสต์** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **ตั้งค่า 6 หมวด** (พรีเซ็ต · เสียง · ภาพ · ภาษา · สำรอง · ข้อมูล) · ความดัง 0–100 · ความแรงสั่น · คุณภาพภาพ · หยุดเมื่อสลับแท็บ · ย้ายภาษาเข้าตั้งค่า · พรีเซ็ต 4 แบบ · นำเข้า/ส่งออก JSON · เมนูหลายชั้นเคลื่อนไหว · การ์ดผู้สร้างไล่ระดับ · กักโฟกัสในโมดัล · แก้เพลงหลังรีโหลด · **150 เทสต์** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **เมนูมุม GAME/INFO**（เล่น · เล่นต่อ · โหมด · อันดับ · ความสำเร็จ · ตั้งค่า / เกี่ยวกับ · Changelog · ออก）· **บันทึก & เล่นเกมค้างต่อ**（`locheo.run.v1`）· ตั้งค่าในเกม（เสียง/เพลง/สั่น/ลดแอนิเมชัน）· แก้คีย์ลัดทะลุโมดัล · prefers-reduced-motion ครบทุกตัว · **113 เทสต์** |
@@ -794,7 +811,7 @@ lo-cheoio/
 ## 🤝 ร่วมพัฒนา
 
 1. Fork repo แล้วแตก branch ตามรูปแบบ `arena/<name>` หรือ `feat/<name>`
-2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 501 เทสต์ + build)
+2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 1553 เทสต์ + build)
 3. เลี่ยงการเพิ่ม dependency ตอน runtime ถ้าไม่จำเป็นจริง ๆ — ปรัชญา: **ไฟล์เดียว ไม่มีเน็ต เล่นได้ตลอดกาล**
 4. ใน PR ระบุหน้าจอ/โหมดที่ได้รับผลกระทบ และแนบคลิปถ้ามีการเปลี่ยน gameplay
 

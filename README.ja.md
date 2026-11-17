@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 の新機能
 
-> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 28 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート、第13ラウンドの選択図、第15ラウンドの安定図、第16ラウンドの保持図）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
+> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 29 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポートと修復はしごの図、第13ラウンドの選択図、第15ラウンドの安定図、第16ラウンドの保持図）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
 
 ### 📐 誰も管理していなかった足し算——そして同時に四つの不具合
 
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——147ファイル1590テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——149ファイル1618テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -363,6 +363,8 @@ compact-hud → single-column → smaller-type → smallest-type`。順序その
 ガイド：[docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md)。
 
 <img src="assets/adaptive-audit.svg" alt="v1.1.8 の adaptive 監査 —— 578 ウィンドウ、契約違反 0、フィットと階層のヒストグラム、そして 6 段の自動修復はしご（SMIL アニメーション）" width="100%" />
+
+<img src="assets/adaptive-repair.svg" alt="実行時の六段修復はしご — v1.1.8 第12ラウンド：契約を壊す窓に対し ignore-inset → compact-hud → single-column → smaller-type → smallest-type と進み、null は決して返さない（SMIL アニメーション）" width="100%" />
 
 ### 第 13 ラウンド —— *正しい*だけでなく*いちばん安い*
 
@@ -497,7 +499,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 高い方の列: 192 マスコット + 24 チ�
 | 💾 **TOP 8 ランキング** | ローカル保存、読み込み時に検証・正規化、名前は自動大文字化、新記録はハイライト |
 | 🎨 **60fpsグラフィックス** | Canvas 2D、パーティクル上限460、DPR上限2、オフスクリーン事前描画の花柄床、星の瞬き + メニューオーロラ |
 | 📴 **真のオフラインファースト** | 自己ホストフォント（latin + ベトナム語サブセット、woff2）、CDN・API不使用 — `dist/index.html` をダブルクリックするだけ |
-| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする501件のユニットテスト（vitest）— `npm run check` がCIゲート |
+| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1553件のユニットテスト（vitest）— `npm run check` がCIゲート |
 
 <img src="assets/items.svg" alt="14種の食材 — キャッチすべき漬物、取るべき黄金パワー、避けるべき危険物" width="100%" />
 
@@ -621,7 +623,7 @@ npm run build      # → dist/index.html（単一の自己完結ファイル）
 npm run dev        # HMR付き開発サーバー（http://localhost:5173）
 npm run preview    # プロダクションビルドをローカルで確認
 npm run typecheck  # tsc --noEmit（strict、noUnusedLocals…）
-npm run test       # vitest — 501件のユニットテスト（modes / achievements / storage / i18n / settings）
+npm run test       # vitest — 1553件のユニットテスト（modes / achievements / storage / i18n / settings）
 npm run check      # typecheck + test + build（CI品質ゲート）
 ```
 
@@ -645,6 +647,21 @@ lo-cheoio/
 │  ├─ new-modes.svg        # the 2 new v1.1.4 modes (SMIL animation)
 │  ├─ corner-menu.svg     # corner GAME/INFO panels (SMIL animation)
 │  ├─ settings-sections.svg # 6-section settings tour (SMIL, v1.1.6)
+│  ├─ wordmark-crop.svg    # LỌ nặng dấu — crop trước/sau (SMIL, v1.1.8)
+│  ├─ menu-anatomy.svg     # hero anatomy: 14 món trang trí (SMIL, v1.1.8)
+│  ├─ diagonal-motion.svg  # chuyển động chéo của hero (SMIL, v1.1.8)
+│  ├─ no-scroll-steps.svg  # bốn bậc vá lỗi cuộn (SMIL, v1.1.8)
+│  ├─ layout-fix.svg       # trước/sau vá bố cục 250→342px (SMIL, v1.1.8)
+│  ├─ test-matrix.svg      # ma trận test + 9 cổng (SMIL, v1.1.8)
+│  ├─ mode-chip.svg        # chip chế độ trước/sau (SMIL, v1.1.8 r10)
+│  ├─ adaptive-layers.svg  # sáu lớp adaptive một profile (SMIL, v1.1.8 r8)
+│  ├─ hud-bands.svg        # HUD thành kế hoạch (SMIL, v1.1.8 r9)
+│  ├─ diacritics-clip.svg  # dấu Việt dưới overflow (SMIL, v1.1.8 r11)
+│  ├─ adaptive-audit.svg   # kiểm toán 578 cửa sổ (SMIL, v1.1.8 r12)
+│  ├─ adaptive-repair.svg  # thang sửa sáu bậc runtime (SMIL, v1.1.8 r12)
+│  ├─ adaptive-select.svg  # chọn bậc rẻ nhất (SMIL, v1.1.8 r13)
+│  ├─ adaptive-stability.svg # ổn định + sở thích (SMIL, v1.1.8 r15)
+│  ├─ adaptive-hold.svg    # dải 2px + drag audit (SMIL, v1.1.8 r16)
 │  ├─ divider.svg          # sparkle divider (SMIL animation)
 │  ├─ license.svg          # AGPL-3.0 copyleft 印章（SMILアニメーション）
 │  └─ favicon.svg          # favicon (SMIL animation)
@@ -723,7 +740,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # モーダルのフォーカス封じ込め（v1.1.6）
-└─ tests/                  # vitest — 40ファイル · 344テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
+└─ tests/                  # vitest — 145ファイル · 1553テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
 ```
 
 ## 🧱 アーキテクチャとパフォーマンス
@@ -766,7 +783,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 
 | バージョン | Tier | 日付 | ノート |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 テスト / 48 ファイル** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **1553 テスト / 145 ファイル** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **メニュー背景のかすみ除去**（四層の重なり：`blur 64→22px`、全画面ヴィネットを四隅のみに、CRT 枠 140→90px、床 45→70%）· **階層別カラー履歴** · 旧八版に **96 項目の説明** · 日付再整列 · `src/game/changelog/` 分割 · README 10 本刷新 · **256 テスト** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6セクション設定**（プリセット · サウンド · 表示 · 言語 · バックアップ · データ）· 音量 0–100 · 揺れの強さ · 画質 · タブ切替で自動停止 · 言語を設定へ移設 · 4プリセット · JSON 入出力 · 多層アニメのメニュー · 作者カードの流れるグラデーション · モーダルのフォーカス封じ込め · 再読込後の音楽バグ修正 · **150テスト** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **四隅 GAME/INFO メニュー**（プレイ · つづきから · モード · ランキング · 実績 · 設定 / 作者について · 更新履歴 · 終了）· **中断ランの保存＆再開**（`locheo.run.v1`）· ゲーム内設定（効果音/BGM/揺れ/動作を減らす）· モーダル越しショートカット修正 · prefers-reduced-motion 完全対応 · **113テスト** |
@@ -810,7 +827,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 ## 🤝 コントリビュート
 
 1. リポジトリをForkし、`arena/<名前>` または `feat/<名前>` の命名規則でブランチを作成。
-2. PRを出す前に `npm run check` をグリーンに（typecheck + 344テスト + build）。
+2. PRを出す前に `npm run check` をグリーンに（typecheck + 1553テスト + build）。
 3. 本当に必要な場合以外、ランタイム依存を追加しない — 理念：**1ファイル、ネットワーク不要、永遠に遊べる**。
 4. PRには影響する画面/モードを明記し、ゲームプレイ変更時はクリップを添付してください。
 

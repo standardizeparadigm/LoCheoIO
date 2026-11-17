@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { AchievementDef } from "../game/achievements";
 import type { RunStats } from "../game/engine";
-import { MODES, type ModeId } from "../game/modes";
+import { modeConfigFor, type ModeId } from "../game/modes";
 import { fmtNum } from "../i18n/i18n";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
@@ -93,7 +93,7 @@ export default function GameOverScreen({
             <div className="mt-3 flex items-center gap-2">
               <span
                 className="inline-block border px-2 py-0.5 font-display text-[9px] tracking-[0.18em]"
-                style={{ borderColor: MODES[mode].accent, color: MODES[mode].accent }}
+                style={{ borderColor: modeConfigFor(mode).accent, color: modeConfigFor(mode).accent }}
               >
                 {t("gameover.mode", { name: t(`mode.${mode}.name` as MessageKey) })}
               </span>

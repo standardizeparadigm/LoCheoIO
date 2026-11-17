@@ -28,7 +28,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { onViewportChange } from "../layout/viewportEvents";
 import { readViewport } from "../layout/useMenuPlan";
 import { boxOf } from "./viewport";
-import { readEnvironment } from "./useEnvironment";
+import { invalidateInsetsCache, readEnvironment } from "./useEnvironment";
 import type { Environment } from "./environment";
 import { explainHold, stabilize } from "./hysteresis";
 import { repairProfile } from "./repair";
@@ -84,6 +84,17 @@ export function useAdaptive(wideModal = false, playerReducedMotion = false): Ada
       });
     };
 
+    /*
+     * `env(safe-area-inset-*)` only moves when the display area moves —
+     * orientation, fullscreen, split-view. A plain resize drag cannot change an
+     * inset, so don't pay a synchronous layout flush for one; invalidate on the
+     * events that can, and let the 1s TTL backstop everything else.
+     */
+    const invalidate = () => invalidateInsetsCache();
+    window.addEventListener("orientationchange", invalidate);
+    window.addEventListener("fullscreenchange", invalidate);
+    window.addEventListener("webkitfullscreenchange", invalidate);
+
     const unsubscribe = onViewportChange(update);
     const lists: MediaQueryList[] = [];
     if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
@@ -101,6 +112,9 @@ export function useAdaptive(wideModal = false, playerReducedMotion = false): Ada
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("orientationchange", invalidate);
+      window.removeEventListener("fullscreenchange", invalidate);
+      window.removeEventListener("webkitfullscreenchange", invalidate);
       unsubscribe();
       for (const list of lists) list.removeEventListener?.("change", update);
     };

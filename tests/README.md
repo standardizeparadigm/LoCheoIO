@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1590 tests / 147 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1618 tests / 149 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -130,6 +130,8 @@
 | `daily-challenge.test.ts` | thử thách hôm nay — số ngày theo giờ địa phương, `mix()` tất định, target trong khoảng, danh mục rỗng vẫn hợp lệ | pure |
 | `tip-index.test.ts` | mẹo trong ngày — chỉ số quấn vòng, không âm, không lặp trước khi hết danh sách | pure |
 | `engine-resize.test.ts` | `LoCheoGame.resize` — nơi duy nhất kích thước canvas đi vào engine; DPR kẹp, không phóng to quá 2 | pure |
+| `engine-modes.test.ts` | chín chế độ chơi chạy thật trong engine headless (fake canvas): blitz dừng đúng 60s, hardcore vỡ hũ sau 1 vết nứt, classic giữ 3 vết, zen không spawn hazard, hệ số điểm ×1/×1.5/×0.6/×0.5/×2.0 nối đúng vào score — 22 test | fake DOM |
+| `mode-config-guard.test.ts` | `modeConfigFor()` — tra cứu mode prototype-safe; rác (`__proto__`, `constructor`, `NaN`) rơi về `classic`; id thật trả đúng record | pure |
 | `wordmark-scale.test.ts` | `lockupWidth` — 300 @375, 374 @768, 427 @≥1024, và không bao giờ nhỏ hơn sàn | pure |
 | `wordmark-diacritics.test.ts` | dấu nặng của `LỌ` — ba thứ cộng lại (font, line-height, padding) không được quay lại | pure + fs |
 | `palette-contrast.test.ts` | tương phản chữ/nền đạt WCAG AA trên mọi cặp màu dùng thật | pure |
@@ -148,7 +150,7 @@
 | `description-doc.test.ts` | `package.json.description` phải là nguyên văn khối trích đầu của `docs/DESCRIPTION.md`, một dòng, không version | fs |
 | `doc-paths.test.ts` | mọi đường dẫn trong backtick ở tài liệu hiện hành phải tồn tại — release notes và dòng «» được miễn | fs |
 | `readme-anchors.test.ts` | mọi anchor `](#…)` phải khớp heading cùng file, slug tính đúng như GitHub (kể cả dấu tổ hợp tiếng Thái) | fs |
-| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 28 SVG | fs |
+| `assets-table.test.ts` | `docs/assets.md`: cột "Dùng ở" đếm hình **được nhúng**, bảng "Hình ra đời" phủ đủ 29 SVG | fs |
 | `effect-cleanup.test.ts` | mọi `useEffect` bật `setTimeout`/`setInterval` phải dọn trong cùng effect | fs |
 | `glossary-claims.test.ts` | `docs/guides/glossary.md`: số cỡ cửa sổ của probe, và `probe` không được gọi là gate vì nó không chạy trong CI | fs |
 | `storage-keys-table.test.ts` | `docs/guides/storage-keys.md`: đủ 8 key, không key ma, mỗi dòng trỏ đúng module đang ghi key đó | fs |

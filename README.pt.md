@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalar--rodar)
@@ -39,7 +39,7 @@ Isto é um **arcade de ação de tela única** inspirado nas singelas conservas 
 
 ## 🆕 Novidades no v1.1.8
 
-> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos que têm solução (a partir de 356px), sem rolagem nem corte. A faixa do deck sai; os 28 SVGs incluem os diagramas de faixas do HUD (rodada nove), o relatório de auditoria (rodada doze) e a figura de estabilidade (rodada quinze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
+> O **patch final** antes de 1.2.0. Sem modo novo, sem mudança de balanceamento, sem mudança no formato de save. Esta última rodada faz uma coisa: **o hero mede a janela e escolhe o próprio layout** — em todos os tamanhos que têm solução (a partir de 356px), sem rolagem nem corte. A faixa do deck sai; os 29 SVGs incluem os diagramas de faixas do HUD (rodada nove), o relatório de auditoria (rodada doze) e a figura de estabilidade (rodada quinze), além de um quarto corpus de incidentes e uma escada de reparo de seis degraus.
 
 ### 📐 Uma soma que ninguém geria — e quatro bugs de uma vez
 
@@ -247,7 +247,7 @@ O nível é **derivado do SemVer** por `tierFor(version)`, nunca escrito à mão
 
 <img src="assets/release-tiers.svg" alt="Os três níveis MAJOR/UPDATE/PATCH com as suas cores e a linha temporal de dez versões (animação SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1590 testes em 147 ficheiros, nove portões (animação SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1618 testes em 149 ficheiros, nove portões (animação SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="As seis camadas adaptativas de Lọ Chéo 1.1.8 — caixa, nível, plano e depois densidade / hero / tipografia / modal / tabuleiro, num só sentido (animação SMIL)" width="100%" />
 
@@ -368,6 +368,8 @@ Detalhes: [docs/releases/v1.1.8.md §19](docs/releases/v1.1.8.md#19-vòng-12--ki
 guia: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
 
 <img src="assets/adaptive-audit.svg" alt="Auditoria adaptive da v1.1.8 — 578 janelas, 0 violações do contrato, histogramas de ajuste e nível, e a escada de reparo de seis degraus (animação SMIL)" width="100%" />
+
+<img src="assets/adaptive-repair.svg" alt="A escada de reparo de seis degraus em execução — v1.1.8 rodada 12: uma janela quebra o contrato e a escada desce ignore-inset → compact-hud → single-column → smaller-type → smallest-type, sem nunca retornar null (animação SMIL)" width="100%" />
 
 ### Rodada 13 — não só *certo*, mas *o mais barato*
 
@@ -505,7 +507,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // coluna mais alta: 192 mascote + 24 chip
 | 💾 **Ranking TOP 8** | Salvo localmente, validado e normalizado na leitura, nomes em maiúsculas, destaque para recorde recém-batido |
 | 🎨 **Gráficos 60fps** | Canvas 2D, orçamento de 460 partículas, DPR limitado a 2, chão de ladrilho pré-renderizado offscreen, estrelas cintilantes + aurora no menu |
 | 📴 **Offline-first de verdade** | Fontes auto-hospedadas (subsets latin + vietnamita, woff2), sem CDN, sem API — duplo clique em `dist/index.html` e jogue |
-| 🧪 **Portões de qualidade** | 1590 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
+| 🧪 **Portões de qualidade** | 1618 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
 
 <img src="assets/items.svg" alt="Os 14 ingredientes — conservas para pegar, poderes dourados para agarrar, perigos para desviar" width="100%" />
 
@@ -631,7 +633,7 @@ npm run build      # → dist/index.html (um arquivo autocontido)
 npm run dev        # dev server com HMR (http://localhost:5173)
 npm run preview    # serve o build de produção localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1590 testes unitários (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1618 testes unitários (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (portão de qualidade CI)
 ```
 
@@ -655,6 +657,21 @@ lo-cheoio/
 │  ├─ new-modes.svg        # the 2 new v1.1.4 modes (SMIL animation)
 │  ├─ corner-menu.svg     # corner GAME/INFO panels (SMIL animation)
 │  ├─ settings-sections.svg # 6-section settings tour (SMIL, v1.1.6)
+│  ├─ wordmark-crop.svg    # LỌ nặng dấu — crop trước/sau (SMIL, v1.1.8)
+│  ├─ menu-anatomy.svg     # hero anatomy: 14 món trang trí (SMIL, v1.1.8)
+│  ├─ diagonal-motion.svg  # chuyển động chéo của hero (SMIL, v1.1.8)
+│  ├─ no-scroll-steps.svg  # bốn bậc vá lỗi cuộn (SMIL, v1.1.8)
+│  ├─ layout-fix.svg       # trước/sau vá bố cục 250→342px (SMIL, v1.1.8)
+│  ├─ test-matrix.svg      # ma trận test + 9 cổng (SMIL, v1.1.8)
+│  ├─ mode-chip.svg        # chip chế độ trước/sau (SMIL, v1.1.8 r10)
+│  ├─ adaptive-layers.svg  # sáu lớp adaptive một profile (SMIL, v1.1.8 r8)
+│  ├─ hud-bands.svg        # HUD thành kế hoạch (SMIL, v1.1.8 r9)
+│  ├─ diacritics-clip.svg  # dấu Việt dưới overflow (SMIL, v1.1.8 r11)
+│  ├─ adaptive-audit.svg   # kiểm toán 578 cửa sổ (SMIL, v1.1.8 r12)
+│  ├─ adaptive-repair.svg  # thang sửa sáu bậc runtime (SMIL, v1.1.8 r12)
+│  ├─ adaptive-select.svg  # chọn bậc rẻ nhất (SMIL, v1.1.8 r13)
+│  ├─ adaptive-stability.svg # ổn định + sở thích (SMIL, v1.1.8 r15)
+│  ├─ adaptive-hold.svg    # dải 2px + drag audit (SMIL, v1.1.8 r16)
 │  ├─ divider.svg          # sparkle divider (SMIL animation)
 │  ├─ license.svg          # selo copyleft AGPL-3.0 animado (animação SMIL)
 │  └─ favicon.svg          # favicon (SMIL animation)
@@ -776,7 +793,7 @@ Duplo clique em [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), 
 
 | Versão | Tier | Data | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1590 testes / 147 arquivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 testes / 149 arquivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fundo do menu sem névoa** (quatro camadas: `blur 64→22px`, vinheta de cantos em vez de tela inteira, moldura CRT 140→90px, piso 45→70%) · **changelog por níveis coloridos** · **96 itens novos** para 8 versões · datas reordenadas · `src/game/changelog/` dividido · 10 READMEs refeitos · **256 testes** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes em 6 seções** (presets · áudio · tela · idioma · backup · dados) · volumes 0–100 · intensidade do tremor · qualidade visual · pausa ao trocar de aba · idioma dentro dos Ajustes · 4 presets · exportar/importar JSON · menu multicamada animado · degradê no cartão do autor · foco preso nos modais · fix da música ao recarregar · **150 testes** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus de canto GAME/INFO** (Jogar · Continuar · Modos · Classificação · Conquistas · Ajustes / Sobre o autor · Changelog · Sair) · **salvar & retomar partida** (`locheo.run.v1`) · ajustes no jogo (SFX/música/tremor/movimento) · fix vazamento de atalhos nos modais · prefers-reduced-motion global · **113 testes** |

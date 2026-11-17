@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 새로운 점
 
-> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 28개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서, 13라운드 선택 도해, 15라운드 안정 도해, 16라운드 유지 도해)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
+> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 29개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서와 수리 사다리 도해, 13라운드 선택 도해, 15라운드 안정 도해, 16라운드 유지 도해)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
 
 ### 📐 아무도 관리하지 않던 덧셈 하나——그리고 동시에 네 개의 버그
 
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——147개 파일 1590 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——149개 파일 1618 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -365,6 +365,8 @@ compact-hud → single-column → smaller-type → smallest-type`. 순서 자체
 가이드: [docs/guides/adaptive-audit.md](docs/guides/adaptive-audit.md).
 
 <img src="assets/adaptive-audit.svg" alt="v1.1.8 adaptive 감사 —— 578개 창, 계약 위반 0, 적합도와 계층 히스토그램, 그리고 6단계 자동 수리 사다리 (SMIL 애니메이션)" width="100%" />
+
+<img src="assets/adaptive-repair.svg" alt="런타임 6단계 수리 사다리 — v1.1.8 12라운드: 계약이 깨진 창에서 ignore-inset → compact-hud → single-column → smaller-type → smallest-type 순으로 내려가며, null은 절대 반환하지 않음 (SMIL 애니메이션)" width="100%" />
 
 ### 13라운드 —— *맞는* 것을 넘어 *가장 싼* 것
 
@@ -497,7 +499,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 더 높은 열: 192 마스코트 + 24 칩
 | 💾 **TOP 8 명예의 전당** | 로컬 저장, 읽기 시 검증·정규화, 이름 자동 대문자화, 신기록 하이라이트 |
 | 🎨 **60fps 그래픽** | Canvas 2D, 파티클 상한 460, DPR 상한 2, 오프스크린에 사전 렌더링된 꽃문양 바닥, 별 반짝임 + 메뉴 오로라 |
 | 📴 **진짜 오프라인 우선** | 셀프호스팅 폰트(latin + 베트남어 서브셋, woff2), CDN·API 없음 — `dist/index.html`을 더블클릭하기만 하면 끝 |
-| 🧪 **품질 게이트** | modes / achievements / storage / i18n / settings을 커버하는 501개 단위 테스트(vitest) — `npm run check`가 CI 게이트 |
+| 🧪 **품질 게이트** | modes / achievements / storage / i18n / settings을 커버하는 1553개 단위 테스트(vitest) — `npm run check`가 CI 게이트 |
 
 <img src="assets/items.svg" alt="14가지 재료 — 받아야 할 절임, 주워야 할 황금 파워, 피해야 할 위험물" width="100%" />
 
@@ -645,6 +647,21 @@ lo-cheoio/
 │  ├─ new-modes.svg        # the 2 new v1.1.4 modes (SMIL animation)
 │  ├─ corner-menu.svg     # corner GAME/INFO panels (SMIL animation)
 │  ├─ settings-sections.svg # 6-section settings tour (SMIL, v1.1.6)
+│  ├─ wordmark-crop.svg    # LỌ nặng dấu — crop trước/sau (SMIL, v1.1.8)
+│  ├─ menu-anatomy.svg     # hero anatomy: 14 món trang trí (SMIL, v1.1.8)
+│  ├─ diagonal-motion.svg  # chuyển động chéo của hero (SMIL, v1.1.8)
+│  ├─ no-scroll-steps.svg  # bốn bậc vá lỗi cuộn (SMIL, v1.1.8)
+│  ├─ layout-fix.svg       # trước/sau vá bố cục 250→342px (SMIL, v1.1.8)
+│  ├─ test-matrix.svg      # ma trận test + 9 cổng (SMIL, v1.1.8)
+│  ├─ mode-chip.svg        # chip chế độ trước/sau (SMIL, v1.1.8 r10)
+│  ├─ adaptive-layers.svg  # sáu lớp adaptive một profile (SMIL, v1.1.8 r8)
+│  ├─ hud-bands.svg        # HUD thành kế hoạch (SMIL, v1.1.8 r9)
+│  ├─ diacritics-clip.svg  # dấu Việt dưới overflow (SMIL, v1.1.8 r11)
+│  ├─ adaptive-audit.svg   # kiểm toán 578 cửa sổ (SMIL, v1.1.8 r12)
+│  ├─ adaptive-repair.svg  # thang sửa sáu bậc runtime (SMIL, v1.1.8 r12)
+│  ├─ adaptive-select.svg  # chọn bậc rẻ nhất (SMIL, v1.1.8 r13)
+│  ├─ adaptive-stability.svg # ổn định + sở thích (SMIL, v1.1.8 r15)
+│  ├─ adaptive-hold.svg    # dải 2px + drag audit (SMIL, v1.1.8 r16)
 │  ├─ divider.svg          # sparkle divider (SMIL animation)
 │  ├─ license.svg          # AGPL-3.0 copyleft 인장 (SMIL 애니메이션)
 │  └─ favicon.svg          # favicon (SMIL animation)
@@ -766,7 +783,7 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 
 | 버전 | Tier | 날짜 | 노트 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 테스트 / 48 파일** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **1553 테스트 / 145 파일** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **메뉴 배경 안개 제거**(네 겹 중첩: `blur 64→22px`, 전체 화면 비네트를 모서리만으로, CRT 프레임 140→90px, 바닥 45→70%) · **계층별 컬러 이력** · 예전 8개 버전에 **설명 96개** · 날짜 재정렬 · `src/game/changelog/` 분리 · README 10개 재작성 · **256 테스트** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6개 섹션 설정**(프리셋 · 사운드 · 화면 · 언어 · 백업 · 데이터) · 0–100 음량 · 흔들림 세기 · 그래픽 품질 · 탭 전환 자동 일시정지 · 언어를 설정으로 이동 · 프리셋 4종 · JSON 내보내기/가져오기 · 다층 애니메이션 메뉴 · 제작자 카드 그라데이션 · 모달 포커스 가둠 · 새로고침 후 음악 버그 수정 · **150개 테스트** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **모서리 GAME/INFO 메뉴**（플레이 · 이어하기 · 모드 · 랭킹 · 업적 · 설정 / 제작자 · 변경 이력 · 종료）· **중단한 판 저장 & 이어하기**（`locheo.run.v1`）· 게임 내 설정（효과음/음악/흔들림/동작 줄이기）· 모달 단축키 누출 수정 · prefers-reduced-motion 전면 적용 · **113개 테스트** |

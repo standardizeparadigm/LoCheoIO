@@ -292,18 +292,23 @@
 .glow-ring {
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 38deg,
-    rgba(245, 168, 28, 0.6) 58deg,
-    transparent 82deg 178deg,
-    rgba(182, 224, 122, 0.45) 205deg,
-    transparent 232deg 296deg,
-    rgba(230, 59, 46, 0.5) 322deg,
-    transparent 348deg
+    transparent 0deg 30deg,
+    rgba(255, 201, 74, 0.95) 52deg,
+    rgba(245, 168, 28, 0.75) 66deg,
+    transparent 92deg 168deg,
+    rgba(182, 224, 122, 0.72) 196deg,
+    rgba(43, 180, 140, 0.6) 212deg,
+    transparent 238deg 292deg,
+    rgba(255, 106, 77, 0.72) 314deg,
+    rgba(230, 59, 46, 0.65) 328deg,
+    transparent 350deg
   );
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
   border-radius: 9999px;
   animation: lc-ring-rotate 9s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
   pointer-events: none;
 }
 
@@ -313,19 +318,61 @@
   animation: lc-jar-glow 3.4s ease-in-out infinite alternate;
 }
 
-/* About modal — perpetually panning gradient card (border-box trick) */
+/*
+ * About modal — the author card.
+ *
+ * Three layers deep on purpose:
+ *   1. an amber radial wash at the top-left corner, so the card never reads as
+ *      a flat rectangle;
+ *   2. the deep-green glass fill;
+ *   3. a seven-stop border gradient on the padding-box/border-box trick,
+ *      animated to pan forever (`lc-about-pan`).
+ * `::after` is a translucent sheen that glides across every few seconds — the
+ * one borrowed from the CTA shine, tuned down to 0.32 alpha so body text stays
+ * readable under it.
+ */
 .about-card {
   border: 3px solid transparent;
+  border-radius: 18px;
   background:
-    linear-gradient(#0b2b2b, #0b2b2b) padding-box,
+    radial-gradient(130% 150% at 14% 0%, rgba(245, 168, 28, 0.22), transparent 55%) padding-box,
+    linear-gradient(#0d2f2c, #0a2521) padding-box,
     linear-gradient(115deg, #f5a81c, #e63b2e, #8cc63f, #2bb48c, #ffc94a, #e63b2e, #f5a81c) border-box;
   background-size: 100% 100%, 320% 320%;
+  background-position: 0 0, 0% 50%;
   animation: lc-about-pan calc(5.5s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
+.about-card::after {
+  content: "";
+  position: absolute;
+  top: -80%;
+  bottom: -80%;
+  left: -60%;
+  width: 34%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.14) 32%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.14) 68%,
+    transparent
+  );
+  transform: skewX(-18deg);
+  animation: lc-about-sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Thanks chip — gradient glass with a warm halo */
 .about-chip {
-  background: linear-gradient(115deg, rgba(245, 168, 28, 0.16), rgba(43, 180, 140, 0.16), rgba(230, 59, 46, 0.16), rgba(245, 168, 28, 0.16));
+  background: linear-gradient(115deg, rgba(245, 168, 28, 0.22), rgba(43, 180, 140, 0.22), rgba(230, 59, 46, 0.22), rgba(245, 168, 28, 0.22));
   background-size: 300% 300%;
   animation: lc-about-chip 6s ease-in-out infinite alternate;
+  border-radius: 14px;
+  letter-spacing: 0.04em;
+  box-shadow:
+    0 0 0 1px rgba(255, 201, 74, 0.28),
+    0 12px 30px -14px rgba(245, 168, 28, 0.55),
+    inset 0 1px 0 rgba(253, 243, 224, 0.14);
 }
 
 /* CTA shine sweep — a light band glides across the primary button */
@@ -468,6 +515,7 @@
   .glow-ring,
   .jar-glow,
   .about-card,
+  .about-card::after,
   .about-chip,
   .cta-shine::after {
     animation: none !important;
@@ -509,6 +557,7 @@
 [data-reduced-motion="true"] .glow-ring,
 [data-reduced-motion="true"] .jar-glow,
 [data-reduced-motion="true"] .about-card,
+[data-reduced-motion="true"] .about-card::after,
 [data-reduced-motion="true"] .about-chip,
 [data-reduced-motion="true"] .cta-shine::after,
 [data-reduced-motion="true"] .decor-item,

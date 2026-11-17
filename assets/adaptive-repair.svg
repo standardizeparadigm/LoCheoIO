@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-label="Thang sửa chạy runtime — v1.1.8: useAdaptive() resolve một profile, kiểm mười lăm bất biến, và nếu phá thì bước thang sáu bậc ignore-inset → compact-hud → single-column → smaller-type → smallest-type; không bao giờ trả null, dừng ở as-planned trên 578/578 cửa sổ audit (hoạt họa SMIL)">
+  <defs>
+    <linearGradient id="rpBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#07201e"/>
+      <stop offset="0.6" stop-color="#0b2b2b"/>
+      <stop offset="1" stop-color="#061a1a"/>
+    </linearGradient>
+    <linearGradient id="rpCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17494a"/>
+      <stop offset="1" stop-color="#0d3536"/>
+    </linearGradient>
+    <linearGradient id="rpJade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b6e07a"/>
+      <stop offset="1" stop-color="#6fcf9b"/>
+    </linearGradient>
+    <linearGradient id="rpGold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+    <linearGradient id="rpHot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff8b5e"/>
+      <stop offset="1" stop-color="#e63b2e"/>
+    </linearGradient>
+    <filter id="rpGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="430" fill="url(#rpBg)"/>
+
+  <text x="44" y="48" fill="#f4e3c2" font-family="Bungee, Verdana, sans-serif" font-size="23" letter-spacing="1.1">THANG SỬA — RUNTIME</text>
+  <text x="44" y="72" fill="#7fae95" font-family="Verdana, sans-serif" font-size="12">v1.1.8 · useAdaptive(): resolve → kiểm hợp đồng → sửa · luôn trả về một profile</text>
+  <line x1="44" y1="88" x2="1156" y2="88" stroke="#1c4a49" stroke-width="1.5"/>
+
+  <!-- ============ A · cửa sổ phá hợp đồng ============ -->
+  <g>
+    <rect x="44" y="104" width="352" height="252" rx="12" fill="url(#rpCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="62" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">CỬA SỔ CHƯA TỪNG THẤY</text>
+    <text x="62" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">foldable xoay nửa chừng · inset 140px · viewport báo sớm</text>
+
+    <!-- a window being dragged through a rotation -->
+    <rect x="96" y="182" width="180" height="110" rx="8" fill="#0f3a3a" stroke="#2b8f8a" stroke-width="1.6">
+      <animate attributeName="width" values="180;128;214;150;180" dur="6s" begin="0s" repeatCount="indefinite"/>
+      <animate attributeName="x" values="96;122;79;111;96" dur="6s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="106" y="196" width="60" height="7" rx="3.5" fill="#f5a81c" opacity="0.85">
+      <animate attributeName="width" values="60;44;68;52;60" dur="6s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="106" y="212" width="160" height="20" rx="4" fill="#164a4a" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="width" values="160;110;188;132;160" dur="6s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="106" y="240" width="160" height="40" rx="4" fill="#0d3536" stroke="#2b5f5f" stroke-width="1">
+      <animate attributeName="width" values="160;110;188;132;160" dur="6s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- the invariant that fails -->
+    <g>
+      <rect x="62" y="316" width="148" height="22" rx="11" fill="url(#rpHot)" opacity="0.9">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+      </rect>
+      <text x="74" y="331" fill="#fff4ec" font-family="Verdana, sans-serif" font-size="10" font-weight="bold">chữ &lt; 8px — HỎNG</text>
+      <text x="222" y="331" fill="#ffb59e" font-family="Verdana, sans-serif" font-size="10">15 bất biến</text>
+    </g>
+  </g>
+
+  <!-- ============ B · thang sáu bậc ============ -->
+  <g>
+    <rect x="412" y="104" width="352" height="252" rx="12" fill="url(#rpCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="430" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">SÁU BẬC, TỪ NHẸ ĐẾN NẶNG</text>
+    <text x="430" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">dừng ở bậc đầu tiên qua hợp đồng</text>
+
+    <!-- the scan highlight that walks down the ladder -->
+    <rect x="424" y="158" width="328" height="24" rx="6" fill="#ffd166" opacity="0.16">
+      <animate attributeName="y" values="158;184;210;236;262;288;158" keyTimes="0;0.16;0.32;0.48;0.64;0.8;1" dur="7.2s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+
+    <text x="430" y="176" fill="#ffd166" font-family="Verdana, sans-serif" font-size="9.5" font-weight="bold">0 · as-planned</text>
+    <text x="430" y="202" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">1 · ignore-inset — inset thôi chiếm chrome</text>
+    <text x="430" y="228" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">2 · compact-hud — HUD 85% cỡ</text>
+    <text x="430" y="254" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">3 · single-column — dialog một cột</text>
+    <text x="430" y="280" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">4 · smaller-type — chữ 94%</text>
+    <text x="430" y="306" fill="#9dc7b6" font-family="Verdana, sans-serif" font-size="9.5">5 · smallest-type — chữ 88%, cuối trước sàn 8px</text>
+
+    <text x="430" y="340" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10.5">578 / 578 cửa sổ audit dừng ở bậc 0</text>
+  </g>
+
+  <!-- ============ C · không bao giờ null ============ -->
+  <g>
+    <rect x="780" y="104" width="376" height="252" rx="12" fill="url(#rpCard)" stroke="#1f5b5a" stroke-width="1.5"/>
+    <text x="798" y="130" fill="#f5a81c" font-family="Verdana, sans-serif" font-size="12.5" font-weight="bold" letter-spacing="0.6">KHÔNG BAO GIỜ null</text>
+    <text x="798" y="150" fill="#8fb7a8" font-family="Verdana, sans-serif" font-size="10">gọi nào cũng ra một profile để vẽ</text>
+
+    <!-- animated shield -->
+    <circle cx="846" cy="222" r="34" fill="none" stroke="url(#rpJade)" stroke-width="3" opacity="0.9">
+      <animate attributeName="r" values="30;36;30" dur="3s" begin="0s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <path d="M832 223 l10 10 l20 -22" fill="none" stroke="#b6e07a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <text x="898" y="200" fill="#cfe9d6" font-family="Verdana, sans-serif" font-size="10">ok:false vẫn trả</text>
+    <text x="898" y="216" fill="#cfe9d6" font-family="Verdana, sans-serif" font-size="10">bản ít hỏng nhất</text>
+    <text x="898" y="232" fill="#7fae95" font-family="Verdana, sans-serif" font-size="9">tie-break: ít vi phạm</text>
+
+    <text x="798" y="294" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10">describeRepair() — một dòng cho log</text>
+    <text x="798" y="312" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="10">data-adaptive-repair trên DOM</text>
+    <text x="798" y="330" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10">repairForSize / repairProfile — thuần, tổng, tất định</text>
+  </g>
+
+  <line x1="44" y1="372" x2="1156" y2="372" stroke="#1c4a49" stroke-width="1"/>
+
+  <g>
+    <text x="44" y="398" fill="#b6e07a" font-family="Verdana, sans-serif" font-size="11">15 bất biến · 6 bậc sửa · 578/578 dừng ở as-planned · 1618 test / 149 file</text>
+    <text x="44" y="416" fill="#7fae95" font-family="Verdana, sans-serif" font-size="10">chữ cuối cùng trong thang, vì sàn 8px là lời hứa — readability không phải một lever</text>
+    <circle cx="1128" cy="398" r="5" fill="url(#rpJade)">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.8s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

@@ -46,7 +46,7 @@ const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
  * adds `adaptive-stability.svg`, the twenty-seventh; round 16 adds
  * `adaptive-hold.svg`, the twenty-eighth.
  */
-const EXPECTED_ASSETS = 28;
+const EXPECTED_ASSETS = 29;
 if (files.length !== EXPECTED_ASSETS) {
   problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }
