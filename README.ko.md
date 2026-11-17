@@ -615,7 +615,7 @@ npm install        # 의존성 설치 (Node ≥ 20.19)
 npm run build      # → dist/index.html (단일 자기완결 파일)
 ```
 
-> `vite-plugin-singlefile`이 모든 JS/CSS/폰트/이미지를 **하나의** `dist/index.html`(약 700 KB, gzip 약 355 KB)에 인라인합니다. 서버도 네트워크도 필요 없습니다.
+> `vite-plugin-singlefile`이 모든 JS/CSS/폰트/이미지를 **하나의** `dist/index.html`(약 952 KB, gzip 약 430 KB)에 인라인합니다. 서버도 네트워크도 필요 없습니다.
 
 ### 개발
 
