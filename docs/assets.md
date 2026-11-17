@@ -28,6 +28,8 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
 | `game-loop.svg` | **một nhập đoạn**: GIỮ 2 phím → LƯỢN &amp; CHÉM → HỨNG đầy hũ → CỘNG ĐIỂM, đường quay về bước 1 khép vòng, nước muối đầy dần trong hũ (v1.1.8 vòng 18) | README ×10 (mục Điều khiển) |
 | `save-pipeline.svg` | **đường đi của một ván**: engine kết thúc ván → `storage/` 9 module qua `safeStorage` → hợp nhất + cứu dữ liệu từng mục → bảng vàng TOP 8 · thành tựu 16 · cài đặt v1, kèm đường «CHƠI TIẾP» đi ngược cho ván dở (v1.1.8 vòng 18) | README ×10 (mục Lưu trữ &amp; bảng vàng) |
+| `achievements.svg` | **lưới 16 thành tựu thật**: mỗi huy hiệu một glyph và một tông (brine · gold · chili · jade) đúng bảng trong game, sáng lần lượt theo hàng, dải sáng quét lưới, toast «THÀNH TỰU MỚI!» nhấp nháy — lưu cộng dồn qua các ván (v1.1.8 vòng 19) | mục 16 thành tựu của cả 10 README — `assets/achievements.svg` |
+| `adaptive-motion.svg` | **ba mức chuyển động**: vivid ×1 · steady ×1.6 (9s → 14.4s, chậm ~40% không mất hoạ tiết) · still dừng hẳn khi người chơi hoặc OS xin giảm — hai ô quay thật đúng tỉ lệ, factor luôn ≥ 1 (v1.1.8 vòng 19) | mục ba mức chuyển động của cả 10 README — `assets/adaptive-motion.svg` |
 | `divider.svg` | Dải sparkle ngăn cách section | README ×9 (không có ở bản en) |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
@@ -59,4 +61,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
-| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` · `adaptive-stability.svg` · `adaptive-hold.svg` · `adaptive-repair.svg` · `game-loop.svg` · `save-pipeline.svg` |
+| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` · `adaptive-stability.svg` · `adaptive-hold.svg` · `adaptive-repair.svg` · `game-loop.svg` · `save-pipeline.svg` · `achievements.svg` · `adaptive-motion.svg` |

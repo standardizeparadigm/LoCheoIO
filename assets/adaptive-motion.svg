@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-label="Lọ Chéo v1.1.8 — ba mức chuyển động: vivid nhân 1 (máy tính bảng, desktop), steady nhân 1.6 (điện thoại, con trỏ thô — cùng chuyển động chậm lại khoảng 40%), still dừng hẳn khi người chơi hoặc hệ điều hành xin giảm chuyển động (hoạt họa SMIL)">
+  <defs>
+    <linearGradient id="amBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2b2b"/>
+      <stop offset="0.55" stop-color="#0e3430"/>
+      <stop offset="1" stop-color="#123f38"/>
+    </linearGradient>
+    <linearGradient id="amPanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14443d"/>
+      <stop offset="1" stop-color="#0d332e"/>
+    </linearGradient>
+    <linearGradient id="amBrine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b6e07a"/>
+      <stop offset="1" stop-color="#8fc94f"/>
+    </linearGradient>
+    <linearGradient id="amTurm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5a81c"/>
+      <stop offset="1" stop-color="#e63b2e"/>
+    </linearGradient>
+    <filter id="amGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="amSoft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="430" fill="url(#amBg)"/>
+  <g opacity="0.14" stroke="#b6e07a" stroke-width="1">
+    <path d="M0 402 H1200 M0 416 H1200 M300 402 V416 M600 402 V416 M900 402 V416"/>
+  </g>
+
+  <text x="44" y="44" font-family="'Arial Black','Bungee',sans-serif" font-weight="900" font-size="21" letter-spacing="3" fill="#f4e3c2">BA MỨC CHUYỂN ĐỘNG</text>
+  <text x="44" y="66" font-family="Verdana, sans-serif" font-size="12" fill="#7d9d94">một chuyển động, ba tốc độ — factor chỉ nhân thời lượng, luôn ≥ 1; still là mức duy nhất được dừng hẳn</text>
+  <text x="1156" y="44" text-anchor="end" font-family="Verdana, sans-serif" font-size="11" fill="#b6e07a" opacity="0.8">v1.1.8</text>
+
+  <!-- VIVID -->
+  <g>
+    <rect x="44" y="104" width="350" height="250" rx="14" fill="url(#amPanel)" stroke="#b6e07a" stroke-width="1.8"/>
+    <rect x="44" y="104" width="350" height="250" rx="14" fill="none" stroke="#b6e07a" stroke-width="2.5" filter="url(#amSoft)">
+      <animate attributeName="opacity" values="0.15;0.7;0.15" dur="5.5s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <text x="64" y="134" font-family="'Arial Black',sans-serif" font-weight="900" font-size="15" letter-spacing="2" fill="#b6e07a">VIVID</text>
+    <rect x="268" y="116" width="106" height="26" rx="13" fill="#0b2b2b" stroke="#b6e07a" stroke-width="1.2"/>
+    <text x="321" y="134" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="12" fill="#b6e07a">×1</text>
+    <!-- quỹ đạo halo quay 9s -->
+    <g transform="translate(219 224)">
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#b6e07a" stroke-width="3" opacity="0.9">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" begin="0s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(60)"/>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(-60)"/>
+      <path d="M-16 -30 h32 l-5 38 h-22 z" fill="url(#amTurm)" opacity="0.95"/>
+      <rect x="-20" y="-36" width="40" height="7" rx="3" fill="#f4e3c2"/>
+    </g>
+    <text x="64" y="316" font-family="Verdana, sans-serif" font-size="10.5" fill="#c8d8b0">desktop · máy tính bảng — tốc độ gốc</text>
+    <text x="64" y="334" font-family="'Courier New',monospace" font-size="10" fill="#7d9d94">calc(9s * var(--adaptive-motion-factor))</text>
+  </g>
+
+  <!-- STEADY -->
+  <g>
+    <rect x="425" y="104" width="350" height="250" rx="14" fill="url(#amPanel)" stroke="#f5a81c" stroke-width="1.8"/>
+    <rect x="425" y="104" width="350" height="250" rx="14" fill="none" stroke="#f5a81c" stroke-width="2.5" filter="url(#amSoft)">
+      <animate attributeName="opacity" values="0.15;0.7;0.15" dur="8.8s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <text x="445" y="134" font-family="'Arial Black',sans-serif" font-weight="900" font-size="15" letter-spacing="2" fill="#f5a81c">STEADY</text>
+    <rect x="649" y="116" width="106" height="26" rx="13" fill="#0b2b2b" stroke="#f5a81c" stroke-width="1.2"/>
+    <text x="702" y="134" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="12" fill="#f5a81c">×1.6</text>
+    <!-- quỹ đạo quay chậm hơn: 14.4s -->
+    <g transform="translate(600 224)">
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#f5a81c" stroke-width="3" opacity="0.9">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14.4s" begin="0s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(60)"/>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(-60)"/>
+      <path d="M-16 -30 h32 l-5 38 h-22 z" fill="url(#amTurm)" opacity="0.95"/>
+      <rect x="-20" y="-36" width="40" height="7" rx="3" fill="#f4e3c2"/>
+    </g>
+    <text x="445" y="316" font-family="Verdana, sans-serif" font-size="10.5" fill="#c8d8b0">điện thoại · con trỏ thô — chậm lại ~40%, không mất hoạ tiết</text>
+    <text x="445" y="334" font-family="'Courier New',monospace" font-size="10" fill="#7d9d94">9s → 14.4s (9s × 1.6)</text>
+  </g>
+
+  <!-- STILL -->
+  <g>
+    <rect x="806" y="104" width="350" height="250" rx="14" fill="url(#amPanel)" stroke="#7d9d94" stroke-width="1.8"/>
+    <text x="826" y="134" font-family="'Arial Black',sans-serif" font-weight="900" font-size="15" letter-spacing="2" fill="#7d9d94">STILL</text>
+    <rect x="1030" y="116" width="106" height="26" rx="13" fill="#0b2b2b" stroke="#7d9d94" stroke-width="1.2"/>
+    <text x="1083" y="134" text-anchor="middle" font-family="'Courier New',monospace" font-weight="700" font-size="12" fill="#f4e3c2">DỪNG</text>
+    <!-- quỹ đạo đứng yên: hoạ tiết cân đối khi đứng -->
+    <g transform="translate(981 224)">
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="3" opacity="0.85"/>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(60)"/>
+      <ellipse cx="0" cy="0" rx="58" ry="20" fill="none" stroke="#7d9d94" stroke-width="1" stroke-dasharray="4 5" transform="rotate(-60)"/>
+      <path d="M-16 -30 h32 l-5 38 h-22 z" fill="url(#amTurm)" opacity="0.8"/>
+      <rect x="-20" y="-36" width="40" height="7" rx="3" fill="#f4e3c2" opacity="0.8"/>
+    </g>
+    <text x="826" y="316" font-family="Verdana, sans-serif" font-size="10.5" fill="#c8d8b0">người chơi hoặc OS xin giảm chuyển động (OR ba nguồn)</text>
+    <text x="826" y="334" font-family="'Courier New',monospace" font-size="10" fill="#7d9d94">factor vẫn 1 — không có calc(9s * 0)</text>
+  </g>
+
+  <!-- chú thích -->
+  <text x="44" y="386" font-family="Verdana, sans-serif" font-size="10.5" fill="#7d9d94">hai hook giảm chuyển động (settings.reducedMotion và prefers-reduced-motion) tắt đủ mọi lớp — OR chứ không AND: OS không bị app ghi đè</text>
+  <text x="44" y="404" font-family="Verdana, sans-serif" font-size="10" fill="#b6e07a" opacity="0.75">hoạt họa SMIL — hai ô trên quay thật, đúng tỉ lệ 9s : 14.4s</text>
+</svg>

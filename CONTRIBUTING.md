@@ -35,7 +35,7 @@ Cảm ơn bạn đã quan tâm tới hũ dưa này! Dưới đây là quy tắc 
   phải khớp số đo thật của suite (`--verify` chạy lại suite rồi so).
 - `npm run check:i18n` — 7 locale: khoá đủ, không rỗng, placeholder khớp nhau.
 - `npm run check:assets` — mọi đường dẫn `assets/` trong tài liệu trỏ tới file có thật.
-- `node scripts/check-svg.mjs` — 31 SVG: hợp lệ XML, có animation, mọi `<img>` trỏ đúng file.
+- `node scripts/check-svg.mjs` — 33 SVG: hợp lệ XML, có animation, mọi `<img>` trỏ đúng file.
 
 Mọi lệnh trên đều chạy trong CI (`.github/workflows/ci.yml`). `npm run check` gộp
 typecheck + test + build; ba script kiểm tài liệu chạy ở job riêng.
