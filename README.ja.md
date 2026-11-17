@@ -502,6 +502,11 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 高い方の列: 192 マスコット + 24 チ�
 | 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1618件のユニットテスト（vitest）— `npm run check` がCIゲート |
 
 <img src="assets/items.svg" alt="14種の食材 — キャッチすべき漬物、取るべき黄金パワー、避けるべき危険物" width="100%" />
+### 💾 ストレージと殿堂 — ひと試合の道のり
+
+データはマシンから出ない：エンジンが終了した試合をスナップショットにまとめ、`storage/`（9モジュール）は `safeStorage` という唯一の扉を通って localStorage に触り、壊れたセーブは項目ごとに救済され、それから TOP 8、実績16、設定へ — 「つづきから」はこの同じ道を逆にたどる。
+
+<img src="assets/save-pipeline.svg" alt="ひと試合の道のり — エンジン → storage/ → 統合と救済 → TOP 8 · 実績 · 設定（SMIL）" width="100%" />
 
 ## 🌐 言語の切り替え
 
@@ -536,6 +541,9 @@ Lọ Chéo はゲーム内で **7 言語のUI** を搭載 — リロード不要
 | ミュート / 解除 | `M` | 右上のスピーカーボタン |
 | 言語切替 | —（VI/EN/中/日/한/ES/FR ボタンを使用） | メニュー / 一時停止の VI/EN/中/日/한/ES/FR ボタン |
 
+<img src="assets/game-loop.svg" alt="Lọ Chéo のひとサイクル — キー2つを保持し、斜めに滑って斬り、壺に受け、コンボを積む — ループは回り続ける（SMIL）" width="100%" />
+
+マシンから見たひとサイクル：キー2つの保持がステップ1、あとは繰り返し — 壺が割れなければリズムは止まらず、三つのひびが終わらせる。
 ## 🚀 インストールと実行
 
 ### 🧠 第15ラウンド：適応システムが自分を整え、もう揺れない
@@ -779,6 +787,12 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 **ターミナルが苦手？**
 [`scripts/play-mac.command`](scripts/play-mac.command)（macOS）、[`scripts/play-windows.bat`](scripts/play-windows.bat)（Windows）、[`scripts/play-linux.sh`](scripts/play-linux.sh)（Linux）をダブルクリック —— カラーメニューが開き、`1` を選ぶとビルドしてすぐ遊べます。開発時は `2`。詳しくは [scripts/README.md](scripts/README.md)。
 
+**アップデートでセーブは消えますか？**
+消えません。ストレージのキーはバージョンをまたいで同じ；読み込み時にデータを統合し、項目ごとに救済します — 壊れた項目ひとつで殿堂全体が消えることはありません。
+
+**画面の大きさで遊び方は変わりますか？**
+ルールは変わりません。単一のアダプティブプロフィールがビューポートごとに配置を選び（578ウィンドウを監査、違反0）— HUD・ヒーロー・ダイアログは並び直し、ゲームはひとつのまま。
+
 ## 📦 リリースと変更履歴
 
 | バージョン | Tier | 日付 | ノート |
@@ -823,6 +837,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | よくある問題 — 黒画面 · 音が出ない · つづきから · ランチャー |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | ヘッドレス描画スモークテスト（全メニュー/モーダル） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | アーキテクチャ決定記録 — なぜ1ファイル、なぜSMIL、なぜ `modeConfigFor()` |
 
 ## 🤝 コントリビュート
 
