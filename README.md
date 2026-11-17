@@ -826,6 +826,7 @@ Lọ Chéo hỗ trợ **7 ngôn ngữ giao diện** ngay trong game — không c
 <img src="assets/game-loop.svg" alt="Một nhập đoạn của Lọ Chéo — GIỮ 2 phím, LƯỢN &amp; CHÉM, HỨNG đầy hũ, CỘNG ĐIỂM — vòng lặp khép lại (SMIL)" width="100%" />
 
 Một nhập đoạn nhìn từ phía máy: giữ hai phím là bước 1, mọi nhịp sau chỉ lặp lại — hũ còn nguyên thì nhịp chưa dừng, gốm nứt làm ba thì dừng.
+
 ## 🚀 Cài đặt & chạy
 
 ### Chơi ngay (không cần build)
