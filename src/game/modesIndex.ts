@@ -74,3 +74,27 @@ export const MODE_LIST: readonly ModeConfig[] = [
 export function isModeId(v: unknown): v is ModeId {
   return typeof v === "string" && Object.prototype.hasOwnProperty.call(MODES, v);
 }
+
+/**
+ * The balance record for a mode id, or the classic record when the id is not
+ * one of ours.
+ *
+ * THE HOLE THIS CLOSES
+ * --------------------
+ * `MODES[id]` on an unknown id is `undefined`, and every consumer in the engine
+ * then reads a field off it — `MODES[this.mode].timeLimit` throws
+ * `TypeError: Cannot read properties of undefined`, inside per-frame code. The
+ * typed `ModeId` makes the mistake invisible to the compiler, but `this.mode`
+ * has three doors into the engine: `setMode()` (any caller), `restoreRun()`
+ * (a save file, however normalized) and `captureRun()`'s round-trip. A guard in
+ * one door does not close the others.
+ *
+ * This is the belt for all three: prototype-safe lookup (`isModeId` already
+ * excludes `__proto__` / `constructor` / `toString`), unknown → classic, so a
+ * corrupt mode can never take a run down with it. `classic` is the right
+ * fallback — it is the record every other number in the game is balanced
+ * against.
+ */
+export function modeConfigFor(id: unknown): ModeConfig {
+  return isModeId(id) ? MODES[id] : MODES.classic;
+}

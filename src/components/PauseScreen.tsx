@@ -1,5 +1,5 @@
 import type { RunStats } from "../game/engine";
-import { MODES, type ModeId } from "../game/modes";
+import { modeConfigFor, type ModeId } from "../game/modes";
 import { useI18n } from "../i18n/useI18n";
 import { APP_VERSION } from "../version";
 import { fmtNum } from "../i18n/i18n";
@@ -28,7 +28,7 @@ export default function PauseScreen({
   const { t, lang } = useI18n();
   // Sized from the window, not from two Tailwind breakpoints (see GameOverScreen).
   const { type } = useAdaptive();
-  const timeLimit = MODES[mode].timeLimit;
+  const timeLimit = modeConfigFor(mode).timeLimit;
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center overflow-y-auto px-4 py-6">
       <div className="pointer-events-none absolute inset-0 bg-jade-950/70 backdrop-blur-[2px]" />
@@ -47,7 +47,7 @@ export default function PauseScreen({
             <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
               <span
                 className="inline-block border px-1.5 py-0.5 font-display text-[8px] tracking-[0.18em]"
-                style={{ borderColor: MODES[mode].accent, color: MODES[mode].accent }}
+                style={{ borderColor: modeConfigFor(mode).accent, color: modeConfigFor(mode).accent }}
               >
                 {t(`mode.${mode}.name` as MessageKey)}
               </span>

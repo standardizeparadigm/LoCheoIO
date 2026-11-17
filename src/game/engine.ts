@@ -7,10 +7,11 @@ import { weightedPick } from "./spawn";
 import { planPlayfield, type PlayfieldPlan } from "./adaptive/playfield";
 import { planHud } from "./adaptive/hud";
 import {
-  MODES,
+  MAX_CRACKS,
   comboWindowFor,
   jarBonusFor,
   levelForCatches,
+  modeConfigFor,
   multiplierForCombo,
   type ModeId,
 } from "./modes";
@@ -575,9 +576,17 @@ export class LoCheoGame {
     this.best = v;
   }
 
-  /** Switch the active mode. Takes effect on the next run. */
+  /**
+   * Switch the active mode. Takes effect on the next run.
+   *
+   * The parameter is typed `ModeId`, but `this.mode` ended up `"constructor"`
+   * in one engine round-trip already (a hand-edited save flows through the
+   * same assignment in `restoreRun()`), so the type is treated as a claim,
+   * not a fact: an unknown id falls back to `classic` instead of handing the
+   * per-frame code a record that does not exist.
+   */
   setMode(m: ModeId) {
-    this.mode = m;
+    this.mode = modeConfigFor(m).id;
   }
 
   /** Enable/disable screen shake at render time (settings.shake). */
@@ -634,10 +643,10 @@ export class LoCheoGame {
    */
   restoreRun(saved: SavedRun) {
     this.resetRun();
-    this.mode = saved.mode;
+    this.mode = modeConfigFor(saved.mode).id; // a save is data, not a type
     this.stats = { ...saved.stats };
     this.fill = clamp(saved.fill, 0, 1);
-    const maxCracks = MODES[this.mode].maxCracks ?? 3;
+    const maxCracks = modeConfigFor(this.mode).maxCracks ?? MAX_CRACKS;
     this.cracks = clamp(Math.round(saved.cracks), 0, maxCracks);
     this.stamina = clamp(saved.stamina, 0, 1);
     /*
@@ -792,7 +801,7 @@ export class LoCheoGame {
     // -------- playing
     this.hudAlpha = damp(this.hudAlpha, 1, 4, dt);
     this.stats.time += raw;
-    const timeLimit = MODES[this.mode].timeLimit;
+    const timeLimit = modeConfigFor(this.mode).timeLimit;
     if (timeLimit && this.stats.time >= timeLimit) {
       this.stats.time = timeLimit;
       this.gameOver();
@@ -963,7 +972,7 @@ export class LoCheoGame {
     // balance logic lives in ./spawn so it can be tested without a canvas
     return weightedPick(KINDS, {
       level: deco ? 4 : this.stats.level,
-      mode: MODES[this.mode],
+      mode: modeConfigFor(this.mode),
       deco,
     });
   }
@@ -971,7 +980,7 @@ export class LoCheoGame {
   private makeItem(kind: ItemKind, deco: boolean): Item {
     const def = DEFS[kind];
     const lvl = this.stats.level;
-    const cfg = MODES[this.mode];
+    const cfg = modeConfigFor(this.mode);
     const margin = this.w * 0.08;
     const speed = (186 + lvl * 18) * this.S * def.speed * cfg.speedMult * (this.frenzy > 0 ? 1.12 : 1);
     const it: Item = {
@@ -1004,7 +1013,7 @@ export class LoCheoGame {
     this.spawnT -= dt;
     if (this.spawnT > 0) return;
     const lvl = this.stats.level;
-    const base = Math.max(0.32, 1.0 - lvl * 0.06) * (this.frenzy > 0 ? 0.68 : 1) * MODES[this.mode].spawnMult;
+    const base = Math.max(0.32, 1.0 - lvl * 0.06) * (this.frenzy > 0 ? 0.68 : 1) * modeConfigFor(this.mode).spawnMult;
     this.spawnT = base * rnd(0.75, 1.25);
 
     if (Math.random() < 0.24) {
@@ -1086,7 +1095,7 @@ export class LoCheoGame {
   }
 
   private catchGood(it: Item) {
-    const cfg = MODES[this.mode];
+    const cfg = modeConfigFor(this.mode);
     const prevMult = this.multiplier();
     this.combo++;
     this.comboT = comboWindowFor(this.mode);
@@ -1147,7 +1156,7 @@ export class LoCheoGame {
   private destroyItem(it: Item, fromSlam: boolean, pts: number) {
     it.dead = true;
     const mult = this.multiplier();
-    const gain = Math.round(pts * mult * MODES[this.mode].scoreMult);
+    const gain = Math.round(pts * mult * modeConfigFor(this.mode).scoreMult);
     this.stats.score += gain;
     this.stats.sliced++;
     this.combo++;
@@ -1180,7 +1189,7 @@ export class LoCheoGame {
     this.rings.push({ x: it.x, y: it.y, r: it.r, to: 230 * this.S, life: 0.5, max: 0.5, color: it.def.color, width: 6 });
     const kind = it.def.power;
     if (kind === "heal") {
-      const gain = Math.round(it.def.pts * this.multiplier() * MODES[this.mode].scoreMult);
+      const gain = Math.round(it.def.pts * this.multiplier() * modeConfigFor(this.mode).scoreMult);
       this.stats.score += gain;
       if (this.cracks > 0) {
         this.cracks--;
@@ -1192,19 +1201,19 @@ export class LoCheoGame {
       this.fill = Math.min(1, this.fill + 0.18);
     } else if (kind === "frenzy") {
       this.frenzy = 7;
-      const gain = Math.round(it.def.pts * this.multiplier() * MODES[this.mode].scoreMult);
+      const gain = Math.round(it.def.pts * this.multiplier() * modeConfigFor(this.mode).scoreMult);
       this.stats.score += gain;
       this.popup(this.px, this.py - this.pr * 2, t("popup.frenzy"), "#ff6a4d", 26);
       this.banner = { text: t("banner.frenzy"), sub: t("banner.frenzy.sub"), life: 1.2, max: 1.2, color: "#ff6a4d" };
     } else if (kind === "shield") {
       this.shield = Math.min(2, this.shield + 1);
-      const gain = Math.round(it.def.pts * this.multiplier() * MODES[this.mode].scoreMult);
+      const gain = Math.round(it.def.pts * this.multiplier() * modeConfigFor(this.mode).scoreMult);
       this.stats.score += gain;
       this.popup(this.px, this.py - this.pr * 2, t("popup.shieldGain", { n: this.shield }), "#ffe9a8", 26);
       this.banner = { text: t("banner.shield"), sub: t("banner.shield.sub"), life: 1.2, max: 1.2, color: "#ffe9a8" };
     } else {
       this.slow = 5;
-      const gain = Math.round(it.def.pts * this.multiplier() * MODES[this.mode].scoreMult);
+      const gain = Math.round(it.def.pts * this.multiplier() * modeConfigFor(this.mode).scoreMult);
       this.stats.score += gain;
       this.popup(this.px, this.py - this.pr * 2, t("popup.slow"), "#a8e6ff", 26);
       this.banner = { text: t("banner.slow"), sub: t("banner.slow.sub"), life: 1.2, max: 1.2, color: "#a8e6ff" };
@@ -1267,7 +1276,7 @@ export class LoCheoGame {
     this.flash = 0.75;
     this.flashColor = C.chili;
     audio.play("hurt");
-    const maxCracks = MODES[this.mode].maxCracks ?? 3;
+    const maxCracks = modeConfigFor(this.mode).maxCracks ?? MAX_CRACKS;
     this.popup(this.px, this.py - this.pr * 1.9, this.cracks >= maxCracks ? t("popup.broken") : t("popup.cracked"), C.chili, 28);
     this.rings.push({ x: this.px, y: this.py, r: this.pr, to: this.pr * 7, life: 0.4, max: 0.4, color: C.chili, width: 7 });
     for (let i = 0; i < 26; i++) {
@@ -1285,7 +1294,7 @@ export class LoCheoGame {
         life: rnd(0.3, 0.7), size: rnd(2, 5) * this.S, color: it.def.color, kind: "dot", grav: 700, drag: 1.6,
       });
     }
-    if (this.cracks >= (MODES[this.mode].maxCracks ?? 3)) this.gameOver();
+    if (this.cracks >= (modeConfigFor(this.mode).maxCracks ?? MAX_CRACKS)) this.gameOver();
   }
 
   private missItem(it: Item) {
@@ -1469,7 +1478,7 @@ export class LoCheoGame {
     this.drawStars(ctx);
     this.drawDecals(ctx);
 
-    const modeTint = MODES[this.mode].tint;
+    const modeTint = modeConfigFor(this.mode).tint;
     if (modeTint && this.phase !== "menu") {
       ctx.fillStyle = modeTint;
       ctx.fillRect(-40, -40, this.w + 80, this.h + 80);
@@ -2260,7 +2269,7 @@ export class LoCheoGame {
 
     // fill meter
     this.bar(ctx, cx - hud.fillWidth / 2, hud.fillY, hud.fillWidth, 10, this.fill, C.brine);
-    const timeLimit = MODES[this.mode].timeLimit;
+    const timeLimit = modeConfigFor(this.mode).timeLimit;
     if (timeLimit) {
       // ĐUA 60 GIÂY — countdown replaces the quiet jar label; pulses red under 10s
       const left = Math.max(0, timeLimit - this.stats.time);

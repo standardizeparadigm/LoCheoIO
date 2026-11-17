@@ -13,7 +13,7 @@
  * keeps working — the engine and the tests were not touched.
  */
 export type { ModeId, ModeConfig } from "./modeTypes";
-export { MODES, MODE_LIST, isModeId } from "./modesIndex";
+export { MODES, MODE_LIST, isModeId, modeConfigFor } from "./modesIndex";
 export {
   multiplierForCombo,
   levelForCatches,

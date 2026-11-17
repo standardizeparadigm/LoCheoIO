@@ -1,5 +1,5 @@
 import { useI18n } from "../../i18n/useI18n";
-import { MODES, MODE_LIST, type ModeId } from "../../game/modes";
+import { MODE_LIST, modeConfigFor, type ModeId } from "../../game/modes";
 import { Modal } from "../ui";
 import type { MessageKey } from "../../i18n/i18n";
 import ModeSelector from "../ModeSelector";
@@ -29,7 +29,7 @@ export default function ModeSelectModal({
       </p>
       <ModeSelector mode={mode} onChange={onChange} />
       <p className="mt-3 text-center font-body text-[9px] tracking-[0.2em] text-jade-700 uppercase">
-        {MODE_LIST.length} · {MODES[mode].name}
+        {MODE_LIST.length} · {modeConfigFor(mode).name}
       </p>
     </Modal>
   );
