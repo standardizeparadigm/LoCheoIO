@@ -564,6 +564,12 @@ Test: wer es repariert, bricht den Test und muss ihn aktualisieren; bis dahin
 steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerhalb
 *einer* Economy ist `scene + reserve === usableHeight` (252 Kombinationen geprüft).
 
+### 🎚️ Drei Bewegungsstufen — vivid · steady · still
+
+Eine Bewegung, drei Geschwindigkeiten: Desktops und Tablets laufen mit voller Geschwindigkeit (**×1**), Telefone und grobe Zeiger ~40% langsamer (**×1.6** — 9s → 14.4s) ohne das Ornament zu verlieren, und wenn Spieler oder OS weniger Bewegung wünschen, **stoppt alles** — zwei Hooks decken jede Ebene ab, OR statt AND.
+
+<img src="assets/adaptive-motion.svg" alt="Die drei Bewegungsstufen von Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still gestoppt (SMIL)" width="100%" />
+
 ## ✨ Die Highlights
 
 | Bereich | Details |
@@ -586,6 +592,12 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 Daten verlassen die Maschine nie: der Motor packt eine beendete Runde in einen Snapshot, `storage/` (9 Module) berührt localStorage nur durch das eine Tor `safeStorage`, ein kaputter Stand wird Stück für Stück gerettet, und erst dann erscheinen TOP 8, 16 Erfolge und Einstellungen — „WEITER SPIELEN" geht denselben Weg rückwärts.
 
 <img src="assets/save-pipeline.svg" alt="Der Weg einer Runde — Engine → storage/ → zusammenführen &amp; retten → TOP 8 · Erfolge · Einstellungen (SMIL)" width="100%" />
+
+### 🏆 16 Erfolge — das Abzeichen-Raster
+
+Jedes Abzeichen gibt es für eine echte Tat — Serien von 10, 20, 40, das erste Glas, der König der 60-Sekunden-Jagd, Stahlkeramik — und es wird **über Runden hinweg** gespeichert; der Farbton jedes Abzeichens entspricht der Tabelle im Spiel (brine · gold · chili · jade), der Toast «NEUER ERFOLG!» erscheint auf dem Niederlage-Bildschirm.
+
+<img src="assets/achievements.svg" alt="Das 16-Erfolge-Raster von Lọ Chéo — Glyphen und Farbtöne aus der Spiel-Tabelle, Kacheln leuchten Reihe für Reihe, der «NEUER ERFOLG!»-Toast (SMIL)" width="100%" />
 
 ## 🌐 Sprachen wechseln
 
