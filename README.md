@@ -767,6 +767,12 @@ thì test đỏ và buộc phải cập nhật, còn nếu không ai sửa thì 
 lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: trong *một* economy,
 `scene + reserve === usableHeight` (252 tổ hợp được kiểm).
 
+### 🎚️ Ba mức chuyển động — vivid · steady · still
+
+Cùng một chuyển động, ba tốc độ: desktop và máy tính bảng chạy tốc độ gốc (**×1**), điện thoại và con trỏ thô chậm lại ~40% (**×1.6** — 9s → 14.4s) nhưng không mất hoạ tiết, còn khi người chơi hoặc hệ điều hành xin giảm chuyển động thì **dừng hẳn** — hai hook tắt đủ mọi lớp, OR chứ không AND.
+
+<img src="assets/adaptive-motion.svg" alt="Ba mức chuyển động của Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still dừng hẳn (SMIL)" width="100%" />
+
 ## ✨ Tính năng nổi bật
 
 | Nhóm | Chi tiết |
@@ -789,6 +795,12 @@ lại thay vì bị lãng quên. Bên cạnh đó là **bất biến thật**: t
 Dữ liệu không bay lên mây: engine gói kết quả ván thành snapshot, `storage/` (9 module) chạm localStorage đúng một lối qua `safeStorage`, bản lưu hỏng được cứu từng mục, rồi mới tới bảng vàng TOP 8, 16 thành tựu và cài đặt — và đường «CHƠI TIẾP» chạy đúng đường này, chỉ là đi ngược.
 
 <img src="assets/save-pipeline.svg" alt="Đường đi của một ván — engine → storage/ → hợp nhất + cứu dữ liệu → bảng vàng · thành tựu · cài đặt (SMIL)" width="100%" />
+
+### 🏆 16 thành tựu — lưới huy hiệu
+
+Mỗi huy hiệu mở theo việc thật — chuỗi 10, 20, 40 củ liên tiếp, hũ đầu tay, vua Đua 60 Giây, Gốm Thép — và lưu **cộng dồn qua các ván**; tông màu từng huy hiệu đúng bảng trong game (brine · gold · chili · jade), toast «THÀNH TỰU MỚI!» hiện ở màn thua.
+
+<img src="assets/achievements.svg" alt="Lưới 16 thành tựu của Lọ Chéo — glyph và tông màu đúng bảng trong game, sáng lần lượt theo hàng, dải sáng quét lưới, toast «THÀNH TỰU MỚI!» (SMIL)" width="100%" />
 
 ## 🌐 Chuyển ngôn ngữ
 
