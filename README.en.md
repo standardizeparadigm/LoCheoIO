@@ -680,6 +680,7 @@ Lọ Chéo ships with **7 UI languages**, applied instantly — no reload, no lo
 <img src="assets/game-loop.svg" alt="One play cycle of Lọ Chéo — HOLD two keys, GLIDE &amp; SLICE, FILL the jar, SCORE the combo — the loop closes (SMIL)" width="100%" />
 
 One cycle, seen from the machine: holding two keys is step 1, every beat after that repeats — as long as the jar holds, the rhythm doesn't stop; three cracks end it.
+
 ## 🚀 Install & run
 
 ### Play right away (no build)
