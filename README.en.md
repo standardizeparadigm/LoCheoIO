@@ -638,6 +638,11 @@ usableHeight` (252 combinations asserted).
 | 🧪 **Quality gates** | 1618 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
+### 💾 Storage & the golden board — one run's journey
+
+Data never leaves the machine: the engine packs a finished run into a snapshot, `storage/` (9 modules) touches localStorage through the single `safeStorage` gate, a broken save is rescued item by item, and only then do the TOP 8 board, 16 achievements and settings appear — and «CONTINUE» runs this same path in reverse.
+
+<img src="assets/save-pipeline.svg" alt="The journey of one run — engine → storage/ → merge + rescue → TOP 8 · achievements · settings (SMIL)" width="100%" />
 
 ## 🌐 Switching languages
 
@@ -672,6 +677,9 @@ Lọ Chéo ships with **7 UI languages**, applied instantly — no reload, no lo
 | Mute / unmute | `M` | Speaker button, top-right |
 | Switch language | — (use VI/EN/中/日/한/ES/FR buttons) | VI/EN/中/日/한/ES/FR buttons on menu / pause |
 
+<img src="assets/game-loop.svg" alt="One play cycle of Lọ Chéo — HOLD two keys, GLIDE &amp; SLICE, FILL the jar, SCORE the combo — the loop closes (SMIL)" width="100%" />
+
+One cycle, seen from the machine: holding two keys is step 1, every beat after that repeats — as long as the jar holds, the rhythm doesn't stop; three cracks end it.
 ## 🚀 Install & run
 
 ### Play right away (no build)
@@ -878,6 +886,12 @@ Fixed in v1.1.4: `play-windows.bat` is CRLF + UTF-8 BOM with `chcp 65001` and th
 **Not comfortable with a terminal?**
 Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) or [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — a colored menu appears; pick `1` to build & play instantly, `2` for the dev server, `L` to switch language (7 available). Details: [scripts/README.md](scripts/README.md).
 
+**Will my saves survive a game update?**
+Yes. Storage keys stay the same across releases; on read, data is merged and rescued item by item — one broken entry doesn't drag the whole board down with it.
+
+**Do big and small screens play differently?**
+The rules don't change. A single adaptive profile picks the layout for each viewport (audited across 578 windows, 0 violations) — HUD, hero and dialogs rearrange themselves, the game stays one game.
+
 ## 📦 Releases & changelog
 
 | Version | Tier | Date | Notes |
@@ -922,6 +936,7 @@ Design notes and deeper technical docs:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Common issues — black screen · audio · Continue · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless render smoke test (full menu/modal tree) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Architecture decision records — why one file, why SMIL, why `modeConfigFor()` |
 
 ## 🤝 Contributing
 
