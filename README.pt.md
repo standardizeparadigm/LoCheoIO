@@ -493,6 +493,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // coluna mais alta: 192 mascote + 24 chip
 
 `tests/menu-adaptive.test.ts` varre **1.682 viewports** e verifica `heroContentHeight(layout) ≤ scene` em cada amostra. Ao redimensionar, os dois hooks escutam **seis** eventos e atualizam em um frame.
 
+### 🎚️ Três níveis de movimento — vivid · steady · still
+
+Um movimento, três velocidades: desktop e tablet em velocidade plena (**×1**), celular e ponteiro grosso ~40% mais lento (**×1.6** — 9s → 14.4s) sem perder o enfeite, e quando o jogador ou o SO pede menos movimento, **tudo para** — dois hooks cobrem cada camada, OR e não AND.
+
+<img src="assets/adaptive-motion.svg" alt="Os três níveis de movimento de Lọ Chéo — vivid ×1, steady ×1.6 (9s → 14.4s), still parado (SMIL)" width="100%" />
+
 ## ✨ Destaques
 
 | Grupo | Detalhes |
@@ -515,6 +521,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // coluna mais alta: 192 mascote + 24 chip
 Os dados nunca saem da máquina: o motor empacota a partida num snapshot, `storage/` (9 módulos) toca o localStorage pela única porta `safeStorage`, um save quebrado é resgatado item por item, e só então vêm o TOP 8, 16 conquistas e as configurações — «CONTINUAR» percorre o mesmo caminho ao contrário.
 
 <img src="assets/save-pipeline.svg" alt="A jornada de uma partida — motor → storage/ → mesclar &amp; resgatar → TOP 8 · conquistas · configurações (SMIL)" width="100%" />
+
+### 🏆 16 conquistas — a grade de emblemas
+
+Cada emblema abre por um feito real — sequências de 10, 20, 40, o primeiro pote, o rei da Corrida de 60 Segundos, Cerâmica de Aço — e fica salvo **acumulando entre partidas**; o tom de cada emblema segue a tabela do jogo (brine · gold · chili · jade), e o aviso «NOVA CONQUISTA!» aparece na tela de derrota.
+
+<img src="assets/achievements.svg" alt="A grade de 16 conquistas de Lọ Chéo — glifos e tons da tabela do jogo, peças acendendo fileira por fileira, o aviso «NOVA CONQUISTA!» (SMIL)" width="100%" />
 
 ## 🌐 Trocar de idioma
 
