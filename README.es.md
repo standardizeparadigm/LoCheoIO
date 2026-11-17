@@ -654,6 +654,7 @@ Lọ Chéo incluye **7 idiomas de interfaz**, aplicados al instante — sin reca
 <img src="assets/game-loop.svg" alt="Un ciclo de juego de Lọ Chéo — MANTÉN 2 teclas, DESLÍZATE y CORTA, LLENA la tinaja, SUMA puntos — el ciclo se cierra (SMIL)" width="100%" />
 
 Un ciclo visto por la máquina: mantener dos teclas es el paso 1, todo lo demás se repite — mientras la tinaja aguante, el ritmo no se detiene; tres grietas lo terminan.
+
 ## 🚀 Instalación y ejecución
 
 ### Juega ya (sin build)
