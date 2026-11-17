@@ -97,7 +97,7 @@ describe("docs/assets.md, the 'Hình ra đời' table", () => {
 
   it("names every SVG in assets/", () => {
     const onDisk = readdirSync(join(ROOT, "assets")).filter((f) => f.endsWith(".svg"));
-    expect(onDisk.length).toBe(28);
+    expect(onDisk.length).toBe(29);
     const unlisted = onDisk.filter((f) => !listed.has(f));
     expect(unlisted, "SVGs with no release row").toEqual([]);
   });
