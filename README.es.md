@@ -612,6 +612,11 @@ combinaciones comprobadas).
 | 🧪 **Calidad** | 1618 tests unitarios (vitest) para modes / achievements / storage / i18n / settings — `npm run check` es la puerta de CI |
 
 <img src="assets/items.svg" alt="Los 14 ingredientes — encurtidos para atrapar, poderes dorados para agarrar, peligros para esquivar" width="100%" />
+### 💾 Almacenamiento y tabla de honor — el viaje de una partida
+
+Los datos nunca salen de tu máquina: el motor empaqueta la partida en un snapshot, `storage/` (9 módulos) toca localStorage por la única puerta `safeStorage`, un guardado roto se rescata entrada por entrada, y solo entonces llegan el TOP 8, 16 logros y los ajustes — «CONTINUAR» recorre este mismo camino al revés.
+
+<img src="assets/save-pipeline.svg" alt="El viaje de una partida — motor → storage/ → fusionar &amp; rescatar → TOP 8 · logros · ajustes (SMIL)" width="100%" />
 
 ## 🌐 Cambiar de idioma
 
@@ -646,6 +651,9 @@ Lọ Chéo incluye **7 idiomas de interfaz**, aplicados al instante — sin reca
 | Silencio / sonido | `M` | Botón de altavoz, arriba a la derecha |
 | Cambiar idioma | — (usa los botones VI/EN/中/日/한/ES/FR) | Botones VI/EN/中/日/한/ES/FR en menú / pausa |
 
+<img src="assets/game-loop.svg" alt="Un ciclo de juego de Lọ Chéo — MANTÉN 2 teclas, DESLÍZATE y CORTA, LLENA la tinaja, SUMA puntos — el ciclo se cierra (SMIL)" width="100%" />
+
+Un ciclo visto por la máquina: mantener dos teclas es el paso 1, todo lo demás se repite — mientras la tinaja aguante, el ritmo no se detiene; tres grietas lo terminan.
 ## 🚀 Instalación y ejecución
 
 ### Juega ya (sin build)
@@ -828,6 +836,12 @@ Añade `src/i18n/locales/xx.ts` reflejando las claves de `vi.ts`, actualiza `LAN
 **¿No te apañas con la terminal?**
 Doble clic en [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) o [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — aparece un menú a color; elige `1` para compilar y jugar al instante, `2` para el servidor de desarrollo. Detalles: [scripts/README.md](scripts/README.md).
 
+**¿Se pierde mi partida al actualizar el juego?**
+No. Las claves de storage no cambian entre versiones; al leer, los datos se fusionan y se rescatan entrada por entrada — una entrada rota no arrastra toda la tabla.
+
+**¿Se juega distinto en pantallas grandes?**
+Las reglas no cambian. Un único perfil adaptativo elige la distribución para cada viewport (578 ventanas auditadas, 0 violaciones) — HUD, héroe y diálogos se reordenan solos, el juego sigue siendo uno.
+
 ## 📦 Releases y changelog
 
 | Versión | Tier | Fecha | Notas |
@@ -872,6 +886,7 @@ Notas de diseño y documentación técnica más profunda:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problemas comunes — pantalla negra · audio · Continuar · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de render headless (todo el árbol menú/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Registros de decisiones de arquitectura — por qué un archivo, por qué SMIL, por qué `modeConfigFor()` |
 
 ## 🤝 Contribuir
 
