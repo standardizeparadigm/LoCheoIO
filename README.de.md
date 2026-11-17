@@ -623,6 +623,7 @@ Lọ Chéo bringt **7 Oberflächensprachen** mit — sofort wirksam, ohne Neulad
 <img src="assets/game-loop.svg" alt="Ein Spieldurchlauf von Lọ Chéo — ZWEI TASTEN halten, gleiten &amp; schneiden, das Glas füllen, Punkte sammeln — die Schleife schließt sich (SMIL)" width="100%" />
 
 Ein Durchlauf aus Sicht der Maschine: zwei Tasten halten ist Schritt 1, jeder Takt danach wiederholt sich — solange das Glas heil ist, hört der Rhythmus nicht auf; drei Risse beenden ihn.
+
 ## 🚀 Installieren & Starten
 
 ### Sofort spielen (ohne Build)
