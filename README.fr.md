@@ -584,6 +584,11 @@ l'invariant qui tient : dans *une* économie, `scene + reserve === usableHeight`
 | 🧪 **Qualité** | 1618 tests unitaires (vitest) pour modes / achievements / storage / i18n / settings — `npm run check` est la porte CI |
 
 <img src="assets/items.svg" alt="Les 14 ingrédients — les pickles à attraper, les pouvoirs dorés à saisir, les dangers à éviter" width="100%" />
+### 💾 Sauvegarde & tableau d'honneur — le voyage d'une partie
+
+Les données ne quittent jamais la machine : le moteur emballe la partie en un snapshot, `storage/` (9 modules) touche localStorage par l'unique porte `safeStorage`, une sauvegarde cassée est secourue entrée par entrée, et seulement arrivent le TOP 8, 16 succès et les réglages — « CONTINUER » parcourt ce même chemin à l'envers.
+
+<img src="assets/save-pipeline.svg" alt="Le voyage d'une partie — moteur → storage/ → fusionner &amp; secourir → TOP 8 · succès · réglages (SMIL)" width="100%" />
 
 ## 🌐 Changer de langue
 
@@ -618,6 +623,9 @@ Lọ Chéo embarque **7 langues d'interface**, appliquées instantanément — s
 | Muet / son | `M` | Bouton haut-parleur, en haut à droite |
 | Changer de langue | — (boutons VI/EN/中/日/한/ES/FR) | Boutons VI/EN/中/日/한/ES/FR sur le menu / la pause |
 
+<img src="assets/game-loop.svg" alt="Un cycle de jeu de Lọ Chéo — GARDEZ 2 touches, glissez et tranchez, remplissez le pot, encaissez les points — la boucle se referme (SMIL)" width="100%" />
+
+Un cycle vu par la machine : garder deux touches est l'étape 1, tout le reste se répète — tant que le pot tient, le rythme ne s'arrête pas ; trois fissures y mettent fin.
 ## 🚀 Installation & exécution
 
 ### Jouer tout de suite (sans build)
@@ -800,6 +808,12 @@ Ajoute `src/i18n/locales/xx.ts` en miroir des clés de `vi.ts`, mets à jour `LA
 **Le terminal te rebute ?**
 Double-clique sur [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) ou [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — un menu coloré s'ouvre ; choisis `1` pour compiler et jouer aussitôt, `2` pour le serveur de dev. Détails : [scripts/README.md](scripts/README.md).
 
+**Ma sauvegarde survit-elle à une mise à jour ?**
+Oui. Les clés de stockage restent les mêmes d'une version à l'autre ; à la lecture, les données sont fusionnées et secourues entrée par entrée — une entrée cassée n'entraîne pas tout le tableau.
+
+**Joue-t-on différemment sur grand écran ?**
+Les règles ne changent pas. Un seul profil adaptatif choisit la mise en page pour chaque viewport (578 fenêtres auditées, 0 violation) — HUD, héros et dialogues se réorganisent, le jeu reste un jeu.
+
 ## 📦 Releases & changelog
 
 | Version | Tier | Date | Notes |
@@ -844,6 +858,7 @@ Notes de conception et documentation technique approfondie :
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problèmes fréquents — écran noir · audio · Reprendre · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de rendu headless (tout l'arbre menu/modales) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Registres de décisions d'architecture — pourquoi un fichier, pourquoi SMIL, pourquoi `modeConfigFor()` |
 
 ## 🤝 Contribuer
 
