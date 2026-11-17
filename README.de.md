@@ -581,6 +581,11 @@ steht es wenigstens geschrieben. Daneben steht die Invariante, die gilt: Innerha
 | 🧪 **Qualitätstor** | 1618 Unit-Tests (vitest) für modes / achievements / storage / i18n / settings — `npm run check` ist das CI-Tor |
 
 <img src="assets/items.svg" alt="Die 14 Zutaten — Pickles zum Fangen, goldene Power-ups zum Greifen, Gefahren zum Ausweichen" width="100%" />
+### 💾 Speicher & Tafel des Ruhmes — der Weg einer Runde
+
+Daten verlassen die Maschine nie: der Motor packt eine beendete Runde in einen Snapshot, `storage/` (9 Module) berührt localStorage nur durch das eine Tor `safeStorage`, ein kaputter Stand wird Stück für Stück gerettet, und erst dann erscheinen TOP 8, 16 Erfolge und Einstellungen — „WEITER SPIELEN" geht denselben Weg rückwärts.
+
+<img src="assets/save-pipeline.svg" alt="Der Weg einer Runde — Engine → storage/ → zusammenführen &amp; retten → TOP 8 · Erfolge · Einstellungen (SMIL)" width="100%" />
 
 ## 🌐 Sprachen wechseln
 
@@ -615,6 +620,9 @@ Lọ Chéo bringt **7 Oberflächensprachen** mit — sofort wirksam, ohne Neulad
 | Stumm / Ton an | `M` | Lautsprecher-Button oben rechts |
 | Sprache wechseln | — (VI/EN/中/日/한/ES/FR-Buttons) | VI/EN/中/日/한/ES/FR-Buttons im Menü / Pause |
 
+<img src="assets/game-loop.svg" alt="Ein Spieldurchlauf von Lọ Chéo — ZWEI TASTEN halten, gleiten &amp; schneiden, das Glas füllen, Punkte sammeln — die Schleife schließt sich (SMIL)" width="100%" />
+
+Ein Durchlauf aus Sicht der Maschine: zwei Tasten halten ist Schritt 1, jeder Takt danach wiederholt sich — solange das Glas heil ist, hört der Rhythmus nicht auf; drei Risse beenden ihn.
 ## 🚀 Installieren & Starten
 
 ### Sofort spielen (ohne Build)
@@ -797,6 +805,12 @@ Füge `src/i18n/locales/xx.ts` hinzu, spiegele das `vi.ts`-Key-Set, aktualisiere
 **Kein Terminal-Mensch?**
 Doppelklick auf [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) oder [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — ein farbiges Menü erscheint; wähle `1` für Build & sofortiges Spielen, `2` für den Dev-Server. Details: [scripts/README.md](scripts/README.md).
 
+**Verliert mein Spielstand beim Update?**
+Nein. Die Storage-Keys bleiben über Versionen gleich; beim Lesen werden Daten zusammengeführt und Stück für Stück gerettet — ein kaputter Eintrag reißt nicht die ganze Tafel mit.
+
+**Spielt sich ein großer Bildschirm anders?**
+An den Regeln ändert sich nichts. Ein einziges adaptives Profil wählt das Layout je Viewport (578 Fenster auditiert, 0 Verstöße) — HUD, Hero und Dialoge ordnen sich neu, das Spiel bleibt ein Spiel.
+
 ## 📦 Releases & Änderungsprotokoll
 
 | Version | Tier | Datum | Notizen |
@@ -841,6 +855,7 @@ Design-Notizen und tiefergehende technische Doku:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Häufige Probleme — schwarzer Bildschirm · Audio · Fortsetzen · Launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless-Render-Smoke-Test (kompletter Menü-/Modal-Baum) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Architektur-Entscheidungen (ADR) — warum eine Datei, warum SMIL, warum `modeConfigFor()` |
 
 ## 🤝 Mitwirken
 
