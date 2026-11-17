@@ -599,7 +599,7 @@ npm install        # ติดตั้ง dependency (Node ≥ 20.19)
 npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 ```
 
-> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~700 KB, gzip ~355 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
+> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~952 KB, gzip ~430 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
 
 ### Development
 
