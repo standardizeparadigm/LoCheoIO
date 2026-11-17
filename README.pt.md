@@ -510,6 +510,11 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // coluna mais alta: 192 mascote + 24 chip
 | 🧪 **Portões de qualidade** | 1618 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
 
 <img src="assets/items.svg" alt="Os 14 ingredientes — conservas para pegar, poderes dourados para agarrar, perigos para desviar" width="100%" />
+### 💾 Armazenamento & mural da fama — a jornada de uma partida
+
+Os dados nunca saem da máquina: o motor empacota a partida num snapshot, `storage/` (9 módulos) toca o localStorage pela única porta `safeStorage`, um save quebrado é resgatado item por item, e só então vêm o TOP 8, 16 conquistas e as configurações — «CONTINUAR» percorre o mesmo caminho ao contrário.
+
+<img src="assets/save-pipeline.svg" alt="A jornada de uma partida — motor → storage/ → mesclar &amp; resgatar → TOP 8 · conquistas · configurações (SMIL)" width="100%" />
 
 ## 🌐 Trocar de idioma
 
@@ -544,6 +549,9 @@ Lọ Chéo traz **7 idiomas de interface**, aplicados na hora — sem recarregar
 | Mudo / som | `M` | Botão de alto-falante, canto superior direito |
 | Trocar idioma | — (botões VI/EN/中/日/한/ES/FR) | Botões VI/EN/中/日/한/ES/FR no menu / pausa |
 
+<img src="assets/game-loop.svg" alt="Um ciclo de jogo de Lọ Chéo — SEGURE 2 teclas, deslize e corte, encha o pote, some pontos — o ciclo se fecha (SMIL)" width="100%" />
+
+Um ciclo visto pela máquina: segurar duas teclas é o passo 1, todo o resto se repete — enquanto o pote aguentar, o ritmo não para; três rachaduras encerram.
 ## 🚀 Instalar & Rodar
 
 ### 🧠 Rodada quinze: o sistema se ajusta sozinho, e não treme mais
@@ -789,6 +797,12 @@ Adicione `src/i18n/locales/xx.ts` espelhando o conjunto de chaves de `vi.ts`, at
 **Não se vira com terminal?**
 Duplo clique em [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat) (Windows) ou [`scripts/play-linux.sh`](scripts/play-linux.sh) (Linux) — um menu colorido aparece; escolha `1` para buildar e jogar na hora, `2` para o dev server. Detalhes: [scripts/README.md](scripts/README.md).
 
+**Meu save se perde ao atualizar o jogo?**
+Não. As chaves de storage continuam as mesmas entre versões; ao ler, os dados são mesclados e resgatados item por item — um item quebrado não derruba o mural inteiro.
+
+**Tela grande joga diferente?**
+As regras não mudam. Um único perfil adaptativo escolhe o layout para cada viewport (578 janelas auditadas, 0 violações) — HUD, herói e diálogos se reorganizam, o jogo continua sendo um.
+
 ## 📦 Releases & changelog
 
 | Versão | Tier | Data | Notas |
@@ -833,6 +847,7 @@ Notas de design e documentação técnica mais profunda:
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problemas comuns — tela preta · áudio · Continuar · launcher |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de render headless (toda a árvore menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | Registros de decisões de arquitetura — por que um arquivo, por que SMIL, por que `modeConfigFor()` |
 
 ## 🤝 Contribuindo
 
