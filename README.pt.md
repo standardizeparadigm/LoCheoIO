@@ -552,6 +552,7 @@ Lọ Chéo traz **7 idiomas de interface**, aplicados na hora — sem recarregar
 <img src="assets/game-loop.svg" alt="Um ciclo de jogo de Lọ Chéo — SEGURE 2 teclas, deslize e corte, encha o pote, some pontos — o ciclo se fecha (SMIL)" width="100%" />
 
 Um ciclo visto pela máquina: segurar duas teclas é o passo 1, todo o resto se repete — enquanto o pote aguentar, o ritmo não para; três rachaduras encerram.
+
 ## 🚀 Instalar & Rodar
 
 ### 🧠 Rodada quinze: o sistema se ajusta sozinho, e não treme mais
