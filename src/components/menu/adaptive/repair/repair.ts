@@ -131,10 +131,20 @@ export interface RepairInput {
 export function repairProfile(input: RepairInput): RepairResult {
   const attempts: RepairResult["attempts"] = [];
   const validate = input.validator ?? ((profile: AdaptiveProfile) => violations(profile).map((v) => v.id));
+  /*
+   * Every resolve is stored next to its verdict, not discarded. The failure
+   * path below used to *re-resolve* each rung to find the least-broken one —
+   * doubling the work of the exact path that runs when the screen is already
+   * degraded, and trusting that two identical inputs produce byte-identical
+   * profiles. They do today (the resolver is pure), but the guarantee is not
+   * worth relying on twice.
+   */
+  const resolved = new Map<string, AdaptiveProfile>();
 
   for (const rung of REPAIR_LADDER) {
     const profile = resolveAdaptive({ ...input, overrides: rung.overrides });
     const broken = validate(profile);
+    resolved.set(rung.id, profile);
     attempts.push({ rung: rung.id, violations: broken });
     if (broken.length === 0) {
       return { profile, ok: true, rung: rung.id, attempts, remaining: [] };
@@ -150,12 +160,9 @@ export function repairProfile(input: RepairInput): RepairResult {
   let best: { profile: AdaptiveProfile; rung: string; broken: string[] } | null = null;
   for (const attempt of attempts) {
     if (best && attempt.violations.length >= best.broken.length) continue;
-    const rung = REPAIR_LADDER.find((r) => r.id === attempt.rung)!;
-    best = {
-      profile: resolveAdaptive({ ...input, overrides: rung.overrides }),
-      rung: attempt.rung,
-      broken: attempt.violations,
-    };
+    const profile = resolved.get(attempt.rung);
+    if (!profile) continue; // unreachable — every attempt sets its entry
+    best = { profile, rung: attempt.rung, broken: attempt.violations };
   }
   return {
     profile: best!.profile,

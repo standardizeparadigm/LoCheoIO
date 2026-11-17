@@ -5,6 +5,22 @@
  * readings is a browser API that lies. This hook is the only place that touches
  * `window`, and it is deliberately thin: no decisions, no defaults of its own,
  * just four reads and a subscription.
+ *
+ * THE INSET MEASURE IS CACHED
+ * ---------------------------
+ * `readInsets()` appends a probe element and forces a synchronous layout to
+ * resolve `env(safe-area-inset-*)` — that is the correct one-off answer and an
+ * unacceptable per-frame one. `readEnvironment()` is called on every resize
+ * animation frame (a drag fires dozens per second), so an uncached probe means a
+ * `getComputedStyle` reflow on *every frame of a drag*: on a mid-range phone
+ * that is exactly the jank this system exists to remove.
+ *
+ * The values cannot change except when the display area itself changes —
+ * rotation, fullscreen enter/exit, split-view — so the cache is keyed on the
+ * `window` object and expires after `INSET_TTL_MS` as a backstop; the hooks
+ * invalidate it explicitly on the two events that can move an inset. Tests that
+ * swap in a fresh fake `window` always miss the cache, so a fresh measure is
+ * guaranteed for them.
  */
 import { useEffect, useState } from "react";
 import {
@@ -32,6 +48,17 @@ function matches(query: string): boolean {
   }
 }
 
+/** How long a measured inset stays valid without an explicit invalidation. */
+export const INSET_TTL_MS = 1000;
+
+interface InsetCacheEntry {
+  /** Keyed on the window object so a swapped/rebuilt window re-measures. */
+  win: unknown;
+  at: number;
+  value: Pick<Environment, "insetTop" | "insetRight" | "insetBottom" | "insetLeft">;
+}
+let insetCache: InsetCacheEntry | null = null;
+
 /**
  * Read all four `env(safe-area-inset-*)` values in px, in one layout.
  *
@@ -43,9 +70,22 @@ function matches(query: string): boolean {
  * `getComputedStyle` on each, which is four forced layouts per resize event. It
  * ran on every `resize`, including the dozens a drag fires.
  */
+/**
+ * Invalidate the memoised insets. Call from any listener whose event can change
+ * `env(safe-area-inset-*)` — `orientationchange`, `fullscreenchange`. Cheap, and
+ * idempotent.
+ */
+export function invalidateInsetsCache(): void {
+  insetCache = null;
+}
+
 export function readInsets(): Pick<Environment, "insetTop" | "insetRight" | "insetBottom" | "insetLeft"> {
   const zero = { insetTop: 0, insetRight: 0, insetBottom: 0, insetLeft: 0 };
   if (typeof window === "undefined" || typeof document === "undefined") return zero;
+  const now = Date.now();
+  if (insetCache && insetCache.win === window && now - insetCache.at < INSET_TTL_MS) {
+    return insetCache.value;
+  }
   let probe: HTMLDivElement | null = null;
   try {
     probe = document.createElement("div");
@@ -63,12 +103,14 @@ export function readInsets(): Pick<Environment, "insetTop" | "insetRight" | "ins
       "env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)";
     document.body.appendChild(probe);
     const cs = window.getComputedStyle(probe);
-    return {
+    const value = {
       insetTop: parseInset(cs.paddingTop),
       insetRight: parseInset(cs.paddingRight),
       insetBottom: parseInset(cs.paddingBottom),
       insetLeft: parseInset(cs.paddingLeft),
     };
+    insetCache = { win: window, at: now, value };
+    return value;
   } catch {
     // A document without a body (very early render) or a CSP that blocks inline
     // styles both land here. Zero is the right answer for both.
@@ -114,7 +156,9 @@ export function useEnvironment(): Environment {
       });
     };
 
+    const onDisplayChange = () => invalidateInsetsCache();
     for (const type of ["resize", "orientationchange", "fullscreenchange"] as const) {
+      if (type !== "resize") window.addEventListener(type, onDisplayChange);
       window.addEventListener(type, update);
     }
     window.visualViewport?.addEventListener("resize", update);
@@ -130,6 +174,7 @@ export function useEnvironment(): Environment {
     return () => {
       if (frame) cancelAnimationFrame(frame);
       for (const type of ["resize", "orientationchange", "fullscreenchange"] as const) {
+        if (type !== "resize") window.removeEventListener(type, onDisplayChange);
         window.removeEventListener(type, update);
       }
       window.visualViewport?.removeEventListener("resize", update);

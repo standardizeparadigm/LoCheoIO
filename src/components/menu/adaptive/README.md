@@ -35,7 +35,7 @@ hysteresis/   the previous profile         →  the same rung for two more pixel
 | `hero.ts` | `heroLayout()`, `heroContentHeight()`, and the component's own measurements |
 | `breakpoints.ts` | the four constants, each with the derivation in a comment |
 | `environment.ts` | readings the geometry cannot carry: safe areas, dpr, pointer, orientation |
-| `useEnvironment.ts` | reads them from the browser, and `readInsets()` for the plan |
+| `useEnvironment.ts` | reads them from the browser, and `readInsets()` for the plan — measured once per `window` (TTL 1s, `invalidateInsetsCache()` on orientation/fullscreen), never once per resize frame |
 | `resolve.ts` | `resolveAdaptive()`, `adaptiveAttributes()`, `describeAdaptive()` |
 | `useAdaptive.ts` | one subscription → one profile; `readAdaptiveInput()` for scripts |
 | `regressions.ts` | `REGRESSIONS` — 14 cửa sổ đã từng bị báo lỗi (vòng 1 → 12), mỗi cái kèm triệu chứng và điều phải giữ; nguồn của `tests/fixtures/regressions/` |

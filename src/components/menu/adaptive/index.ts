@@ -141,7 +141,7 @@ export {
   saneDpr,
   verticalInset,
 } from "./environment";
-export { readEnvironment, readInsets, useEnvironment } from "./useEnvironment";
+export { INSET_TTL_MS, invalidateInsetsCache, readEnvironment, readInsets, useEnvironment } from "./useEnvironment";
 
 /* ---- the profile ------------------------------------------------------ */
 export type { AdaptiveInput, AdaptiveOverrides, AdaptiveProfile } from "./resolve";

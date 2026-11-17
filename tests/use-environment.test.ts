@@ -155,3 +155,67 @@ describe("readEnvironment", () => {
     expect(removed, "the probe must not leak into the DOM").toBe(true);
   });
 });
+
+describe("the inset probe is measured at most once per window", () => {
+  it("caches the probe result — two reads on the same window append once", async () => {
+    const { invalidateInsetsCache, readInsets, INSET_TTL_MS } = await import(
+      "../src/components/menu/adaptive/useEnvironment"
+    );
+    expect(INSET_TTL_MS).toBeGreaterThan(0);
+
+    let appends = 0;
+    const el = { style: {} as Record<string, string>, remove: () => {} };
+    (globalThis as Record<string, unknown>).document = {
+      createElement: () => el,
+      body: { appendChild: () => { appends += 1; } },
+    };
+    (globalThis as Record<string, unknown>).window = {
+      innerWidth: 844,
+      innerHeight: 390,
+      devicePixelRatio: 2,
+      matchMedia: undefined,
+      getComputedStyle: () => ({ paddingTop: "44px", paddingRight: "0px", paddingBottom: "34px", paddingLeft: "0px" }),
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    };
+
+    invalidateInsetsCache(); // a previous test may have cached against a previous window
+    const first = readInsets();
+    const second = readInsets();
+    expect(first).toEqual(second);
+    expect(appends, "the second read must be served from the cache").toBe(1);
+
+    invalidateInsetsCache();
+    readInsets();
+    expect(appends, "an explicit invalidation must re-measure").toBe(2);
+  });
+
+  it("a fresh window object never inherits the cache", async () => {
+    const { invalidateInsetsCache, readInsets } = await import(
+      "../src/components/menu/adaptive/useEnvironment"
+    );
+    let appends = 0;
+    const makeWindow = (padding: string) => {
+      const el = { style: {} as Record<string, string>, remove: () => {} };
+      (globalThis as Record<string, unknown>).document = {
+        createElement: () => el,
+        body: { appendChild: () => { appends += 1; } },
+      };
+      (globalThis as Record<string, unknown>).window = {
+        innerWidth: 844,
+        innerHeight: 390,
+        devicePixelRatio: 2,
+        matchMedia: undefined,
+        getComputedStyle: () => ({ paddingTop: padding, paddingRight: padding, paddingBottom: padding, paddingLeft: padding }),
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      };
+    };
+    invalidateInsetsCache();
+    makeWindow("44px");
+    expect(readInsets().insetTop).toBe(44);
+    makeWindow("20px"); // a different window object — the cache must miss
+    expect(readInsets().insetTop).toBe(20);
+    expect(appends).toBe(2);
+  });
+});
