@@ -626,6 +626,7 @@ Lọ Chéo embarque **7 langues d'interface**, appliquées instantanément — s
 <img src="assets/game-loop.svg" alt="Un cycle de jeu de Lọ Chéo — GARDEZ 2 touches, glissez et tranchez, remplissez le pot, encaissez les points — la boucle se referme (SMIL)" width="100%" />
 
 Un cycle vu par la machine : garder deux touches est l'étape 1, tout le reste se répète — tant que le pot tient, le rythme ne s'arrête pas ; trois fissures y mettent fin.
+
 ## 🚀 Installation & exécution
 
 ### Jouer tout de suite (sans build)
