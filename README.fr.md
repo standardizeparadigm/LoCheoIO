@@ -636,7 +636,7 @@ npm install        # installe les dépendances (Node ≥ 20.19)
 npm run build      # → dist/index.html (un seul fichier auto-suffisant)
 ```
 
-> `vite-plugin-singlefile` inline tout le JS/CSS/polices/images dans **un** `dist/index.html` (~700 Ko, gzip ~355 Ko). Ni serveur, ni réseau.
+> `vite-plugin-singlefile` inline tout le JS/CSS/polices/images dans **un** `dist/index.html` (~952 Ko, gzip ~430 Ko). Ni serveur, ni réseau.
 
 ### Développement
 
