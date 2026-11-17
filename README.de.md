@@ -39,7 +39,7 @@ Das hier ist ein **Ein-Bildschirm-Action-Arcade** nach dem Vorbild des schlichte
 
 ## 🆕 Neu in v1.1.8
 
-> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 29 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
+> Der **letzte Patch** vor 1.2.0. Kein neuer Modus, keine Balance-Änderung, kein neues Speicherformat. Diese letzte Runde tut eines: **der Hero misst das Fenster und wählt sein eigenes Layout** — bei jeder Größe mit einer Lösung (ab 356px), ohne Scrollen und ohne Abschneiden. Das Deck-Band entfällt; die 30 SVGs umfassen die HUD-Bandschemata (Runde neun), den Audit-Bericht (Runde zwölf) und die Stabilitätsfigur (Runde fünfzehn), dazu ein vierter Korpus aus Zwischenfällen und eine sechsstufige Reparaturleiter.
 
 ### 📐 Eine Addition, die niemand verwaltete — und vier Fehler auf einmal
 

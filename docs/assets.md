@@ -26,7 +26,7 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `hud-bands.svg` | **HUD thành kế hoạch**: băng glyph cho từng readout, cột giữa chảy từ đồng hồ, bậc thang `chips → comboBar → jars → best`, rồi nén 1.029 → sàn 0.55 (v1.1.8 vòng 9) | README ×10 (mục vòng chín) |
 | `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
-| `divider.svg` | Dải sparkle ngăn cách section | README ×9 (không có ở bản en) |
+| `game-loop.svg` | **một nhập đoạn**: GIỮ 2 phím → LƯỢN &amp; CHÉM → HỨNG đầy hũ → CỘNG ĐIỂM, đường quay về bước 1 khép vòng, nước muối đầy dần trong hũ (v1.1.8 vòng 18) | mục Điều khiển của cả 10 README — `assets/game-loop.svg` |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
 | `favicon-512.png` | Favicon raster 512px (OG/touch icon) | repo root + social preview |
@@ -57,4 +57,4 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | v1.1.5 | `corner-menu.svg` |
 | v1.1.6 | `settings-sections.svg` |
 | v1.1.7 | `palette-ribbon.svg` · `architecture.svg` · `release-tiers.svg` |
-| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` · `adaptive-stability.svg` · `adaptive-hold.svg` · `adaptive-repair.svg` |
+| v1.1.8 | `mode-chip.svg` · `layout-fix.svg` · `test-matrix.svg` · `wordmark-crop.svg` · `menu-anatomy.svg` · `diagonal-motion.svg` · `no-scroll-steps.svg` · `adaptive-layers.svg` · `hud-bands.svg` · `diacritics-clip.svg` · `adaptive-audit.svg` · `adaptive-select.svg` · `adaptive-stability.svg` · `adaptive-hold.svg` · `adaptive-repair.svg` · `game-loop.svg` |
