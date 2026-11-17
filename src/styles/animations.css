@@ -16,7 +16,7 @@
  *
  * NO DUPLICATE NAMES
  * -----------------
- * There are 28 distinct names and no collisions, which is worth stating
+ * There are 31 distinct names and no collisions, which is worth stating
  * explicitly because a duplicated `@keyframes` name is silent: the later
  * definition wins, the earlier one is dead code that still reads as live, and
  * nothing in the build complains. Moving them into one file is what makes that
@@ -143,8 +143,32 @@
 }
 
 @keyframes lc-about-pan {
-  0% { background-position: 0 0, 0% 50%; }
-  100% { background-position: 0 0, 320% 50%; }
+  0% { background-position: 0 0, 0 0, 0% 50%; }
+  100% { background-position: 0 0, 0 0, 320% 50%; }
+}
+
+@keyframes lc-about-sheen {
+  0% { left: -60%; opacity: 0; }
+  10% { opacity: 1; }
+  40% { left: 132%; opacity: 0; }
+  100% { left: 132%; opacity: 0; }
+}
+
+@keyframes lc-about-halo {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes lc-about-name {
+  0% { background-position: 0 0%; }
+  100% { background-position: 0 100%; }
 }
 
 @keyframes lc-about-chip {

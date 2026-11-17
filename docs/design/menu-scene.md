@@ -14,7 +14,7 @@ chấp sự chú ý với hai panel góc và nút CHƠI.
 | 4 | Sao xa | `star-field-far` | `lc-twinkle` chậm, mờ | 6 s |
 | 5 | Sao gần | `star-field` | `lc-twinkle` nhanh hơn, sáng hơn | 3.4 s |
 | 6 | Sàn gạch | `tile-floor` + `tile-floor-mask` | trôi dọc, mask mờ dần về đỉnh | 12 s |
-| 7 | Vòng sáng quanh lọ | `glow-ring` · `jar-glow` | `lc-ring-rotate` + `lc-jar-glow` | 22 s / 4.5 s |
+| 7 | Vòng sáng quanh lọ | `glow-ring` · `jar-glow` | `lc-ring-rotate` + `lc-jar-glow` | 9 s / 3.4 s |
 | 8 | Vệt sáng nút CHƠI | `cta-shine` (qua `MenuItemButton shine`) | `lc-cta-shine` — vệt trắng chạy ngang | 3.2 s |
 
 ## Độ tương phản — bài học v1.1.7

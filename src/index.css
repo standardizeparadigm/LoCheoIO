@@ -292,18 +292,23 @@
 .glow-ring {
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 38deg,
-    rgba(245, 168, 28, 0.6) 58deg,
-    transparent 82deg 178deg,
-    rgba(182, 224, 122, 0.45) 205deg,
-    transparent 232deg 296deg,
-    rgba(230, 59, 46, 0.5) 322deg,
-    transparent 348deg
+    transparent 0deg 30deg,
+    rgba(255, 201, 74, 0.95) 52deg,
+    rgba(245, 168, 28, 0.75) 66deg,
+    transparent 92deg 168deg,
+    rgba(182, 224, 122, 0.72) 196deg,
+    rgba(43, 180, 140, 0.6) 212deg,
+    transparent 238deg 292deg,
+    rgba(255, 106, 77, 0.72) 314deg,
+    rgba(230, 59, 46, 0.65) 328deg,
+    transparent 350deg
   );
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
   border-radius: 9999px;
   animation: lc-ring-rotate 9s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
   pointer-events: none;
 }
 
@@ -313,19 +318,179 @@
   animation: lc-jar-glow 3.4s ease-in-out infinite alternate;
 }
 
-/* About modal — perpetually panning gradient card (border-box trick) */
+/*
+ * About modal — the author card.
+ *
+ * Three layers deep on purpose:
+ *   1. an amber radial wash at the top-left corner, so the card never reads as
+ *      a flat rectangle;
+ *   2. the deep-green glass fill;
+ *   3. a seven-stop border gradient on the padding-box/border-box trick,
+ *      animated to pan forever (`lc-about-pan`).
+ * `::after` is a translucent sheen that glides across every few seconds — the
+ * one borrowed from the CTA shine, tuned down to 0.32 alpha so body text stays
+ * readable under it.
+ */
 .about-card {
   border: 3px solid transparent;
+  border-radius: 18px;
   background:
-    linear-gradient(#0b2b2b, #0b2b2b) padding-box,
+    radial-gradient(130% 150% at 14% 0%, rgba(245, 168, 28, 0.22), transparent 55%) padding-box,
+    linear-gradient(#0d2f2c, #0a2521) padding-box,
     linear-gradient(115deg, #f5a81c, #e63b2e, #8cc63f, #2bb48c, #ffc94a, #e63b2e, #f5a81c) border-box;
-  background-size: 100% 100%, 320% 320%;
+  background-size: 100% 100%, 100% 100%, 320% 320%;
+  background-position: 0 0, 0 0, 0% 50%;
   animation: lc-about-pan 5.5s linear infinite;
+  box-shadow:
+    inset 0 1px 0 rgba(253, 243, 224, 0.1),
+    inset 0 -18px 34px -20px rgba(6, 26, 26, 0.95),
+    0 22px 48px -20px rgba(245, 168, 28, 0.4);
 }
+.about-card::after {
+  content: "";
+  position: absolute;
+  top: -80%;
+  bottom: -80%;
+  left: -60%;
+  width: 34%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.14) 32%,
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.14) 68%,
+    transparent
+  );
+  transform: skewX(-18deg);
+  animation: lc-about-sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* The halo behind the jar — warm, breathing, *behind* the ring and the pot */
+.about-halo {
+  position: absolute;
+  inset: -16%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(245, 168, 28, 0.42), rgba(245, 168, 28, 0.13) 46%, transparent 70%);
+  animation: lc-about-halo 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* The wordmark: warm gradient text that breathes vertically */
+.about-name {
+  display: inline-block;
+  background: linear-gradient(
+    168deg,
+    #fffdf2 6%,
+    #ffe9a8 26%,
+    #ffc94a 42%,
+    #f5a81c 54%,
+    #ffd766 66%,
+    #fdf3e0 86%
+  );
+  background-size: 100% 240%;
+  background-position: 0 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: lc-about-name 5.2s ease-in-out infinite alternate;
+}
+
+/* Version pill — pressed turmeric with a deep outer ring */
+.about-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 9999px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #221503;
+  background: linear-gradient(135deg, #ffe9a8, #ffc94a 34%, #f5a81c 62%, #d4850a);
+  box-shadow:
+    0 0 0 2px rgba(6, 26, 26, 0.9),
+    0 6px 18px -6px rgba(245, 168, 28, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* The underline beneath the role — seven stops, fading out right */
+.about-role-bar {
+  display: block;
+  margin-top: 9px;
+  height: 4px;
+  width: 132px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f5a81c, #e63b2e 26%, #9d6bff 48%, #2bb48c 70%, rgba(43, 180, 140, 0));
+}
+
+/* Section headings: gold caps with a gradient gem bullet */
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 201, 74, 0.92);
+}
+.about-heading::before {
+  content: "";
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #ffe9a8, #f5a81c 55%, #b81f22);
+  box-shadow: 0 0 8px rgba(245, 168, 28, 0.55);
+}
+
+/* Facts list: diamond bullets, soft hover lift */
+.about-facts {
+  font-family: var(--font-body);
+  font-size: 10px;
+}
+.about-fact {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  border-radius: 10px;
+  padding: 6px 8px;
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+.about-fact:hover {
+  background: rgba(140, 198, 63, 0.08);
+  transform: translateX(4px);
+}
+.about-fact-gem {
+  position: relative;
+  top: -0.5px;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #b6e07a, #2bb48c);
+  box-shadow: 0 0 6px rgba(140, 198, 63, 0.45);
+}
+
+/* Thanks chip — gradient glass with a warm halo */
 .about-chip {
-  background: linear-gradient(115deg, rgba(245, 168, 28, 0.16), rgba(43, 180, 140, 0.16), rgba(230, 59, 46, 0.16), rgba(245, 168, 28, 0.16));
+  background: linear-gradient(115deg, rgba(245, 168, 28, 0.22), rgba(43, 180, 140, 0.22), rgba(230, 59, 46, 0.22), rgba(245, 168, 28, 0.22));
   background-size: 300% 300%;
   animation: lc-about-chip 6s ease-in-out infinite alternate;
+  border-radius: 14px;
+  letter-spacing: 0.04em;
+  box-shadow:
+    0 0 0 1px rgba(255, 201, 74, 0.28),
+    0 12px 30px -14px rgba(245, 168, 28, 0.55),
+    inset 0 1px 0 rgba(253, 243, 224, 0.14);
 }
 
 /* CTA shine sweep — a light band glides across the primary button */
@@ -468,6 +633,9 @@
   .glow-ring,
   .jar-glow,
   .about-card,
+  .about-card::after,
+  .about-halo,
+  .about-name,
   .about-chip,
   .cta-shine::after {
     animation: none !important;
@@ -509,8 +677,12 @@
 [data-reduced-motion="true"] .glow-ring,
 [data-reduced-motion="true"] .jar-glow,
 [data-reduced-motion="true"] .about-card,
+[data-reduced-motion="true"] .about-card::after,
+[data-reduced-motion="true"] .about-halo,
+[data-reduced-motion="true"] .about-name,
 [data-reduced-motion="true"] .about-chip,
 [data-reduced-motion="true"] .cta-shine::after,
+[data-reduced-motion="true"] .about-fact,
 [data-reduced-motion="true"] .decor-item,
 [data-reduced-motion="true"] .halo-ring-1,
 [data-reduced-motion="true"] .halo-ring-2,

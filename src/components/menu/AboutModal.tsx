@@ -20,30 +20,47 @@ import { aboutFacts, aboutSections } from "./about";
  * list is unit tested, so a translation that forgets to supply a heading fails
  * a test instead of shipping a modal with an empty block.
  *
- * v1.1.6 styling, unchanged: perpetually panning gradient border
- * (`.about-card`), a rotating glow ring around the logo (`.glow-ring`), and a
- * gradient thanks chip.
+ * ROUND 17 (this release): the author card is now a gradient-cut glass panel —
+ * a warm radial wash, a seven-stop panning border, a breathing halo behind the
+ * jar, a gradient-text wordmark that breathes vertically, a pressed-turmeric
+ * version pill and a fading underline beneath the role. The sheen gliding over
+ * the card is the CTA shine, tuned down to 1/3 alpha.
+ *
+ * The ring around the logo is `.glow-ring`, whose keyframes only ever touch
+ * `transform`; the wrapper owns the layout box. Positioning and animation must
+ * never share a node again — see the comment inside the JSX.
  */
 export default function AboutModal({ onClose }: { onClose: () => void }) {
   const { t } = useI18n();
 
   return (
     <Modal title={t("about.title")} onClose={onClose}>
-      <div className="about-card relative flex items-start gap-4 overflow-hidden p-4">
-        <div className="relative shrink-0">
-          <span aria-hidden="true" className="glow-ring absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2" />
-          <JarLogo className="anim-bob jar-glow relative h-20 w-auto" />
+      {/* ===== author card ===== */}
+      <div className="about-card relative flex items-center gap-4 overflow-hidden p-4 sm:gap-5 sm:p-5">
+        {/*
+          The positioning and the rotation live on DIFFERENT nodes.
+
+          The ring used to carry `-translate-x-1/2 -translate-y-1/2` *and*
+          `animation: lc-ring-rotate` on the same element. Tailwind v4 compiles
+          those utilities to the `translate` property while the keyframes animate
+          `transform` — two different properties whose composition order is easy
+          to get wrong, and in the reported environment it rendered as a static
+          arc pair parked off the jar's centre. The wrapper now owns the
+          box, the ring fills it, and the keyframes are the only thing touching
+          `transform`. Nothing to compose, nothing to fight.
+        */}
+        <div className="relative h-24 w-24 shrink-0 sm:h-28 sm:w-28">
+          <span aria-hidden="true" className="about-halo" />
+          <span aria-hidden="true" className="glow-ring absolute inset-0" />
+          <JarLogo className="anim-bob jar-glow absolute inset-0 m-auto h-20 w-auto sm:h-[5.5rem]" />
         </div>
         <div className="min-w-0">
-          <p className="font-display text-lg leading-none text-clay-100">
-            Lọ <span className="text-tumeric-400">Chéo</span>
-            <span className="ml-2 align-middle font-body text-[10px] font-bold tracking-[0.2em] text-jade-500">
-              v{APP_VERSION}
-            </span>
-          </p>
-          <p className="mt-1 font-body text-[10px] font-bold uppercase tracking-[0.18em] text-brine-300">
+          <p className="about-name font-display text-2xl leading-none sm:text-3xl">Lọ Chéo</p>
+          <span className="about-version mt-2">v{APP_VERSION}</span>
+          <p className="mt-2.5 font-body text-[10px] font-bold uppercase leading-snug tracking-[0.16em] text-brine-300">
             {t("about.role")}
           </p>
+          <span aria-hidden="true" className="about-role-bar" />
         </div>
       </div>
 
@@ -57,13 +74,11 @@ export default function AboutModal({ onClose }: { onClose: () => void }) {
           key={section.key}
           className={
             section.ruled
-              ? "mt-3 border-t-2 border-dashed border-jade-800 pt-3"
-              : "mt-3"
+              ? "mt-4 border-t-2 border-dashed border-jade-800 pt-3"
+              : "mt-4"
           }
         >
-          <h3 className="font-body text-[10px] font-extrabold tracking-[0.24em] text-tumeric-400/90 uppercase">
-            {t(section.key)}
-          </h3>
+          <h3 className="about-heading">{t(section.key)}</h3>
           {section.body.map((bodyKey) =>
             bodyKey === "about.thanks" ? (
               <p
@@ -73,7 +88,7 @@ export default function AboutModal({ onClose }: { onClose: () => void }) {
                 {t("about.thanks")}
               </p>
             ) : (
-              <p key={bodyKey} className="mt-1.5 font-body text-[11px] leading-relaxed text-clay-100/80">
+              <p key={bodyKey} className="mt-1.5 font-body text-[11px] leading-relaxed text-clay-100/85">
                 {t(bodyKey as MessageKey)}
               </p>
             ),
@@ -81,11 +96,11 @@ export default function AboutModal({ onClose }: { onClose: () => void }) {
         </section>
       ))}
 
-      <dl className="mt-3 space-y-1.5 border-t-2 border-dashed border-jade-800 pt-3 font-body text-[10px]">
+      <dl className="about-facts mt-4 space-y-1 border-t-2 border-dashed border-jade-800 pt-3">
         {aboutFacts().map((key) => (
-          <div key={key} className="flex items-baseline gap-2">
-            <dt className="shrink-0 text-jade-600" aria-hidden="true">▸</dt>
-            <dd className="break-all text-clay-100/75">{t(key as MessageKey)}</dd>
+          <div key={key} className="about-fact">
+            <dt className="about-fact-gem" aria-hidden="true" />
+            <dd className="break-all pt-[1px] leading-snug text-clay-100/75">{t(key as MessageKey)}</dd>
           </div>
         ))}
       </dl>
