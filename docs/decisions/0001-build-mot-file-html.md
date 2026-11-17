@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Trạng thái** | Đã chấp nhận |
-| **Ngày** | 2026-11-01 (v1.1.1 — «build một file») |
+| **Ngày** | 2026-10-30 (v1.1.1 — «build một file») |
 
 ## Bối cảnh
 

@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Trạng thái** | Đã chấp nhận |
-| **Ngày** | 2026-11-14 (v1.1.7 vòng sau cùng; siết chặt 2026-11-16) |
+| **Ngày** | 2026-11-15 (v1.1.8 vòng 16 — luật tách khỏi script để test chạy trong vitest) |
 
 ## Bối cảnh
 

@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Trạng thái** | Đã chấp nhận |
-| **Ngày** | 2026-11-13 (v1.1.7; siết chặt khi `storage/` tách thành 9 module) |
+| **Ngày** | 2026-11-10 (v1.1.6 — `safeStorage` 7 test; siết chặt khi `storage/` tách thành 9 module ở v1.1.8) |
 
 ## Bối cảnh
 

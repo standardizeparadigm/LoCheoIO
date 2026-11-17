@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Trạng thái** | Đã chấp nhận |
-| **Ngày** | 2026-11-01 (từ v1.0.0 — `banner.svg` đã SMIL; chốt rõ thành quy ước v1.1.8) |
+| **Ngày** | 2026-10-26 (từ v1.0.0 — `banner.svg` đã SMIL; chốt rõ thành quy ước v1.1.8) |
 
 ## Bối cảnh
 
