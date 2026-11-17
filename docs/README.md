@@ -2,7 +2,7 @@
 
 ## Release notes (historical + current)
 
-**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười bốn vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, hero có 14 món trang trí, kiểm toán 578 cửa sổ, và một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
+**Mười bản**: `releases/v1.0.0.md` → `releases/v1.1.8.md`. Bản hiện hành là **v1.1.8** — mười tám vòng: màn hình bắt đầu hết tràn (một phép cộng chiều cao sai), lỗi cuộn lồng được sửa, «Cách chơi» vào menu GAME, kiểm toán 578 cửa sổ, một phép so sánh chọn ra bậc rẻ nhất trong sáu bậc, sở thích người chơi được tôn trọng (OR ba nguồn), dải 2px trả lời được *vì sao* nó đứng yên, guard chế độ prototype-safe bọc cả tick, và engine lần đầu chạy thật trong vitest. Các bản cũ giữ nguyên (historical), chỉ đính chính fact-sai nghiêm trọng nếu có.
 
 Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-process.md` § Tầng phát hành) — đúng quy ước mà panel CHANGELOG trong game dùng:
 
@@ -30,6 +30,19 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 - `changelog-format.md` — spec module `src/game/changelog/` + ánh xạ tầng → màu (v1.1.8).
 - `adaptive-layout.md` — **hợp đồng** giữa `menu/layout/` và `menu/adaptive/`: ba bất biến, bốn ngưỡng và cột "nếu đặt sai thì hỏng gì" (v1.1.8, vòng 6).
 - `adaptive-v2.md` — **hợp đồng vòng 8**: một `AdaptiveProfile` cho plan, hero, cỡ chữ, hộp thoại và canvas; sáu lớp, bảng tier/density, và bảng "bất biến → test nào giữ" (v1.1.8, vòng 8).
+
+## Quyết định kiến trúc (`decisions/`)
+
+Mỗi quyết định đã chốt một file biên bản (phong cách MADR rút gọn) — bối cảnh,
+quyết định, phương án bị loại, hệ quả, và **gate giữ nó**. Quy tắc thư mục và
+danh mục đầy đủ nằm ở [`decisions/README.md`](decisions/README.md):
+
+- `0001-build-mot-file-html.md` — build ra **một file HTML duy nhất**; `file://` phải chơi được.
+- `0002-smil-thay-video.md` — hoạt họa tài liệu bằng **SMIL SVG**; GitHub chặn `<script>` trong README.
+- `0003-mode-config-prototype-safe.md` — tra cứu chế độ qua **`modeConfigFor()`**; id lạ → `classic`, `setMode` giữ nguyên.
+- `0004-prose-count-gate-trong-vitest.md` — cổng đếm số liệu chạy **trong `npm run check`**, không chỉ trong CI.
+- `0005-engine-headless-fake-canvas.md` — engine test headless qua **fake canvas**, không jsdom.
+- `0006-safe-storage-mot-loi-vao.md` — localStorage qua **đúng một cổng**: `safeStorage`.
 
 ## Hướng dẫn contributor (`guides/`)
 
