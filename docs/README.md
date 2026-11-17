@@ -54,5 +54,5 @@ Mỗi bản có một **tầng** (suy ra từ SemVer, xem `docs/guides/release-p
 
 - `adaptive-audit.md` — báo cáo **sinh tự động** từ 578 cửa sổ (không sửa tay).
 - `adaptive-drag.md` — báo cáo **sinh tự động** từ 21 đường kéo (4 600 cửa sổ) và 12 ranh giới rung: dải 2px dập 48/48 lần đổi bậc khi con trỏ rung, và 1/12 khi kéo một chiều.
-- `assets.md` — kho 30 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
+- `assets.md` — kho 31 SVG SMIL (banner, corner-menu, **palette-ribbon, architecture, release-tiers**…) + quy ước thêm/sửa.
 - `DESCRIPTION.md` — mô tả ngắn cho dev/cộng đồng.
