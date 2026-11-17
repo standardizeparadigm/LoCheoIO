@@ -836,7 +836,7 @@ npm install        # cài dependencies (Node ≥ 20.19)
 npm run build      # → dist/index.html (một file tự chứa mọi thứ)
 ```
 
-> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~700 KB, gzip ~355 KB). Không cần server, không cần mạng.
+> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~952 KB, gzip ~430 KB). Không cần server, không cần mạng.
 
 ### Development
 
