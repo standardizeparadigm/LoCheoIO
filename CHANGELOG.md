@@ -3,7 +3,7 @@
 Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến được ghi ở đây.
 Định dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/), phiên bản theo [SemVer](https://semver.org/lang/vi/).
 
-## [1.1.8] — 2026-11-16
+## [1.1.8] — 2026-11-17
 
 Bản **vá cuối cùng trước 1.2.0**, mười bảy vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · **vòng xoay quanh lọ ở thẻ tác giả không quay: một `transform` bị utility căn giữa nuốt mất, nay ba quỹ đạo SVG** · **HUD «GỐM MỎNG» vẽ ba mạng cho chế độ chỉ có một** · **kiểm toán chín chế độ bằng `check:modes`** · **adaptive chấm mức chuyển động `vivid` · `steady` · `still`** · **governor khung hình tự hạ rồi trả lại chất lượng** · **mọi tra cứu `MODES()` đi qua `modeConfigFor()` prototype-safe, kể cả đường vào từ một save sửa tay** · **`readInsets()` hết ép reflow đồng bộ mỗi frame resize** · 29 hình SVG và năm corpus 1 835 ảnh chụp số · 1618 unit tests (149 file)**.
 
@@ -174,7 +174,7 @@ Ngoài ra:
 
 ### Documentation
 - **ja/ko/th/zh còn ghi số test cũ** (495 / 501 / 344 trên 40–51 tệp) trong cây thư mục, hàng release và cổng PR — nay khớp badge ở mọi bề mặt
-- **Ngày phát hành 1.1.8 là Chủ nhật 2026-11-15** — duy nhất trong chuỗi; nay **thứ Hai 2026-11-16**, `+4 ngày` sau 1.1.7, cả mười bản đều vào ngày làm việc; hai bullet «NGÀY PHÁT HÀNH» (vi/en) trong entry được viết lại vì tự mâu thuẫn
+- **Ngày phát hành 1.1.8 là Chủ nhật 2026-11-15** — duy nhất trong chuỗi; từng dời sang thứ Hai 11-16, và vòng rà soát cuối chốt **thứ Ba 2026-11-17** — ngày code thực sự đi đường; `+5 ngày` sau 1.1.7, cả mười bản đều vào ngày làm việc; hai bullet «NGÀY PHÁT HÀNH» (vi/en) trong entry được viết lại vì tự mâu thuẫn
 - **`docs/releases/v1.1.8.md`** thêm §26 (vòng 17); **`docs/assets.md`** xếp `adaptive-repair.svg`; **cây thư mục 10 README** liệt kê đủ 29 hình
 
 ### Fixed — vòng mười bốn (chỉ sửa lỗi)
