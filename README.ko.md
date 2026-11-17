@@ -502,6 +502,11 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 더 높은 열: 192 마스코트 + 24 칩
 | 🧪 **품질 게이트** | modes / achievements / storage / i18n / settings을 커버하는 1618개 단위 테스트(vitest) — `npm run check`가 CI 게이트 |
 
 <img src="assets/items.svg" alt="14가지 재료 — 받아야 할 절임, 주워야 할 황금 파워, 피해야 할 위험물" width="100%" />
+### 💾 저장소와 명예의 전당 — 한 판의 여정
+
+데이터는 기기를 떠나지 않는다: 엔진이 끝난 판을 스냅샷으로 묶고, `storage/`(9모듈)은 `safeStorage`라는 단 하나의 문을 통해 localStorage에 닿고, 깨진 세이브는 항목별로 구출되고, 그다음에야 TOP 8 · 업적 16 · 설정이 온다 — «이어서 하기»는 이 같은 길을 거슬러 간다.
+
+<img src="assets/save-pipeline.svg" alt="한 판의 여정 — 엔진 → storage/ → 병합 + 구출 → TOP 8 · 업적 · 설정 (SMIL)" width="100%" />
 
 ## 🌐 언어 전환
 
@@ -536,6 +541,9 @@ Lọ Chéo는 게임 내에서 **7개 언어 UI**를 지원합니다 — 새로�
 | 음소거 / 해제 | `M` | 오른쪽 상단 스피커 버튼 |
 | 언어 전환 | — (VI/EN/中/日/한/ES/FR 버튼 사용) | 메뉴 / 일시정지의 VI/EN/中/日/한/ES/FR 버튼 |
 
+<img src="assets/game-loop.svg" alt="Lọ Chéo의 한 판 사이클 — 키 2개를 눌러 대각선으로 활주하고 베고, 항아리를 채우고, 점수를 쌓는다 — 사이클은 다시 돌아온다 (SMIL)" width="100%" />
+
+기계에서 본 한 사이클: 키 2개를 누르는 것이 1단계, 나머지는 반복이다 — 항아리가 버티는 동안 리듬은 멈추지 않고, 세 개의 금이 끝낸다.
 ## 🚀 설치 · 실행
 
 ### 🧠 15라운드: 적응 시스템이 스스로 조정하고, 더는 떨지 않는다
@@ -779,6 +787,12 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 **터미널이 어려운가요?**
 [`scripts/play-mac.command`](scripts/play-mac.command)(macOS), [`scripts/play-windows.bat`](scripts/play-windows.bat)(Windows), [`scripts/play-linux.sh`](scripts/play-linux.sh)(Linux)를 더블클릭하세요 — 컬러 메뉴가 열리고 `1`을 고르면 빌드 후 바로 플레이, `2`는 개발 서버입니다. 자세한 내용: [scripts/README.md](scripts/README.md).
 
+**업데이트하면 세이브가 사라지나요?**
+아니요. 스토리지 키는 버전을 넘어 동일; 읽을 때 데이터를 병합하고 항목별로 구출합니다 — 항목 하나가 깨졌다고 전당 전체가 사라지지 않습니다.
+
+**화면 크기에 따라 플레이가 달라지나요?**
+규칙은 그대로입니다. 단일 적응형 프로필이 뷰포트마다 배치를 고르고(578 윈도우 감사, 위반 0) — HUD·히어로·대화상자는 스스로 재배치되고, 게임은 하나의 게임입니다.
+
 ## 📦 릴리스 & 변경 이력
 
 | 버전 | Tier | 날짜 | 노트 |
@@ -823,6 +837,7 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | 자주 묻는 문제 — 검은 화면 · 소리 · 이어하기 · 런처 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | 헤드리스 렌더 스모크 테스트 (전체 메뉴/모달) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
+| [docs/decisions/README.md](docs/decisions/README.md) | 아키텍처 결정 기록 — 왜 한 파일, 왜 SMIL, 왜 `modeConfigFor()` |
 
 ## 🤝 기여하기
 
