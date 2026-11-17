@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-安装与运行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 新特性
 
-> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 在有解的任何尺寸下（356px 起）都不滚动、不裁切。甲板横条被移除，SVG 共 27 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告、第 13 轮的选阶图、第 15 轮的稳定图），另加第四个语料库（事故窗口）与六层自动修复阶梯。
+> 1.2.0 之前的**最后一个补丁**。没有新玩法、没有平衡性改动、没有存档格式变更。这最后一轮只做一件事：**首屏自己测量窗口并选择布局** —— 在有解的任何尺寸下（356px 起）都不滚动、不裁切。甲板横条被移除，SVG 共 28 张（第九轮的 HUD 分带示意图、第 12 轮的审计报告、第 13 轮的选阶图、第 15 轮的稳定图、第 16 轮的保持图），另加第四个语料库（事故窗口）与六层自动修复阶梯。
 
 ### 📐 一次没人管的加法——同时造成四个错误
 
@@ -242,7 +242,7 @@ wordmark 下方的空带现在是**故意的**。那就是一个在任何尺寸�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 三层及其颜色与十个版本的时间轴（SMIL 动画）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——139 个文件 1458 项测试、九个质量门（SMIL 动画）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 测试矩阵——147 个文件 1590 项测试、九个质量门（SMIL 动画）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 的六层自适应——视口盒、档位、布局计划，再到密度／主视觉／字号／模态／棋盘，单向数据流（SMIL 动画）" width="100%" />
 
@@ -540,6 +540,39 @@ Lọ Chéo 内置 **7 种界面语言**，即时生效 —— 无需刷新、不
 
 <img src="assets/adaptive-stability.svg" alt="稳定与偏好 —— v1.1.8 第 15 轮：迟滞保持 2px、修复阶梯在运行时执行、两个偏好来自三个来源（SMIL 动画）" width="100%" />
 
+### 🎚️ 第 16 轮：两像素的带子终于能说出它*为什么*不动
+
+这一轮没有新的稳定机制。只对第 15 轮留下的那一个做了三件事：解释它、测量它、修掉它
+掩盖的一个 bug。
+
+| | 第 16 轮之前 | 第 16 轮之后 |
+| --- | --- | --- |
+| 「这个 profile 为什么慢了 2px？」 | 把五个条件粘进 REPL | `explainHold()` 返回**六个有名字的理由**；`shouldHold()` 只是一次读取 |
+| 窗口**没动**而层级变了 | 被保留 —— 而且*永久*保留，因为下一帧一模一样 | 独立理由 `still`，立刻应用：修复阶梯的成果在第一帧就被画出 |
+| 有意的延迟 | 人和工具都看不见 | DOM 上的 `data-adaptive-held` · `diagnose()` 第 `12 · hold` 层 |
+| 审计 | 578 个窗口的表格，每行在任何时刻都成立 | 再加一条**拖动路径**：21 × 241 步、4 600 个窗口、两次重放 |
+
+- **六个理由：** `first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`。
+  只有 `held` 会保留层级，其余五个是「层级变化**不是**抖动」的五种情形。
+- **`still` 是真 bug：** 旧条件「两个盒子相距 2px 内」在两个盒子**完全相同**时也成立。
+  修复阶梯画出的 profile 改了 `plan.fit` 而盒子没变，于是被保留，`last.current` 永不
+  前进：*修复成果永远不会被画出*。
+- **审计走的是路径，不只是点。** `docs/adaptive-drag.md`：
+
+| 手势 | raw | held | 带子买到什么 |
+| --- | --- | --- | --- |
+| **sweep** —— 单向拖动 ±120px（4 600 个窗口） | 12 | 11 | 1（8%）—— 每个边界只穿一次 |
+| **shake** —— 指针在每个边界抖动 1px | 48 | **0** | **48（100%）** —— 这才是带子真正的用处 |
+
+拖动路径的三条性质：**安全**（每个被画的 profile 0 违规）、**活性**（没有一次保留
+超过 `margin + 1` 帧）、**边界**（`worstLag` = 2px）。
+
+同一轮还有一件不属于 adaptive 的事：文档计数闸门（四个文件里的 «26 SVGs»）现在在
+`npm run check` **内部**运行，而不只在 CI —— 规则移到 `scripts/lib/prose-counts.mjs`，
+测试跑的是**同一套**规则，不是副本。
+
+<img src="assets/adaptive-hold.svg" alt="两像素的带子与拖动路径 —— v1.1.8 第 16 轮：explainHold() 的六个判定、曾把修复永久扣下的 still 缺陷、以及 4 600 窗口的拖动审计中 1px 抖动 48 → 0（SMIL 动画）" width="100%" />
+
 ### 免构建直接玩
 
 ```bash
@@ -709,7 +742,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 
 | 版本 | Tier | 日期 | 说明 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **501 项测试 / 47 文件** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **开始界面不再溢出**：一次高度加法失误让 hero 只剩 250px，`LỌ` 被裁 · **滚动错误**（嵌套滚动框 + `justify-center`）改为**单一**顶部锚定的 `.menu-scroll` · **「玩法」移入 GAME 菜单**（模态框）· 面板声明高度 **318px/458px** 而非随内容 · 字幕 48px · **14 件主视觉装饰** + **3 道光环** · `src/components/menu/{layout,scene,ticker,howto}/` · **501 项测试 / 47 文件** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **菜单背景去雾**（四层叠加：`blur 64→22px`、角落暗角替换全屏、CRT 边框 140→90px、地面 45→70%）· **分层彩色日志** · 8 个旧版 **96 条新描述** · 日期重排 · `src/game/changelog/` 拆分 · 10 个 README 重做 · **256 测试** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **六分区设置**（预设 · 音频 · 画面 · 语言 · 备份 · 数据）· 0–100 音量 · 震动强度 · 画质 · 切标签自动暂停 · 语言移入设置 · 4 个预设 · JSON 导入导出 · 多层动态菜单 · 作者卡片渐变流动 · 弹窗焦点捕获 · 修复刷新后音乐 · **150 项测试** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **双角 GAME/INFO 菜单**（开始 · 继续 · 模式 · 排行榜 · 成就 · 设置 / 关于 · 更新日志 · 退出）· **保存并恢复未完成对局**（`locheo.run.v1`）· 游戏内设置（音效/音乐/震动/减少动态）· 修复快捷键穿透弹窗 · prefers-reduced-motion 全覆盖 · **113 项测试** |

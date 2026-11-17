@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Structural validation for the 21 README assets.
+ * Structural validation for every README asset.
  *
  * There is no SVG renderer in CI (no rsvg, no headless browser), so the assets
  * cannot be screenshot-tested. What *can* be checked is everything that makes
@@ -43,9 +43,10 @@ const files = readdirSync(ASSETS).filter((f) => f.endsWith(".svg")).sort();
  * `hud-bands.svg`, the twenty-second; round 10 added `mode-chip.svg`; round 11
  * added `diacritics-clip.svg`, the twenty-fourth; round 12 added `adaptive-audit.svg`,
  * the twenty-fifth; round 13 adds `adaptive-select.svg`, the twenty-sixth; round 15
- * adds `adaptive-stability.svg`, the twenty-seventh.
+ * adds `adaptive-stability.svg`, the twenty-seventh; round 16 adds
+ * `adaptive-hold.svg`, the twenty-eighth.
  */
-const EXPECTED_ASSETS = 27;
+const EXPECTED_ASSETS = 28;
 if (files.length !== EXPECTED_ASSETS) {
   problems.push(`expected ${EXPECTED_ASSETS} assets, found ${files.length}`);
 }

@@ -29,6 +29,7 @@ import { heroBandWidth } from "./hero";
 import { chipBoxHeight, planModeChip, widestOf, widestProbe } from "./chip";
 import { describeBox } from "./viewport";
 import { describePreferences } from "./preferences";
+import { describeVerdict, HYSTERESIS_MARGIN } from "./hysteresis/band";
 
 /** One decision and the reason it went the way it did. */
 export interface DiagnosisRow {
@@ -163,6 +164,25 @@ export function diagnose(p: AdaptiveProfile): Diagnosis {
                 ? "the plan satisfied the contract with no lever pulled"
                 : `rung ${p.repair.rung} was the first that satisfied the contract`
               : "no rung satisfied the contract — the least-broken one is painted",
+          },
+        ]
+      : []),
+    /*
+     * Layer 12 exists for the same reason layer 11 does: it is a fact about the
+     * *runtime*, not about the box. A held profile is the previous profile, so its
+     * numbers describe a window two pixels away from the one on screen — and
+     * without this row that deliberate staleness is invisible.
+     *
+     * It also answers the question a screenshot review actually asks ("why is the
+     * hero still a row at 700px?"), which the geometry rows cannot: they describe
+     * the profile that was painted, not the one that was suppressed.
+     */
+    ...(p.held
+      ? [
+          {
+            layer: "12 · hold",
+            value: `${p.held.axis ?? "none"} · ${p.held.dw}×${p.held.dh}px · band ${HYSTERESIS_MARGIN}px`,
+            because: `${describeVerdict(p.held)} — the candidate is not wrong, it is early`,
           },
         ]
       : []),

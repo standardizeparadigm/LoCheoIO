@@ -30,7 +30,7 @@ import { readViewport } from "../layout/useMenuPlan";
 import { boxOf } from "./viewport";
 import { readEnvironment } from "./useEnvironment";
 import type { Environment } from "./environment";
-import { stabilize } from "./hysteresis";
+import { explainHold, stabilize } from "./hysteresis";
 import { repairProfile } from "./repair";
 import { type AdaptiveProfile } from "./resolve";
 
@@ -115,9 +115,22 @@ export function useAdaptive(wideModal = false, playerReducedMotion = false): Ada
       playerReducedMotion,
     });
     const fresh: AdaptiveProfile = { ...repaired.profile, repair: { rung: repaired.rung, ok: repaired.ok } };
+    /*
+     * The hold is decided once and *reported*, not just applied.
+     *
+     * Round 15 painted the previous profile and threw the reason away, so a
+     * deliberately stale frame was indistinguishable from an up-to-date one: the
+     * only witness was `stabilize()`'s return identity, which nothing outside this
+     * file can see. The verdict now rides on the profile — `data-adaptive-held` on
+     * the DOM, layer 12 in `diagnose()` — which is what makes the two-pixel band
+     * observable instead of merely true.
+     */
     const stable = stabilize(last.current, fresh);
-    last.current = stable;
-    return stable;
+    /* `stable` is the previous profile exactly when the band held it. */
+    const painted: AdaptiveProfile =
+      stable === last.current ? { ...stable, held: explainHold(last.current, fresh) } : stable;
+    last.current = painted;
+    return painted;
   }, [input, wideModal, playerReducedMotion]);
 }
 

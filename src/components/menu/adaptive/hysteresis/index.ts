@@ -6,9 +6,11 @@
  * One remembered profile makes the step sticky without making it stale. See
  * `README.md`.
  */
-export type { RungKey } from "./hysteresis";
+export type { HoldAxis, HoldReason, HoldVerdict, RungKey } from "./hysteresis";
 export {
   HYSTERESIS_MARGIN,
+  describeVerdict,
+  explainHold,
   rungKeyOf,
   sameRung,
   shouldHold,

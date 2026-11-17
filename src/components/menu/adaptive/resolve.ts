@@ -34,7 +34,9 @@ import {
   preferenceAttributes,
   type Preferences,
 } from "./preferences";
+import { planMotion, motionFactorVar, type MotionPlan } from "./motion";
 import { aspectClassOf, boxOf, describeBox, roomDriver, type AspectClass, type Box } from "./viewport";
+import type { HoldVerdict } from "./hysteresis/band";
 
 /**
  * The levers the repair engine may pull.
@@ -115,6 +117,17 @@ export interface AdaptiveProfile {
   /** What the player asked the system for: motion and contrast. */
   prefs: Preferences;
   /**
+   * How loud the decoration should be — `vivid` · `steady` · `still`.
+   *
+   * A *grade*, not the on/off the preferences carry. `prefs.motion` answers
+   * "did anyone ask for less motion"; this answers "how much motion does this
+   * screen deserve", which is also a question about the device: a handset runs
+   * the same seventeen animated layers as a desktop with a fifth of the GPU and
+   * a hero band too short to read a 34-second rotation. `steady` keeps the
+   * motion and slows it; `still` is the accessibility stop.
+   */
+  motion: MotionPlan;
+  /**
    * Which rung of the repair ladder produced this profile — `useAdaptive()` only.
    *
    * Absent from a raw `resolveAdaptive()` result on purpose: repair is a *runtime*
@@ -124,6 +137,19 @@ export interface AdaptiveProfile {
    * screenshot proves the ladder was consulted.
    */
   repair?: { rung: string; ok: boolean };
+  /**
+   * Why the previous profile is still being painted — `useAdaptive()` only.
+   *
+   * The same rule as `repair`: a hold is a *runtime* fact about a sequence of
+   * windows, so `resolveAdaptive()` — which sees one box and no history — neither
+   * produces it nor pretends to. The hook fills it in, `adaptiveAttributes()`
+   * publishes `data-adaptive-held`, and `diagnose()` explains it as layer 12.
+   *
+   * It exists because the alternative was silence: a profile that is deliberately
+   * two pixels stale looked exactly like a profile that is up to date, and the only
+   * way to tell them apart was to know that `stabilize()` runs at all.
+   */
+  held?: HoldVerdict;
 }
 
 /** Build the profile for a box. */
@@ -144,12 +170,14 @@ export function resolveAdaptive({
   const hero = heroLayout({ scene: plan.scene, width: box.width, minimal: plan.minimal });
   const modal = planModal(box, wideModal && !o.singleColumn);
   const playfield = scaleHud(planPlayfield(box.width, box.height, env.dpr), o.hudScale);
+  const device = deviceClass(box);
+  const motion = planMotion({ prefs, device, coarse: env.coarse });
   const panelHeight = panelHeightForPlan(plan);
 
   return {
     box,
     tier: tierFor(box),
-    device: deviceClass(box),
+    device,
     aspect: aspectClassOf(box),
     room: roomDriver(box),
     density,
@@ -170,8 +198,10 @@ export function resolveAdaptive({
       "--adaptive-row-gap": `${metrics.rowGap}px`,
       "--adaptive-ticker-h": `${plan.ticker ? metrics.tickerHeight : 0}px`,
       "--adaptive-room": `${roomDriver(box)}`,
+      "--adaptive-motion-factor": motionFactorVar(motion),
       ...preferenceVars(prefs),
     },
+    motion,
     insetApplied: inset > 0,
     prefs,
   };
@@ -248,7 +278,9 @@ export function adaptiveAttributes(profile: AdaptiveProfile): Record<string, str
     "data-adaptive-fit": profile.plan.fit,
     "data-adaptive-room": profile.room.toFixed(2),
     "data-adaptive-inset": profile.insetApplied ? "1" : "0",
+    "data-adaptive-motion-grade": profile.motion.grade,
     ...(profile.repair ? { "data-adaptive-repair": profile.repair.ok ? profile.repair.rung : `failed:${profile.repair.rung}` } : {}),
+    ...(profile.held ? { "data-adaptive-held": profile.held.axis ?? "none" } : {}),
   };
 }
 
@@ -262,6 +294,7 @@ export function describeAdaptive(profile: AdaptiveProfile): string {
     `reserve ${profile.plan.reserve}px`,
     `type ${profile.type.rowLabel}/${profile.type.rowHint}px`,
     `fit ${profile.plan.fit}`,
+    `motion ${profile.motion.grade}`,
   ].join(" · ");
 }
 
@@ -294,4 +327,5 @@ export const ADAPTIVE_CSS_VARS = [
   "--adaptive-room",
   "--adaptive-motion",
   "--adaptive-contrast",
+  "--adaptive-motion-factor",
 ] as const;

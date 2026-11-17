@@ -15,6 +15,7 @@ one record and one diff instead of nine numbers inside one table.
 | `hardcore.ts` | GỐM MỎNG | `maxCracks: 1` — one miss ends the run |
 | `combo.ts` | LỄ HỘI COMBO | `comboWindowMult: 2`, and it is *harsher* elsewhere, not easier |
 | `feast.ts` | ĐẠI TIỆC DƯA | `jarBonusMult: 2.5`, fewest hazards, densest jars |
+| `audit.ts` | — | cross-checks every record against the badge, the spawn table and the HUD |
 
 ## `index.ts`
 
@@ -44,6 +45,29 @@ fields; it does not know any mode by name.
    multipliers for all nine modes and says in bold that it must match. It did not
    — four rows had drifted — until `tests/modes-balance-doc.test.ts` started
    reading both sides. If you change a record, that test names the row.
+
+## `audit.ts` — the rules a single record cannot check about itself
+
+Nine hand-copied records are internally plausible by construction; what goes
+wrong is the **contract between a record and everything outside it**. `audit.ts`
+is a pure function returning findings, and `npm run check:modes` is the gate that
+runs it in `npm run check`:
+
+* the **badge** must state the numbers it sits next to («×1.25 · 60S» on a mode
+  whose `scoreMult` is 1.2 is a lie in the only place the player reads the mode);
+* every multiplier must stay inside a playable range, and every number must be
+  finite (`Infinity` in `speedMult` is a mode whose items fall out of the world);
+* `hazardMult: 0` must actually mean *no hazard can spawn* — the audit builds the
+  real weight table through `itemWeight()` and checks it, because «THẢNH THƠI»'s
+  promise is a property of the spawner, not of the number;
+* every mode must have at least three catchable kinds reachable and a non-zero
+  total weight at level 1, or the run starts with an empty sky;
+* accents are unique (they double as card glow, pause badge and game-over chip).
+
+It found the **crack-budget bug**: the HUD drew three shells for every mode,
+including «GỐM MỎNG», which dies on the first one. `maxCracksFor()` in
+`game/modeMath.ts` is now the single answer, and `planHud()` takes it as input —
+`hud.crackSlots` is what the engine draws.
 
 ## Adding a mode
 

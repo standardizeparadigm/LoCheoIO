@@ -832,3 +832,84 @@ Bậc `crop` **được** phép vượt cửa sổ; điều sai là bỏ phần 
 - Câu cảnh báo `crop` nói đúng hộp: *"column is taller than the window: Npx past floor +
   chrome, reachable by scrolling"* — trước đó nó nói "hero is cropped", trong khi hero
   chính là hộp **không** bị cắt (nó giữ đúng sàn 140px).
+
+## 24. Vòng 16 — dải 2px trả lời bằng *lý do*, và audit đi theo *đường*
+
+Vòng 15 thêm dải 2px và để nó là một boolean. Vòng 16 không thêm một cơ chế ổn định
+nào; nó làm ba việc với cơ chế đã có: **giải thích** nó, **đo** nó trên một trục mới,
+và sửa **một lỗi sống còn** mà chính boolean ấy che mất.
+
+### 24.1 Một quyết định, sáu lý do
+
+`explainHold(previous, next, margin)` trả `HoldVerdict`, và `shouldHold()` chỉ còn là
+một lần đọc `verdict.hold`. Sáu lý do, mỗi lý do là một tình huống thật:
+
+| `reason` | Khi nào | Giữ? |
+| --- | --- | --- |
+| `first-frame` | chưa vẽ gì (SSR, lần đầu, sau reset) | không |
+| `no-band` | `margin` ≤ 0 hoặc `NaN` — người gọi xin không ổn định | không |
+| `same-rung` | bố cục không đổi; kích thước đổi bao nhiêu cũng được | không |
+| `still` | bậc đổi trong khi cửa sổ **không nhích** — thứ khác đổi nó | không |
+| `jump` | cửa sổ nhảy quá `margin` ở một trong hai trục (xoay, fullscreen) | không |
+| `held` | cửa sổ nhích trong dải và bậc đổi | **có** |
+
+Trước vòng 16 chỉ có hai kết quả, `true`/`false`, nên mọi câu hỏi "vì sao profile này
+trễ 2px" phải trả lời bằng cách dán năm điều kiện vào REPL. Verdict là cùng một câu
+trả lời cho hook, cho `diagnose()` và cho test.
+
+### 24.2 `still` — lỗi mà boolean che mất
+
+Điều kiện cũ là *"hai hộp nằm trong `margin` của nhau"*, và điều đó **cũng đúng khi
+hai hộp giống nhau**. Một lần đổi bậc mà cửa sổ không nhích thì không đến từ cửa sổ:
+safe-area inset xuất hiện, một lever của test, hay — quan trọng nhất — **profile do
+thang sửa vẽ ra**. Thang sửa đổi `plan.fit`; profile sửa có cùng hộp với profile cũ,
+nên điều kiện cũ giữ nó lại. Và vì khung hình sau ở đúng trạng thái ấy, `last.current`
+không bao giờ tiến: **bản sửa không bao giờ được vẽ**. Không phải nhấp nháy — im lặng.
+
+Một bộ ổn định có thể nuốt mất bản sửa thì tệ hơn một lần nhấp nháy, nên `still` là
+lý do riêng, được kiểm bằng test "khung đầu tiên đã vẽ bản sửa".
+
+### 24.3 Lớp 12 — dòng giải thích khung hình trễ
+
+`AdaptiveProfile.held` là trường tuỳ chọn thứ hai chỉ hook mới điền (trường thứ nhất là
+`repair`), và cùng lý do: một *chuỗi* cửa sổ là sự thật runtime, hàm thuần chỉ thấy một
+hộp. Ba nơi đọc nó:
+
+- `data-adaptive-held` trên DOM — ảnh chụp phân biệt được "trễ có chủ ý" với "đã cập nhật";
+- `diagnose()` lớp `12 · hold` — in **cả hai** bậc: `held lg · comfortable instead of sm · compact`;
+- `audit/drag.ts` — đếm `heldFrames` và `worstLag`.
+
+### 24.4 Audit không chỉ điểm, mà cả đường
+
+`adaptive-audit.md` là bảng 578 cửa sổ, và **mọi dòng đều đúng ở mọi thời điểm** — nên
+nó không thể thấy hiện tượng sinh ra dải 2px. `adaptive-drag.md` (vòng 16) là chuỗi:
+mỗi preset được kéo ±120px theo từng pixel (4 600 cửa sổ), chạy hai lần — raw và qua
+`stabilize()` — rồi đếm số lần **bậc nhìn thấy** đổi.
+
+| Cử chỉ | raw | held | Dải 2px mua được |
+| --- | --- | --- | --- |
+| **sweep** — kéo một chiều, ±120px | 12 | 11 | **1** (8%) |
+| **shake** — con trỏ rung 1px tại mỗi ranh giới (`b−1, b, b+1, b` ×2) | 48 | **0** | **48** (100%) |
+
+Con số thứ nhất là con số **thật thà**: kéo một chiều đi qua mỗi ranh giới đúng một lần,
+mà hàm bậc thang cũng đổi đúng một lần — không có gì để dập. Con số thứ hai là thứ dải
+2px thật sự mua: con trỏ đứng gần ranh giới và rung, mỗi khung hình là một bậc khác
+nhau. Báo cáo in **cả hai cột** vì một cột sẽ để nó kể một trong hai câu chuyện.
+
+Ba bất biến của đường kéo, và cả ba đều là cách dải 2px có thể *sai* chứ không chỉ khác:
+
+- **an toàn** — profile được vẽ vẫn thoả 15 bất biến (nó *là* profile trước đó, nên đây
+  là kiểm tra rằng `stabilize()` không trộn hai profile): 0 vi phạm / 4 600 cửa sổ;
+- **sống** — không lần giữ nào dài quá `margin + 1` khung, vì dải nhả ngay khi cửa sổ đi
+  quá `margin`: `stalled` rỗng;
+- **trễ có biên** — `worstLag` = 2px trên mọi đường.
+
+### 24.5 Sổ đếm trong tài liệu cũng là một cổng
+
+Cùng vòng này, CI đỏ vì bốn tệp vẫn ghi «26 SVG» sau khi hình thứ 27 ra đời. Cổng đã có
+từ lâu — `node scripts/sync-prose-counts.mjs --verify` — nhưng nó chỉ chạy trong một job
+mà không ai chạy khi đang viết README, trong khi `npm run check` thì nằm trong tay mọi
+người. Bộ luật được tách ra `scripts/lib/prose-counts.mjs`, và `tests/prose-counts-gate.test.ts`
+chạy **đúng** bộ luật ấy (không phải bản sao) trên cả 14 tài liệu, với số đo lấy từ
+badge và `readdirSync`, bên trong `vitest run`. Một cổng chỉ CI chạy là một cổng không
+ai chạy.

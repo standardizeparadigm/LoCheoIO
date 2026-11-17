@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)](#-changelog-tiers--one-colour-per-tier)
-[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
+[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)](#-quality-gates)
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-install--run)
@@ -200,7 +200,7 @@ The tier is **derived from SemVer** by `tierFor(version)`, never typed by hand. 
 
 <img src="assets/release-tiers.svg" alt="The three tiers MAJOR/UPDATE/PATCH with their colours and the ten-release timeline (SMIL animation)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1458 tests across 139 files, nine gates (SMIL animation)" width="100%" />
+<img src="assets/test-matrix.svg" alt="The 1.1.8 test matrix — 1590 tests across 147 files, nine gates (SMIL animation)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="The six adaptive layers of Lọ Chéo 1.1.8 — box, tier, plan, then density / hero / type / modal / board, one direction only (SMIL animation)" width="100%" />
 
@@ -486,6 +486,39 @@ folders: [`adaptive/preferences/`](src/components/menu/adaptive/preferences/READ
 
 <img src="assets/adaptive-stability.svg" alt="Stability and preferences — v1.1.8 round 15: hysteresis holds a rung for 2px, the repair ladder runs at runtime, two preferences from three sources (SMIL animation)" width="100%" />
 
+### 🎚️ Round sixteen: the two-pixel band can say *why* it is standing still
+
+No new stabilising mechanism this round. Three things done to the one round fifteen
+left behind: explain it, measure it, and fix a bug it was hiding.
+
+| | before round 16 | after round 16 |
+| --- | --- | --- |
+| "Why is this profile 2px stale?" | paste five conditions into a REPL | `explainHold()` returns **six named reasons**; `shouldHold()` is a read of it |
+| The rung changes and the window does **not** move | held — and held *forever*, because the next frame is identical | its own reason, `still`, applied at once: the repair ladder's fix paints on frame one |
+| A deliberate lag | invisible to people and tools | `data-adaptive-held` on the DOM · `diagnose()` layer `12 · hold` |
+| The audit | a table of 578 windows, every row true at every moment | plus a **drag audit**: 21 × 241 steps, 4 600 windows, two replays |
+
+- **Six reasons:** `first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`.
+  Only `held` keeps the rung; the other five are five ways a rung change is *not* jitter.
+- **`still` is a real bug:** the old condition — "both boxes within 2px" — is also true
+  when the boxes are *identical*. A repaired profile changes `plan.fit` on the same box,
+  so it was held, and `last.current` never advanced: *the fix was never painted*.
+- **The audit walks a path, not just points.** `docs/adaptive-drag.md`:
+
+| gesture | raw | held | what the band buys |
+| --- | --- | --- | --- |
+| **sweep** — a one-way drag of ±120px (4 600 windows) | 12 | 11 | 1 (8%) — each boundary is crossed once |
+| **shake** — a pointer moving 1px at each boundary | 48 | **0** | **48 (100%)** — this is what the band is for |
+
+Three properties of a drag: **safety** (0 contract violations on every painted profile),
+**liveness** (no hold longer than `margin + 1` frames), **bound** (`worstLag` = 2px).
+
+And one thing outside the adaptive system, same round: the prose-count gate («26 SVGs» in
+four files) now runs **inside** `npm run check`, not only in CI — the rules moved to
+`scripts/lib/prose-counts.mjs` and the test runs the *same* rules, not a copy.
+
+<img src="assets/adaptive-hold.svg" alt="The two-pixel band and the drag — v1.1.8 round 16: the six verdicts of explainHold(), the still bug that held a fix forever, and a 4 600-window drag audit with 1px jitter going 48 → 0 (SMIL animation)" width="100%" />
+
 ### 🧱 Round eight: six layers, one profile
 
 Round six taught the hero to measure its own window. Everything else still
@@ -600,7 +633,7 @@ usableHeight` (252 combinations asserted).
 | 💾 **TOP 8 leaderboard** | Local storage, validated & normalised on read, auto upper-case names, highlight for freshly set records |
 | 🎨 **60fps graphics** | Canvas 2D, 460-particle budget, DPR cap 2, pre-rendered offscreen tile floor, star twinkle + menu aurora |
 | 📴 **Truly offline-first** | Self-hosted fonts (latin + vietnamese subsets, woff2), no CDN, no API — double-click `dist/index.html` and play |
-| 🧪 **Quality gates** | 1458 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
+| 🧪 **Quality gates** | 1590 unit tests (vitest) for modes / achievements / storage / i18n / settings — `npm run check` is the CI gate |
 
 <img src="assets/items.svg" alt="The 14 ingredients — pickles to catch, golden powers to grab, hazards to dodge" width="100%" />
 
@@ -663,7 +696,7 @@ npm run build      # → dist/index.html (one self-contained file)
 npm run dev        # dev server with HMR (http://localhost:5173)
 npm run preview    # serve the production build locally
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1458 unit tests (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1590 unit tests (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (CI quality gate)
 ```
 
@@ -789,18 +822,18 @@ Every change must clear **five gates** before it reaches `main` — one command 
 $ npm run check        # typecheck + every test
 $ npm run check:readme # 10 READMEs in version + release-link sync
 $ npm run check:i18n   # 7 locales × 327 keys, nothing missing or extra
-$ npm run check:assets # 27 SVGs — no orphans, no broken references
+$ npm run check:assets # 28 SVGs — no orphans, no broken references
 $ npm run smoke        # SSR smoke: every menu/modal renders
 ```
 
 | Gate | Scope | 1.1.8 status |
 | --- | --- | --- |
 | `typecheck` | `src/` + `tests/` (TypeScript strict) | ✅ |
-| `vitest run` | **1458 tests / 139 files** | ✅ |
+| `vitest run` | **1590 tests / 147 files** | ✅ |
 | `smoke-ssr` | StartScreen, 11 modals, all 6 settings sections, and 4 in-run screens (pause · game over · mode picker · achievements) — **20 entries** | ✅ |
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
-| `check-assets` | 27 SVGs, references checked both ways | ✅ |
+| `check-assets` | 28 SVGs, references checked both ways | ✅ |
 | `build` | `dist/index.html` ~916 KB · gzip ~419 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
@@ -832,7 +865,7 @@ Double-click [`scripts/play-mac.command`](scripts/play-mac.command) (macOS), [`s
 
 | Version | Tier | Date | Notes |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1458 tests / 139 files** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **The start screen no longer overflows**: one bad height addition left the hero only 250px and clipped `LỌ` · **scroll bug** (nested scroll box + `justify-center`) fixed with a single top-anchored `.menu-scroll` · **how-to-play moved into the GAME menu** as a modal · panels declared at **318px/458px** instead of sizing to content · 48px ticker · **14 hero decorations** + **3 halo rings** · `src/components/menu/{layout,scene,ticker,howto}/` · **1590 tests / 147 files** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Menu background un-fogged** (four compounding overlays: `blur 64→22px`, corner vignette instead of full-screen, CRT frame 140→90px, floor 45→70%) · **tiered colour changelog** · **96 new description bullets** for 8 older releases · dates re-sequenced · `src/game/changelog/` split · 10 READMEs rebuilt · **256 tests** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Six-section settings** (presets · audio · display · language · backup · data) · 0–100 volumes · shake level · visual quality · auto-pause on blur · language moved into Settings · 4 presets · JSON export/import · layered animated menu scene · looping gradient on the author card · modal focus trap · music-after-reload fix · **150 tests** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Corner GAME/INFO menus** (Play · Continue · Modes · Leaderboard · Achievements · Settings / About · Changelog · Quit) · **save & resume suspended run** (`locheo.run.v1`) · in-game settings (SFX/music/shake/reduced motion) · modal shortcut-leak fix · prefers-reduced-motion everywhere · **113 tests** |
@@ -876,7 +909,7 @@ Design notes and deeper technical docs:
 ## 🤝 Contributing
 
 1. Fork the repo, branch with the `arena/<name>` or `feat/<name>` convention.
-2. `npm run check` must be green before opening a PR (typecheck + 1458 tests + build).
+2. `npm run check` must be green before opening a PR (typecheck + 1590 tests + build).
 3. Avoid new runtime dependencies unless truly necessary — philosophy: **one file, no network, playable forever**.
 4. In your PR, note the screens/modes affected and attach a clip if gameplay changes.
 

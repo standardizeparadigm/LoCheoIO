@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 の新機能
 
-> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 27 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート、第13ラウンドの選択図、第15ラウンドの安定図）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
+> 1.2.0 前の**最後のパッチ**。新モードなし、バランス変更なし、セーブ形式の変更なし。この最終ラウンドが行うのは一つだけ —— **ヒーローがウィンドウを測り、自分でレイアウトを選ぶ**。レイアウトが成立するどのサイズでも（356px 以上）スクロールも切れもなし。デッキの帯は削除、SVG は全 28 枚（第9ラウンドの HUD 帯の図、第12ラウンドの監査レポート、第13ラウンドの選択図、第15ラウンドの安定図、第16ラウンドの保持図）、さらに第4のコーパス（インシデント）と6段の自動修復はしごを追加。
 
 ### 📐 誰も管理していなかった足し算——そして同時に四つの不具合
 
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——139ファイル1458テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——147ファイル1590テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -564,6 +564,39 @@ Lọ Chéo はゲーム内で **7 言語のUI** を搭載 — リロード不要
 
 <img src="assets/adaptive-stability.svg" alt="安定と選好 —— v1.1.8 第15ラウンド：ヒステリシスが 2px 保持、修復はしごが実行時、三つの出所から二つの選好（SMIL アニメーション）" width="100%" />
 
+### 🎚️ 第16ラウンド：2ピクセルの帯が「なぜ止まっているか」を言えるようになった
+
+新しい安定化の仕組みはありません。第15ラウンドが残した一つに対して三つ: 説明する、
+測る、そしてそれが隠していたバグを直す。
+
+| | 第16ラウンド前 | 第16ラウンド後 |
+| --- | --- | --- |
+| 「なぜこのプロファイルは2px古い?」 | 五つの条件をREPLに貼る | `explainHold()` が**名前のある六つの理由**を返し、`shouldHold()` はその読み取り |
+| 窓が**動かない**のに段が変わる | 保持 — しかも*永久*に。次のフレームが同一だから | 独立した理由 `still` として即適用: 修復はしごの結果が最初のフレームで描かれる |
+| 意図的な遅れ | 人にも道具にも見えない | DOM の `data-adaptive-held` · `diagnose()` の `12 · hold` 層 |
+| 監査 | 578窓の表。どの行もどの瞬間に正しい | 加えて**ドラッグ経路**: 21 × 241ステップ、4 600窓、二回の再生 |
+
+- **六つの理由:** `first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`。
+  保持するのは `held` だけ。残り五つは「段の変化が揺れでは**ない**」五つの場合。
+- **`still` は本物のバグ:** 旧条件「二つの箱が2px以内」は箱が**同一**でも成り立つ。
+  修復はしごは同じ箱で `plan.fit` を変えるので保持され、`last.current` が進まず、
+  *修復が永遠に描かれない*。
+- **監査は点ではなく経路を歩く。** `docs/adaptive-drag.md`:
+
+| 操作 | raw | held | 帯が買うもの |
+| --- | --- | --- | --- |
+| **sweep** — 片方向に±120pxドラッグ（4 600窓） | 12 | 11 | 1（8%）— 境界は一度しか越えない |
+| **shake** — 各境界でポインタが1px揺れる | 48 | **0** | **48（100%）** — 帯の本当の仕事 |
+
+経路の三性質: **安全**（描かれた全プロファイルで0違反）、**生存**（`margin + 1` フレーム
+を超える保持はない）、**境界**（`worstLag` = 2px）。
+
+同じラウンドで adaptive の外の話も一つ: 文書の計数ゲート（四つのファイルの «26 SVGs»）が
+CI だけでなく `npm run check` の**中**で走るようになりました — ルールは
+`scripts/lib/prose-counts.mjs` に移り、テストは**同じ**ルールを実行します（複製ではなく）。
+
+<img src="assets/adaptive-hold.svg" alt="2ピクセルの帯とドラッグ経路 —— v1.1.8 第16ラウンド: explainHold() の六つの判定、修復を永久に止めていた still の欠陥、4 600窓のドラッグ監査で1pxの揺れが48 → 0（SMIL アニメーション）" width="100%" />
+
 ### ビルド不要で今すぐ遊ぶ
 
 ```bash
@@ -733,7 +766,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 
 | バージョン | Tier | 日付 | ノート |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 テスト / 48 ファイル** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 テスト / 48 ファイル** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **メニュー背景のかすみ除去**（四層の重なり：`blur 64→22px`、全画面ヴィネットを四隅のみに、CRT 枠 140→90px、床 45→70%）· **階層別カラー履歴** · 旧八版に **96 項目の説明** · 日付再整列 · `src/game/changelog/` 分割 · README 10 本刷新 · **256 テスト** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6セクション設定**（プリセット · サウンド · 表示 · 言語 · バックアップ · データ）· 音量 0–100 · 揺れの強さ · 画質 · タブ切替で自動停止 · 言語を設定へ移設 · 4プリセット · JSON 入出力 · 多層アニメのメニュー · 作者カードの流れるグラデーション · モーダルのフォーカス封じ込め · 再読込後の音楽バグ修正 · **150テスト** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **四隅 GAME/INFO メニュー**（プレイ · つづきから · モード · ランキング · 実績 · 設定 / 作者について · 更新履歴 · 終了）· **中断ランの保存＆再開**（`locheo.run.v1`）· ゲーム内設定（効果音/BGM/揺れ/動作を減らす）· モーダル越しショートカット修正 · prefers-reduced-motion 完全対応 · **113テスト** |

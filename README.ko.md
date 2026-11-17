@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1458%20%C2%B7%20139%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1590%20%C2%B7%20147%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-설치--실행)
@@ -39,7 +39,7 @@
 
 ## 🆕 v1.1.8 새로운 점
 
-> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 27개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서, 13라운드 선택 도해, 15라운드 안정 도해)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
+> 1.2.0 전 **마지막 패치**. 새 모드 없음, 밸런스 변경 없음, 저장 형식 변경 없음. 이번 마지막 라운드가 하는 일은 하나 —— **히어로가 창을 측정해 스스로 레이아웃을 고른다**. 레이아웃이 성립하는 모든 크기에서(356px 이상) 스크롤도 잘림도 없이. 덱 띠는 사라지고, SVG는 모두 28개(9라운드 HUD 밴드 도해, 12라운드 감사 보고서, 13라운드 선택 도해, 15라운드 안정 도해, 16라운드 유지 도해)이며, 네 번째 코퍼스(사건)와 6단계 자동 수리 사다리를 더했다.
 
 ### 📐 아무도 관리하지 않던 덧셈 하나——그리고 동시에 네 개의 버그
 
@@ -247,7 +247,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH 세 계층과 색, 열 개 릴리스 타임라인 (SMIL 애니메이션)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——139개 파일 1458 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 테스트 매트릭스——147개 파일 1590 테스트, 아홉 개 게이트 (SMIL 애니메이션)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8의 여섯 적응 레이어——박스, 티어, 플랜, 그다음 밀도／히어로／서체／모달／보드. 단방향 흐름(SMIL 애니메이션)" width="100%" />
 
@@ -564,6 +564,39 @@ Lọ Chéo는 게임 내에서 **7개 언어 UI**를 지원합니다 — 새로�
 
 <img src="assets/adaptive-stability.svg" alt="안정성과 선호 — v1.1.8 15라운드: 히스테리시스가 2px 유지, 수리 사다리가 런타임에 실행, 세 출처에서 두 선호 (SMIL 애니메이션)" width="100%" />
 
+### 🎚️ 16라운드: 2픽셀 띠가 이제 *왜* 멈춰 있는지 말한다
+
+새로운 안정화 장치는 없습니다. 15라운드가 남긴 하나에 세 가지를 합니다: 설명하고,
+측정하고, 그것이 가리고 있던 버그를 고칩니다.
+
+| | 16라운드 이전 | 16라운드 이후 |
+| --- | --- | --- |
+| 「이 프로파일은 왜 2px 늦었나?」 | 다섯 조건을 REPL에 붙여넣기 | `explainHold()`가 **이름 붙은 여섯 이유**를 반환하고, `shouldHold()`는 그 읽기 |
+| 창이 **움직이지 않았는데** 단이 바뀜 | 유지 — 그것도 *영원히*. 다음 프레임이 동일하니까 | 별도 이유 `still`, 즉시 적용: 수리 사다리의 결과가 첫 프레임에 그려짐 |
+| 의도된 지연 | 사람에게도 도구에게도 보이지 않음 | DOM의 `data-adaptive-held` · `diagnose()`의 `12 · hold` 층 |
+| 감사 | 578개 창 표. 모든 행이 모든 순간에 참 | 여기에 **드래그 경로**: 21 × 241 단계, 4 600개 창, 두 번 재생 |
+
+- **여섯 이유:** `first-frame` · `no-band` · `same-rung` · `still` · `jump` · `held`.
+  유지하는 것은 `held` 하나뿐이고, 나머지 다섯은 「단 변화가 흔들림이 **아닌**」 다섯 경우.
+- **`still`은 진짜 버그:** 옛 조건 「두 상자가 2px 이내」는 상자가 **동일**해도 성립합니다.
+  수리 사다리는 같은 상자에서 `plan.fit`을 바꾸므로 유지되고, `last.current`가 진행하지
+  않아 *수리 결과가 영원히 그려지지 않습니다*.
+- **감사는 점이 아니라 경로를 걷습니다.** `docs/adaptive-drag.md`:
+
+| 제스처 | raw | held | 띠가 사는 것 |
+| --- | --- | --- | --- |
+| **sweep** — 한 방향 ±120px 드래그 (4 600개 창) | 12 | 11 | 1 (8%) — 경계를 한 번만 지난다 |
+| **shake** — 각 경계에서 포인터가 1px 흔들림 | 48 | **0** | **48 (100%)** — 띠의 진짜 용도 |
+
+경로의 세 성질: **안전**(그려진 모든 프로파일에서 0 위반), **생존**(`margin + 1` 프레임을
+넘는 유지 없음), **경계**(`worstLag` = 2px).
+
+같은 라운드에 adaptive 밖의 일도 하나: 문서 계수 게이트(네 파일의 «26 SVGs»)가 CI만이
+아니라 `npm run check` **안에서** 돕니다 — 규칙은 `scripts/lib/prose-counts.mjs`로 옮겼고
+테스트는 **같은** 규칙을 실행합니다(복사본이 아니라).
+
+<img src="assets/adaptive-hold.svg" alt="2픽셀 띠와 드래그 경로 — v1.1.8 16라운드: explainHold()의 여섯 판정, 수리를 영원히 붙잡던 still 결함, 4 600개 창 드래그 감사에서 1px 흔들림 48 → 0 (SMIL 애니메이션)" width="100%" />
+
 ### 빌드 없이 바로 플레이
 
 ```bash
@@ -733,7 +766,7 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 
 | 버전 | Tier | 날짜 | 노트 |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-15 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 테스트 / 48 파일** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-16 | **시작 화면 넘침 해결**: 높이 덧셈 하나의 실수로 히어로가 250px만 남아 `LỌ`가 잘리던 문제 · **스크롤 버그**(중첩 스크롤 상자 + `justify-center`)를 위쪽 고정 **단일** `.menu-scroll`로 · **「플레이 방법」을 GAME 메뉴로**(모달) · 패널이 내용이 아닌 **318px/458px**를 선언 · 티커 48px · **히어로 장식 14개** + **광환 3개** · `src/components/menu/{layout,scene,ticker,howto}/` · **495 테스트 / 48 파일** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **메뉴 배경 안개 제거**(네 겹 중첩: `blur 64→22px`, 전체 화면 비네트를 모서리만으로, CRT 프레임 140→90px, 바닥 45→70%) · **계층별 컬러 이력** · 예전 8개 버전에 **설명 96개** · 날짜 재정렬 · `src/game/changelog/` 분리 · README 10개 재작성 · **256 테스트** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6개 섹션 설정**(프리셋 · 사운드 · 화면 · 언어 · 백업 · 데이터) · 0–100 음량 · 흔들림 세기 · 그래픽 품질 · 탭 전환 자동 일시정지 · 언어를 설정으로 이동 · 프리셋 4종 · JSON 내보내기/가져오기 · 다층 애니메이션 메뉴 · 제작자 카드 그라데이션 · 모달 포커스 가둠 · 새로고침 후 음악 버그 수정 · **150개 테스트** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **모서리 GAME/INFO 메뉴**（플레이 · 이어하기 · 모드 · 랭킹 · 업적 · 설정 / 제작자 · 변경 이력 · 종료）· **중단한 판 저장 & 이어하기**（`locheo.run.v1`）· 게임 내 설정（효과음/음악/흔들림/동작 줄이기）· 모달 단축키 누출 수정 · prefers-reduced-motion 전면 적용 · **113개 테스트** |
