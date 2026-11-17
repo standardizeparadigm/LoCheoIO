@@ -750,7 +750,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # foco preso no modal (v1.1.6)
-└─ tests/                  # vitest — 97 arquivos · 981 testes (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 149 arquivos · 1618 testes (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Arquitetura & performance
@@ -837,7 +837,7 @@ Notas de design e documentação técnica mais profunda:
 ## 🤝 Contribuindo
 
 1. Faça fork do repo, crie a branch no padrão `arena/<nome>` ou `feat/<nome>`.
-2. `npm run check` deve estar verde antes de abrir PR (typecheck + 981 testes + build).
+2. `npm run check` deve estar verde antes de abrir PR (typecheck + 1618 testes + build).
 3. Evite novas dependências de runtime salvo se realmente necessário — filosofia: **um arquivo, sem rede, jogável para sempre**.
 4. No PR, indique as telas/modos afetados e anexe um clipe se o gameplay mudar.
 
