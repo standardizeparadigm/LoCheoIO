@@ -621,6 +621,12 @@ update it, and until then it is at least written down. Beside it sits the
 invariant that does hold: inside *one* economy, `scene + reserve ===
 usableHeight` (252 combinations asserted).
 
+### 🎚️ Three motion grades — vivid · steady · still
+
+One motion, three speeds: desktops and tablets run at full speed (**×1**), phones and coarse pointers slow ~40% (**×1.6** — 9s → 14.4s) without losing the ornament, and when the player or the OS asks for less motion it **stops outright** — two hooks cover every layer, OR not AND.
+
+<img src="assets/adaptive-motion.svg" alt="Lọ Chéo's three motion grades — vivid ×1, steady ×1.6 (9s → 14.4s), still stopped (SMIL)" width="100%" />
+
 ## ✨ Highlights
 
 | Group | Details |
@@ -643,6 +649,12 @@ usableHeight` (252 combinations asserted).
 Data never leaves the machine: the engine packs a finished run into a snapshot, `storage/` (9 modules) touches localStorage through the single `safeStorage` gate, a broken save is rescued item by item, and only then do the TOP 8 board, 16 achievements and settings appear — and «CONTINUE» runs this same path in reverse.
 
 <img src="assets/save-pipeline.svg" alt="The journey of one run — engine → storage/ → merge + rescue → TOP 8 · achievements · settings (SMIL)" width="100%" />
+
+### 🏆 16 achievements — the badge grid
+
+Every badge unlocks for a real deed — streaks of 10, 20, 40, the first jar, the 60-Second Dash king, Steel Ceramic — and saves **across runs**; each badge's tone matches the in-game table (brine · gold · chili · jade), and the «NEW ACHIEVEMENT!» toast fires on the defeat screen.
+
+<img src="assets/achievements.svg" alt="The 16-achievement grid of Lọ Chéo — glyphs and tones from the in-game table, tiles lighting row by row, a shine sweeping the grid, the «NEW ACHIEVEMENT!» toast (SMIL)" width="100%" />
 
 ## 🌐 Switching languages
 
