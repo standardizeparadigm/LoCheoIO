@@ -485,6 +485,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 더 높은 열: 192 마스코트 + 24 칩
 
 `tests/menu-adaptive.test.ts`는 **1,682개 뷰포트**를 훑고 각 샘플에서 `heroContentHeight(layout) ≤ scene`을 검증합니다. 크기 변경 시 두 훅이 **여섯** 이벤트를 듣고 한 프레임에 갱신합니다.
 
+### 🎚️ 움직임의 세 단계 — vivid · steady · still
+
+같은 움직임, 세 가지 속도: 데스크톱과 태블릿은 그대로(**×1**), 휴대전화와 굵은 포인터는 약 40% 느리게(**×1.6** — 9초 → 14.4초) 장식은 그대로, 플레이어나 OS가 움직임을 줄여 달라고 하면 **완전히 멈춘다** — 두 훅이 모든 층을 덮는다, AND가 아니라 OR.
+
+<img src="assets/adaptive-motion.svg" alt="Lọ Chéo의 움직임 세 단계 — vivid ×1, steady ×1.6(9초 → 14.4초), still 정지 (SMIL)" width="100%" />
+
 ## ✨ 하이라이트
 
 | 분류 | 세부 |
@@ -507,6 +513,12 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 더 높은 열: 192 마스코트 + 24 칩
 데이터는 기기를 떠나지 않는다: 엔진이 끝난 판을 스냅샷으로 묶고, `storage/`(9모듈)은 `safeStorage`라는 단 하나의 문을 통해 localStorage에 닿고, 깨진 세이브는 항목별로 구출되고, 그다음에야 TOP 8 · 업적 16 · 설정이 온다 — «이어서 하기»는 이 같은 길을 거슬러 간다.
 
 <img src="assets/save-pipeline.svg" alt="한 판의 여정 — 엔진 → storage/ → 병합 + 구출 → TOP 8 · 업적 · 설정 (SMIL)" width="100%" />
+
+### 🏆 업적 16 — 배지 격자
+
+각 배지는 실제 행위로 열린다 — 10·20·40 연속, 첫 항아리, 60초 질주의 왕, 강철 도자기 — 그리고 **판을 넘어 누적** 저장된다; 배지의 색조는 게임 내 표 그대로(brine · gold · chili · jade), «새 업적!» 토스트는 패배 화면에 뜬다.
+
+<img src="assets/achievements.svg" alt="Lọ Chéo의 업적 16 격자 — 게임 내 표 그대로의 글리프와 색조, 행마다 켜지는 타일, «새 업적!» 토스트 (SMIL)" width="100%" />
 
 ## 🌐 언어 전환
 
