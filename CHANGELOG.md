@@ -187,12 +187,12 @@ Ngoài ra:
 - **Ngày phát hành chốt thứ Tư 2026-11-18** — chuỗi 11-15 → 11-16 → 11-17 → 11-18; trần nhịp cadence trong `release-timeline-doc.test.ts` nới 5 → 6 ngày (trần là biên độ khả tín, không phải dữ kiện — làm giả ngày về 11-17 cho khớp trần là sai ngược tinh thần của test)
 - Suite sau vòng này: **1 618 test / 149 file** · **33 hình SVG**
 
-### Fixed — vòng mười tám (rà soát cuối, khoá bản phát hành)
+### Fixed — vòng mười tám (rà soát cuối)
 
 - **Corpus hồi quy lệch generator sau khi `deviceClass()` đổi ngưỡng** — `r11-diacritics-390x844` và `r12-landscape-fold-717x512` vẫn ghi `device: "tablet"` trong khi mọi trường khác khớp một lần giải mới; corpus vi phạm đúng hợp đồng của chính nó («byte-comparable with a fresh resolve») và `gen:regress` để cây làm việc bẩn vĩnh viễn. Nay sinh lại từ generator, và `adaptive-regressions.test.ts` đối chiếu thêm `profile.device` với một lần `resolveAdaptive()` thật — lần sau ngưỡng chuyển là corpus phải sinh lại, không phải sửa tay hai nhãn
 - **4 README CJK còn số test của các vòng trước trong câu văn** — badge đã 1618·149 nhưng phần thân ja/ko/th/zh còn 1553/145 (5 chỗ mỗi file), th/zh còn cả lớp 256 và 360 (chú thích `npm run test`, hàng chất lượng, dòng PR); sáu README latin còn dòng cây `tests/` ghi 97 file · 981 test. Nay mọi bề mặt về 1618/149 — `docs-numbers.test.ts` chỉ đọc badge nên cụm số trong tiếng bản địa không gate nào bắt, phải rà tay
 - **`docs/README.md` còn ghi bản đang phát hành là 1458 test / 137 file** — cột «Tests lúc phát hành» của v1.1.8 sót từ vòng 14; nay 1618/149, câu giới thiệu kể đủ mười tám vòng
-- **Ngày phát hành muộn hơn ngày code đi đường** — 1.1.8 dán nhãn 11-16 trong khi vòng rà soát cuối khép lại 11-17: đúng mẫu lỗi mà `release-timeline-doc.test.ts` mô tả («date muộn sau khi code đã ship»). Nay chốt **2026-11-17 (thứ Ba)** ở cả ba nguồn, `release-tiers.svg`, con trỏ «bản kế tiếp» của v1.1.7, bảng index entry và hàng release của cả 10 README
+- **Ngày phát hành muộn hơn ngày code đi đường** — 1.1.8 dán nhãn 11-16 trong khi vòng rà soát cuối khép lại 11-17: đúng mẫu lỗi mà `release-timeline-doc.test.ts` mô tả («date muộn sau khi code đã ship»). Vòng 18 dời sang **2026-11-17 (thứ Ba)** ở cả ba nguồn, `release-tiers.svg`, con trỏ «bản kế tiếp» của v1.1.7, bảng index entry và hàng release của cả 10 README; lần khoá cuối thuộc vòng 19 — **2026-11-18 (thứ Tư)**
 
 ### Added — vòng mười tám
 
