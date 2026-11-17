@@ -200,7 +200,7 @@ export const CONSTRAINTS: readonly Constraint[] = [
   },
   {
     id: "prefs-respected",
-    why: "the profile's stated preferences and the variables it publishes say the same thing.",
+    why: "the profile's stated preferences, its motion grade and the variables it publishes all say the same thing.",
     check: (p) => {
       /*
        * Round 15. `prefs` is new, and a new field on a profile that also publishes
@@ -217,6 +217,35 @@ export const CONSTRAINTS: readonly Constraint[] = [
       }
       if (p.cssVars["--adaptive-contrast"] !== p.prefs.contrast) {
         return `contrast ${p.prefs.contrast} but --adaptive-contrast ${p.cssVars["--adaptive-contrast"]}`;
+      }
+      /*
+       * Round 17: the motion *grade* is a third statement about the same thing,
+       * and a third way to disagree. `still` is the accessibility stop, so it
+       * must imply the reduced-motion hook the CSS keys off — a profile that
+       * grades the screen `still` while publishing `--adaptive-motion: full`
+       * would leave every animation running under a name that says otherwise.
+       *
+       * The factor is checked too: it scales `animation-duration`, so a
+       * non-finite or sub-1 value would *speed decoration up* or write
+       * `calc(14s * NaN)` into the cascade — both silent, both wrong.
+       */
+      if (!["vivid", "steady", "still"].includes(p.motion.grade)) {
+        return `motion grade ${String(p.motion.grade)}`;
+      }
+      if (p.motion.grade === "still" && p.prefs.motion !== "reduced") {
+        return `grade still but prefs.motion ${p.prefs.motion}`;
+      }
+      if (p.motion.grade !== "still" && p.prefs.motion === "reduced") {
+        return `grade ${p.motion.grade} but prefs.motion reduced`;
+      }
+      if (!(Number.isFinite(p.motion.factor) && p.motion.factor >= 1)) {
+        return `motion factor ${String(p.motion.factor)}`;
+      }
+      if (p.cssVars["--adaptive-motion-factor"] === undefined) {
+        return "no --adaptive-motion-factor";
+      }
+      if (!Number.isFinite(Number(p.cssVars["--adaptive-motion-factor"]))) {
+        return `--adaptive-motion-factor ${p.cssVars["--adaptive-motion-factor"]}`;
       }
       return null;
     },

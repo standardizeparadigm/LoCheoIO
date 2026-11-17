@@ -5,7 +5,7 @@ Mọi thay đổi đáng chú ý của Lọ Chéo — Hũ Dưa Đại Chiến đ
 
 ## [1.1.8] — 2026-11-16
 
-Bản **vá cuối cùng trước 1.2.0**, mười bảy vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · **vòng mười bảy: vòng lọ trong thẻ tác giả không bao giờ quay (lỗi translate/transform đè nhau), mọi tra cứu `MODES()` qua `modeConfigFor()` prototype-safe, `readInsets()` hết ép reflow mỗi frame resize** · 23 hình SVG vẽ lại, thêm bảy sơ đồ · 1553 unit tests (145 file) và năm corpus 1 835 ảnh chụp số**.
+Bản **vá cuối cùng trước 1.2.0**, mười bảy vòng: **màn hình bắt đầu hết tràn (bốn lỗi, một nguyên nhân) · chữ `LỌ` không còn bị cắt · «Cách chơi» chuyển vào mục GAME · panel THÔNG TIN hết trống · hero tự đo cửa sổ và tự chọn bố cục ở mọi kích thước · dải deck bị bỏ · **một profile adaptive nuôi cả màn hình, hộp thoại và sân chơi** · **panel hết vẽ 30px footer mà reserve đã cắt** · **HUD thành một kế hoạch: băng glyph, bậc thang bỏ dần, nén có sàn** · **12 bất biến một định nghĩa, 21 preset một bảng** · **`diagnose()` trả lời *vì sao* cửa sổ trông như vậy** · **chip chế độ không còn mất nửa bên phải: căn theo mép trong, có trần bề rộng, thang bậc nhãn → cỡ chữ → ellipsis** · **dấu tiếng Việt không còn bị `overflow: hidden` cắt: `.clip-safe`, hộp dòng 1.5em, planner tự cắt chuỗi** · **kiểm toán 578 cửa sổ thành một báo cáo có `--check`, thang tự sửa sáu bậc, corpus sự cố 14 cửa sổ** · **so sánh sáu bậc theo bảy hạng tử từ điển: profile đang ship là bản rẻ nhất trên 578 / 578 cửa sổ** · **hợp đồng và kiểm toán của chip đo cả bảy ngôn ngữ, không chỉ tiếng Việt** · **vòng xoay quanh lọ ở thẻ tác giả không quay: một `transform` bị utility căn giữa nuốt mất, nay ba quỹ đạo SVG** · **HUD «GỐM MỎNG» vẽ ba mạng cho chế độ chỉ có một** · **kiểm toán chín chế độ bằng `check:modes`** · **adaptive chấm mức chuyển động `vivid` · `steady` · `still`** · **governor khung hình tự hạ rồi trả lại chất lượng** · **mọi tra cứu `MODES()` đi qua `modeConfigFor()` prototype-safe, kể cả đường vào từ một save sửa tay** · **`readInsets()` hết ép reflow đồng bộ mỗi frame resize** · 29 hình SVG và năm corpus 1 835 ảnh chụp số · 1618 unit tests (149 file)**.
 
 → Chi tiết đầy đủ: [docs/releases/v1.1.8.md](docs/releases/v1.1.8.md)
 
@@ -148,6 +148,35 @@ Ngoài ra:
 - **`scripts/README.md` thiếu `audit-drag.ts`**, `docs/README.md` thiếu `adaptive-drag.md`, `tests/README.md` thiếu ba dòng catalogue
 - **`docs/adaptive-audit.md` / hai hình SVG** còn ghi `1458 test` sau khi suite lên 1518
 
+### Fixed — vòng mười bảy (lọ trong thẻ tác giả)
+
+- **Vòng xoay quanh lọ không quay** — vòng đó là **một** `transform` trên span, còn việc căn giữa lại nhờ `translate` utility; rule nào chạm `transform` là mất chuyển động, và trạng thái đứng yên của nó (ba cung mờ) trông như hình vẽ dở. Nay `<AboutCrest>`: ba quỹ đạo SVG 9s / 14s / 22s, hai chiều, mỗi cái có `stroke-dasharray` nên lúc đứng vẫn là hoạ tiết cân đối, xoay bằng `<g>` với `transform-box: view-box` — thứ không rule bố cục nào huỷ được; 13 test ghim cả component lẫn stylesheet
+- **HUD «GỐM MỎNG» vẽ ba mạng cho chế độ chỉ chịu một vết** — `maxCracks ?? 3` được copy khắp nơi, nên hàng vết nứt luôn ba vỏ và khung «sắp vỡ» (`cracks >= 2`) không bao giờ hiện ở đúng chế độ cần nó. Nay `maxCracksFor()` là câu trả lời duy nhất, `planHud()` công bố `crackSlots`, và mọi chỗ vẽ đọc cùng một số
+- **`deviceClass()` gọi mọi điện thoại hiện đại là máy tính bảng** — sàn `300 000 px²` nằm dưới 390×844 = 329 160, nên từ 2019 mọi máy đều thành `tablet`. Nay phân loại theo **cạnh ngắn** trước, diện tích chỉ còn là tiêu chí phụ
+- **Bảng chuyển động của menu lệch stylesheet ở bảy trên tám dòng** — tài liệu ghi vòng `glow-ring` 22s, `jar-glow` 4.5s, hai tinh vân 19/26, tia sáng 34, hai tầng sao 6/3.4 và sàn gạch «trôi dọc 12s»; `src/index.css` nói 9s · 3.4s · 17/19 · 11 · 5.2/3.6 và **không** animation cho sàn. README nền lặp lại đúng những con số sai ấy, nên hai tài liệu *đồng ý* với nhau và cùng sai. Nay bảng ghi đúng code, sàn được ghi rõ là quyết định (lớp phủ rộng nhất màn hình — repaint toàn khung mỗi frame mà mắt không đọc được qua mask), và `tests/menu-scene-motion.test.ts` đọc cả hai tài liệu rồi đối chiếu với stylesheet
+- **`MODES[this.mode]` ở 14 điểm trong tick** tin vào kiểu `ModeId` — một save sửa tay (`{"mode":"constructor"}`) lọt `restoreRun()` và nổ `TypeError` giữa tick, mất cả ván; nay `modeConfigFor()` (prototype-safe, id lạ → `classic`) là đường đọc duy nhất, `restoreRun()` ép mode qua nó và `setMode()` từ chối id lạ; `maxCracksFor()` thay mọi `?? 3` lẻ
+- **`readInsets()` append probe div + `getComputedStyle` trên MỌI frame của một resize drag** — hàng chục reflow đồng bộ mỗi giây, đúng thứ giật hình mà adaptive sinh ra để diệt; nay đo một lần mỗi `window` (TTL 1s), huỷ khi `orientationchange`/`fullscreenchange`
+- **`repairProfile()` re-resolve cả sáu rung một lần nữa ở đường thất bại** để tìm bản ít hỏng nhất — profile đã tính sẵn bị vứt; nay lưu cạnh verdict, không bao giờ tính hai lần
+
+### Added — vòng mười bảy
+
+- **`src/components/menu/about/`** — `AboutCrest.tsx` (ba quỹ đạo, `orbit()`), `sections.ts`, `index.ts`, `README.md`; thẻ tác giả thành tấm biển bốn lớp gradient, «CHÉO» chuyển sắc có pan, tiêu đề mục có chấm vàng và đường kẻ mờ dần
+- **`src/game/modes/audit.ts` + `scripts/audit-modes.ts`** — chín chế độ đối chiếu với phần còn lại của game (badge nói đúng số, multiplier hữu hạn và trong khoảng, `hazardMult: 0` thật sự làm bảng spawn về 0, ≥3 loại hứng được ở cấp 1, accent không trùng). `npm run check:modes` là cổng; chính nó bắt được lỗi ngân sách vết nứt
+- **`src/game/adaptive/motion/`** — `planMotion()` chấm `vivid` · `steady` · `still`, công bố `--adaptive-motion-factor` (1 hoặc 1.6) để halo, crest và viền thẻ nhân thời lượng thay vì tắt hẳn; `constraints.ts` đối chiếu grade ↔ factor ↔ biến CSS
+- **`src/game/adaptive/perf.ts`** — `FrameWatch` lấy mẫu delta **thô** (trước clamp 50ms), hạ chất lượng sau 2 khung chậm, trả lại sau 6 khung nhanh; stall không tính là mẫu; `settings.visualQuality` là trần chứ không phải đích
+- **`tests/menu-scene-motion.test.ts`** (10) · **`tests/menu-about-crest.test.ts`** (15) · **`tests/adaptive-motion.test.ts`** (14) · **`tests/modes-audit.test.ts`** (11) · **`tests/game-perf.test.ts`** (20)
+- **`tests/helpers/engine-harness.ts`** — boot `LoCheoGame` headless (fake canvas + Proxy 2D + `document` stub); lần đầu engine chạy thật trong vitest
+- **`tests/engine-modes.test.ts`** — **22 test**: chín chế độ đều play được; ĐUA 60 GIÂY dừng đúng 60.00 s; GỐM MỎNG vỡ sau đúng một vết nứt, CLASSIC sau ba; THẢNH THƠI không bao giờ spawn hazard; hệ số điểm ×1/×1.5/×0.6/×0.5/×2.0 nối đúng vào `stats.score`
+- **`tests/mode-config-guard.test.ts`** — **4 test** khoá fallback `classic` cho mọi rác (`__proto__`, `constructor`, `NaN`)
+- **+2 test** trong `use-environment.test.ts` (probe đo 1 lần mỗi window, `invalidateInsetsCache()` ép đo lại)
+- **`assets/adaptive-repair.svg`** — hình thứ **hai mươi chín**: thang sửa sáu bậc lúc runtime; nhúng ở cả 10 README; `check-svg` và `assets-table` đếm 29
+- Suite sau vòng này: **1 618 test / 149 file**
+
+### Documentation
+- **ja/ko/th/zh còn ghi số test cũ** (495 / 501 / 344 trên 40–51 tệp) trong cây thư mục, hàng release và cổng PR — nay khớp badge ở mọi bề mặt
+- **Ngày phát hành 1.1.8 là Chủ nhật 2026-11-15** — duy nhất trong chuỗi; nay **thứ Hai 2026-11-16**, `+4 ngày` sau 1.1.7, cả mười bản đều vào ngày làm việc; hai bullet «NGÀY PHÁT HÀNH» (vi/en) trong entry được viết lại vì tự mâu thuẫn
+- **`docs/releases/v1.1.8.md`** thêm §26 (vòng 17); **`docs/assets.md`** xếp `adaptive-repair.svg`; **cây thư mục 10 README** liệt kê đủ 29 hình
+
 ### Fixed — vòng mười bốn (chỉ sửa lỗi)
 
 - **Hợp đồng chip chỉ kiểm tiếng Việt** — bốn nơi (`constraints.ts`, `diagnostics.ts`, `audit/audit.ts`, `scripts/gen-regression-fixtures.ts`) hardcode `CHIP_LABEL = "CHẾ ĐỘ CHƠI"` và `CHIP_NAME = "MUỐI DƯA CỔ ĐIỂN"`. Tiếng Việt là ngôn ngữ **ngắn nhất**: tiếng Tây Ban Nha cần `MODOS DE JUEGO` (14) trên `60 SEGUNDOS DE LOCURA` (21). Nên `chip-labelled` tuyên bố "nhãn sống trên mọi cửa sổ" trong khi es mất nhãn ở 320px và 360px, fr ở 320px — và audit báo **0 vi phạm**. Nay có `chip/probes.ts` (probe sinh từ `localeTable()` + `MODE_LIST`), `chip-labelled` được phát biểu lại thành **không bao giờ mất hai bậc cùng lúc**, và audit báo đúng: **439 full · 101 hidden · 38 label-dropped**
@@ -236,27 +265,6 @@ Ngoài ra:
 - **`docs/design/adaptive-v2.md`** · **`docs/guides/adaptive-debugging.md`** — hợp đồng vòng tám và cách đọc `data-adaptive-*`
 - **13 test mới** — `adaptive-{viewport,tiers,scale,density,type,modal,resolve,wordmark-band}` · `adaptive-{fixtures,hero-fixtures}` · `playfield` · `panel-footer-overflow` · `repo-name`
 
-### Fixed — vòng mười bảy (ba lỗ hổng thật, tìm được bằng cách đọc lại đầu ra của chính mình)
-
-- **Vòng conic-gradient trong thẻ tác giả đứng yên vĩnh viễn** — node vừa animate `transform` vừa mang translate của Tailwind (thuộc tính `translate:`), hai thứ đè nhau; nay cha giữ layout, `.glow-ring` chỉ animate transform với `transform-origin: 50% 50%`. Khoá bằng `about-ring.test.ts` (7 test đọc mã nguồn, không chụp ảnh)
-- **`MODES[this.mode]` ở 14 điểm trong tick** tin vào kiểu `ModeId` — một save sửa tay (`{"mode":"constructor"}`) lọt `restoreRun()` và nổ `TypeError` giữa tick, mất cả ván; nay `modeConfigFor()` (`isModeId` prototype-safe, id lạ → `classic`) là đường duy nhất, kể cả trong `setMode()` và `restoreRun()`; `?? 3` lẻ → `MAX_CRACKS`
-- **`readInsets()` append probe div + `getComputedStyle` trên MỌI frame của một resize drag** — hàng chục reflow đồng bộ mỗi giây, đúng thứ giật hình mà adaptive sinh ra để diệt; nay đo một lần mỗi `window` (TTL 1s), huỷ khi `orientationchange`/`fullscreenchange`
-- **`repairProfile()` re-resolve cả sáu rung một lần nữa ở đường thất bại** để tìm bản ít hỏng nhất — profile đã tính sẵn bị vứt; nay lưu cạnh verdict, không bao giờ tính hai lần
-- **Thẻ tác giả gradient** — halo thở 4.2s sau lọ, `.about-name` chữ gradient-clip, sheen quét card 7s, role-bar bảy dải màu, facts rows hover trượt; hai danh sách reduced-motion bao trọn mọi lớp mới
-
-### Added — vòng mười bảy
-
-- **`tests/helpers/engine-harness.ts`** — boot `LoCheoGame` headless (fake canvas + Proxy 2D + `document` stub); lần đầu engine chạy thật trong vitest
-- **`tests/engine-modes.test.ts`** — **22 test**: chín chế độ đều play được; ĐUA 60 GIÂY dừng đúng 60.00 s; GỐM MỎNG vỡ sau đúng một vết nứt, CLASSIC sau ba; THẢNH THƠI không bao giờ spawn hazard; hệ số điểm ×1/×1.5/×0.6/×0.5/×2.0 nối đúng vào `stats.score`
-- **`tests/mode-config-guard.test.ts`** — **4 test** khoá fallback `classic` cho mọi rác (`__proto__`, `constructor`, `NaN`)
-- **`tests/about-ring.test.ts`** — **7 test**; **+2 test** trong `use-environment.test.ts` (probe đo 1 lần mỗi window, invalidate ép đo lại)
-- **`assets/adaptive-repair.svg`** — hình thứ **hai mươi chín**: thang sửa sáu bậc lúc runtime; nhúng ở cả 10 README; `check-svg` và `assets-table` đếm 29
-- Suite sau vòng này: **1 553 test / 145 file**
-
-### Documentation
-- **ja/ko/th/zh còn ghi số test cũ** (495 / 501 / 344 trên 40–51 tệp) trong cây thư mục, hàng release và cổng PR — nay **1 553 / 145**
-- **Ngày phát hành 1.1.8 là Chủ nhật 2026-11-15** — duy nhất trong chuỗi; nay **thứ Hai 2026-11-16**, `+4 ngày` sau 1.1.7, cả mười bản đều vào ngày làm việc; hai bullet «NGÀY PHÁT HÀNH» (vi/en) trong entry được viết lại vì tự mâu thuẫn
-- **`docs/releases/v1.1.8.md`** thêm §26 (vòng 17); **`docs/assets.md`** xếp `adaptive-repair.svg`; **cây thư mục 10 README** liệt kê đủ 29 hình
 
 - Đồng bộ toàn bộ **10 README**, `docs/`, `assets/*.svg`, ba launcher và `index.html` lên **1.1.8**
 - Xoá hết câu "1.1.7 là bản vá cuối cùng trước 1.2.0" — vai trò đó thuộc về 1.1.8

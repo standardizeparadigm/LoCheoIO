@@ -338,13 +338,9 @@
     radial-gradient(130% 150% at 14% 0%, rgba(245, 168, 28, 0.22), transparent 55%) padding-box,
     linear-gradient(#0d2f2c, #0a2521) padding-box,
     linear-gradient(115deg, #f5a81c, #e63b2e, #8cc63f, #2bb48c, #ffc94a, #e63b2e, #f5a81c) border-box;
-  background-size: 100% 100%, 100% 100%, 320% 320%;
-  background-position: 0 0, 0 0, 0% 50%;
-  animation: lc-about-pan 5.5s linear infinite;
-  box-shadow:
-    inset 0 1px 0 rgba(253, 243, 224, 0.1),
-    inset 0 -18px 34px -20px rgba(6, 26, 26, 0.95),
-    0 22px 48px -20px rgba(245, 168, 28, 0.4);
+  background-size: 100% 100%, 320% 320%;
+  background-position: 0 0, 0% 50%;
+  animation: lc-about-pan calc(5.5s * var(--adaptive-motion-factor, 1)) linear infinite;
 }
 .about-card::after {
   content: "";
@@ -364,120 +360,6 @@
   transform: skewX(-18deg);
   animation: lc-about-sheen 7s ease-in-out infinite;
   pointer-events: none;
-}
-
-/* The halo behind the jar — warm, breathing, *behind* the ring and the pot */
-.about-halo {
-  position: absolute;
-  inset: -16%;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(245, 168, 28, 0.42), rgba(245, 168, 28, 0.13) 46%, transparent 70%);
-  animation: lc-about-halo 4.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-/* The wordmark: warm gradient text that breathes vertically */
-.about-name {
-  display: inline-block;
-  background: linear-gradient(
-    168deg,
-    #fffdf2 6%,
-    #ffe9a8 26%,
-    #ffc94a 42%,
-    #f5a81c 54%,
-    #ffd766 66%,
-    #fdf3e0 86%
-  );
-  background-size: 100% 240%;
-  background-position: 0 0%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: lc-about-name 5.2s ease-in-out infinite alternate;
-}
-
-/* Version pill — pressed turmeric with a deep outer ring */
-.about-version {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 11px;
-  border-radius: 9999px;
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  color: #221503;
-  background: linear-gradient(135deg, #ffe9a8, #ffc94a 34%, #f5a81c 62%, #d4850a);
-  box-shadow:
-    0 0 0 2px rgba(6, 26, 26, 0.9),
-    0 6px 18px -6px rgba(245, 168, 28, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.65);
-}
-
-/* The underline beneath the role — seven stops, fading out right */
-.about-role-bar {
-  display: block;
-  margin-top: 9px;
-  height: 4px;
-  width: 132px;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #f5a81c, #e63b2e 26%, #9d6bff 48%, #2bb48c 70%, rgba(43, 180, 140, 0));
-}
-
-/* Section headings: gold caps with a gradient gem bullet */
-.about-heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(255, 201, 74, 0.92);
-}
-.about-heading::before {
-  content: "";
-  flex: none;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  transform: rotate(45deg);
-  background: linear-gradient(135deg, #ffe9a8, #f5a81c 55%, #b81f22);
-  box-shadow: 0 0 8px rgba(245, 168, 28, 0.55);
-}
-
-/* Facts list: diamond bullets, soft hover lift */
-.about-facts {
-  font-family: var(--font-body);
-  font-size: 10px;
-}
-.about-fact {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  border-radius: 10px;
-  padding: 6px 8px;
-  transition:
-    background 160ms ease,
-    transform 160ms ease;
-}
-.about-fact:hover {
-  background: rgba(140, 198, 63, 0.08);
-  transform: translateX(4px);
-}
-.about-fact-gem {
-  position: relative;
-  top: -0.5px;
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  transform: rotate(45deg);
-  background: linear-gradient(135deg, #b6e07a, #2bb48c);
-  box-shadow: 0 0 6px rgba(140, 198, 63, 0.45);
 }
 
 /* Thanks chip — gradient glass with a warm halo */
@@ -634,8 +516,6 @@
   .jar-glow,
   .about-card,
   .about-card::after,
-  .about-halo,
-  .about-name,
   .about-chip,
   .cta-shine::after {
     animation: none !important;
@@ -678,11 +558,8 @@
 [data-reduced-motion="true"] .jar-glow,
 [data-reduced-motion="true"] .about-card,
 [data-reduced-motion="true"] .about-card::after,
-[data-reduced-motion="true"] .about-halo,
-[data-reduced-motion="true"] .about-name,
 [data-reduced-motion="true"] .about-chip,
 [data-reduced-motion="true"] .cta-shine::after,
-[data-reduced-motion="true"] .about-fact,
 [data-reduced-motion="true"] .decor-item,
 [data-reduced-motion="true"] .halo-ring-1,
 [data-reduced-motion="true"] .halo-ring-2,
@@ -778,15 +655,15 @@
  * looks alive rather than loading.
  */
 .halo-ring-1 {
-  animation: lc-halo-cw 18s linear infinite;
+  animation: lc-halo-cw calc(18s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 .halo-ring-2 {
-  animation: lc-halo-ccw 26s linear infinite;
+  animation: lc-halo-ccw calc(26s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 .halo-ring-3 {
-  animation: lc-halo-cw 34s linear infinite;
+  animation: lc-halo-cw calc(34s * var(--adaptive-motion-factor, 1)) linear infinite;
   transform-origin: 50% 50%;
 }
 
@@ -1173,4 +1050,204 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* ==========================================================================
+   v1.1.8 — the author card's crest and the gradient hero
+   ==========================================================================
+
+   Replaces the `.glow-ring` span that shipped in v1.1.6. The reasoning is in
+   `components/menu/about/AboutCrest.tsx`; the short version is that a single
+   `transform` animation on a masked conic gradient had one cue, one failure
+   mode, and a rest state that read as a drawing mistake.
+
+   These rules are additive: `.about-card`, `.about-chip`, `.glow-ring` and
+   their keyframes are untouched, because other surfaces still use the ring and
+   the panning border. */
+
+/*
+ * The crest box.
+ *
+ * `transform-box: view-box` + `transform-origin: 50% 50%` is the whole point:
+ * an SVG `<g>` rotates about the *view box* origin by default, which is the
+ * top-left corner of the drawing — the v1.1.6 bug in a different costume. With
+ * these two lines the rotation centre is the centre of the circle, and it
+ * cannot be changed by anything that styles the element or its parent.
+ */
+.about-crest {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Clockwise, gold — the arc the mascot sits inside. */
+.about-crest-orbit-main {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  /*
+   * `--adaptive-motion-factor` is 1 on a desktop and 1.6 on a handset
+   * (`menu/adaptive/motion/`). Multiplying the duration is how the *grade*
+   * reaches the cascade: the ornament keeps its shape, it just moves at a speed
+   * the device and the band can afford. The fallback of 1 keeps an SSR render
+   * and a storybook page byte-identical to the pre-round-17 CSS.
+   */
+  animation: lc-halo-cw calc(14s * var(--adaptive-motion-factor, 1)) linear infinite;
+}
+
+/* Clockwise, faster, chili — the comet that makes the motion obvious. */
+.about-crest-orbit-inner {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: lc-halo-cw calc(9s * var(--adaptive-motion-factor, 1)) linear infinite;
+}
+
+/* Counter-clockwise, slow, jade — co-prime with the two above. */
+.about-crest-orbit-dotted {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: lc-halo-ccw calc(22s * var(--adaptive-motion-factor, 1)) linear infinite;
+}
+
+/* The wash behind the jar: breathes, never spins. */
+.about-crest-glow {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: lc-halo-breathe 5.2s ease-in-out infinite;
+}
+
+/* Fixed sparkles — they twinkle in place, on their own offsets. */
+.about-crest-spark {
+  animation: lc-twinkle 3.2s ease-in-out var(--spark-delay, 0s) infinite alternate;
+}
+
+/*
+ * The gradient plaque the crest sits in.
+ *
+ * Four layers, all low-alpha: a warm pool at the top-left (where the mascot
+ * is), a cool one at the bottom-right, a vertical jade fallback for browsers
+ * without `color-mix`, and the hairline highlight that makes it a *surface*
+ * rather than a rectangle of colour.
+ */
+.about-hero {
+  position: relative;
+  isolation: isolate;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  background:
+    radial-gradient(120% 150% at 4% 0%, rgba(245, 168, 28, 0.18), transparent 58%),
+    radial-gradient(110% 130% at 100% 100%, rgba(43, 180, 140, 0.2), transparent 62%),
+    radial-gradient(70% 70% at 78% 8%, rgba(230, 59, 46, 0.14), transparent 60%),
+    linear-gradient(158deg, #0e3330 0%, #0a2926 52%, #061d1c 100%);
+  background-clip: padding-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 243, 196, 0.1),
+    inset 0 -18px 32px -24px rgba(4, 16, 15, 0.9),
+    0 10px 24px -18px rgba(4, 16, 15, 0.95);
+}
+
+/* The gold hairline, drawn as a second box so the padding box stays clean. */
+.about-hero::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: 2px;
+  background: linear-gradient(115deg, rgba(255, 201, 74, 0.85), rgba(230, 59, 46, 0.5) 42%, rgba(43, 180, 140, 0.75) 78%, rgba(255, 201, 74, 0.7));
+  opacity: 0.55;
+}
+
+/* A pale sheen along the top edge — reads as glazed ceramic under a lamp. */
+.about-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 42%;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(253, 243, 224, 0.07), transparent);
+  pointer-events: none;
+}
+
+/* The wordmark: «LỌ» in clay, «CHÉO» in a moving gold-to-chili gradient. */
+.about-title {
+  font-family: var(--font-display, "Bungee", system-ui, sans-serif);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-shadow: 3px 3px 0 rgba(4, 16, 15, 0.55);
+}
+
+.about-title-accent {
+  background: linear-gradient(100deg, #ffd766 0%, #f5a81c 38%, #ff8a6a 62%, #ffd766 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* The gradient clips the glyphs, so the shadow has to come off the box. */
+  filter: drop-shadow(2px 2px 0 rgba(4, 16, 15, 0.6));
+  animation: lc-about-chip 7s ease-in-out infinite alternate;
+}
+
+/* Version pill: a hairline border that picks up the crest's gold. */
+.about-version {
+  border: 1.5px solid rgba(255, 201, 74, 0.45);
+  background: linear-gradient(160deg, rgba(255, 201, 74, 0.14), rgba(6, 26, 26, 0.4));
+  color: #ffe9a8;
+}
+
+/* Section headings: a small gold pip, then a gradient rule that fades right. */
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffd766;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.about-heading::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background: linear-gradient(140deg, #ffd766, #e63b2e);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px -1px rgba(255, 201, 74, 0.7);
+}
+
+.about-heading::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 201, 74, 0.5), transparent);
+}
+
+/* Body copy sits on the plaque, so it needs a touch more contrast than 0.8. */
+.about-copy {
+  color: rgba(253, 243, 224, 0.86);
+}
+
+/*
+ * Reduced motion — the same two lists the rest of the decoration is in
+ * (`prefers-reduced-motion` and the player's own switch). The orbits stop, and
+ * what is left is a complete, balanced set of arcs: an ornament at rest rather
+ * than a sweep frozen mid-turn. That difference is the bug this round fixed.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .about-crest-orbit-main,
+  .about-crest-orbit-inner,
+  .about-crest-orbit-dotted,
+  .about-crest-glow,
+  .about-crest-spark,
+  .about-title-accent {
+    animation: none !important;
+  }
+}
+
+[data-reduced-motion="true"] .about-crest-orbit-main,
+[data-reduced-motion="true"] .about-crest-orbit-inner,
+[data-reduced-motion="true"] .about-crest-orbit-dotted,
+[data-reduced-motion="true"] .about-crest-glow,
+[data-reduced-motion="true"] .about-crest-spark,
+[data-reduced-motion="true"] .about-title-accent {
+  animation: none !important;
 }

@@ -57,6 +57,17 @@ export {
   planModeChip,
 } from "./chip";
 
+/* ---- motion grading --------------------------------------------------- */
+export type { MotionGrade, MotionInput, MotionPlan } from "./motion";
+export {
+  MOTION_FACTORS,
+  MOTION_GRADES,
+  describeMotion,
+  motionFactorVar,
+  multipliesSafely,
+  planMotion,
+} from "./motion";
+
 /* ---- the window ------------------------------------------------------- */
 export type { AspectClass, Box, Orientation } from "./viewport";
 export {

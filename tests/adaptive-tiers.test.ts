@@ -115,7 +115,7 @@ describe("the ladder helpers", () => {
 });
 
 describe("deviceClass", () => {
-  it("separates handsets from cinemas", () => {
+  it("names the five classes at their canonical sizes", () => {
     expect(deviceClass(boxOf(375, 667))).toBe("handset");
     expect(deviceClass(boxOf(768, 1024))).toBe("tablet");
     expect(deviceClass(boxOf(1280, 720))).toBe("laptop");
@@ -123,8 +123,32 @@ describe("deviceClass", () => {
     expect(deviceClass(boxOf(3840, 2160))).toBe("cinema");
   });
 
-  it("is total", () => {
-    for (let side = 100; side <= 5000; side += 137) {
+  it("calls a modern phone a handset, which it did not before round 17", () => {
+    /*
+     * The classification was area alone with a 300 000 px² handset floor, so
+     * every phone shipped since 2019 was a "tablet": 390×844 is 329 160, and
+     * only a phone *smaller* than about 360×800 came out right. The shortest
+     * side is the axis that actually separates a phone from a tablet.
+     */
+    for (const [w, h] of [[390, 844], [412, 915], [360, 800], [844, 390]] as const) {
+      expect(deviceClass(boxOf(w, h)), `${w}×${h}`).toBe("handset");
+    }
+    // …and a tablet stays a tablet.
+    expect(deviceClass(boxOf(768, 1024))).toBe("tablet");
+    expect(deviceClass(boxOf(1024, 768))).toBe("tablet");
+  });
+
+  it("keeps the large classes separated by area", () => {
+    // A 2560-wide ultrawide has a laptop's short side; a 2560×1440 monitor does
+    // not. Both are "big", only one is a cinema.
+    expect(deviceClass(boxOf(2560, 1080))).toBe("desktop");
+    expect(deviceClass(boxOf(2560, 1440))).toBe("cinema");
+    expect(deviceClass(boxOf(1600, 1000))).toBe("desktop");
+    expect(deviceClass(boxOf(1440, 900))).toBe("laptop");
+  });
+
+  it("always returns one of the five classes, for any box at all", () => {
+    for (const side of [0, 1, 100, 320, 480, 720, 1440, 4000]) {
       expect(["handset", "tablet", "laptop", "desktop", "cinema"]).toContain(deviceClass(boxOf(side, side)));
     }
   });

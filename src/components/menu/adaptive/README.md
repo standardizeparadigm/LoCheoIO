@@ -47,6 +47,7 @@ hysteresis/   the previous profile         →  the same rung for two more pixel
 | `select/` | `adaptive/select/` — cho điểm bảy hạng tử theo thứ tự từ điển, so sánh sáu bậc, trả bậc rẻ nhất kèm lý do từng bậc thua |
 | `chip/` | `adaptive/chip/` — chip chế độ: `planModeChip()`, `chipBoxHeight()`, `estimateText()` |
 | `preferences/` | `adaptive/preferences/` — **vòng 15**: `preferencesFor()` gộp ba nguồn (OS, công tắc người chơi, mặc định) thành hai tên `motion`/`contrast`, kèm biến CSS và `data-*` |
+| `motion/` | `planMotion()`, `MOTION_FACTORS`, `motionFactorVar()`, `describeMotion()` — **mức** chuyển động (`vivid` · `steady` · `still`), không chỉ bật/tắt |
 | `hysteresis/` | `adaptive/hysteresis/` — **vòng 15**: `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần nhích chuột |
 | `index.ts` | the public surface — import from here, not the modules |
 

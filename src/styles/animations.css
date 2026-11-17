@@ -154,23 +154,6 @@
   100% { left: 132%; opacity: 0; }
 }
 
-@keyframes lc-about-halo {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes lc-about-name {
-  0% { background-position: 0 0%; }
-  100% { background-position: 0 100%; }
-}
-
 @keyframes lc-about-chip {
   0% { background-position: 0% 40%; }
   100% { background-position: 100% 60%; }

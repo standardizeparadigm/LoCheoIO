@@ -45,6 +45,7 @@
  */
 
 import type { PlayfieldPlan } from "./playfield";
+import { MAX_CRACKS } from "../modeMath";
 
 /** A rectangle in canvas pixels, top-left origin. */
 export interface HudZone {
@@ -104,6 +105,14 @@ export interface HudPlan {
   cracksY: number;
   /** Width of one crack shell. */
   crackSize: number;
+  /**
+   * How many shells the mode can actually fill — `MODES[id].maxCracks ?? 3`.
+   *
+   * It is a *plan* field, not an engine constant, because the row's width is
+   * part of the layout: «GỐM MỎNG» has one shell, so its crack band is a third
+   * of the width and it must not be laid out as if it had three.
+   */
+  crackSlots: number;
   /** Width of the stamina bar. */
   staminaWidth: number;
   /** Width of the fill meter. */
@@ -158,6 +167,14 @@ export interface HudInput {
   chips?: number;
   /** The crack row is showing (it always is during play). */
   cracks?: boolean;
+  /**
+   * The mode's crack budget. `undefined` means the default `MAX_CRACKS`.
+   *
+   * The HUD used to hardcode three shells for every mode, which is wrong for
+   * exactly one of the nine — «GỐM MỎNG», where one hazard ends the run. Three
+   * lit shells told the player they had three lives.
+   */
+  maxCracks?: number;
 }
 
 /** Overlap test for two rectangles, with a 1px tolerance for touching edges. */
@@ -189,10 +206,22 @@ const PROBE = {
 } as const;
 
 /** Everything the caller wants, with defaults. */
-function wanted(input: HudInput): { combo: boolean; comboSize: number; chips: number; cracks: boolean } {
+function wanted(input: HudInput): {
+  combo: boolean;
+  comboSize: number;
+  chips: number;
+  cracks: boolean;
+  crackSlots: number;
+} {
   const chips = Number.isFinite(input.chips) ? Math.max(0, Math.trunc(input.chips as number)) : 0;
   const comboSize = Number.isFinite(input.comboSize) ? (input.comboSize as number) : 18;
-  return { combo: Boolean(input.combo), comboSize, chips, cracks: input.cracks !== false };
+  /*
+   * 1..MAX_CRACKS, defaulting on anything that is not a finite number. A slot
+   * count of 0 would draw an empty band where the player's lives should be.
+   */
+  const raw = Number.isFinite(input.maxCracks) ? Math.trunc(input.maxCracks as number) : MAX_CRACKS;
+  const crackSlots = Math.max(1, Math.min(MAX_CRACKS, raw));
+  return { combo: Boolean(input.combo), comboSize, chips, cracks: input.cracks !== false, crackSlots };
 }
 
 /** The rows still visible at one point in the drop sequence. */
@@ -224,6 +253,7 @@ interface Attempt {
   chipWidth: number;
   cracksY: number;
   crackSize: number;
+  crackSlots: number;
   staminaWidth: number;
   fillWidth: number;
   showBest: boolean;
@@ -300,7 +330,7 @@ function attempt(pf: PlayfieldPlan, scale: number, rows: Rows, want: ReturnType<
 
   /* ---- right column ---- */
   if (want.cracks) {
-    const w = 3 * crackSize + 16;
+    const w = want.crackSlots * crackSize + 8 * (want.crackSlots - 1);
     bands.push({
       name: "cracks",
       zone: { x: pf.width - pad - w, y: cracksY - crackSize, w, h: crackSize * 2 },
@@ -366,6 +396,7 @@ function attempt(pf: PlayfieldPlan, scale: number, rows: Rows, want: ReturnType<
     chipWidth,
     cracksY,
     crackSize,
+    crackSlots: want.crackSlots,
     staminaWidth,
     fillWidth,
     showBest: rows.best,
@@ -529,6 +560,7 @@ export function planHud(pf: PlayfieldPlan, input: HudInput = {}): HudPlan {
     chipWidth: chosen.chipWidth,
     cracksY: chosen.cracksY,
     crackSize: chosen.crackSize,
+    crackSlots: chosen.crackSlots,
     staminaWidth: chosen.staminaWidth,
     fillWidth: chosen.fillWidth,
     showBest: chosen.showBest,

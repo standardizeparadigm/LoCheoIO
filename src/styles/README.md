@@ -11,7 +11,7 @@ a file here and is pulled in with an `@import` at the top.
 | --- | --- |
 | `fonts.css` | The `@font-face` declarations and the font files they point at |
 | `wordmark.css` | The `LỌ / CHÉO` lockup: gold fill, hard shadow, descender room |
-| `animations.css` | All 31 `@keyframes` (v1.1.8). The *rules* that use them stay in `index.css` next to their selectors; only the named animations moved, because a name does not care where it is defined |
+| `animations.css` | All 29 `@keyframes` (v1.1.8). The *rules* that use them stay in `index.css` next to their selectors; only the named animations moved, because a name does not care where it is defined |
 
 ## Why the wordmark got its own file
 

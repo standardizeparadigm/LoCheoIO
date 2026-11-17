@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1553 tests / 145 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1618 tests / 149 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -25,9 +25,11 @@
 | `palette.test.ts` | 9 màu canvas phải khớp `--color-*` trong `index.css`, engine không giữ bảng màu riêng | fs + pure |
 | `time.test.ts` | `fmtTime`/`fmtCountdown` — pad, floor, ván dài, NaN/âm | pure |
 | `math.test.ts` | `clamp`/`clamp01`/`lerp`/`damp` — biên, NaN, 60↔120 Hz, không overshoot | pure |
+| `game-perf.test.ts` | governor khung hình — hạ sau 2 khung chậm, nâng sau 6 khung nhanh, stall/NaN không tính là mẫu, trần `visualQuality` không ai được vượt, engine lấy mẫu **trước** clamp vật lý | pure + fs |
 | `clipboard.test.ts` | `copyText` trả true/false thay vì throw (thiếu API, bị từ chối) | stub `navigator` |
 | `changelog.test.ts` | CHANGELOG_ENTRIES descending semver, unique, ISO dates | pure |
 | `modes-balance.test.ts` | mode catalogue invariants (unique ids, positive mults, blitz timed-only, hardcore cracks-only, combo/feast math) | pure |
+| `modes-audit.test.ts` | `modes/audit.ts` — badge ↔ số liệu, ngân sách nứt (`maxCracksFor`), bảng spawn thật (zen không bao giờ có đồ hư), accent trùng, số vô hạn; và mỗi luật đều được kiểm chứng bằng một bản ghi cố tình hỏng | pure |
 | `achievements-defs.test.ts` | catalogue integrity — unique ids, 16 entries, glyph/tone rules, MAP 1:1 | pure |
 | `version-bump.test.ts` | version coherence — APP_VERSION = pkg = lock = changelog = README badges = release notes | fs |
 | `storage-seed.test.ts` | SEED board trả về bản sao sâu khi trống / sau clearAllProgress | `memStorage()` |
@@ -55,6 +57,7 @@
 | `adaptive-constraints.test.ts` | **12 bất biến** (`constraints.ts`) trên 21 preset — mỗi bất biến có ít nhất một cửa sổ làm nó đỏ (không vacuous), `violations()` rỗng trên cả 21, hợp đồng nêu đủ 12 id | pure + fs |
 | `adaptive-hysteresis.test.ts` | **hai pixel bộ nhớ** (vòng 15) — `stabilize()` giữ bậc cũ khi cửa sổ còn cách ranh giới ≤ 2px, nên kéo cạnh không dựng lại bố cục mỗi lần chuột nhích; quét 60px qua một ranh giới thật (tìm bằng máy quét, không hardcode) đổi bậc ≤ 2 lần; nhảy lớn (xoay máy) áp dụng ngay | pure |
 | `adaptive-preferences.test.ts` | **hai sở thích của người chơi** (vòng 15) — `settings.reducedMotion` và `prefers-contrast` vào tới profile; OR chứ không AND (OS không bị app ghi đè); `prefs` và hai biến `--adaptive-motion/-contrast` phải khớp (`prefs-respected`); bật lên không đổi một pixel nào của bố cục; CSS dừng đúng bộ lớp như media query | pure |
+| `adaptive-motion.test.ts` | chấm mức chuyển động (`vivid`/`steady`/`still`) — máy tính bảng giữ nguyên, handset chậm ×1.6, giảm chuyển động là dừng; factor luôn ≥ 1 (không có `calc(14s * 0)`), CSS đọc `--adaptive-motion-factor` với fallback 1 | pure + fs |
 | `adaptive-drag.test.ts` | **drag audit** (vòng 16) — 21 preset × 241 bước 1px: không vi phạm hợp đồng trên profile được vẽ, không lần giữ nào dài quá `margin + 1`, rung 1px quanh ranh giới bị dập **toàn bộ** (48 → 0), và kéo một chiều không bao giờ tệ hơn | pure |
 | `adaptive-hold-verdict.test.ts` | **năm lý do** của dải 2px (vòng 16) — `explainHold()` trả `first-frame` / `no-band` / `same-rung` / `still` / `jump` / `held` kèm trục và hai bậc; `shouldHold()` chỉ là một lần đọc verdict, và ca `still` (bậc đổi mà cửa sổ **không** nhích) từng bị giữ vĩnh viễn nên bản sửa của thang sửa không bao giờ được vẽ | pure |
 | `adaptive-diagnostics.test.ts` | `diagnose()` tám lớp đúng thứ tự suy ra, mỗi giá trị kèm `because`; `warningsFor()` chỉ báo thoả hiệp (không báo trên 1280×720); `renderDiagnosis()` không có `NaN` | pure |
@@ -71,6 +74,7 @@
 | `svg-counts.test.ts` | số trong **mọi** SVG — «308 / 36» từng nằm trong `test-matrix.svg` dưới một badge đúng, và không ai diff được một tấm ảnh; quét cả 20 file tìm ba dạng tuyên bố (test/file/khoá) | fs |
 | `menu-decor.test.ts` | 14 món trang trí hero — số lượng, toạ độ trong khung, không chồng lên chữ, id duy nhất, hai dải trên/dưới | pure |
 | `menu-ticker.test.ts` | dải chạy chữ — 14 chuỗi đủ cả 7 locale, `tickerTone()` thuần, không chuỗi rỗng, bản quyền cùng khối | pure |
+| `menu-scene-motion.test.ts` | bảng chuyển động của scene đối chiếu với stylesheet — tám lớp đúng thứ tự, chu kỳ đọc từ `src/index.css` khớp từng con số, mọi `lc-*` được nhắc đều có `@keyframes`, sàn gạch **tĩnh** ở cả code lẫn tài liệu, README nền lặp đúng con số ấy, và hai khối giảm chuyển động phủ đủ lớp có animation | fs + pure |
 | `menu-background.test.ts` | khoá bản sửa nền 1.1.7 — trần 8 lớp, id duy nhất, sàn trước vignette, nebula KHÔNG `inset-0`, blur ≤ 24px, đỉnh opacity ≤ 0.85, vignette phải 2 radial ở góc, khung CRT nhẹ hơn 140px@0.9 | fs + pure |
 | `modes-split.test.ts` | sau khi tách `modes/`: 9 id đúng thứ tự, MODE_LIST ↔ MODES 1:1, mỗi record tự khai đúng id, đủ trường bắt buộc, knob tuỳ chọn hợp lệ, `isModeId` từ chối `"Classic"` | pure |
 | `panel-summary.test.ts` | `summaryLines`/`summaryText`/`challengeLine` của panel INFO — kẹp NaN/±Infinity/âm, đúng ba dòng, và **sanitise mode id** (id rỗng hay lạ không được sinh key `mode..name`) | pure |
@@ -96,6 +100,7 @@
 | `menu-no-scroll.test.ts` | cấm tái phát lỗi cuộn — một vùng cuộn, neo trên, không `justify-center`/`min-h-full`/`flex-1` | fs |
 | `menu-about.test.ts` | modal About — mọi mục có key i18n thật, thứ tự ổn định | pure + i18n |
 | `menu-about-sections.test.ts` | **dữ liệu** của modal About — ba mục đúng thứ tự, rule ở mọi mục trừ mục đầu, mỗi mục có ít nhất một đoạn, mọi key tồn tại | pure + i18n |
+| `menu-about-crest.test.ts` | vòng xoay quanh lọ ở modal About — ba quỹ đạo SVG có `transform-origin` đúng tâm, ba tốc độ khác nhau / hai chiều, mọi `@keyframes` được dùng đều tồn tại, cả hai hook giảm chuyển động đều tắt đủ, `.glow-ring` cũ vẫn chạy | fs |
 | `panel-gap-docs.test.ts` | khoảng trống 240px từng được ghi bằng **ba số khác nhau** trong docs và comment — test grep các cụm sai và khẳng định cả ba khung (458/278/218) có mặt để người đọc tự suy ra 240 | fs |
 | `menu-shortcuts.test.ts` | bảng phím tắt trong modal khớp bảng điều khiển ở README | fs |
 | `panel-stat.test.ts` | `stat.ts` — kẹp 18/16 xuống 16/16, tầng lấy từ `tierFor`, không NaN | pure |
@@ -135,7 +140,6 @@
 | `mode-multiplier.test.ts` | chín hệ số nhân khớp bảng công bố trong docs | pure |
 | `storage-normalise.test.ts` | chuẩn hoá bản ghi — làm tròn, cắt tên, kẹp ngày, không NaN | `memStorage()` |
 | `input-release.test.ts` | lỗi "hũ tự đi" — `releaseAllInput()` phải xoá **cả bảy** trường, và phải được gọi từ cả `blur` lẫn `visibilitychange`; đọc mã nguồn nên không cần DOM | fs |
-| `about-ring.test.ts` | khoá lỗi «vòng lọ đứng yên»: node animate `transform` không mang translate utility, `.glow-ring` có `transform-origin: 50% 50%`, cả hai danh sách reduced-motion bao trọn, animations.css không trùng tên (31) | fs |
 
 | `storage-split.test.ts` | `storage.ts` → `storage/` (v1.1.8): mọi ký hiệu cũ vẫn re-export, và chín module con không import vòng | fs |
 | `markdown-tables.test.ts` | mọi bảng Markdown trong docs cùng số cột mỗi hàng — sai lệch cột không báo lỗi, nó chỉ hiển thị sai | fs |

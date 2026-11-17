@@ -21,5 +21,6 @@ export {
   COMBO_WINDOW,
   MAX_CRACKS,
   comboWindowFor,
+  maxCracksFor,
   jarBonusFor,
 } from "./modeMath";

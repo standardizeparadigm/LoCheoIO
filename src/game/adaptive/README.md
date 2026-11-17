@@ -1,11 +1,20 @@
 # `src/game/adaptive/` — kế hoạch cho *bàn chơi*, không phải cho menu
 
-Hai file, hai câu hỏi khác nhau, cùng một quy tắc: **tính hết trước khi vẽ**.
+Ba file, ba câu hỏi khác nhau, cùng một quy tắc: **tính hết trước khi vẽ**.
 
 | File | Xuất | Trả lời |
 | --- | --- | --- |
 | `playfield.ts` | `planPlayfield()`, `playable()`, `describePlayfield()` | bàn chơi nằm ở đâu, item to bao nhiêu, lọ bán kính bao nhiêu, HUD được phép phóng tới đâu |
-| `hud.ts` | `planHud()`, `traceHud()`, `describeHud()`, `HUD_DROP_ORDER`, `HUD_MIN_SCALE` | từng readout nằm ở hàng nào, có bị bỏ hay không, có chồng lên nhau không |
+| `hud.ts` | `planHud()`, `traceHud()`, `describeHud()`, `HUD_DROP_ORDER`, `HUD_MIN_SCALE`, `crackSlots` | từng readout nằm ở hàng nào, có bị bỏ hay không, có chồng lên nhau không |
+| `perf.ts` | `nextQuality()`, `FrameWatch`, `median()`, `describePerf()`, `PERF` | máy này có giữ nổi khung hình không, và chất lượng vẽ nên là gì *trong giới hạn người chơi chọn* |
+
+`playfield.ts` và `hud.ts` là hàm thuần của kích thước. `perf.ts` là hàm thuần của
+**thời gian khung hình** — nguồn tài nguyên thứ hai mà game phải chia với trình
+duyệt. Nó chỉ có thể *hạ* chất lượng (và trả lại sau khi máy chứng minh là giữ
+nổi), không bao giờ vượt `settings.visualQuality`: lựa chọn của người chơi là trần,
+phiếu của máy là bên trong cái trần đó. Hạ sau 2 khung chậm liên tiếp, nâng lại sau
+6 khung nhanh — bất đối xứng là cố ý, vì một governor cân bằng sẽ nhấp nháy giữa hai
+mức và làm khung hình tệ hơn.
 
 Cả hai là **hàm thuần**: đưa vào kích thước, trả về số. Không đọc DOM, không đọc
 `window`, không vẽ. Nhờ vậy cùng một phép tính dùng được trong `engine.ts`, trong
