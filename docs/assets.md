@@ -26,8 +26,8 @@ Tất cả hình là **SVG tự chứa có animation SMIL** — không JS, khôn
 | `hud-bands.svg` | **HUD thành kế hoạch**: băng glyph cho từng readout, cột giữa chảy từ đồng hồ, bậc thang `chips → comboBar → jars → best`, rồi nén 1.029 → sàn 0.55 (v1.1.8 vòng 9) | README ×10 (mục vòng chín) |
 | `layout-fix.svg` | Trước/sau bản vá bố cục: 250px → 342px scene, 378px reserve (v1.1.8) | README ×10 (mục what's new 1.1.8) |
 | `test-matrix.svg` | ma trận test chia theo nhóm + 9 cổng (con số nằm trong SVG, không ở đây — xem `npm run sync:badge`) | README ×10 (mục what's new 1.1.8) |
-| `game-loop.svg` | **một nhập đoạn**: GIỮ 2 phím → LƯỢN &amp; CHÉM → HỨNG đầy hũ → CỘNG ĐIỂM, đường quay về bước 1 khép vòng, nước muối đầy dần trong hũ (v1.1.8 vòng 18) | mục Điều khiển của cả 10 README — `assets/game-loop.svg` |
-| `save-pipeline.svg` | **đường đi của một ván**: engine kết thúc ván → `storage/` 9 module qua `safeStorage` → hợp nhất + cứu dữ liệu từng mục → bảng vàng TOP 8 · thành tựu 16 · cài đặt v1, kèm đường «CHƠI TIẾP» đi ngược cho ván dở (v1.1.8 vòng 18) | mục Lưu trữ &amp; bảng vàng của cả 10 README — `assets/save-pipeline.svg` |
+| `game-loop.svg` | **một nhập đoạn**: GIỮ 2 phím → LƯỢN &amp; CHÉM → HỨNG đầy hũ → CỘNG ĐIỂM, đường quay về bước 1 khép vòng, nước muối đầy dần trong hũ (v1.1.8 vòng 18) | README ×10 (mục Điều khiển) |
+| `save-pipeline.svg` | **đường đi của một ván**: engine kết thúc ván → `storage/` 9 module qua `safeStorage` → hợp nhất + cứu dữ liệu từng mục → bảng vàng TOP 8 · thành tựu 16 · cài đặt v1, kèm đường «CHƠI TIẾP» đi ngược cho ván dở (v1.1.8 vòng 18) | README ×10 (mục Lưu trữ &amp; bảng vàng) |
 | `divider.svg` | Dải sparkle ngăn cách section | README ×9 (không có ở bản en) |
 | `license.svg` | Con dấu AGPL-3.0 copyleft | README ×10 |
 | `favicon.svg` | Favicon động (lọ lắc + tia lấp lánh) | `index.html`, `public/favicon.svg` |
