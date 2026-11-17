@@ -615,7 +615,7 @@ npm install        # 依存関係をインストール（Node ≥ 20.19）
 npm run build      # → dist/index.html（単一の自己完結ファイル）
 ```
 
-> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約700 KB、gzip約355 KB）にインライン化。サーバーもネットワークも不要です。
+> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約952 KB、gzip約430 KB）にインライン化。サーバーもネットワークも不要です。
 
 ### 開発
 
