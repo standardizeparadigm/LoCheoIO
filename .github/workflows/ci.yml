@@ -23,6 +23,14 @@ jobs:
       - name: Typecheck + unit tests + single-file build
         run: npm run check
 
+      # `scripts/check-offline.mjs` guards the single-file contract (ADR 0001 +
+      # ADR 0009): one absolute src/href/url() in dist/index.html is a dead
+      # reference when the release file is opened from disk (file://). npm run
+      # check already ends with it — a dedicated run: line keeps the checker
+      # visible to scripts/github-config-style audits that read only run: lines.
+      - name: Offline self-containment (dist has 0 external refs)
+        run: node scripts/check-offline.mjs
+
       - name: SSR render smoke (menu/modal tree)
         run: npm run smoke
 
