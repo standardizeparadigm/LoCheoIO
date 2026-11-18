@@ -718,7 +718,7 @@ npm install        # install dependencies (Node ≥ 20.19)
 npm run build      # → dist/index.html (one self-contained file)
 ```
 
-> `vite-plugin-singlefile` inlines all JS/CSS/fonts/images into **one** `dist/index.html` (~952 KB, gzip ~430 KB). No server, no network.
+> `vite-plugin-singlefile` inlines all JS/CSS/fonts/images into **one** `dist/index.html` (~965 KB, gzip ~435 KB). No server, no network.
 
 ### Development
 
@@ -843,7 +843,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # modal focus containment (v1.1.6)
-└─ tests/                  # vitest — 149 files · 1618 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 files · 1626 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Architecture & performance
@@ -879,7 +879,7 @@ $ npm run smoke        # SSR smoke: every menu/modal renders
 | `check-readme-sync` | 10 READMEs × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locales × 327 keys | ✅ |
 | `check-assets` | 33 SVGs, references checked both ways | ✅ |
-| `build` | `dist/index.html` ~952 KB · gzip ~430 KB | ✅ |
+| `build` | `dist/index.html` ~965 KB · gzip ~435 KB | ✅ |
 
 The 1.1.8 highlight is **`tests/menu-layout.test.ts`**: 32 tests pin the whole height addition and forbid the three CSS classes that caused the scroll bug — `flex-1 overflow-y-auto`, `min-h-full`, `justify-center`. Also new: **`tests/changelog-tiers.test.ts`** locks the `tierFor()` mapping (junk input included), demands **≥5 bullets** per release, rejects duplicate bullets and enforces a **strictly ordered date timeline** — that test is what caught 1.1.5 and 1.1.6 sharing a day.
 

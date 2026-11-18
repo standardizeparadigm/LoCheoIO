@@ -661,7 +661,7 @@ npm install        # Abhängigkeiten installieren (Node ≥ 20.19)
 npm run build      # → dist/index.html (eine in sich geschlossene Datei)
 ```
 
-> `vite-plugin-singlefile` inlined sämtliches JS/CSS/Fonts/Bilder in **eine** `dist/index.html` (~952 KB, gzip ~430 KB). Kein Server, kein Netz.
+> `vite-plugin-singlefile` inlined sämtliches JS/CSS/Fonts/Bilder in **eine** `dist/index.html` (~965 KB, gzip ~435 KB). Kein Server, kein Netz.
 
 ### Entwicklung
 
@@ -786,7 +786,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # Fokus im Modal halten (v1.1.6)
-└─ tests/                  # vitest — 149 Dateien · 1618 Tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 Dateien · 1626 Tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Architektur & Performance

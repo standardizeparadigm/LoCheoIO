@@ -692,7 +692,7 @@ npm install        # instala dependencias (Node ≥ 20.19)
 npm run build      # → dist/index.html (un único archivo autocontenido)
 ```
 
-> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~952 KB, gzip ~430 KB). Sin servidor, sin red.
+> `vite-plugin-singlefile` incrusta todo el JS/CSS/fuentes/imágenes en **un** `dist/index.html` (~965 KB, gzip ~435 KB). Sin servidor, sin red.
 
 ### Desarrollo
 
@@ -817,7 +817,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # foco atrapado en modales (v1.1.6)
-└─ tests/                  # vitest — 149 archivos · 1618 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 archivos · 1626 tests (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Arquitectura y rendimiento

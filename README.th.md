@@ -489,7 +489,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // คอลัมน์ที่สูงกว�
 | 💾 **ตาราง TOP 8** | เก็บลงเครื่อง ตรวจสอบ/ปรับค่าเมื่ออ่าน ชื่อตัวพิมพ์ใหญ่ ไฮไลต์สถิติใหม่ |
 | 🎨 **กราฟิก 60fps** | Canvas 2D งบอนุภาค ≤460 จำกัด DPR ≤ 2 พื้นกระเบื้องพรีเรนเดอร์ลง offscreen ดาวระยิบ + ออโรร่าในเมนู |
 | 📴 **ออฟไลน์จริง** | ฟอนต์โฮสเอง (subset latin + vietnamese woff2) ไม่มี CDN ไม่มี API — ดับเบิลคลิก `dist/index.html` แล้วเล่นได้เลย |
-| 🧪 **คุณภาพ** | 1618 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
+| 🧪 **คุณภาพ** | 1626 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
 
 <img src="assets/items.svg" alt="14 วัตถุดิบ — ผักดองให้รับ พลังทองให้คว้า อันตรายให้หลบ" width="100%" />
 ### 💾 ที่จัดเก็บ & กระดานเกียรติยศ — เส้นทางของหนึ่งเกม
@@ -627,7 +627,7 @@ npm install        # ติดตั้ง dependency (Node ≥ 20.19)
 npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 ```
 
-> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~952 KB, gzip ~430 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
+> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~965 KB, gzip ~435 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
 
 ### Development
 
@@ -635,7 +635,7 @@ npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 npm run dev        # dev server พร้อม HMR (http://localhost:5173)
 npm run preview    # เสิร์ฟ production build ในเครื่อง
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1618 เทสต์ (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1626 เทสต์ (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (ประตูคุณภาพ CI)
 ```
 
@@ -752,7 +752,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # กักโฟกัสในโมดัล (v1.1.6)
-└─ tests/                  # vitest — 149 ไฟล์ · 1618 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 ไฟล์ · 1626 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 สถาปัตยกรรม & ประสิทธิภาพ
@@ -801,7 +801,7 @@ lo-cheoio/
 
 | เวอร์ชัน | Tier | วันที่ | บันทึก |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 เทสต์ / 149 ไฟล์** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **1626 เทสต์ / 150 ไฟล์** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **พื้นหลังเมนูหมอกหาย** (สี่ชั้นซ้อน: `blur 64→22px`, วิชเน็ตต์เฉพาะมุมแทนเต็มจอ, กรอบ CRT 140→90px, พื้น 45→70%) · **changelog แบ่งชั้นมีสี** · **96 หัวข้อใหม่** ให้ 8 เวอร์ชัน · จัดวันใหม่ · แยก `src/game/changelog/` · ทำ README 10 ภาษใหม่ · **256 เทสต์** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **ตั้งค่า 6 หมวด** (พรีเซ็ต · เสียง · ภาพ · ภาษา · สำรอง · ข้อมูล) · ความดัง 0–100 · ความแรงสั่น · คุณภาพภาพ · หยุดเมื่อสลับแท็บ · ย้ายภาษาเข้าตั้งค่า · พรีเซ็ต 4 แบบ · นำเข้า/ส่งออก JSON · เมนูหลายชั้นเคลื่อนไหว · การ์ดผู้สร้างไล่ระดับ · กักโฟกัสในโมดัล · แก้เพลงหลังรีโหลด · **150 เทสต์** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **เมนูมุม GAME/INFO**（เล่น · เล่นต่อ · โหมด · อันดับ · ความสำเร็จ · ตั้งค่า / เกี่ยวกับ · Changelog · ออก）· **บันทึก & เล่นเกมค้างต่อ**（`locheo.run.v1`）· ตั้งค่าในเกม（เสียง/เพลง/สั่น/ลดแอนิเมชัน）· แก้คีย์ลัดทะลุโมดัล · prefers-reduced-motion ครบทุกตัว · **113 เทสต์** |
@@ -847,7 +847,7 @@ lo-cheoio/
 ## 🤝 ร่วมพัฒนา
 
 1. Fork repo แล้วแตก branch ตามรูปแบบ `arena/<name>` หรือ `feat/<name>`
-2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 1618 เทสต์ + build)
+2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 1626 เทสต์ + build)
 3. เลี่ยงการเพิ่ม dependency ตอน runtime ถ้าไม่จำเป็นจริง ๆ — ปรัชญา: **ไฟล์เดียว ไม่มีเน็ต เล่นได้ตลอดกาล**
 4. ใน PR ระบุหน้าจอ/โหมดที่ได้รับผลกระทบ และแนบคลิปถ้ามีการเปลี่ยน gameplay
 

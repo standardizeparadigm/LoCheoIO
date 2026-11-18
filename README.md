@@ -864,7 +864,7 @@ npm install        # cài dependencies (Node ≥ 20.19)
 npm run build      # → dist/index.html (một file tự chứa mọi thứ)
 ```
 
-> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~952 KB, gzip ~430 KB). Không cần server, không cần mạng.
+> `vite-plugin-singlefile` inline toàn bộ JS/CSS/fonts/ảnh vào **một** file `dist/index.html` (~965 KB, gzip ~435 KB). Không cần server, không cần mạng.
 
 ### Development
 
@@ -1001,7 +1001,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # trap Tab trong modal (v1.1.6)
-└─ tests/                  # vitest — 149 files · 1618 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
+└─ tests/                  # vitest — 150 files · 1626 test (modes · achievements · storage · i18n · runSave · settings · presets · audio · changelog-tiers…)
 ```
 
 ## 🧱 Kiến trúc & hiệu năng
@@ -1037,7 +1037,7 @@ $ npm run smoke        # SSR smoke: mọi menu/modal render được
 | `check-readme-sync` | 10 README × badge/link/SVG | ✅ |
 | `check-i18n` | 7 locale × 327 khoá | ✅ |
 | `check-assets` | 33 SVG, 2 chiều tham chiếu | ✅ |
-| `build` | `dist/index.html` ~952 KB · gzip ~430 KB | ✅ |
+| `build` | `dist/index.html` ~965 KB · gzip ~435 KB | ✅ |
 
 Điểm đáng chú ý của bộ test v1.1.8: **`tests/menu-layout.test.ts`** khoá toàn bộ phép cộng chiều cao (1626 test) và cấm ba lớp CSS từng gây lỗi cuộn quay lại; **`tests/changelog-tiers.test.ts`** khoá ánh xạ `tierFor()` (kể cả đầu vào rác), bắt mỗi bản phải có **≥5 gạch mô tả**, kiểm tra không gạch nào trùng nhau, và bắt buộc **thứ tự ngày nghiêm ngặt** — chính test này đã phát hiện 1.1.5 và 1.1.6 đang trùng ngày.
 
