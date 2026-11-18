@@ -49,7 +49,7 @@ Chỉ cần **nhấn đúp** file tương ứng với hệ điều hành của b
 | **1) Chơi ngay (Production)** | `npm run build` → mở `dist/index.html` | Build bản tự chứa rồi mở game bằng trình duyệt mặc định |
 | **2) Dev mode** | `npm run dev` | Server HMR tại <http://localhost:5173>; <kbd>Ctrl</kbd>+<kbd>C</kbd> để dừng |
 | **3) Build production** | `npm run build` | Tạo đúng 1 file `dist/index.html` (single-file) |
-| **4) Chạy tests** | `npm run test` | vitest — **1618 tests / 149 file** |
+| **4) Chạy tests** | `npm run test` | vitest — **1626 tests / 150 file** |
 | **5) Kiểm tra toàn bộ** | `npm run check` | typecheck + tests + build — cổng chất lượng |
 | **6) Cài đặt dependencies** | `npm install` | Cài/cập nhật `node_modules` |
 | **7) Dọn dẹp** | xoá `node_modules/` và `dist/` | Yêu cầu gõ `YES` để xác nhận; không đụng mã nguồn |
@@ -177,6 +177,25 @@ test nào đọc số trong câu văn**. Vì thế script này:
 
 Dòng lịch sử (`v1.1.0`…`v1.1.7`, ngày phát hành) được **miễn trừ** qua
 `HISTORICAL` — bảng phát hành ghi lại con số của thời điểm đó, không phải hôm nay.
+
+## `check-offline.mjs`
+
+Gate **tự chứa offline** cho hợp đồng một-file (ADR 0001 + ADR 0009). Cách
+chơi phổ biến nhất là mở `dist/index.html` thẳng từ đĩa (`file://`), nơi không
+có server để cứu một đường dẫn tuyệt đối: `src="/assets/x.js"` mà web host
+giải quyết được lặng lẽ thì trên đĩa là `file:///assets/x.js` — chết im lặng.
+Script strip data URI trước (payload base64 có thể chứa chữ `http`), rồi quét
+mọi cấu trúc fetch — `src`/`href`/`poster`/`srcset`, CSS `url()` + `@import`,
+`link` modulepreload/preload/prefetch — và **từ chối bất kỳ giá trị tuyệt đối
+nào** (`/…`, `//…`, `http(s)://`). Chạy trong `npm run check` ngay sau
+`vite build`, nên CI luôn quét file thật sắp được phát hành; file đích thiếu
+thì skip (exit 0 có hint) để chạy lẻ trên cây sạch vẫn xanh.
+
+```bash
+node scripts/check-offline.mjs            # mặc định quét dist/index.html
+node scripts/check-offline.mjs path.html  # quét file khác
+# → ✓ offline self-contained: dist/index.html (942.5 KB) — 0 tham chiếu ngoài
+```
 
 ## `check-svg.mjs`
 

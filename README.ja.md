@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1626%20%C2%B7%20150%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-インストールと実行)
@@ -247,7 +247,7 @@ wordmark 下の空いた帯は、いまや **意図的** です。それが、�
 
 <img src="assets/release-tiers.svg" alt="MAJOR/UPDATE/PATCH の三階層とその色、十リリースのタイムライン（SMIL アニメーション）" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——149ファイル1618テスト、九つのゲート（SMIL アニメーション）" width="100%" />
+<img src="assets/test-matrix.svg" alt="1.1.8 のテストマトリクス——150ファイル1626テスト、九つのゲート（SMIL アニメーション）" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="Lọ Chéo 1.1.8 の六つの適応レイヤー——ボックス、ティア、プラン、そして密度／ヒーロー／文字／モーダル／盤面。一方向のみ（SMIL アニメーション）" width="100%" />
 
@@ -505,7 +505,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // 高い方の列: 192 マスコット + 24 チ�
 | 💾 **TOP 8 ランキング** | ローカル保存、読み込み時に検証・正規化、名前は自動大文字化、新記録はハイライト |
 | 🎨 **60fpsグラフィックス** | Canvas 2D、パーティクル上限460、DPR上限2、オフスクリーン事前描画の花柄床、星の瞬き + メニューオーロラ |
 | 📴 **真のオフラインファースト** | 自己ホストフォント（latin + ベトナム語サブセット、woff2）、CDN・API不使用 — `dist/index.html` をダブルクリックするだけ |
-| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1618件のユニットテスト（vitest）— `npm run check` がCIゲート |
+| 🧪 **品質ゲート** | modes / achievements / storage / i18n / settings をカバーする1626件のユニットテスト（vitest）— `npm run check` がCIゲート |
 
 <img src="assets/items.svg" alt="14種の食材 — キャッチすべき漬物、取るべき黄金パワー、避けるべき危険物" width="100%" />
 ### 💾 ストレージと殿堂 — ひと試合の道のり
@@ -629,6 +629,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### ディスクからオフラインで遊ぶ（file://）
+
+- オフラインで遊ぶ = **`dist/index.html`** を開く —— ビルドは 100% 自己完結（JS/CSS/フォントをすべてインライン、外部参照ゼロ —— `check-offline` ゲートが毎回のビルド後に走査）。GitHub のリリースページから直接ダウンロードしても OK。
+- リポジトリ直下の `index.html` は開かないでください —— あれは開発用エントリ（`npm run dev` が必要）で、`file://` では真っ白なままです。v1.1.8 からは 4 秒経ってもゲームがマウントされない場合、ページが**自分で説明を表示**します（ブートウォッチドッグ、日/英）。
+- `file://` の進行状況は独立した origin に保存され、Web 版とは混ざりません（プラットフォームの仕様です）。初回起動でメニューが静止しているときは：OS が「動作を減らす」を要求している状態 —— 設定 → 表示とモーション で戻せます。
+- 詳細：[docs/guides/offline-file.md](docs/guides/offline-file.md)。
+
 ### プロダクションビルド
 
 ```bash
@@ -636,7 +643,7 @@ npm install        # 依存関係をインストール（Node ≥ 20.19）
 npm run build      # → dist/index.html（単一の自己完結ファイル）
 ```
 
-> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約952 KB、gzip約430 KB）にインライン化。サーバーもネットワークも不要です。
+> `vite-plugin-singlefile` が全 JS/CSS/フォント/画像を**1つの** `dist/index.html`（約965 KB、gzip約435 KB）にインライン化。サーバーもネットワークも不要です。
 
 ### 開発
 
@@ -644,7 +651,7 @@ npm run build      # → dist/index.html（単一の自己完結ファイル）
 npm run dev        # HMR付き開発サーバー（http://localhost:5173）
 npm run preview    # プロダクションビルドをローカルで確認
 npm run typecheck  # tsc --noEmit（strict、noUnusedLocals…）
-npm run test       # vitest — 1618件のユニットテスト（modes / achievements / storage / i18n / settings）
+npm run test       # vitest — 1626件のユニットテスト（modes / achievements / storage / i18n / settings）
 npm run check      # typecheck + test + build（CI品質ゲート）
 ```
 
@@ -761,7 +768,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # モーダルのフォーカス封じ込め（v1.1.6）
-└─ tests/                  # vitest — 149ファイル · 1618テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
+└─ tests/                  # vitest — 150ファイル · 1626テスト（modes · achievements · storage · i18n · runSave · settings · presets · audio…）
 ```
 
 ## 🧱 アーキテクチャとパフォーマンス
@@ -810,7 +817,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 
 | バージョン | Tier | 日付 | ノート |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 テスト / 149 ファイル** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **開始画面のはみ出し解消**：高さの足し算の誤りでヒーローが250pxになり `LỌ` が切れていた · **スクロール不具合**（入れ子スクロール枠 + `justify-center`）を上端固定の**単一** `.menu-scroll` に · **「遊び方」を GAME メニューへ**（モーダル）· パネルは内容ではなく **318px/458px** を宣言 · ティッカー48px · **ヒーロー装飾14個** + **光輪3本** · `src/components/menu/{layout,scene,ticker,howto}/` · **1626 テスト / 150 ファイル** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **メニュー背景のかすみ除去**（四層の重なり：`blur 64→22px`、全画面ヴィネットを四隅のみに、CRT 枠 140→90px、床 45→70%）· **階層別カラー履歴** · 旧八版に **96 項目の説明** · 日付再整列 · `src/game/changelog/` 分割 · README 10 本刷新 · **256 テスト** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **6セクション設定**（プリセット · サウンド · 表示 · 言語 · バックアップ · データ）· 音量 0–100 · 揺れの強さ · 画質 · タブ切替で自動停止 · 言語を設定へ移設 · 4プリセット · JSON 入出力 · 多層アニメのメニュー · 作者カードの流れるグラデーション · モーダルのフォーカス封じ込め · 再読込後の音楽バグ修正 · **150テスト** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **四隅 GAME/INFO メニュー**（プレイ · つづきから · モード · ランキング · 実績 · 設定 / 作者について · 更新履歴 · 終了）· **中断ランの保存＆再開**（`locheo.run.v1`）· ゲーム内設定（効果音/BGM/揺れ/動作を減らす）· モーダル越しショートカット修正 · prefers-reduced-motion 完全対応 · **113テスト** |
@@ -848,6 +855,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — 中断ランのスナップショット（schema + ライフサイクル） |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ゲーム設定（schema + 配線） |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | よくある問題 — 黒画面 · 音が出ない · つづきから · ランチャー |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | ディスクからオフラインで遊ぶ（file://）— 正しい手順、ブートウォッチドッグ、プラットフォーム固有の制限 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | ヘッドレス描画スモークテスト（全メニュー/モーダル） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | アーキテクチャ決定記録 — なぜ1ファイル、なぜSMIL、なぜ `modeConfigFor()` |
@@ -855,7 +863,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 ## 🤝 コントリビュート
 
 1. リポジトリをForkし、`arena/<名前>` または `feat/<名前>` の命名規則でブランチを作成。
-2. PRを出す前に `npm run check` をグリーンに（typecheck + 1618テスト + build）。
+2. PRを出す前に `npm run check` をグリーンに（typecheck + 1626テスト + build）。
 3. 本当に必要な場合以外、ランタイム依存を追加しない — 理念：**1ファイル、ネットワーク不要、永遠に遊べる**。
 4. PRには影響する画面/モードを明記し、ゲームプレイ変更時はクリップを添付してください。
 

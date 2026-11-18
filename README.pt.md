@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1626%20%C2%B7%20150%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-instalar--rodar)
@@ -247,7 +247,7 @@ O nível é **derivado do SemVer** por `tierFor(version)`, nunca escrito à mão
 
 <img src="assets/release-tiers.svg" alt="Os três níveis MAJOR/UPDATE/PATCH com as suas cores e a linha temporal de dez versões (animação SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1618 testes em 149 ficheiros, nove portões (animação SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="Matriz de testes 1.1.8 — 1626 testes em 150 ficheiros, nove portões (animação SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="As seis camadas adaptativas de Lọ Chéo 1.1.8 — caixa, nível, plano e depois densidade / hero / tipografia / modal / tabuleiro, num só sentido (animação SMIL)" width="100%" />
 
@@ -513,7 +513,7 @@ Um movimento, três velocidades: desktop e tablet em velocidade plena (**×1**),
 | 💾 **Ranking TOP 8** | Salvo localmente, validado e normalizado na leitura, nomes em maiúsculas, destaque para recorde recém-batido |
 | 🎨 **Gráficos 60fps** | Canvas 2D, orçamento de 460 partículas, DPR limitado a 2, chão de ladrilho pré-renderizado offscreen, estrelas cintilantes + aurora no menu |
 | 📴 **Offline-first de verdade** | Fontes auto-hospedadas (subsets latin + vietnamita, woff2), sem CDN, sem API — duplo clique em `dist/index.html` e jogue |
-| 🧪 **Portões de qualidade** | 1618 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
+| 🧪 **Portões de qualidade** | 1626 testes unitários (vitest) para modes / achievements / storage / i18n / settings — `npm run check` é o portão de CI |
 
 <img src="assets/items.svg" alt="Os 14 ingredientes — conservas para pegar, poderes dourados para agarrar, perigos para desviar" width="100%" />
 ### 💾 Armazenamento & mural da fama — a jornada de uma partida
@@ -639,6 +639,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Jogar offline a partir do disco (file://)
+
+- Jogar offline = abrir **`dist/index.html`** — a build é 100% autocontida (JS/CSS/fontes inline, zero referências externas — o gate `check-offline` a examina após cada build). Baixar direto da página de releases do GitHub também funciona.
+- **Não abra o `index.html` na raiz do repositório** — é a entrada de desenvolvimento (precisa de `npm run dev`); em `file://` fica em branco. Desde a v1.1.8, se o jogo não montar após 4 segundos, a página **se explica sozinha** (watchdog de boot, PT/EN) em vez de ficar calada.
+- O progresso em `file://` vive numa origem separada — nunca se mistura com a cópia web (regra da plataforma, não é bug). Se o menu ficar parado na primeira execução: o SO pede menos movimento — reative em Configurações → Tela e movimento.
+- Detalhes: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Build de produção
 
 ```bash
@@ -646,7 +653,7 @@ npm install        # instala dependências (Node ≥ 20.19)
 npm run build      # → dist/index.html (um arquivo autocontido)
 ```
 
-> O `vite-plugin-singlefile` injeta todo JS/CSS/fontes/imagens em **um único** `dist/index.html` (~952 KB, gzip ~430 KB). Sem servidor, sem rede.
+> O `vite-plugin-singlefile` injeta todo JS/CSS/fontes/imagens em **um único** `dist/index.html` (~965 KB, gzip ~435 KB). Sem servidor, sem rede.
 
 ### Desenvolvimento
 
@@ -654,7 +661,7 @@ npm run build      # → dist/index.html (um arquivo autocontido)
 npm run dev        # dev server com HMR (http://localhost:5173)
 npm run preview    # serve o build de produção localmente
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1618 testes unitários (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1626 testes unitários (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (portão de qualidade CI)
 ```
 
@@ -771,7 +778,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # foco preso no modal (v1.1.6)
-└─ tests/                  # vitest — 149 arquivos · 1618 testes (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 arquivos · 1626 testes (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 Arquitetura & performance
@@ -820,7 +827,7 @@ As regras não mudam. Um único perfil adaptativo escolhe o layout para cada vie
 
 | Versão | Tier | Data | Notas |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 testes / 149 arquivos** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **A tela inicial já não transborda**: uma soma de alturas mal feita deixava o hero com 250px e cortava `LỌ` · **bug de scroll** (caixa aninhada + `justify-center`) resolvido com **um** `.menu-scroll` ancorado no topo · **«Como jogar» no menu GAME** como modal · painéis declarados em **318px/458px** em vez de seguirem o conteúdo · ticker de 48px · **14 decorações do hero** + **3 anéis de halo** · `src/components/menu/{layout,scene,ticker,howto}/` · **1626 testes / 150 arquivos** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **Fundo do menu sem névoa** (quatro camadas: `blur 64→22px`, vinheta de cantos em vez de tela inteira, moldura CRT 140→90px, piso 45→70%) · **changelog por níveis coloridos** · **96 itens novos** para 8 versões · datas reordenadas · `src/game/changelog/` dividido · 10 READMEs refeitos · **256 testes** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **Ajustes em 6 seções** (presets · áudio · tela · idioma · backup · dados) · volumes 0–100 · intensidade do tremor · qualidade visual · pausa ao trocar de aba · idioma dentro dos Ajustes · 4 presets · exportar/importar JSON · menu multicamada animado · degradê no cartão do autor · foco preso nos modais · fix da música ao recarregar · **150 testes** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **Menus de canto GAME/INFO** (Jogar · Continuar · Modos · Classificação · Conquistas · Ajustes / Sobre o autor · Changelog · Sair) · **salvar & retomar partida** (`locheo.run.v1`) · ajustes no jogo (SFX/música/tremor/movimento) · fix vazamento de atalhos nos modais · prefers-reduced-motion global · **113 testes** |
@@ -858,6 +865,7 @@ Notas de design e documentação técnica mais profunda:
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot de partida pausada (schema + ciclo de vida) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ajustes do jogo (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problemas comuns — tela preta · áudio · Continuar · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Jogar offline a partir do disco (file://) — fluxo correto, watchdog de boot, limites da plataforma |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de render headless (toda a árvore menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Registros de decisões de arquitetura — por que um arquivo, por que SMIL, por que `modeConfigFor()` |
@@ -865,7 +873,7 @@ Notas de design e documentação técnica mais profunda:
 ## 🤝 Contribuindo
 
 1. Faça fork do repo, crie a branch no padrão `arena/<nome>` ou `feat/<nome>`.
-2. `npm run check` deve estar verde antes de abrir PR (typecheck + 1618 testes + build).
+2. `npm run check` deve estar verde antes de abrir PR (typecheck + 1626 testes + build).
 3. Evite novas dependências de runtime salvo se realmente necessário — filosofia: **um arquivo, sem rede, jogável para sempre**.
 4. No PR, indique as telas/modos afetados e anexe um clipe se o gameplay mudar.
 

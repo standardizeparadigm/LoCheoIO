@@ -33,5 +33,104 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      /* Boot watchdog (v1.1.8) — nếu game không gắn vào #root sau 4 giây, giải thích
+         lý do ngay trên trang thay vì để một trang trắng im lặng. Bối cảnh: cách chơi
+         phổ biến nhất của Lọ Chéo là mở bản build dist/index.html thẳng từ đĩa (file://),
+         và người chơi hay gặp hai kiểu «mất sạch hiệu ứng» không có thông báo nào:
+         mở nhầm file nguồn index.html (dev entry, cần npm run dev), hoặc trình duyệt
+         quá cũ / JavaScript bị chặn khiến bundle không chạy. Watchdog chỉ nói khi có
+         chuyện đáng nói: nó tự gỡ ngay khi #root có nội dung, không đụng vào game,
+         không fetch gì, thuần ES5 trong try/catch để chính nó không bao giờ chết. */
+      (function () {
+        "use strict";
+        var NOTICE_ID = "locheo-boot-notice";
+        var notice = null;
+        var mo = null;
+
+        function mountOk() {
+          try {
+            var root = document.getElementById("root");
+            return !!(root && root.childElementCount > 0);
+          } catch (e) {
+            return true; /* DOM lạ — đừng bao giờ báo động nhầm */
+          }
+        }
+
+        function el(tag, style, text) {
+          var n = document.createElement(tag);
+          if (style) n.setAttribute("style", style);
+          if (text !== undefined) n.textContent = text;
+          return n;
+        }
+
+        function show() {
+          if (mountOk() || notice) return;
+          try {
+            var overlay = el(
+              "div",
+              "position:fixed;inset:0;z-index:2147483647;background:#061a1a;color:#b6e07a;" +
+                "display:flex;align-items:center;justify-content:center;padding:24px;" +
+                "font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif",
+            );
+            overlay.id = NOTICE_ID;
+            overlay.setAttribute("role", "alert");
+            overlay.setAttribute("data-locheo-boot", "watchdog");
+            var panel = el(
+              "div",
+              "max-width:36rem;border:2px solid rgba(182,224,122,0.35);border-radius:12px;" +
+                "padding:20px 24px;background:rgba(11,43,43,0.88);line-height:1.55;font-size:15px",
+            );
+            panel.appendChild(el("strong", "font-size:17px", "Lọ Chéo chưa khởi động được."));
+            panel.appendChild(el("p", "margin:10px 0 6px", "Trang đã mở nhưng game không gắn vào trang — thường là một trong ba lý do sau:"));
+            var ul = el("ul", "margin:6px 0 0;padding-left:20px");
+            ul.appendChild(el("li", null, "Bạn đang mở trực tiếp file nguồn index.html từ ổ đĩa (file://). Hãy dùng bản build một file dist/index.html (đính kèm mọi release), hoặc chạy npm run dev rồi mở http://localhost:5173."));
+            ul.appendChild(el("li", null, "Trình duyệt quá cũ cho bản build — cần Chrome, Edge, Firefox hoặc Safari bản gần đây."));
+            ul.appendChild(el("li", null, "JavaScript đang bị tắt hoặc bị phần mềm bảo mật chặn."));
+            panel.appendChild(ul);
+            panel.appendChild(el("hr", "border:none;border-top:1px solid rgba(182,224,122,0.25);margin:12px 0"));
+            var en = el("div", "font-size:13px;color:rgba(182,224,122,0.75)");
+            en.setAttribute("lang", "en");
+            en.appendChild(el("strong", null, "Lọ Chéo could not start."));
+            en.appendChild(el("p", "margin:8px 0 4px", "The page opened but the game never mounted — one of three usual reasons:"));
+            var ulEn = el("ul", "margin:4px 0 0;padding-left:20px");
+            ulEn.appendChild(el("li", null, "You opened the source index.html straight from disk (file://). Use the single-file build dist/index.html (attached to every release), or run npm run dev and open http://localhost:5173."));
+            ulEn.appendChild(el("li", null, "The browser is too old for the production build — a recent Chrome, Edge, Firefox or Safari is required."));
+            ulEn.appendChild(el("li", null, "JavaScript is disabled or blocked by security software."));
+            en.appendChild(ulEn);
+            panel.appendChild(en);
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+            notice = overlay;
+          } catch (e) {
+            notice = null;
+          }
+        }
+
+        function hide() {
+          try {
+            if (notice && notice.parentNode) notice.parentNode.removeChild(notice);
+          } catch (e) {}
+          notice = null;
+          try {
+            if (mo) mo.disconnect();
+          } catch (e) {}
+        }
+
+        try {
+          mo = new MutationObserver(function () {
+            if (mountOk()) hide();
+          });
+          mo.observe(document.documentElement, { childList: true, subtree: true });
+        } catch (e) {
+          mo = null; /* trình duyệt không có MutationObserver — chỉ còn hẹn giờ đơn thuần */
+        }
+
+        try {
+          if (mountOk()) hide();
+          else setTimeout(function () { if (!mountOk()) show(); }, 4000);
+        } catch (e) {}
+      })();
+    </script>
   </body>
 </html>

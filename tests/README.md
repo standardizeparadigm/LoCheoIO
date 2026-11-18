@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1618 tests / 149 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1626 tests / 150 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
@@ -32,6 +32,7 @@
 | `modes-audit.test.ts` | `modes/audit.ts` — badge ↔ số liệu, ngân sách nứt (`maxCracksFor`), bảng spawn thật (zen không bao giờ có đồ hư), accent trùng, số vô hạn; và mỗi luật đều được kiểm chứng bằng một bản ghi cố tình hỏng | pure |
 | `achievements-defs.test.ts` | catalogue integrity — unique ids, 16 entries, glyph/tone rules, MAP 1:1 | pure |
 | `version-bump.test.ts` | version coherence — APP_VERSION = pkg = lock = changelog = README badges = release notes | fs |
+| `offline-gate.test.ts` | hợp đồng offline file:// — máy quét tham chiếu ngoài (pure), template giữ boot watchdog nguyên vẹn, dist thật (khi có) tự chứa 100% | fs + pure |
 | `storage-seed.test.ts` | SEED board trả về bản sao sâu khi trống / sau clearAllProgress | `memStorage()` |
 | `i18n-modes.test.ts` | 9 chế độ × 4 key (name/tagline/desc/badge) hiện diện ở cả 7 locale + vi names unique | import trực tiếp dict |
 | `storage-migrate.test.ts` | normalizeScores: hàng hỏng, id `imp-*`, cap-8, JSON corrupt → SEED, round/truncate | `memStorage()` |

@@ -7,7 +7,27 @@
 3. Kiểm tra console (F12 → Console) — nếu có lỗi đỏ, chụp lại và báo issue kèm `npm run check` output.
 4. Game **offline hoàn toàn** — nếu máy mất mạng game vẫn chạy; nếu copy `dist/index.html` từ máy khác sang, đảm bảo file copy **nguyên vẹn** (1 file duy nhất, không cần folder assets).
 
+## Mở file offline mà «mất sạch animation» / trang trắng (file://)
+
+Vòng 20 điều tra báo cáo này tới gốc: bản build `dist/index.html` **tự chứa
+100%** (JS/CSS/font inline, 0 tham chiếu ngoài — gate `check-offline` quét
+sau mỗi build), không có cơ chế nào làm mất hiệu ứng chỉ vì thiếu mạng. Một
+trang «mất sạch» thật ra là trang chết im lặng, và thường là một trong ba lý
+do sau — từ v1.1.8 trang sẽ **tự nói ra** bằng bảng watchdog sau 4 giây:
+
+1. **Mở nhầm file nguồn** — `index.html` ở *gốc repo* là dev entry (cần
+   `npm run dev`); trên `file://` nó trắng trơn. Chơi offline phải dùng
+   `dist/index.html` (đính kèm mọi release). Chi tiết: `docs/guides/offline-file.md`.
+2. **Trình duyệt quá cũ** — bundle cần ES2020+; script chết cả khối → trang trắng.
+3. **JavaScript bị chặn** bởi phần mềm bảo mật/tiện ích.
+
+Hai hiện tượng dễ nhầm là bug mà không phải: tiến độ online/offline không
+thông nhau (`file://` là origin riêng — chủ ý nền tảng), và lần chạy đầu
+trên máy mới menu đứng im (HĐH bật giảm chuyển động — tắt lại trong Cài đặt
+→ Giao diện & chuyển động).
+
 ## Không nghe được âm thanh
+
 
 1. Browser chặn audio cho đến khi có **tương tác người dùng** — hãy bấm một nút (Chơi/phím bất kỳ) một lần.
 2. Kiểm tra công tắc **âm thanh** trong Cài đặt (trong game) và nút **M** (mute toàn cục).

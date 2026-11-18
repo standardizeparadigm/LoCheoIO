@@ -11,7 +11,7 @@
 
 [![Version](https://img.shields.io/badge/version-1.1.8-f5a81c.svg?style=for-the-badge&logo=semver&logoColor=black)](docs/releases/v1.1.8.md)
 [![Tier](https://img.shields.io/badge/tier-PATCH%20%C2%B7%20violet-9d6bff.svg?style=for-the-badge)]
-[![Tests](https://img.shields.io/badge/tests-1618%20%C2%B7%20149%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
+[![Tests](https://img.shields.io/badge/tests-1626%20%C2%B7%20150%20files-2bb48c.svg?style=for-the-badge&logo=vitest&logoColor=white)]
 [![CI](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml/badge.svg)](https://github.com/standardizeparadigm/LoCheoIO/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-e63b2e.svg?style=for-the-badge)](LICENSE)
 [![Offline](https://img.shields.io/badge/offline--first-100%25-2bb48c.svg?style=for-the-badge)](#-ติดตั้ง--เริ่มเล่น)
@@ -243,7 +243,7 @@ type Environment = {
 
 <img src="assets/release-tiers.svg" alt="สามชั้น MAJOR/UPDATE/PATCH กับสีและไทม์ไลน์สิบเวอร์ชัน (แอนิเมชัน SMIL)" width="100%" />
 
-<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1618 เทสต์ใน 149 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
+<img src="assets/test-matrix.svg" alt="เมทริกซ์เทสต์ 1.1.8 — 1626 เทสต์ใน 150 ไฟล์ เก้าด่าน (แอนิเมชัน SMIL)" width="100%" />
 
 <img src="assets/adaptive-layers.svg" alt="หกชั้นปรับตัวของ Lọ Chéo 1.1.8 — กล่องหน้าต่าง, ระดับ, แผน แล้วตามด้วยความหนาแน่น／ฮีโร่／ตัวอักษร／โมดัล／กระดาน ทิศทางเดียว (แอนิเมชัน SMIL)" width="100%" />
 
@@ -489,7 +489,7 @@ HEIGHT_FOR_SIDE_BY_SIDE = 300  // คอลัมน์ที่สูงกว�
 | 💾 **ตาราง TOP 8** | เก็บลงเครื่อง ตรวจสอบ/ปรับค่าเมื่ออ่าน ชื่อตัวพิมพ์ใหญ่ ไฮไลต์สถิติใหม่ |
 | 🎨 **กราฟิก 60fps** | Canvas 2D งบอนุภาค ≤460 จำกัด DPR ≤ 2 พื้นกระเบื้องพรีเรนเดอร์ลง offscreen ดาวระยิบ + ออโรร่าในเมนู |
 | 📴 **ออฟไลน์จริง** | ฟอนต์โฮสเอง (subset latin + vietnamese woff2) ไม่มี CDN ไม่มี API — ดับเบิลคลิก `dist/index.html` แล้วเล่นได้เลย |
-| 🧪 **คุณภาพ** | 1618 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
+| 🧪 **คุณภาพ** | 1626 เทสต์ (vitest) ครอบคลุม modes / achievements / storage / i18n / settings — `npm run check` คือประตู CI |
 
 <img src="assets/items.svg" alt="14 วัตถุดิบ — ผักดองให้รับ พลังทองให้คว้า อันตรายให้หลบ" width="100%" />
 ### 💾 ที่จัดเก็บ & กระดานเกียรติยศ — เส้นทางของหนึ่งเกม
@@ -613,6 +613,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### เล่นออฟไลน์จากดิสก์ (file://)
+
+- เล่นออฟไลน์ = เปิด **`dist/index.html`** — บิลด์นี้บรรจุครบ 100% (JS/CSS/ฟอนต์ฝังในไฟล์ ไม่มีการอ้างอิงภายนอก — เกต `check-offline` สแกนหลังทุกการบิลด์) ดาวน์โหลดจากหน้า release ของ GitHub ได้เลย
+- **อย่าเปิด `index.html` ที่รากของ repo** — นั่นคือ dev entry (ต้องใช้ `npm run dev`) บน `file://` จะขาวเปล่า ตั้งแต่ v1.1.8 ถ้าเกมยังไม่ mount ใน 4 วินาที หน้าเว็บจะ**แสดงคำอธิบายเอง** (boot watchdog, TH/EN) แทนที่จะเงียบ
+- ความคืบหน้าบน `file://` อยู่ใน origin แยกต่างหาก — ไม่ปนกับเวอร์ชันเว็บ (กติกาของแพลตฟอร์ม ไม่ใช่บั๊ก) ถ้าเมนูนิ่งตอนเปิดครั้งแรก: OS ขอลดการเคลื่อนไหว — เปิดใหม่ได้ที่ การตั้งค่า → การแสดงผลและการเคลื่อนไหว
+- รายละเอียด: [docs/guides/offline-file.md](docs/guides/offline-file.md)
+
 ### Build Production
 
 ```bash
@@ -620,7 +627,7 @@ npm install        # ติดตั้ง dependency (Node ≥ 20.19)
 npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 ```
 
-> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~952 KB, gzip ~430 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
+> `vite-plugin-singlefile` ยัด JS/CSS/ฟอนต์/รูปทั้งหมดลง **ไฟล์เดียว** `dist/index.html` (~965 KB, gzip ~435 KB) ไม่ต้องมีเซิร์ฟเวอร์ ไม่ต้องมีเน็ต
 
 ### Development
 
@@ -628,7 +635,7 @@ npm run build      # → dist/index.html (ไฟล์เดียวจบ)
 npm run dev        # dev server พร้อม HMR (http://localhost:5173)
 npm run preview    # เสิร์ฟ production build ในเครื่อง
 npm run typecheck  # tsc --noEmit (strict, noUnusedLocals…)
-npm run test       # vitest — 1618 เทสต์ (modes / achievements / storage / i18n / settings)
+npm run test       # vitest — 1626 เทสต์ (modes / achievements / storage / i18n / settings)
 npm run check      # typecheck + test + build (ประตูคุณภาพ CI)
 ```
 
@@ -745,7 +752,7 @@ lo-cheoio/
 │  └─ utils/
 │     ├─ cn.ts             # clsx + tailwind-merge
 │     └─ useFocusTrap.ts   # กักโฟกัสในโมดัล (v1.1.6)
-└─ tests/                  # vitest — 149 ไฟล์ · 1618 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
+└─ tests/                  # vitest — 150 ไฟล์ · 1626 เทสต์ (modes · achievements · storage · i18n · runSave · settings · presets · audio…)
 ```
 
 ## 🧱 สถาปัตยกรรม & ประสิทธิภาพ
@@ -794,7 +801,7 @@ lo-cheoio/
 
 | เวอร์ชัน | Tier | วันที่ | บันทึก |
 | --- | --- | --- | --- |
-| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **1618 เทสต์ / 149 ไฟล์** |
+| [v1.1.8](docs/releases/v1.1.8.md) | 🟣 **PATCH** | 2026-11-18 | **หน้าจอเริ่มเกมไม่ล้นอีกต่อไป**: การบวกความสูงพลาดทำให้ฮีโร่เหลือ 250px และ `LỌ` ถูกตัด · **บั๊กการเลื่อน** (กล่องเลื่อนซ้อน + `justify-center`) แก้ด้วย `.menu-scroll` เดียวที่ยึดขอบบน · **「วิธีเล่น」เข้าเมนู GAME** เป็นโมดัล · แผงประกาศ **318px/458px** แทนการสูงตามเนื้อหา · ทิกเกอร์ 48px · **ของตกแต่งฮีโร่ 14 ชิ้น** + **วงแสง 3 วง** · `src/components/menu/{layout,scene,ticker,howto}/` · **1626 เทสต์ / 150 ไฟล์** |
 | [v1.1.7](docs/releases/v1.1.7.md) | 🟣 **PATCH** | 2026-11-12 | **พื้นหลังเมนูหมอกหาย** (สี่ชั้นซ้อน: `blur 64→22px`, วิชเน็ตต์เฉพาะมุมแทนเต็มจอ, กรอบ CRT 140→90px, พื้น 45→70%) · **changelog แบ่งชั้นมีสี** · **96 หัวข้อใหม่** ให้ 8 เวอร์ชัน · จัดวันใหม่ · แยก `src/game/changelog/` · ทำ README 10 ภาษใหม่ · **256 เทสต์** |
 | [v1.1.6](docs/releases/v1.1.6.md) | 🟣 **PATCH** | 2026-11-10 | **ตั้งค่า 6 หมวด** (พรีเซ็ต · เสียง · ภาพ · ภาษา · สำรอง · ข้อมูล) · ความดัง 0–100 · ความแรงสั่น · คุณภาพภาพ · หยุดเมื่อสลับแท็บ · ย้ายภาษาเข้าตั้งค่า · พรีเซ็ต 4 แบบ · นำเข้า/ส่งออก JSON · เมนูหลายชั้นเคลื่อนไหว · การ์ดผู้สร้างไล่ระดับ · กักโฟกัสในโมดัล · แก้เพลงหลังรีโหลด · **150 เทสต์** |
 | [v1.1.5](docs/releases/v1.1.5.md) | 🟣 **PATCH** | 2026-11-09 | **เมนูมุม GAME/INFO**（เล่น · เล่นต่อ · โหมด · อันดับ · ความสำเร็จ · ตั้งค่า / เกี่ยวกับ · Changelog · ออก）· **บันทึก & เล่นเกมค้างต่อ**（`locheo.run.v1`）· ตั้งค่าในเกม（เสียง/เพลง/สั่น/ลดแอนิเมชัน）· แก้คีย์ลัดทะลุโมดัล · prefers-reduced-motion ครบทุกตัว · **113 เทสต์** |
@@ -832,6 +839,7 @@ lo-cheoio/
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot ของเกมค้าง (schema + วงจรชีวิต) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ตั้งค่าเกม (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | ปัญหาที่พบบ่อย — จอดำ · ไม่มีเสียง · เล่นต่อ · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | เล่นออฟไลน์จากดิสก์ (file://) — ขั้นตอนที่ถูกต้อง boot watchdog ข้อจำกัดของแพลตฟอร์ม |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | สโมกเทสต์การเรนเดอร์แบบ headless (ทั้งต้น menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | บันทึกการตัดสินใจเชิงสถาปัตยกรรม — ทำไมไฟล์เดียว ทำไม SMIL ทำไม `modeConfigFor()` |
@@ -839,7 +847,7 @@ lo-cheoio/
 ## 🤝 ร่วมพัฒนา
 
 1. Fork repo แล้วแตก branch ตามรูปแบบ `arena/<name>` หรือ `feat/<name>`
-2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 1618 เทสต์ + build)
+2. `npm run check` ต้องเขียวก่อนเปิด PR (typecheck + 1626 เทสต์ + build)
 3. เลี่ยงการเพิ่ม dependency ตอน runtime ถ้าไม่จำเป็นจริง ๆ — ปรัชญา: **ไฟล์เดียว ไม่มีเน็ต เล่นได้ตลอดกาล**
 4. ใน PR ระบุหน้าจอ/โหมดที่ได้รับผลกระทบ และแนบคลิปถ้ามีการเปลี่ยน gameplay
 
