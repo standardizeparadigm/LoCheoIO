@@ -605,6 +605,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### 从磁盘离线游玩（file://）
+
+- 离线游玩 = 打开 **`dist/index.html`** —— 构建产物 100% 自包含（JS/CSS/字体全部内联，0 个外部引用 —— `check-offline` 门禁在每次构建后扫描）。也可以直接从 GitHub release 页面下载。
+- **不要打开仓库根目录的 `index.html`** —— 那是开发入口（需要 `npm run dev`）；在 `file://` 下只会白屏。从 v1.1.8 起，若 4 秒后游戏仍未挂载，页面会**自动显示说明面板**（启动看门狗，中/英）而不是默默无闻。
+- `file://` 下的进度存放在独立 origin —— 不会与网页版互通（平台固有行为，不是 bug）。若首次运行时菜单静止不动：系统开启了「减少动态效果」—— 在 设置 → 显示与动效 中重新打开。
+- 详情：[docs/guides/offline-file.md](docs/guides/offline-file.md)。
+
 ### 生产构建
 
 ```bash
@@ -824,6 +831,7 @@ v1.1.4 已修复：`play-windows.bat` 为 CRLF + UTF-8 BOM、`chcp 65001`，越�
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — 暂停对局快照（schema + 生命周期） |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — 游戏设置（schema + 接线） |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | 常见问题 — 黑屏 · 无声音 · 继续游戏 · 启动器 |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | 从磁盘离线游玩（file://）—— 正确流程、启动看门狗、平台固有限制 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | 无头渲染冒烟测试（完整菜单/弹窗树） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | 架构决策记录 — 为什么单文件、为什么 SMIL、为什么 `modeConfigFor()` |
