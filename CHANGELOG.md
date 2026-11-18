@@ -187,6 +187,14 @@ Ngoài ra:
 - **Ngày phát hành chốt thứ Tư 2026-11-18** — chuỗi 11-15 → 11-16 → 11-17 → 11-18; trần nhịp cadence trong `release-timeline-doc.test.ts` nới 5 → 6 ngày (trần là biên độ khả tín, không phải dữ kiện — làm giả ngày về 11-17 cho khớp trần là sai ngược tinh thần của test)
 - Suite sau vòng này: **1 618 test / 149 file** · **33 hình SVG**
 
+### Fixed — vòng hai mươi (offline file://)
+
+- **«Mở index.html offline mất sạch animation» không phải lỗi build** — điều tra toàn diện vòng 20: `dist/index.html` tự chứa 100% (bundle/CSS/font inline, 0 tham chiếu ngoài, game không nạp SVG runtime — 33 SVG chỉ là minh hoạ README), `file://` và `https://` chạy cùng một mã. Trang chết đến từ mở nhầm **file nguồn `index.html` ở gốc repo** (dev entry cần `npm run dev`) trên `file://`, hoặc trình duyệt quá cũ/JavaScript bị chặn — và trước giờ cả ba đều chết im lặng trắng trơn
+- **Boot watchdog trong template `index.html`** — game không mount sau 4 giây thì trang tự hiện bảng khóa theme giải thích VI/EN ba lý do (dùng `dist/index.html` hoặc `npm run dev` · trình duyệt cũ · JavaScript tắt); `MutationObserver` gỡ bảng ngay khi game mount nên không báo động nhầm; ES5 + try/catch toàn bộ nên chính watchdog không thể là nguyên nhân chết mới; Vite mang watchdog theo vào bản build single-file
+- **Gate `scripts/check-offline.mjs`** — chạy trong `npm run check` ngay sau `vite build`: strip data URI (payload base64 có thể chứa chữ `http`) rồi quét `src`/`href`/`poster`/`srcset`, CSS `url()` + `@import`, `link` modulepreload/preload/prefetch — một tham chiếu tuyệt đối duy nhất trong `dist/index.html` là lỗi CI; hợp đồng một-file (ADR 0001) lần đầu tiên có thứ thực thi nó
+- **Tài liệu & pin** — `docs/guides/offline-file.md` (luồng đúng + giới hạn cố hữu của `file://`), mục troubleshooting «mở offline mất sạch animation/trang trắng», ADR 0009, mục «Chơi offline từ đĩa» ×10 README (mỗi ngôn ngữ một commit); `tests/offline-gate.test.ts` pin máy quét + watchdog + dist tự chứa; 8 test
+- Suite sau vòng này: **1 626 test / 150 file** · **33 hình SVG**
+
 ### Fixed — vòng mười tám (rà soát cuối)
 
 - **Corpus hồi quy lệch generator sau khi `deviceClass()` đổi ngưỡng** — `r11-diacritics-390x844` và `r12-landscape-fold-717x512` vẫn ghi `device: "tablet"` trong khi mọi trường khác khớp một lần giải mới; corpus vi phạm đúng hợp đồng của chính nó («byte-comparable with a fresh resolve») và `gen:regress` để cây làm việc bẩn vĩnh viễn. Nay sinh lại từ generator, và `adaptive-regressions.test.ts` đối chiếu thêm `profile.device` với một lần `resolveAdaptive()` thật — lần sau ngưỡng chuyển là corpus phải sinh lại, không phải sửa tay hai nhãn
