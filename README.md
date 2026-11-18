@@ -850,6 +850,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Chơi offline từ đĩa (file://)
+
+- Chơi offline = mở **`dist/index.html`** — bản build tự chứa 100% (JS/CSS/font inline, 0 tham chiếu ngoài — gate `check-offline` quét sau mỗi lần build). Tải thẳng từ trang release trên GitHub cũng được.
+- **Đừng mở `index.html` ở gốc repo** — đó là dev entry (cần `npm run dev`); trên `file://` nó trắng trơn. Từ v1.1.8, nếu game chưa mount sau 4 giây, trang **tự hiện bảng giải thích** (boot watchdog, VI/EN) thay vì im lặng.
+- Tiến độ trên `file://` nằm ở origin riêng — không trộn với bản web (chủ ý nền tảng). Nếu lần chạy đầu menu đứng im: HĐH đang bật giảm chuyển động — bật lại trong Cài đặt → Giao diện & chuyển động.
+- Chi tiết: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Build production
 
 ```bash
@@ -1107,6 +1114,7 @@ Tài liệu thiết kế & hướng dẫn kỹ thuật sâu hơn:
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot ván dở (schema + lifecycle) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — cài đặt game (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Sự cố thường gặp — đen màn hình · audio · «Chơi tiếp» · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Chơi offline từ đĩa (file://) — luồng đúng, boot watchdog, giới hạn cố hữu |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless render smoke test (toàn bộ menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Biên bản quyết định kiến trúc (ADR) — vì sao một file, vì sao SMIL, vì sao `modeConfigFor()` |
