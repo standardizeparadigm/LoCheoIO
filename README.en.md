@@ -704,6 +704,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Playing offline from disk (file://)
+
+- Playing offline = open **`dist/index.html`** — the build is 100% self-contained (inline JS/CSS/fonts, zero external references — the `check-offline` gate scans it after every build). Grabbing it from the GitHub release page works too.
+- **Do not open the repo-root `index.html`** — that is the dev entry (needs `npm run dev`); on `file://` it is a blank page. Since v1.1.8, if the game has not mounted after 4 seconds the page **explains itself** (boot watchdog, EN/VI) instead of staying silent.
+- Progress on `file://` lives in its own origin — it never mixes with the hosted copy (a platform rule, not a bug). If the menu stands still on a first run: the OS asks for reduced motion — re-enable it in Settings → Display & motion.
+- Details: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Production build
 
 ```bash
@@ -947,6 +954,7 @@ Design notes and deeper technical docs:
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — suspended-run snapshot (schema + lifecycle) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — game settings (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Common issues — black screen · audio · Continue · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Playing offline from disk (file://) — the right flow, boot watchdog, platform limits |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless render smoke test (full menu/modal tree) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Architecture decision records — why one file, why SMIL, why `modeConfigFor()` |
