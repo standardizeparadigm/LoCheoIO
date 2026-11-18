@@ -613,6 +613,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### เล่นออฟไลน์จากดิสก์ (file://)
+
+- เล่นออฟไลน์ = เปิด **`dist/index.html`** — บิลด์นี้บรรจุครบ 100% (JS/CSS/ฟอนต์ฝังในไฟล์ ไม่มีการอ้างอิงภายนอก — เกต `check-offline` สแกนหลังทุกการบิลด์) ดาวน์โหลดจากหน้า release ของ GitHub ได้เลย
+- **อย่าเปิด `index.html` ที่รากของ repo** — นั่นคือ dev entry (ต้องใช้ `npm run dev`) บน `file://` จะขาวเปล่า ตั้งแต่ v1.1.8 ถ้าเกมยังไม่ mount ใน 4 วินาที หน้าเว็บจะ**แสดงคำอธิบายเอง** (boot watchdog, TH/EN) แทนที่จะเงียบ
+- ความคืบหน้าบน `file://` อยู่ใน origin แยกต่างหาก — ไม่ปนกับเวอร์ชันเว็บ (กติกาของแพลตฟอร์ม ไม่ใช่บั๊ก) ถ้าเมนูนิ่งตอนเปิดครั้งแรก: OS ขอลดการเคลื่อนไหว — เปิดใหม่ได้ที่ การตั้งค่า → การแสดงผลและการเคลื่อนไหว
+- รายละเอียด: [docs/guides/offline-file.md](docs/guides/offline-file.md)
+
 ### Build Production
 
 ```bash
@@ -832,6 +839,7 @@ lo-cheoio/
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot ของเกมค้าง (schema + วงจรชีวิต) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ตั้งค่าเกม (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | ปัญหาที่พบบ่อย — จอดำ · ไม่มีเสียง · เล่นต่อ · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | เล่นออฟไลน์จากดิสก์ (file://) — ขั้นตอนที่ถูกต้อง boot watchdog ข้อจำกัดของแพลตฟอร์ม |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | สโมกเทสต์การเรนเดอร์แบบ headless (ทั้งต้น menu/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | บันทึกการตัดสินใจเชิงสถาปัตยกรรม — ทำไมไฟล์เดียว ทำไม SMIL ทำไม `modeConfigFor()` |
