@@ -1,6 +1,6 @@
 # `tests/` — unit tests (vitest)
 
-**1618 tests / 149 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
+**1626 tests / 150 files.** Pure logic only — engine/canvas được phủ bởi `npm run check` (build) + `scripts/smoke-ssr.tsx` (SSR render smoke).
 
 | File | Phủ | Pattern |
 | --- | --- | --- |
