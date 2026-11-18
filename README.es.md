@@ -678,6 +678,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Jugar sin conexión desde el disco (file://)
+
+- Jugar offline = abrir **`dist/index.html`** — la compilación es 100% autocontenida (JS/CSS/fuentes en línea, cero referencias externas — la barrera `check-offline` la escanea tras cada build). Descargarla de la página de releases de GitHub también sirve.
+- **No abras el `index.html` de la raíz del repositorio** — es la entrada de desarrollo (requiere `npm run dev`); en `file://` queda en blanco. Desde la v1.1.8, si el juego no se monta tras 4 segundos, la página **se explica sola** (watchdog de arranque, ES/EN) en vez de callarse.
+- El progreso en `file://` vive en un origin aparte — no se mezcla con la copia web (regla de la plataforma, no un error). Si el menú está quieto en la primera ejecución: el sistema pide menos movimiento — re actívalo en Ajustes → Pantalla y movimiento.
+- Detalles: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Build de producción
 
 ```bash
@@ -897,6 +904,7 @@ Notas de diseño y documentación técnica más profunda:
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot de partida en pausa (schema + ciclo de vida) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ajustes del juego (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problemas comunes — pantalla negra · audio · Continuar · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Jugar sin conexión desde el disco (file://) — flujo correcto, watchdog de arranque, límites de la plataforma |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de render headless (todo el árbol menú/modal) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Registros de decisiones de arquitectura — por qué un archivo, por qué SMIL, por qué `modeConfigFor()` |
