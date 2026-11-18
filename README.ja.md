@@ -629,6 +629,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### ディスクからオフラインで遊ぶ（file://）
+
+- オフラインで遊ぶ = **`dist/index.html`** を開く —— ビルドは 100% 自己完結（JS/CSS/フォントをすべてインライン、外部参照ゼロ —— `check-offline` ゲートが毎回のビルド後に走査）。GitHub のリリースページから直接ダウンロードしても OK。
+- リポジトリ直下の `index.html` は開かないでください —— あれは開発用エントリ（`npm run dev` が必要）で、`file://` では真っ白なままです。v1.1.8 からは 4 秒経ってもゲームがマウントされない場合、ページが**自分で説明を表示**します（ブートウォッチドッグ、日/英）。
+- `file://` の進行状況は独立した origin に保存され、Web 版とは混ざりません（プラットフォームの仕様です）。初回起動でメニューが静止しているときは：OS が「動作を減らす」を要求している状態 —— 設定 → 表示とモーション で戻せます。
+- 詳細：[docs/guides/offline-file.md](docs/guides/offline-file.md)。
+
 ### プロダクションビルド
 
 ```bash
@@ -848,6 +855,7 @@ v1.1.4で修正済み：`play-windows.bat` は CRLF + UTF-8 BOM と `chcp 65001`
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — 中断ランのスナップショット（schema + ライフサイクル） |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — ゲーム設定（schema + 配線） |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | よくある問題 — 黒画面 · 音が出ない · つづきから · ランチャー |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | ディスクからオフラインで遊ぶ（file://）— 正しい手順、ブートウォッチドッグ、プラットフォーム固有の制限 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | ヘッドレス描画スモークテスト（全メニュー/モーダル） |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | アーキテクチャ決定記録 — なぜ1ファイル、なぜSMIL、なぜ `modeConfigFor()` |
