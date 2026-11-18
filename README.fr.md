@@ -650,6 +650,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Jouer hors ligne depuis le disque (file://)
+
+- Jouer hors ligne = ouvrir **`dist/index.html`** — le build est 100 % autonome (JS/CSS/polices en ligne, zéro référence externe — la barrière `check-offline` le scanne après chaque build). Le télécharger depuis la page des releases GitHub marche aussi.
+- **N'ouvrez pas le `index.html` à la racine du dépôt** — c'est l'entrée de développement (nécessite `npm run dev`) ; en `file://` elle reste blanche. Depuis la v1.1.8, si le jeu ne se monte pas après 4 secondes, la page **s'explique elle-même** (chien de garde de démarrage, FR/EN) au lieu de rester muette.
+- La progression en `file://` vit dans une origine séparée — elle ne se mélange jamais avec la copie web (règle de la plateforme, pas un bug). Si le menu reste immobile au premier lancement : l'OS demande moins d'animations — réactivez-les dans Réglages → Affichage et mouvement.
+- Détails : [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Build de production
 
 ```bash
@@ -869,6 +876,7 @@ Notes de conception et documentation technique approfondie :
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — snapshot de partie en pause (schema + cycle de vie) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — réglages du jeu (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Problèmes fréquents — écran noir · audio · Reprendre · launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Jouer hors ligne depuis le disque (file://) — le bon flux, chien de garde de démarrage, limites de la plateforme |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Smoke test de rendu headless (tout l'arbre menu/modales) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Registres de décisions d'architecture — pourquoi un fichier, pourquoi SMIL, pourquoi `modeConfigFor()` |
