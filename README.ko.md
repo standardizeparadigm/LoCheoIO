@@ -629,6 +629,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### 디스크에서 오프라인으로 플레이하기 (file://)
+
+- 오프라인 플레이 = **`dist/index.html`** 열기 —— 빌드 결과물은 100% 자기 완결(JS/CSS/폰트 전부 인라인, 외부 참조 0개 —— `check-offline` 게이트가 매 빌드 후 검사). GitHub 릴리스 페이지에서 바로 내려받아도 됩니다.
+- 저장소 루트의 `index.html`은 열지 마세요 —— 개발용 엔트리(`npm run dev` 필요)이며, `file://`에서는 흰 화면만 보입니다. v1.1.8부터 4초 안에 게임이 마운트되지 않으면 페이지가 **스스로 설명을 표시**합니다(부트 워치독, 한/영).
+- `file://`의 진행 상황은 별도 origin에 저장되어 웹 버전과 섞이지 않습니다(플랫폼 고유 동작). 첫 실행에서 메뉴가 멈춰 있으면: OS가「동작 줄이기」를 요청하는 상태 —— 설정 → 화면과 모션에서 다시 켜세요.
+- 자세히: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### 프로덕션 빌드
 
 ```bash
@@ -848,6 +855,7 @@ v1.1.4에서 수정: `play-windows.bat`은 CRLF + UTF-8 BOM과 `chcp 65001`, 베
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — 중단된 판 스냅샷 (schema + 라이프사이클) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — 게임 설정 (schema + wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | 자주 묻는 문제 — 검은 화면 · 소리 · 이어하기 · 런처 |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | 디스크에서 오프라인 플레이(file://) — 올바른 흐름, 부트 워치독, 플랫폼 고유 제한 |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | 헤드리스 렌더 스모크 테스트 (전체 메뉴/모달) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | 아키텍처 결정 기록 — 왜 한 파일, 왜 SMIL, 왜 `modeConfigFor()` |
