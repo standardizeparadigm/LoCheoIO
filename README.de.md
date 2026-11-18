@@ -647,6 +647,13 @@ xdg-open dist/index.html  # Linux
 start dist/index.html     # Windows
 ```
 
+### Offline von der Festplatte spielen (file://)
+
+- Offline spielen = **`dist/index.html`** öffnen — der Build ist zu 100 % in sich geschlossen (JS/CSS/Fonts inline, null externe Referenzen — das `check-offline`-Gate scannt ihn nach jedem Build). Direkt von der GitHub-Release-Seite herunterladen geht genauso.
+- **Das `index.html` im Repo-Wurzelverzeichnis nicht öffnen** — das ist der Dev-Einstieg (braucht `npm run dev`); unter `file://` bleibt es weiß. Ab v1.1.8 erklärt sich die Seite nach 4 Sekunden ohne Mount **von selbst** (Boot-Watchdog, DE/EN), statt stumm zu bleiben.
+- Fortschritt unter `file://` lebt in einer eigenen Origin — er mischt sich nie mit der Web-Kopie (Plattform-Regel, kein Bug). Steht das Menü beim ersten Start still: Das OS fordert weniger Bewegung — in Einstellungen → Anzeige & Bewegung wieder einschalten.
+- Details: [docs/guides/offline-file.md](docs/guides/offline-file.md).
+
 ### Produktions-Build
 
 ```bash
@@ -866,6 +873,7 @@ Design-Notizen und tiefergehende technische Doku:
 | [docs/design/save-format.md](docs/design/save-format.md) | Spec `locheo.run.v1` — Snapshot eines unterbrochenen Laufs (Schema + Lebenszyklus) |
 | [docs/design/settings-format.md](docs/design/settings-format.md) | Spec `locheo.settings.v1` — Spieleinstellungen (Schema + Wiring) |
 | [docs/guides/troubleshooting.md](docs/guides/troubleshooting.md) | Häufige Probleme — schwarzer Bildschirm · Audio · Fortsetzen · Launcher |
+| [docs/guides/offline-file.md](docs/guides/offline-file.md) | Offline von der Festplatte (file://) — der richtige Ablauf, Boot-Watchdog, Plattformgrenzen |
 | [scripts/smoke-ssr.tsx](scripts/smoke-ssr.tsx) | Headless-Render-Smoke-Test (kompletter Menü-/Modal-Baum) |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | CI: npm ci → npm run check (Node 22) |
 | [docs/decisions/README.md](docs/decisions/README.md) | Architektur-Entscheidungen (ADR) — warum eine Datei, warum SMIL, warum `modeConfigFor()` |
